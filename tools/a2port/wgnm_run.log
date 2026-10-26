@@ -1,0 +1,33 @@
+IDAMCPPlugin instance created
+
+  bytes   pages size description
+--------- ----- ---- --------------------------------------------
+134217728 16384 8192 allocating memory for b-tree...
+268435456 32768 8192 allocating memory for virtual array...
+   262144    32 8192 allocating memory for name pointers...
+-----------------------------------------------------------------
+402915328            total memory allocated
+
+Loading processor module C:\Program Files\IDA Professional 9.4\procs\pc.dll for metapc...OK
+Loading type libraries...
+Autoanalysis subsystem has been initialized.
+Database for file 'A2-47031.exe' has been loaded.
+Hex-Rays Decompiler plugin has been loaded (v9.4.0.260714)
+  License: 14-0000-FFFF-88  (1 user)
+  The hotkeys are F5: decompile, Ctrl-F5: decompile all.
+
+  Please check the Edit/Plugins menu for more information.
+Hex-rays version 9.4.0.260714 has been detected, gooMBA plugin ready to use
+IDAMCPPlugin instance created
+IDA MCP Server v1.0 by IDA MCP
+Initializing plugin...
+Menu items created successfully
+Menu items added
+Plugin initialized successfully
+Using type parser: legacy
+ida_wgnm.py:22: DeprecationWarning: get_func() is deprecated, use get_func_start or get_func_entry_info()
+  start=va(exec_rva); f=ida_funcs.get_func(start)
+Auto analysis completed
+Flushing buffers, please wait...ok
+IDA MCP Server terminated
+Unloading IDP module C:\Program Files\IDA Professional 9.4\procs\pc.dll...

@@ -1,0 +1,3 @@
+WorldGetNetMode sub_7FF6760A0990 callees ['UReplaySubsystem::IsPlaying', 'UReplaySubsystem::IsRecording']
+ArrCopyDrv sub_7FF673350CB0 callees ['memcpy']
+CosmeticCmp sub_7FF67743A880 callees ['UCreateMeshObjectTypeProperties::GetCurrentCreateMeshType_Implementation']

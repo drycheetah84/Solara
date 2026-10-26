@@ -55,6 +55,11 @@
    "conf": "high",
    "why": "unique Vivox-JWT template strings xref (iss/vxa/vxi/exp)"
   },
+  "WorldGetNetMode_RVA": {
+   "val": "0x41F5A60",
+   "conf": "high",
+   "why": "unique caller of IsPlaying+IsRecording impls, sz410==410 (force DedicatedServer before open)"
+  },
   "Spawner_Disc_Off": {
    "val": "0x580",
    "conf": "high",
@@ -113,7 +118,6 @@
   "FetchRoles_RVA": "0x54B04E0",
   "RolesFetched_RVA": "0x5510C40",
   "A2GetNetMode_RVA": "0x54AF360",
-  "WorldGetNetMode_RVA": "0x4040990",
   "BallSimGetWorld_RVA": "0x3509AB0",
   "BallNetPersp_RVA": "0x60A0990",
   "PrintString_RVA": "0x3A29B20",

@@ -1,0 +1,35 @@
+{
+ "WorldGetNetMode": {
+  "rva": "0x4040990",
+  "func": "sub_7FF6760A0990",
+  "size": 410,
+  "named_callees": [
+   "UReplaySubsystem::IsPlaying",
+   "UReplaySubsystem::IsRecording"
+  ],
+  "strings": [
+   "l"
+  ],
+  "pseudo": "__int64 __fastcall sub_7FF6760A0990(__int64 a1)\n{\n  __int64 v2; // rcx\n  __int64 v4; // rax\n  __int64 v5; // rdi\n  int v6; // ecx\n  __int64 v7; // rcx\n  int v8; // eax\n  _BYTE v9[24]; // [rsp+20h] [rbp-78h] BYREF\n  int v10; // [rsp+38h] [rbp-60h]\n  int v11; // [rsp+44h] [rbp-54h]\n\n  v2 = *(_QWORD *)(a1 + 56);\n  if ( v2 != 0 )\n    return sub_7FF675BE6FA0(v2);\n  if ( *(_QWORD *)(a1 + 240) != 0\n    && ((unsigned __int8)UReplaySubsystem::IsPlaying() != 0\n     || (unsigned __int8)UReplaySubsystem::IsRecording(*(_QWORD *)(a1 + 240)) != 0\n     && *(_BYTE *)(*(_QWORD *)(a1 + 240) + 712LL) != 0) )\n  {\n    v2 = *(_QWORD *)(a1 + 240);\n    return sub_7FF675BE6FA0(v2);\n  }\n  if ( qword_7FF67BA95970 == nullptr )\n    return 0;\n  v4 = sub_7FF676022C10(qword_7FF67BA95970, a1);\n  v5 = v4;\n  if ( v4 == 0 )\n    return 0;\n  v6 = *(_DWORD *)(a1 + 1864);\n  if ( v6 == 0 || v6 - 1 <= 0 )\n  {\n    v7 = *(_QWORD *)(v4 + 400);\n    if ( v7 != 0 && *(_DWORD *)(v7 + 100) != 0 )\n    {\n      if ( (unsigned __int8)sub_7FF67606A3E0(v7 + 64, L\"listen\") != 0 )\n        return 2;\n      v8 = *(_DWORD *)(*(_QWORD *)(v5 + 400) + 88LL);\n      if ( v8 != 0 && v8 - 1 > 0 )\n        return 3;\n    }\n    return 0;\n  }\n  sub_7FF67604B660(v9, v4 + 192, *(_QWORD *)(a1 + 1856), *(unsigned __int8 *)(a1 + 1849));\n  if ( v11 != 0 )\n  {\n    if ( (unsigned __int8)sub_7FF67606A3E0(v9, L\"listen\") != 0 )\n    {\n      sub_7FF6754B0330(v9);\n      return 2;\n    }\n    if ( v10 != 0 && v10 - 1 > 0 )\n    {\n      sub_7FF6754B0330(v9);\n      return 3;\n    }\n  }\n  sub_7FF6754B0330(v9);\n  return 0;\n}\n"
+ },
+ "ArrCopyDrv": {
+  "rva": "0x12f0cb0",
+  "func": "sub_7FF673350CB0",
+  "size": 652,
+  "named_callees": [
+   "memcpy"
+  ],
+  "strings": [],
+  "pseudo": "unsigned __int8 __fastcall sub_7FF673350CB0(__int64 a1, __int64 a2, __int64 a3)\n{\n  char v3; // si\n  char v7; // r15\n  unsigned int v8; // eax\n  unsigned int v9; // ebp\n  bool v10; // cl\n  unsigned int v11; // r12d\n  __int64 v12; // rbx\n  unsigned __int64 v13; // rax\n  __int64 v14; // rsi\n  int v15; // r8d\n  unsigned __int8 result; // al\n  int v17; // eax\n  unsigned int *v18; // rax\n  __int64 v19; // rdx\n  __int64 v20; // rcx\n  __int64 v21; // rbp\n  __int64 v22; // r14\n  __int64 v23; // rdx\n  bool v24; // r15\n  __int64 v25; // r14\n  __int64 i; // rdi\n  int *v27; // rcx\n  bool v28; // [rsp+21h] [rbp-57h]\n  __int64 v29; // [rsp+28h] [rbp-50h] BYREF\n  __int64 v30; // [rsp+30h] [rbp-48h]\n  unsigned int v31; // [rsp+38h] [rbp-40h]\n  unsigned int v32; // [rsp+3Ch] [rbp-3Ch]\n  char v33; // [rsp+40h] [rbp-38h]\n\n  v3 = *(_BYTE *)(a1 + 112);\n  (*(void (__fastcall **)(_QWORD))(**(_QWORD **)(a1 + 120) + 344LL))(*(_QWORD *)(a1 + 120));\n  v7 = *(_BYTE *)(a1 + 112);\n  v8 = (*(__int64 (__fastcall **)(_QWORD))(**(_QWORD **)(a1 + 120) + 344LL))(*(_QWORD *)(a1 + 120));\n  v33 = v7;\n  v9 = v8;\n  v30 = a2;\n  v29 = *(_QWORD *)(a1 + 120);\n  v32 = v8;\n  v10 = (v7 & 1) == 0;\n  v28 = (v3 & 1) == 0;\n  v11 = *(_DWORD *)(v29 + 52);\n  v12 = 0;\n  v13 = (unsigned __int64)*(unsigned int *)(v29 + 56) >> 30;\n  v31 = v11;\n  v14 = *(int *)(a3 + 8);\n  v15 = *(_DWORD *)(a2 + 8);\n  if ( (v13 & 1) == 0 )\n  {\n    if ( v15 != 0 )\n    {\n      sub_7FF673351B30(&v29, 0);\n      v10 = (v7 & 1) == 0;\n    }\n    else if ( (_DWORD)v14 == 0 )\n    {\nLABEL_9:\n      result = sub_7FF67332A6C0(&v29, (unsigned int)v14);\n      v7 = v"
+ },
+ "CosmeticCmp": {
+  "rva": "0x53da880",
+  "func": "sub_7FF67743A880",
+  "size": 156,
+  "named_callees": [
+   "UCreateMeshObjectTypeProperties::GetCurrentCreateMeshType_Implementation"
+  ],
+  "strings": [],
+  "pseudo": "_BOOL8 __fastcall sub_7FF67743A880(__int64 a1, __int64 a2)\n{\n  bool v3; // bl\n  __int64 v5; // [rsp+20h] [rbp-28h] BYREF\n  __int64 v6; // [rsp+28h] [rbp-20h]\n  __int64 v7; // [rsp+30h] [rbp-18h] BYREF\n  __int64 v8; // [rsp+38h] [rbp-10h]\n  __int64 v9; // [rsp+50h] [rbp+8h] BYREF\n\n  v9 = *(_QWORD *)(*(_QWORD *)(a2 + 8) + 24LL);\n  sub_7FF6731AD690(&v9, &v7);\n  v9 = *(_QWORD *)(*(_QWORD *)a1 + 24LL);\n  sub_7FF6731AD690(&v9, &v5);\n  if ( (_DWORD)v8 == (_DWORD)v6 )\n    v3 = (int)v8 <= 1\n      || (unsigned int)UCreateMeshObjectTypeProperties::GetCurrentCreateMeshType_Implementation(v7, v5) == 0;\n  else\n    v3 = (_DWORD)v6 + (_DWORD)v8 == 1;\n  if ( v5 != 0 )\n    sub_7FF6730753A0(v5);\n  if ( v7 != 0 )\n    sub_7FF6730753A0(v7);\n  return v3;\n}\n"
+ }
+}

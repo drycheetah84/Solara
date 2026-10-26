@@ -1,0 +1,16 @@
+{
+ "IsPlaying_impl": {
+  "rva": "0x3a4e420",
+  "size": 49
+ },
+ "IsRecording_impl": {
+  "rva": "0x3a4e460",
+  "size": 52
+ },
+ "candidates": [
+  {
+   "rva": "0x41f5a60",
+   "size": 410
+  }
+ ]
+}

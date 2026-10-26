@@ -77,7 +77,10 @@ if '#pragma comment(lib, "iphlpapi.lib")' in new and 'MH_CreateHookG' not in new
     new = new.replace('#pragma comment(lib, "iphlpapi.lib")\n', GATE, 1)
     # gate every install, then restore the always-valid three
     new = new.replace('MH_CreateHook(', 'MH_CreateHookG(')
-    for keep in ('ProcessEvent_Hook', 'TerminateProcess_Hook', 'ExitProcess_Hook'):
+    # WorldGetNetMode_Hook: resolved to 0x41F5A60 and required for the server map
+    # open (forces DedicatedServer during world init). Install it (un-gated).
+    for keep in ('ProcessEvent_Hook', 'TerminateProcess_Hook', 'ExitProcess_Hook',
+                 'WorldGetNetMode_Hook'):
         new = _re.sub(r'MH_CreateHookG\((?=[^;\n]*' + keep + r')', 'MH_CreateHook(', new)
     # fix the wrapper body itself (it must call the real MH_CreateHook)
     new = new.replace('return MH_CreateHookG(pTarget, pDetour, ppOriginal);',

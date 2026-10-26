@@ -163,8 +163,17 @@ func main() {
 		}
 		target = p
 	}
-	fmt.Printf("[a2inject] target pid=%d dll=%s\n", target, *dll)
-	if err := inject(target, *dll); err != nil {
+	// Inject a COPY so the build output never stays locked by a running game
+	// (a loaded DLL can't be overwritten; copying lets rebuilds proceed freely).
+	dllToInject := *dll
+	if data, err := os.ReadFile(*dll); err == nil {
+		cp := filepath.Join(os.TempDir(), fmt.Sprintf("HalcyonA2_%d.dll", os.Getpid()))
+		if os.WriteFile(cp, data, 0o644) == nil {
+			dllToInject = cp
+		}
+	}
+	fmt.Printf("[a2inject] target pid=%d dll=%s\n", target, dllToInject)
+	if err := inject(target, dllToInject); err != nil {
 		fmt.Fprintln(os.Stderr, "[a2inject] inject failed:", err)
 		os.Exit(1)
 	}

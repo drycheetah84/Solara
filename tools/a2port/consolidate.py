@@ -42,6 +42,7 @@ R = {
     "GolfBallInCup_RVA": (0x55B3900, "high", "UGolfCupComponent::BallInCup impl (single non-helper; sz24~21)"),
     "GolfOverlap_RVA": (0x54A9890, "high", "UGolfCupComponent::OnGoalBeginOverlap (name-matched handler)"),
     "JwtBuild_RVA": (0x53DB090, "high", "unique Vivox-JWT template strings xref (iss/vxa/vxi/exp)"),
+    "WorldGetNetMode_RVA": (0x41F5A60, "high", "unique caller of IsPlaying+IsRecording impls, sz410==410 (force DedicatedServer before open)"),
     # SDK struct members (exact class+field in 47031 SDK)
     "Spawner_Disc_Off": (0x580, "high", "UBallSpawnerComponent::Disc @0x580 (SDK; == 22284)"),
     # med: best candidate, flagged for runtime confirm
