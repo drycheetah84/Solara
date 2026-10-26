@@ -179,12 +179,19 @@ _VEH_OLD = ('''        code != 0xC0000374u /* [EXITTRACE] heap corruption */ && 
 _VEH_NEW = ('''        code != 0xC0000374u /* [EXITTRACE] heap corruption */ && code != 0xC00000FDu /* stack overflow (alt) */)
         return EXCEPTION_CONTINUE_SEARCH;
     static thread_local int s_inVeh = 0;
-    if (s_inVeh) return EXCEPTION_CONTINUE_SEARCH;
-    struct VehGuard { int* p; ~VehGuard() { *p = 0; } } _vg{ &s_inVeh };
-    s_inVeh = 1;
+    if (s_inVeh) return EXCEPTION_CONTINUE_SEARCH;   // the reporter itself faulted -> don't recurse
+    s_inVeh = 1;   // reset at every return below (no RAII: this fn uses __try, C2712)
     const uintptr_t base = GetBase();''')
 if _VEH_OLD in new:
     new = new.replace(_VEH_OLD, _VEH_NEW, 1)
+    # reset the guard before each return after it is set
+    new = new.replace('if (inSelf && g_probeGuard > 0) return EXCEPTION_CONTINUE_SEARCH;',
+                      'if (inSelf && g_probeGuard > 0) { s_inVeh = 0; return EXCEPTION_CONTINUE_SEARCH; }', 1)
+    new = new.replace('if (InterlockedIncrement(&s_n) > 12) return EXCEPTION_CONTINUE_SEARCH;',
+                      'if (InterlockedIncrement(&s_n) > 12) { s_inVeh = 0; return EXCEPTION_CONTINUE_SEARCH; }', 1)
+    new = new.replace(
+        'HxLog("[HalcyonA2][CRASH] ***** end (GAME rvas -> IDA; SELF rvas -> HalcyonA2.map) *****\\n\\n");\n    return EXCEPTION_CONTINUE_SEARCH;',
+        'HxLog("[HalcyonA2][CRASH] ***** end (GAME rvas -> IDA; SELF rvas -> HalcyonA2.map) *****\\n\\n");\n    s_inVeh = 0;\n    return EXCEPTION_CONTINUE_SEARCH;', 1)
 
 out = os.path.join(SRV, "dllmain_47031.cpp")
 open(out, "w", encoding="utf-8", newline="\n").write(new)
