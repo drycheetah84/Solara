@@ -82,6 +82,39 @@ if '#pragma comment(lib, "iphlpapi.lib")' in new and 'MH_CreateHookG' not in new
     # fix the wrapper body itself (it must call the real MH_CreateHook)
     new = new.replace('return MH_CreateHookG(pTarget, pDetour, ppOriginal);',
                       'return MH_CreateHook(pTarget, pDetour, ppOriginal);')
+    # page-writable helper (guards raw stores to stale .data addresses)
+    new = new.replace(
+        '    return MH_CreateHook(pTarget, pDetour, ppOriginal);\n}\n',
+        '    return MH_CreateHook(pTarget, pDetour, ppOriginal);\n}\n'
+        'static inline bool HxPageWritable(const void* p)\n'
+        '{\n'
+        '    MEMORY_BASIC_INFORMATION mbi{};\n'
+        '    if (!VirtualQuery(p, &mbi, sizeof(mbi)) || mbi.State != MEM_COMMIT) return false;\n'
+        '    const DWORD w = PAGE_READWRITE | PAGE_WRITECOPY | PAGE_EXECUTE_READWRITE | PAGE_EXECUTE_WRITECOPY;\n'
+        '    return (mbi.Protect & w) != 0;\n'
+        '}\n', 1)
+
+# Guard the 22284 gc-cvar backing-int raw stores (stale RVAs fault on 47031).
+_GC_OLD = ('''        const int wasP = *reinterpret_cast<int*>(b + 0x94C76B8);
+        const int wasC = *reinterpret_cast<int*>(b + 0x94C8444);
+        *reinterpret_cast<int*>(b + 0x94C76B8) = g_parallelGC ? 1 : 0;   // gc.AllowParallelGC
+        *reinterpret_cast<int*>(b + 0x94C8444) = 0;   // gc.CreateGCClusters = 0
+        printf("[HalcyonA2] gc cvar backing vars set DIRECTLY: AllowParallelGC %d->0, CreateGCClusters %d->0\\n",
+            wasP, wasC);''')
+_GC_NEW = ('''        void* pa = reinterpret_cast<void*>(b + 0x94C76B8);   // TODO-47031: stale 22284 cvar RVAs
+        void* pc = reinterpret_cast<void*>(b + 0x94C8444);
+        if (HxPageWritable(pa) && HxPageWritable(pc)) {
+            const int wasP = *reinterpret_cast<int*>(pa);
+            const int wasC = *reinterpret_cast<int*>(pc);
+            *reinterpret_cast<int*>(pa) = g_parallelGC ? 1 : 0;   // gc.AllowParallelGC
+            *reinterpret_cast<int*>(pc) = 0;   // gc.CreateGCClusters = 0
+            printf("[HalcyonA2] gc cvar backing vars set DIRECTLY: AllowParallelGC %d->0, CreateGCClusters %d->0\\n",
+                wasP, wasC);
+        } else {
+            printf("[HalcyonA2] gc cvar backing-int RVAs are stale/non-writable on 47031 -> skipped (console cmds above still apply)\\n");
+        }''')
+if _GC_OLD in new:
+    new = new.replace(_GC_OLD, _GC_NEW, 1)
 
 out = os.path.join(SRV, "dllmain_47031.cpp")
 open(out, "w", encoding="utf-8", newline="\n").write(new)
