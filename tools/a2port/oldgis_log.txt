@@ -1,0 +1,4 @@
+OLD imagebase 0x7ff672060000
+GIsClient refs 18 named callees in first: ['UKismetSystemLibrary::IsUnattended', '__security_check_cookie']
+GIsServer refs 11 named callees in first: ['?_Unwrapped@?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@QEAXU_Mutex_count_pair@?A0xd833279a@@@std@@@std@@@std@@@std@@QEBA?AV?$_Tree_unchecked_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@QEAXU_Mutex_count_pair@?A0xd833279a@@@std@@@std@@@std@@@2@XZ', '?StaticClass@UClass@@SAPEAVUClass@@XZ', 'UKismetMaterialLibrary::CreateDynamicMaterialInstance_Implementation', '__security_check_cookie', '_Init_thread_footer']
+DONE

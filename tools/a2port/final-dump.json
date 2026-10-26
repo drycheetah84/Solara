@@ -1,0 +1,209 @@
+{
+ "globals": {
+  "IsServer": {
+   "exec": "0x22ad0b0",
+   "body_calls": [
+    [
+     "0x14db9c0",
+     212,
+     "sub_1414DB9C0"
+    ],
+    [
+     "0x14db9c0",
+     212,
+     "sub_1414DB9C0"
+    ],
+    [
+     "0x41f5a60",
+     410,
+     "sub_1441F5A60"
+    ]
+   ],
+   "bodies": {
+    "0x14db9c0": {
+     "size": 212,
+     "name": "sub_1414DB9C0",
+     "byte_globals": [
+      [
+       "0xa7c33e8",
+       1,
+       "byte_14A7C33E8"
+      ]
+     ],
+     "decomp": "__int64 __fastcall sub_1414DB9C0(__int64 a1, unsigned __int8 a2)\n{\n  __int64 v4; // rax\n  _WORD *v6; // [rsp+20h] [rbp-2038h] BYREF\n  _WORD *v7; // [rsp+28h] [rbp-2030h]\n  __int64 *v8; // [rsp+30h] [rbp-2028h]\n  char v9; // [rsp+38h] [rbp-2020h]\n  _WORD v10[4096]; // [rsp+40h] [rbp-2018h] BYREF\n  __int64 v11; // [rsp+2040h] [rbp-18h] BYREF\n\n  v9 = 0;\n  v6 = v10;\n  v7 = v10;\n  v8 = &v11;\n  if ( a2 == 1 )\n  {\n    v10[0] = 0;\n    sub_1411E1AB0(&byte_14A7C33E8, &off_148036558, a1, v10);\n  }\n  else if ( (unsigned __int8)(a2 & 0xF) <= (unsigned __int8)byte_14A7C33E8 )\n  {\n    v4 = sub_14124D4E0();\n    *v7 = 0;\n    sub_141250CE0(v4, a2, a1, v6);\n  }\n  return sub_141267DB0(&v6);\n}\n"
+    },
+    "0x41f5a60": {
+     "size": 410,
+     "name": "sub_1441F5A60",
+     "byte_globals": [],
+     "decomp": "__int64 __fastcall sub_1441F5A60(__int64 a1)\n{\n  __int64 v2; // rcx\n  __int64 v4; // rax\n  __int64 v5; // rdi\n  int v6; // ecx\n  __int64 v7; // rcx\n  int v8; // eax\n  _BYTE v9[24]; // [rsp+20h] [rbp-78h] BYREF\n  int v10; // [rsp+38h] [rbp-60h]\n  int v11; // [rsp+44h] [rbp-54h]\n\n  v2 = *(_QWORD *)(a1 + 56);\n  if ( v2 != 0 )\n    return sub_143D2B4A0(v2);\n  if ( *(_QWORD *)(a1 + 240) != 0\n    && ((unsigned __int8)sub_143A4E420() != 0\n     || (unsigned __int8)sub_143A4E460(*(_QWORD *)(a1 + 240)) != 0 && *(_BYTE *)(*(_QWORD *)(a1 + 240) + 776LL) != 0) )\n  {\n    v2 = *(_QWORD *)(a1 + 240);\n    return sub_143D2B4A0(v2);\n  }\n  if ( qword_14A9DC5D8 == nullptr )\n    return 0;\n  v4 = sub_1441694C0(qword_14A9DC5D8, a1);\n  v5 = v4;\n  if ( v4 == 0 )\n    return 0;\n  v6 = *(_DWORD *)(a1 + 1856);\n  if ( v6 == 0 || v6 - 1 <= 0 )\n  {\n    v7 = *(_QWORD *)(v4 + 400);\n    if ( v7 != 0 && *(_DWORD *)(v7 + 100) != 0 )\n    {\n      if ( (unsigned __int8)sub_1441BEA20(v7 + 64, L\"listen\") != 0 )\n        return 2;\n      v8 = *(_DWORD *)(*(_QWORD *)(v5 + 400) + 88LL);\n      if ( v8 != 0 && v8 - 1 > 0 )\n        return 3;\n    }\n    return 0;\n  }\n  sub_14419E610(v9, v4 + 192, *(_QWORD *)(a1 + 1848), *(unsigned __i"
+    }
+   },
+   "exec_byte_globals": []
+  },
+  "IsClient": {
+   "exec": "0x22aca50",
+   "body_calls": [
+    [
+     "0x14db9c0",
+     212,
+     "sub_1414DB9C0"
+    ],
+    [
+     "0x14db9c0",
+     212,
+     "sub_1414DB9C0"
+    ],
+    [
+     "0x41f5a60",
+     410,
+     "sub_1441F5A60"
+    ]
+   ],
+   "bodies": {
+    "0x14db9c0": {
+     "size": 212,
+     "name": "sub_1414DB9C0",
+     "byte_globals": [
+      [
+       "0xa7c33e8",
+       1,
+       "byte_14A7C33E8"
+      ]
+     ],
+     "decomp": "__int64 __fastcall sub_1414DB9C0(__int64 a1, unsigned __int8 a2)\n{\n  __int64 v4; // rax\n  _WORD *v6; // [rsp+20h] [rbp-2038h] BYREF\n  _WORD *v7; // [rsp+28h] [rbp-2030h]\n  __int64 *v8; // [rsp+30h] [rbp-2028h]\n  char v9; // [rsp+38h] [rbp-2020h]\n  _WORD v10[4096]; // [rsp+40h] [rbp-2018h] BYREF\n  __int64 v11; // [rsp+2040h] [rbp-18h] BYREF\n\n  v9 = 0;\n  v6 = v10;\n  v7 = v10;\n  v8 = &v11;\n  if ( a2 == 1 )\n  {\n    v10[0] = 0;\n    sub_1411E1AB0(&byte_14A7C33E8, &off_148036558, a1, v10);\n  }\n  else if ( (unsigned __int8)(a2 & 0xF) <= (unsigned __int8)byte_14A7C33E8 )\n  {\n    v4 = sub_14124D4E0();\n    *v7 = 0;\n    sub_141250CE0(v4, a2, a1, v6);\n  }\n  return sub_141267DB0(&v6);\n}\n"
+    },
+    "0x41f5a60": {
+     "size": 410,
+     "name": "sub_1441F5A60",
+     "byte_globals": [],
+     "decomp": "__int64 __fastcall sub_1441F5A60(__int64 a1)\n{\n  __int64 v2; // rcx\n  __int64 v4; // rax\n  __int64 v5; // rdi\n  int v6; // ecx\n  __int64 v7; // rcx\n  int v8; // eax\n  _BYTE v9[24]; // [rsp+20h] [rbp-78h] BYREF\n  int v10; // [rsp+38h] [rbp-60h]\n  int v11; // [rsp+44h] [rbp-54h]\n\n  v2 = *(_QWORD *)(a1 + 56);\n  if ( v2 != 0 )\n    return sub_143D2B4A0(v2);\n  if ( *(_QWORD *)(a1 + 240) != 0\n    && ((unsigned __int8)sub_143A4E420() != 0\n     || (unsigned __int8)sub_143A4E460(*(_QWORD *)(a1 + 240)) != 0 && *(_BYTE *)(*(_QWORD *)(a1 + 240) + 776LL) != 0) )\n  {\n    v2 = *(_QWORD *)(a1 + 240);\n    return sub_143D2B4A0(v2);\n  }\n  if ( qword_14A9DC5D8 == nullptr )\n    return 0;\n  v4 = sub_1441694C0(qword_14A9DC5D8, a1);\n  v5 = v4;\n  if ( v4 == 0 )\n    return 0;\n  v6 = *(_DWORD *)(a1 + 1856);\n  if ( v6 == 0 || v6 - 1 <= 0 )\n  {\n    v7 = *(_QWORD *)(v4 + 400);\n    if ( v7 != 0 && *(_DWORD *)(v7 + 100) != 0 )\n    {\n      if ( (unsigned __int8)sub_1441BEA20(v7 + 64, L\"listen\") != 0 )\n        return 2;\n      v8 = *(_DWORD *)(*(_QWORD *)(v5 + 400) + 88LL);\n      if ( v8 != 0 && v8 - 1 > 0 )\n        return 3;\n    }\n    return 0;\n  }\n  sub_14419E610(v9, v4 + 192, *(_QWORD *)(a1 + 1848), *(unsigned __i"
+    }
+   },
+   "exec_byte_globals": []
+  },
+  "KSL_IsServer": {
+   "exec": "0x3c097d0",
+   "body_calls": [
+    [
+     "0x4169580",
+     259,
+     "sub_144169580"
+    ],
+    [
+     "0x41f5a60",
+     410,
+     "sub_1441F5A60"
+    ]
+   ],
+   "bodies": {
+    "0x4169580": {
+     "size": 259,
+     "name": "sub_144169580",
+     "byte_globals": [],
+     "decomp": "__int64 __fastcall sub_144169580(__int64 a1, __int64 a2, int a3)\n{\n  __int64 v6; // rax\n  __int64 v7; // rdi\n  const wchar_t *v8; // rbx\n  const wchar_t *v9; // r8\n  const wchar_t *v10; // [rsp+20h] [rbp-28h] BYREF\n  int v11; // [rsp+28h] [rbp-20h]\n  const wchar_t *v12; // [rsp+30h] [rbp-18h] BYREF\n  int v13; // [rsp+38h] [rbp-10h]\n  __int64 v14; // [rsp+58h] [rbp+10h] BYREF\n\n  if ( a2 != 0 )\n  {\n    LOBYTE(v14) = 1;\n    if ( a3 == 2 )\n      v6 = sub_1414672A0(a2, &v14);\n    else\n      v6 = (*(__int64 (__fastcall **)(__int64))(*(_QWORD *)a2 + 408LL))(a2);\n    v7 = v6;\n    if ( (_BYTE)v14 == 0 )\n      return g_GWorld;\n    if ( v6 == 0 && a3 == 1 )\n    {\n      sub_1414FEF00(a2, &v12, 0);\n      v8 = &chText;\n      v9 = &chText;\n      if ( v13 != (_DWORD)v7 )\n        v9 = v12;\n      sub_1411246D0(&v10, L\"No world was found for object (%s) passed in to UEngine::GetWorldFromContextObject().\", v9);\n      if ( v11 != (_DWORD)v7 )\n        v8 = v10;\n      sub_1414DB9C0((__int64)v8, 3u);\n      if ( v10 != nullptr )\n        sub_141177030();\n      if ( v12 != nullptr )\n        sub_141177030();\n    }\n    if ( (_BYTE)v14 == 0 )\n      return g_GWorld;\n    return v7;\n  }\n  else\n  {\n    if ( a3 == 1"
+    },
+    "0x41f5a60": {
+     "size": 410,
+     "name": "sub_1441F5A60",
+     "byte_globals": [],
+     "decomp": "__int64 __fastcall sub_1441F5A60(__int64 a1)\n{\n  __int64 v2; // rcx\n  __int64 v4; // rax\n  __int64 v5; // rdi\n  int v6; // ecx\n  __int64 v7; // rcx\n  int v8; // eax\n  _BYTE v9[24]; // [rsp+20h] [rbp-78h] BYREF\n  int v10; // [rsp+38h] [rbp-60h]\n  int v11; // [rsp+44h] [rbp-54h]\n\n  v2 = *(_QWORD *)(a1 + 56);\n  if ( v2 != 0 )\n    return sub_143D2B4A0(v2);\n  if ( *(_QWORD *)(a1 + 240) != 0\n    && ((unsigned __int8)sub_143A4E420() != 0\n     || (unsigned __int8)sub_143A4E460(*(_QWORD *)(a1 + 240)) != 0 && *(_BYTE *)(*(_QWORD *)(a1 + 240) + 776LL) != 0) )\n  {\n    v2 = *(_QWORD *)(a1 + 240);\n    return sub_143D2B4A0(v2);\n  }\n  if ( qword_14A9DC5D8 == nullptr )\n    return 0;\n  v4 = sub_1441694C0(qword_14A9DC5D8, a1);\n  v5 = v4;\n  if ( v4 == 0 )\n    return 0;\n  v6 = *(_DWORD *)(a1 + 1856);\n  if ( v6 == 0 || v6 - 1 <= 0 )\n  {\n    v7 = *(_QWORD *)(v4 + 400);\n    if ( v7 != 0 && *(_DWORD *)(v7 + 100) != 0 )\n    {\n      if ( (unsigned __int8)sub_1441BEA20(v7 + 64, L\"listen\") != 0 )\n        return 2;\n      v8 = *(_DWORD *)(*(_QWORD *)(v5 + 400) + 88LL);\n      if ( v8 != 0 && v8 - 1 > 0 )\n        return 3;\n    }\n    return 0;\n  }\n  sub_14419E610(v9, v4 + 192, *(_QWORD *)(a1 + 1848), *(unsigned __i"
+    }
+   },
+   "exec_byte_globals": []
+  },
+  "IsDedicatedServer": {
+   "exec": "0x22acd10",
+   "body_calls": [
+    [
+     "0x14db9c0",
+     212,
+     "sub_1414DB9C0"
+    ],
+    [
+     "0x14db9c0",
+     212,
+     "sub_1414DB9C0"
+    ]
+   ],
+   "bodies": {
+    "0x14db9c0": {
+     "size": 212,
+     "name": "sub_1414DB9C0",
+     "byte_globals": [
+      [
+       "0xa7c33e8",
+       1,
+       "byte_14A7C33E8"
+      ]
+     ],
+     "decomp": "__int64 __fastcall sub_1414DB9C0(__int64 a1, unsigned __int8 a2)\n{\n  __int64 v4; // rax\n  _WORD *v6; // [rsp+20h] [rbp-2038h] BYREF\n  _WORD *v7; // [rsp+28h] [rbp-2030h]\n  __int64 *v8; // [rsp+30h] [rbp-2028h]\n  char v9; // [rsp+38h] [rbp-2020h]\n  _WORD v10[4096]; // [rsp+40h] [rbp-2018h] BYREF\n  __int64 v11; // [rsp+2040h] [rbp-18h] BYREF\n\n  v9 = 0;\n  v6 = v10;\n  v7 = v10;\n  v8 = &v11;\n  if ( a2 == 1 )\n  {\n    v10[0] = 0;\n    sub_1411E1AB0(&byte_14A7C33E8, &off_148036558, a1, v10);\n  }\n  else if ( (unsigned __int8)(a2 & 0xF) <= (unsigned __int8)byte_14A7C33E8 )\n  {\n    v4 = sub_14124D4E0();\n    *v7 = 0;\n    sub_141250CE0(v4, a2, a1, v6);\n  }\n  return sub_141267DB0(&v6);\n}\n"
+    }
+   },
+   "exec_byte_globals": []
+  },
+  "GetNetMode": {
+   "exec": "0x22ac640",
+   "body_calls": [
+    [
+     "0x14db9c0",
+     212,
+     "sub_1414DB9C0"
+    ],
+    [
+     "0x14db9c0",
+     212,
+     "sub_1414DB9C0"
+    ],
+    [
+     "0x41f5a60",
+     410,
+     "sub_1441F5A60"
+    ]
+   ],
+   "bodies": {
+    "0x14db9c0": {
+     "size": 212,
+     "name": "sub_1414DB9C0",
+     "byte_globals": [
+      [
+       "0xa7c33e8",
+       1,
+       "byte_14A7C33E8"
+      ]
+     ],
+     "decomp": "__int64 __fastcall sub_1414DB9C0(__int64 a1, unsigned __int8 a2)\n{\n  __int64 v4; // rax\n  _WORD *v6; // [rsp+20h] [rbp-2038h] BYREF\n  _WORD *v7; // [rsp+28h] [rbp-2030h]\n  __int64 *v8; // [rsp+30h] [rbp-2028h]\n  char v9; // [rsp+38h] [rbp-2020h]\n  _WORD v10[4096]; // [rsp+40h] [rbp-2018h] BYREF\n  __int64 v11; // [rsp+2040h] [rbp-18h] BYREF\n\n  v9 = 0;\n  v6 = v10;\n  v7 = v10;\n  v8 = &v11;\n  if ( a2 == 1 )\n  {\n    v10[0] = 0;\n    sub_1411E1AB0(&byte_14A7C33E8, &off_148036558, a1, v10);\n  }\n  else if ( (unsigned __int8)(a2 & 0xF) <= (unsigned __int8)byte_14A7C33E8 )\n  {\n    v4 = sub_14124D4E0();\n    *v7 = 0;\n    sub_141250CE0(v4, a2, a1, v6);\n  }\n  return sub_141267DB0(&v6);\n}\n"
+    },
+    "0x41f5a60": {
+     "size": 410,
+     "name": "sub_1441F5A60",
+     "byte_globals": [],
+     "decomp": "__int64 __fastcall sub_1441F5A60(__int64 a1)\n{\n  __int64 v2; // rcx\n  __int64 v4; // rax\n  __int64 v5; // rdi\n  int v6; // ecx\n  __int64 v7; // rcx\n  int v8; // eax\n  _BYTE v9[24]; // [rsp+20h] [rbp-78h] BYREF\n  int v10; // [rsp+38h] [rbp-60h]\n  int v11; // [rsp+44h] [rbp-54h]\n\n  v2 = *(_QWORD *)(a1 + 56);\n  if ( v2 != 0 )\n    return sub_143D2B4A0(v2);\n  if ( *(_QWORD *)(a1 + 240) != 0\n    && ((unsigned __int8)sub_143A4E420() != 0\n     || (unsigned __int8)sub_143A4E460(*(_QWORD *)(a1 + 240)) != 0 && *(_BYTE *)(*(_QWORD *)(a1 + 240) + 776LL) != 0) )\n  {\n    v2 = *(_QWORD *)(a1 + 240);\n    return sub_143D2B4A0(v2);\n  }\n  if ( qword_14A9DC5D8 == nullptr )\n    return 0;\n  v4 = sub_1441694C0(qword_14A9DC5D8, a1);\n  v5 = v4;\n  if ( v4 == 0 )\n    return 0;\n  v6 = *(_DWORD *)(a1 + 1856);\n  if ( v6 == 0 || v6 - 1 <= 0 )\n  {\n    v7 = *(_QWORD *)(v4 + 400);\n    if ( v7 != 0 && *(_DWORD *)(v7 + 100) != 0 )\n    {\n      if ( (unsigned __int8)sub_1441BEA20(v7 + 64, L\"listen\") != 0 )\n        return 2;\n      v8 = *(_DWORD *)(*(_QWORD *)(v5 + 400) + 88LL);\n      if ( v8 != 0 && v8 - 1 > 0 )\n        return 3;\n    }\n    return 0;\n  }\n  sub_14419E610(v9, v4 + 192, *(_QWORD *)(a1 + 1848), *(unsigned __i"
+    }
+   },
+   "exec_byte_globals": []
+  }
+ },
+ "JwtBuild": {
+  "hits": {
+   "{ \"iss\": \"": [
+    "0x53db090"
+   ],
+   "\"exp\": ": [
+    "0x53db090"
+   ],
+   "\"vxa\": \"": [
+    "0x53db090"
+   ],
+   "\"vxi\": ": [
+    "0x53db090"
+   ]
+  }
+ },
+ "JoinBuild": {
+  "utcnow": "0x3c37550",
+  "targeting": "0x5be4b10",
+  "utc_callers": [],
+  "intersection": []
+ }
+}

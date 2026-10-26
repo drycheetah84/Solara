@@ -1,0 +1,4 @@
+candidate PreInit funcs: [('0x42d4280', ['FEngineLoop::PreInitPostStartupScreen', 'GetMoviePlayer()->SetupLoadingScreenFromIni', 'PreInitPostStartupScreen_StartupGraphics'])]
+func 0x42d4280 byte_writes 5 const1 []
+GIsServer candidates []
+DONE

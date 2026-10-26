@@ -1,0 +1,49 @@
+{
+ "preinit": {
+  "0x42d4280": {
+   "markers": [
+    "FEngineLoop::PreInitPostStartupScreen",
+    "GetMoviePlayer()->SetupLoadingScreenFromIni",
+    "PreInitPostStartupScreen_StartupGraphics"
+   ],
+   "size": 8910,
+   "name": "sub_1442D4280",
+   "byte_writes": [
+    {
+     "global": "0xa9e3a00",
+     "name": "byte_14A9E3A00",
+     "at": "0x42d4335",
+     "disasm": "mov     cs:byte_14A9E3A00, al"
+    },
+    {
+     "global": "0xa6d3882",
+     "name": "byte_14A6D3882",
+     "at": "0x42d5701",
+     "disasm": "mov     cs:byte_14A6D3882, al"
+    },
+    {
+     "global": "0xa6d3883",
+     "name": "byte_14A6D3883",
+     "at": "0x42d570d",
+     "disasm": "mov     cs:byte_14A6D3883, al"
+    },
+    {
+     "global": "0xfefffffec028a358",
+     "name": "",
+     "at": "0x42d5a67",
+     "disasm": "mov     qword ptr [rbp+570h+PerformanceCount], rax"
+    },
+    {
+     "global": "0xa474b18",
+     "name": "byte_14A474B18",
+     "at": "0x42d63ec",
+     "disasm": "mov     cs:byte_14A474B18, al"
+    }
+   ],
+   "const1_writes": []
+  }
+ },
+ "pairs": [],
+ "gisserver_candidates": [],
+ "gisclient_candidates": []
+}

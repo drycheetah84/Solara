@@ -1,0 +1,598 @@
+{
+ "GIsClient": {
+  "global_rva": "0x96d8672",
+  "refs": [
+   {
+    "func_rva": "0x1000310",
+    "func_name": "sub_7FF673060310",
+    "size": 286,
+    "ref_rva": "0x1000329",
+    "ref_disasm": "cmp     cs:byte_7FF67B738672, 0",
+    "callees_named": [
+     "UKismetSystemLibrary::IsUnattended",
+     "__security_check_cookie"
+    ],
+    "callers_named": [],
+    "strings": [
+     "2",
+     "%",
+     " ",
+     "Y"
+    ]
+   },
+   {
+    "func_rva": "0x120a060",
+    "func_name": "sub_7FF67326A060",
+    "size": 2255,
+    "ref_rva": "0x120a8c7",
+    "ref_disasm": "cmp     cs:byte_7FF67B738672, 0",
+    "callees_named": [
+     "?_Unwrapped@?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@QEAXU_Mutex_count_pair@?A0xd833279a@@@std@@@std@@@std@@@std@@QEBA?AV?$_Tree_unchecked_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@QEAXU_Mutex_count_pair@?A0xd833279a@@@std@@@std@@@std@@@2@XZ",
+     "?StaticClass@UClass@@SAPEAVUClass@@XZ",
+     "UKismetMaterialLibrary::CreateDynamicMaterialInstance_Implementation",
+     "__security_check_cookie",
+     "_Init_thread_footer",
+     "_Init_thread_header"
+    ],
+    "callers_named": [],
+    "strings": [
+     "2"
+    ]
+   },
+   {
+    "func_rva": "0x12591b0",
+    "func_name": "sub_7FF6732B91B0",
+    "size": 693,
+    "ref_rva": "0x12592fb",
+    "ref_disasm": "cmp     cs:byte_7FF67B738672, 0",
+    "callees_named": [
+     "__security_check_cookie"
+    ],
+    "callers_named": [],
+    "strings": [
+     "2"
+    ]
+   },
+   {
+    "func_rva": "0x12a9830",
+    "func_name": "sub_7FF673309830",
+    "size": 275,
+    "ref_rva": "0x12a9903",
+    "ref_disasm": "cmp     cs:byte_7FF67B738672, dil",
+    "callees_named": [],
+    "callers_named": [],
+    "strings": []
+   },
+   {
+    "func_rva": "0x287df00",
+    "func_name": "sub_7FF6748DDF00",
+    "size": 645,
+    "ref_rva": "0x287df12",
+    "ref_disasm": "cmp     cs:byte_7FF67B738672, 0",
+    "callees_named": [
+     "_Init_thread_header",
+     "_Init_thread_footer"
+    ],
+    "callers_named": [],
+    "strings": [
+     "n"
+    ]
+   },
+   {
+    "func_rva": "0x2e2a930",
+    "func_name": "sub_7FF674E8A930",
+    "size": 4569,
+    "ref_rva": "0x2e2ae56",
+    "ref_disasm": "cmp     cs:byte_7FF67B738672, 0",
+    "callees_named": [
+     "?StaticClass@USlateRHIRendererSettings@@SAPEAVUClass@@XZ",
+     "USlateFXSubsystem::GetSlatePostProcessor_Implementation",
+     "memcpy",
+     "__security_check_cookie",
+     "_Init_thread_footer",
+     "_Init_thread_header"
+    ],
+    "callers_named": [],
+    "strings": [
+     "2",
+     "S",
+     "F",
+     "L",
+     "D",
+     "r"
+    ]
+   },
+   {
+    "func_rva": "0x39233f0",
+    "func_name": "sub_7FF6759833F0",
+    "size": 1551,
+    "ref_rva": "0x392370b",
+    "ref_disasm": "cmp     cs:byte_7FF67B738672, r12b",
+    "callees_named": [
+     "UGameUserSettings::GetGameUserSettings",
+     "?StaticClass@UGameMapsSettings@@SAPEAVUClass@@XZ",
+     "?StaticClass@UClass@@SAPEAVUClass@@XZ",
+     "?StaticClass@UGameInstance@@SAPEAVUClass@@XZ",
+     "?StaticClass@UGameViewportClient@@SAPEAVUClass@@XZ",
+     "__security_check_cookie"
+    ],
+    "callers_named": [],
+    "strings": [
+     "2",
+     "@SH",
+     "N"
+    ]
+   },
+   {
+    "func_rva": "0x3939f80",
+    "func_name": "sub_7FF675999F80",
+    "size": 3436,
+    "ref_rva": "0x393a285",
+    "ref_disasm": "cmp     cs:byte_7FF67B738672, r13b",
+    "callees_named": [
+     "?StartProfileThreadUsage@MemoryMgr@AK@@YAXXZ",
+     "UKismetInputLibrary::CalibrateTilt_Implementation",
+     "UGameplayStatics::IsGamePaused_Implementation",
+     "__security_check_cookie",
+     "_Init_thread_header",
+     "??0FName@@QEAA@PEB_WW4EFindName@@@Z",
+     "_Init_thread_footer"
+    ],
+    "callers_named": [],
+    "strings": [
+     "2",
+     "U",
+     "o",
+     "c",
+     "CAUSEEVENT ",
+     "@SH",
+     "S",
+     "T",
+     "M",
+     "n"
+    ]
+   },
+   {
+    "func_rva": "0x3b86fa0",
+    "func_name": "sub_7FF675BE6FA0",
+    "size": 45,
+    "ref_rva": "0x3b86fb3",
+    "ref_disasm": "cmp     cs:byte_7FF67B738672, al",
+    "callees_named": [],
+    "callers_named": [
+     "AActor::ForceNetUpdate_Implementation"
+    ],
+    "strings": []
+   },
+   {
+    "func_rva": "0x3b9b3c0",
+    "func_name": "sub_7FF675BFB3C0",
+    "size": 782,
+    "ref_rva": "0x3b9b5a6",
+    "ref_disasm": "cmp     cs:byte_7FF67B738672, dl",
+    "callees_named": [],
+    "callers_named": [],
+    "strings": [
+     "N",
+     "I",
+     "G",
+     "R"
+    ]
+   },
+   {
+    "func_rva": "0x3b9db80",
+    "func_name": "sub_7FF675BFDB80",
+    "size": 1163,
+    "ref_rva": "0x3b9dbe7",
+    "ref_disasm": "cmp     cs:byte_7FF67B738672, 0",
+    "callees_named": [
+     "_Init_thread_header",
+     "_Init_thread_footer"
+    ],
+    "callers_named": [],
+    "strings": [
+     "l"
+    ]
+   },
+   {
+    "func_rva": "0x3ba2290",
+    "func_name": "sub_7FF675C02290",
+    "size": 2802,
+    "ref_rva": "0x3ba2bf9",
+    "ref_disasm": "cmp     cs:byte_7FF67B738672, 0",
+    "callees_named": [
+     "?StaticClass@UPackageMapClient@@SAPEAVUClass@@XZ",
+     "?StaticClass@UActorChannel@@SAPEAVUClass@@XZ",
+     "UKismetAnimationLibrary::K2_StartProfilingTimer_Implementation",
+     "UAnimInstance::DynamicMontage_IsPlayingFrom_Implementation",
+     "UAudioComponent::GetModulators_Implementation",
+     "memcpy",
+     "UKismetMaterialLibrary::CreateDynamicMaterialInstance_Implementation",
+     "__security_check_cookie"
+    ],
+    "callers_named": [],
+    "strings": [
+     "2",
+     "%",
+     "\n",
+     "H",
+     "N"
+    ]
+   },
+   {
+    "func_rva": "0x3fb1de0",
+    "func_name": "sub_7FF676011DE0",
+    "size": 3384,
+    "ref_rva": "0x3fb25e5",
+    "ref_disasm": "cmp     cs:byte_7FF67B738672, r13b",
+    "callees_named": [
+     "wcsstr",
+     "UCreateMeshObjectTypeProperties::GetOutputTypeNamesFunc_Implementation",
+     "__security_check_cookie"
+    ],
+    "callers_named": [],
+    "strings": [
+     "2",
+     "UEngine::Browse",
+     "A",
+     ".",
+     "S",
+     "L",
+     "I",
+     "E",
+     "f",
+     "c"
+    ]
+   },
+   {
+    "func_rva": "0x3fc5e80",
+    "func_name": "sub_7FF676025E80",
+    "size": 8355,
+    "ref_rva": "0x3fc606f",
+    "ref_disasm": "cmp     cs:byte_7FF67B738672, r13b",
+    "callees_named": [
+     "UTargetingSubsystem::StartAsyncTargetingRequest_Implementation",
+     "UKismetAnimationLibrary::K2_StartProfilingTimer_Implementation",
+     "?StaticClass@UEngine@@SAPEAVUClass@@XZ",
+     "?StaticClass@UClass@@SAPEAVUClass@@XZ",
+     "?StaticClass@UGeneralProjectSettings@@SAPEAVUClass@@XZ",
+     "UKismetSystemLibrary::IsLoggedIn_Implementation",
+     "?StartProfileThreadUsage@MemoryMgr@AK@@YAXXZ",
+     "??0FName@@QEAA@PEB_WW4EFindName@@@Z"
+    ],
+    "callers_named": [],
+    "strings": [
+     "L",
+     "A",
+     "V",
+     "P",
+     "v",
+     "b",
+     "/",
+     "H",
+     "E",
+     "D"
+    ]
+   },
+   {
+    "func_rva": "0x3fcde00",
+    "func_name": "sub_7FF67602DE00",
+    "size": 7477,
+    "ref_rva": "0x3fcf3c6",
+    "ref_disasm": "cmp     cs:byte_7FF67B738672, r13b",
+    "callees_named": [
+     "memcpy",
+     "?StartProfileThreadUsage@MemoryMgr@AK@@YAXXZ",
+     "UGameplayStatics::FlushLevelStreaming_Implementation",
+     "?StaticClass@AActor@@SAPEAVUClass@@XZ",
+     "?Reserve@WriteBytesCount@AK@@UEAA_NH@Z",
+     "?StaticClass@AWorldSettings@@SAPEAVUClass@@XZ",
+     "?UnregisterResourceMonitorCallback@SoundEngine@AK@@YA?AW4AKRESULT@@P6AXPEBUAkResourceMonitorDataSummary@@@Z@Z",
+     "??0FName@@QEAA@PEB_WW4EFindName@@@Z",
+     "URigVMHost::RemoveRunOnceEvent_Implementation",
+     "UGameplayStatics::GetGlobalTimeDilation_Implementation",
+     "__security_check_cookie"
+    ],
+    "callers_named": [],
+    "strings": [
+     "2",
+     "L",
+     "q",
+     "G",
+     "F",
+     "M",
+     ",",
+     "D",
+     "UEngine::LoadMap"
+    ]
+   },
+   {
+    "func_rva": "0x40fd1e0",
+    "func_name": "sub_7FF67615D1E0",
+    "size": 347,
+    "ref_rva": "0x40fd214",
+    "ref_disasm": "mov     cs:byte_7FF67B738672, 1",
+    "callees_named": [],
+    "callers_named": [],
+    "strings": [
+     " ",
+     "A"
+    ]
+   },
+   {
+    "func_rva": "0x41052b0",
+    "func_name": "sub_7FF6761652B0",
+    "size": 9209,
+    "ref_rva": "0x41067fc",
+    "ref_disasm": "mov     cs:byte_7FF67B738672, al",
+    "callees_named": [
+     "memcpy",
+     "UTargetingSubsystem::StartAsyncTargetingRequest_Implementation",
+     "UKismetAnimationLibrary::K2_StartProfilingTimer_Implementation",
+     "?StartProfileThreadUsage@MemoryMgr@AK@@YAXXZ",
+     "UKismetSystemLibrary::IsLoggedIn_Implementation",
+     "?StaticClass@UClass@@SAPEAVUClass@@XZ",
+     "??0FName@@QEAA@PEB_WW4EFindName@@@Z",
+     "UKismetInputLibrary::CalibrateTilt_Implementation",
+     "?StaticClass@UEngine@@SAPEAVUClass@@XZ",
+     "UGameplayStatics::CreateSaveGameObject_Implementation",
+     "UCreateMeshObjectTypeProperties::GetOutputTypeNamesFunc_Implementation",
+     "__security_check_cookie"
+    ],
+    "callers_named": [],
+    "strings": [
+     "2",
+     "FEngineLoop::PreInitPostStartupScreen",
+     "PreInitPostStartupScreen_StartupGraphics",
+     "GetMoviePlayer()->SetupLoadingScreenFromIni",
+     "LoadModulesForProject(ELoadingPhase::PreEarlyLoadingScreen)",
+     "H",
+     "EarlyStartupMovie",
+     "P",
+     "PlayFirstPreLoadScreen",
+     "PlayFirstPreLoadScreen - FPreLoadScreenManager::Get()->Initialize"
+    ]
+   },
+   {
+    "func_rva": "0x41076b0",
+    "func_name": "sub_7FF6761676B0",
+    "size": 11918,
+    "ref_rva": "0x41094fe",
+    "ref_disasm": "movzx   ebx, cs:byte_7FF67B738672",
+    "callees_named": [
+     "UKismetInputLibrary::CalibrateTilt_Implementation",
+     "?StartProfileThreadUsage@MemoryMgr@AK@@YAXXZ",
+     "UBlueprintPathsLibrary::IsProjectFilePathSet",
+     "UCreateMeshObjectTypeProperties::GetCurrentCreateMeshType_Implementation",
+     "UKismetAnimationLibrary::K2_StartProfilingTimer_Implementation",
+     "?_DeleteExceptionPtr@@YAXQEAV__ExceptionPtr@@@Z",
+     "memmove",
+     "?get@__crt_deferred_errno_cache@@QEAAAEAHXZ",
+     "??0FName@@QEAA@PEB_WW4EFindName@@@Z",
+     "?StopProfilerCapture@SoundEngine@AK@@YA?AW4AKRESULT@@XZ",
+     "UAnimInstance::DynamicMontage_IsPlayingFrom_Implementation",
+     "__security_check_cookie"
+    ],
+    "callers_named": [],
+    "strings": [
+     "2",
+     "FEngineLoop::PreInitPreStartupScreen",
+     "s",
+     "v",
+     "U",
+     "LaunchSetGameName",
+     "LLM Init",
+     "InitTaggedStorage",
+     "H",
+     "CreateConsoleOutputDevice"
+    ]
+   }
+  ]
+ },
+ "GIsServer": {
+  "global_rva": "0x96d8673",
+  "refs": [
+   {
+    "func_rva": "0x120a060",
+    "func_name": "sub_7FF67326A060",
+    "size": 2255,
+    "ref_rva": "0x120a8d0",
+    "ref_disasm": "cmp     cs:byte_7FF67B738673, 0",
+    "callees_named": [
+     "?_Unwrapped@?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@QEAXU_Mutex_count_pair@?A0xd833279a@@@std@@@std@@@std@@@std@@QEBA?AV?$_Tree_unchecked_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@QEAXU_Mutex_count_pair@?A0xd833279a@@@std@@@std@@@std@@@2@XZ",
+     "?StaticClass@UClass@@SAPEAVUClass@@XZ",
+     "UKismetMaterialLibrary::CreateDynamicMaterialInstance_Implementation",
+     "__security_check_cookie",
+     "_Init_thread_footer",
+     "_Init_thread_header"
+    ],
+    "callers_named": [],
+    "strings": [
+     "2"
+    ]
+   },
+   {
+    "func_rva": "0x12591b0",
+    "func_name": "sub_7FF6732B91B0",
+    "size": 693,
+    "ref_rva": "0x1259308",
+    "ref_disasm": "cmp     cs:byte_7FF67B738673, 0",
+    "callees_named": [
+     "__security_check_cookie"
+    ],
+    "callers_named": [],
+    "strings": [
+     "2"
+    ]
+   },
+   {
+    "func_rva": "0x12a9830",
+    "func_name": "sub_7FF673309830",
+    "size": 275,
+    "ref_rva": "0x12a990c",
+    "ref_disasm": "cmp     cs:byte_7FF67B738673, dil",
+    "callees_named": [],
+    "callers_named": [],
+    "strings": []
+   },
+   {
+    "func_rva": "0x3939f80",
+    "func_name": "sub_7FF675999F80",
+    "size": 3436,
+    "ref_rva": "0x393a698",
+    "ref_disasm": "cmp     cs:byte_7FF67B738673, bl",
+    "callees_named": [
+     "?StartProfileThreadUsage@MemoryMgr@AK@@YAXXZ",
+     "UKismetInputLibrary::CalibrateTilt_Implementation",
+     "UGameplayStatics::IsGamePaused_Implementation",
+     "__security_check_cookie",
+     "_Init_thread_header",
+     "??0FName@@QEAA@PEB_WW4EFindName@@@Z",
+     "_Init_thread_footer"
+    ],
+    "callers_named": [],
+    "strings": [
+     "2",
+     "U",
+     "o",
+     "c",
+     "CAUSEEVENT ",
+     "@SH",
+     "S",
+     "T",
+     "M",
+     "n"
+    ]
+   },
+   {
+    "func_rva": "0x40fd1e0",
+    "func_name": "sub_7FF67615D1E0",
+    "size": 347,
+    "ref_rva": "0x40fd21d",
+    "ref_disasm": "mov     cs:byte_7FF67B738673, 1",
+    "callees_named": [],
+    "callers_named": [],
+    "strings": [
+     " ",
+     "A"
+    ]
+   },
+   {
+    "func_rva": "0x41052b0",
+    "func_name": "sub_7FF6761652B0",
+    "size": 9209,
+    "ref_rva": "0x4106808",
+    "ref_disasm": "mov     cs:byte_7FF67B738673, al",
+    "callees_named": [
+     "memcpy",
+     "UTargetingSubsystem::StartAsyncTargetingRequest_Implementation",
+     "UKismetAnimationLibrary::K2_StartProfilingTimer_Implementation",
+     "?StartProfileThreadUsage@MemoryMgr@AK@@YAXXZ",
+     "UKismetSystemLibrary::IsLoggedIn_Implementation",
+     "?StaticClass@UClass@@SAPEAVUClass@@XZ",
+     "??0FName@@QEAA@PEB_WW4EFindName@@@Z",
+     "UKismetInputLibrary::CalibrateTilt_Implementation",
+     "?StaticClass@UEngine@@SAPEAVUClass@@XZ",
+     "UGameplayStatics::CreateSaveGameObject_Implementation",
+     "UCreateMeshObjectTypeProperties::GetOutputTypeNamesFunc_Implementation",
+     "__security_check_cookie"
+    ],
+    "callers_named": [],
+    "strings": [
+     "2",
+     "FEngineLoop::PreInitPostStartupScreen",
+     "PreInitPostStartupScreen_StartupGraphics",
+     "GetMoviePlayer()->SetupLoadingScreenFromIni",
+     "LoadModulesForProject(ELoadingPhase::PreEarlyLoadingScreen)",
+     "H",
+     "EarlyStartupMovie",
+     "P",
+     "PlayFirstPreLoadScreen",
+     "PlayFirstPreLoadScreen - FPreLoadScreenManager::Get()->Initialize"
+    ]
+   },
+   {
+    "func_rva": "0x41076b0",
+    "func_name": "sub_7FF6761676B0",
+    "size": 11918,
+    "ref_rva": "0x4109505",
+    "ref_disasm": "movzx   edi, cs:byte_7FF67B738673",
+    "callees_named": [
+     "UKismetInputLibrary::CalibrateTilt_Implementation",
+     "?StartProfileThreadUsage@MemoryMgr@AK@@YAXXZ",
+     "UBlueprintPathsLibrary::IsProjectFilePathSet",
+     "UCreateMeshObjectTypeProperties::GetCurrentCreateMeshType_Implementation",
+     "UKismetAnimationLibrary::K2_StartProfilingTimer_Implementation",
+     "?_DeleteExceptionPtr@@YAXQEAV__ExceptionPtr@@@Z",
+     "memmove",
+     "?get@__crt_deferred_errno_cache@@QEAAAEAHXZ",
+     "??0FName@@QEAA@PEB_WW4EFindName@@@Z",
+     "?StopProfilerCapture@SoundEngine@AK@@YA?AW4AKRESULT@@XZ",
+     "UAnimInstance::DynamicMontage_IsPlayingFrom_Implementation",
+     "__security_check_cookie"
+    ],
+    "callers_named": [],
+    "strings": [
+     "2",
+     "FEngineLoop::PreInitPreStartupScreen",
+     "s",
+     "v",
+     "U",
+     "LaunchSetGameName",
+     "LLM Init",
+     "InitTaggedStorage",
+     "H",
+     "CreateConsoleOutputDevice"
+    ]
+   },
+   {
+    "func_rva": "0x47c20c0",
+    "func_name": "sub_7FF6768220C0",
+    "size": 338,
+    "ref_rva": "0x47c20dc",
+    "ref_disasm": "cmp     cs:byte_7FF67B738673, 0",
+    "callees_named": [
+     "UTargetingSubsystem::StartAsyncTargetingRequest_Implementation"
+    ],
+    "callers_named": [],
+    "strings": [
+     "@SH"
+    ]
+   },
+   {
+    "func_rva": "0x4e6dcc0",
+    "func_name": "AARSharedWorldPlayerController::ClientInitSharedWorld_Implementation",
+    "size": 351,
+    "ref_rva": "0x4e6dd1b",
+    "ref_disasm": "cmp     cs:byte_7FF67B738673, r14b",
+    "callees_named": [],
+    "callers_named": [],
+    "strings": []
+   },
+   {
+    "func_rva": "0x4e6de40",
+    "func_name": "AARSharedWorldPlayerController::ClientUpdateARWorldData_Implementation",
+    "size": 244,
+    "ref_rva": "0x4e6de99",
+    "ref_disasm": "cmp     cs:byte_7FF67B738673, 0",
+    "callees_named": [
+     "memcpy"
+    ],
+    "callers_named": [],
+    "strings": []
+   },
+   {
+    "func_rva": "0x4e6df60",
+    "func_name": "AARSharedWorldPlayerController::ClientUpdatePreviewImageData_Implementation",
+    "size": 244,
+    "ref_rva": "0x4e6dfb9",
+    "ref_disasm": "cmp     cs:byte_7FF67B738673, 0",
+    "callees_named": [
+     "memcpy"
+    ],
+    "callers_named": [],
+    "strings": []
+   }
+  ]
+ }
+}

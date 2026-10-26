@@ -1,0 +1,8 @@
+IsServer body_calls [('0x14db9c0', 212, 'sub_1414DB9C0'), ('0x14db9c0', 212, 'sub_1414DB9C0'), ('0x41f5a60', 410, 'sub_1441F5A60')]
+IsClient body_calls [('0x14db9c0', 212, 'sub_1414DB9C0'), ('0x14db9c0', 212, 'sub_1414DB9C0'), ('0x41f5a60', 410, 'sub_1441F5A60')]
+KSL_IsServer body_calls [('0x4169580', 259, 'sub_144169580'), ('0x41f5a60', 410, 'sub_1441F5A60')]
+IsDedicatedServer body_calls [('0x14db9c0', 212, 'sub_1414DB9C0'), ('0x14db9c0', 212, 'sub_1414DB9C0')]
+GetNetMode body_calls [('0x14db9c0', 212, 'sub_1414DB9C0'), ('0x14db9c0', 212, 'sub_1414DB9C0'), ('0x41f5a60', 410, 'sub_1441F5A60')]
+jwt {'{ "iss": "': ['0x53db090'], '"exp": ': ['0x53db090'], '"vxa": "': ['0x53db090'], '"vxi": ': ['0x53db090']}
+joinbuild inter []
+DONE

@@ -1,0 +1,123 @@
+{
+ "resolved": {
+  "UpdGameState_RVA": {
+   "val": "0x55A06C0",
+   "conf": "high",
+   "why": "UGameStateManagerComponent::UpdateGameState impl (tail; sz174~179; 3-method xcheck)"
+  },
+  "StartTimerCd_RVA": {
+   "val": "0x559ABD0",
+   "conf": "high",
+   "why": "UGameTimeComponent::StartTimerWithCountdown impl (tail; sz700~682)"
+  },
+  "IsRunningSimulate_RVA": {
+   "val": "0x54A1930",
+   "conf": "high",
+   "why": "UGameplayUtilityStatics::IsRunningSimulate (inlined exec; sz132==132)"
+  },
+  "GetLocalInst_RVA": {
+   "val": "0x5810B30",
+   "conf": "high",
+   "why": "AVRPawn::GetLocalInstanceWithWorld impl (single non-helper; sz272~255)"
+  },
+  "GetBoolCfg_RVA": {
+   "val": "0x4A12EC0",
+   "conf": "high",
+   "why": "UModuleStateLuaAPI::GetBoolConfigVariable impl (single non-helper; sz96)"
+  },
+  "GetNumCfg_RVA": {
+   "val": "0x4A169D0",
+   "conf": "high",
+   "why": "UModuleStateLuaAPI::GetNumberConfigVariable impl (single non-helper; sz106)"
+  },
+  "GetStrCfg_RVA": {
+   "val": "0x4A17C10",
+   "conf": "high",
+   "why": "UModuleStateLuaAPI::GetStringConfigVariable impl (single non-helper; sz112)"
+  },
+  "GetPlayerPawn_RVA": {
+   "val": "0x3EC7C90",
+   "conf": "high",
+   "why": "UGameplayStatics::GetPlayerPawn impl (tail==sizebest; sz20==20)"
+  },
+  "GolfBallInCup_RVA": {
+   "val": "0x55B3900",
+   "conf": "high",
+   "why": "UGolfCupComponent::BallInCup impl (single non-helper; sz24~21)"
+  },
+  "GolfOverlap_RVA": {
+   "val": "0x54A9890",
+   "conf": "high",
+   "why": "UGolfCupComponent::OnGoalBeginOverlap (name-matched handler)"
+  },
+  "JwtBuild_RVA": {
+   "val": "0x53DB090",
+   "conf": "high",
+   "why": "unique Vivox-JWT template strings xref (iss/vxa/vxi/exp)"
+  },
+  "Spawner_Disc_Off": {
+   "val": "0x580",
+   "conf": "high",
+   "why": "UBallSpawnerComponent::Disc @0x580 (SDK; == 22284)"
+  },
+  "GolfBall_LastHitLocation_Off": {
+   "val": "0x860",
+   "conf": "med",
+   "why": "BP_GolfBallDisplay::LastHitLocation @0x860 (SDK; class-link vs BP_JakeBall unconfirmed)"
+  },
+  "GIsClient_RVA": {
+   "val": "0xA6D3882",
+   "conf": "high",
+   "why": "FEngineLoop::PreInitPostStartupScreen adjacent-pair write (client=server-1)"
+  },
+  "GIsServer_RVA": {
+   "val": "0xA6D3883",
+   "conf": "high",
+   "why": "FEngineLoop::PreInitPostStartupScreen adjacent-pair write (unique 3-string match)"
+  }
+ },
+ "sdk_auto": {
+  "GObjects": "0xA7C3A00",
+  "GNames": "0xA6DFBC0",
+  "GWorld": "0xA9E0968",
+  "AppendString": "0x12AD4E0",
+  "ProcessEvent": "0x14DC400"
+ },
+ "unresolved": {
+  "StationStr_Data_RVA": "0x95DF980",
+  "StationStr_Num_RVA": "0x95DF988",
+  "StationStr_Max_RVA": "0x95DF98C",
+  "CosmeticCmp_RVA": "0x53DA880",
+  "FNamePoolTbl_RVA": "0x9710B80",
+  "GtcTick_RVA": "0x53C8AF0",
+  "GtcVft_RVA": "0x84E6D20",
+  "ReqLogin_RVA": "0x543C7B0",
+  "JoinBuild_RVA": "0x5432A40",
+  "SendJoin_RVA": "0x52EE2E0",
+  "ReplayPostStep_RVA": "0x5487560",
+  "ReplayVtable_RVA": "0x84A2B38",
+  "ReplaySnapshot_RVA": "0x5482110",
+  "Reconcile_RVA": "0x545BD80",
+  "SendPhysImpl_RVA": "0x5503050",
+  "SimIntegrate_RVA": "0x547F7A0",
+  "IngestInput_RVA": "0x54599B0",
+  "SendResults_RVA": "0x534A7F0",
+  "StepSim_RVA": "0x54863C0",
+  "BallAdvance_RVA": "0x5464630",
+  "BallReconcile_RVA": "0x548FC40",
+  "NotifyLeftArena_RVA": "0x5502B00",
+  "FNameResolve_RVA": "0x114D690",
+  "TextLayoutLeaf_RVA": "0x1EC07A0",
+  "EvtDispatch_RVA": "0x466A240",
+  "GiveCheck_RVA": "0x4723AA0",
+  "FetchRoles_RVA": "0x54B04E0",
+  "RolesFetched_RVA": "0x5510C40",
+  "A2GetNetMode_RVA": "0x54AF360",
+  "WorldGetNetMode_RVA": "0x4040990",
+  "BallSimGetWorld_RVA": "0x3509AB0",
+  "BallNetPersp_RVA": "0x60A0990",
+  "PrintString_RVA": "0x3A29B20",
+  "Panel_IsActive_Off": "0x2C0",
+  "Panel_Mesh_Off": "0x2E0"
+ }
+}
