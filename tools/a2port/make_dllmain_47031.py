@@ -132,6 +132,29 @@ _EARLY_ADD = _EARLY_ANCHOR + (
 if _EARLY_ANCHOR in new and '0xA480348) ' not in new.split(_EARLY_ANCHOR)[0][-400:]:
     new = new.replace(_EARLY_ANCHOR, _EARLY_ADD, 1)
 
+# [BRINGUP] gate the auto-open (it currently crashes 47031 map-load serialization).
+_OPEN_OLD = ('''    SDK::UKismetSystemLibrary::ExecuteConsoleCommand(
+        world,
+        SDK::FString(L"open /Game/A2/Maps/Station_Prime/Station_Prime_P.umap"),
+        nullptr);
+    printf("[HalcyonA2] issued: open Station_Prime_P\\n");''')
+_OPEN_NEW = ('''    bool doOpen = false;
+    {
+        wchar_t sp[MAX_PATH]{}; GetTempPathW(MAX_PATH, sp); wcscat_s(sp, L"halcyon_open");
+        doOpen = (GetFileAttributesW(sp) != INVALID_FILE_ATTRIBUTES);
+    }
+    if (!doOpen) {
+        printf("[HalcyonA2] BRINGUP: SKIPPING auto-open of Station_Prime_P (create %%TEMP%%\\\\halcyon_open to enable)\\n");
+    } else {
+        SDK::UKismetSystemLibrary::ExecuteConsoleCommand(
+            world,
+            SDK::FString(L"open /Game/A2/Maps/Station_Prime/Station_Prime_P.umap"),
+            nullptr);
+        printf("[HalcyonA2] issued: open Station_Prime_P\\n");
+    }''')
+if _OPEN_OLD in new:
+    new = new.replace(_OPEN_OLD, _OPEN_NEW, 1)
+
 out = os.path.join(SRV, "dllmain_47031.cpp")
 open(out, "w", encoding="utf-8", newline="\n").write(new)
 print("wrote", out)
