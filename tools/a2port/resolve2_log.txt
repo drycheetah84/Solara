@@ -1,0 +1,20 @@
+imagebase 0x140000000
+UpdGameState_RVA -> 0x55a06c0 single-nonhelper sz 174 (old 179 )
+StartTimerCd_RVA -> 0x559abd0 single-nonhelper sz 700 (old 682 )
+IsRunningSimulate_RVA -> 0x54a1930 inlined-in-exec sz 132 (old 132 )
+GetBoolCfg_RVA -> 0x4a12ec0 single-nonhelper sz 96 (old None )
+GetNumCfg_RVA -> 0x4a169d0 single-nonhelper sz 106 (old None )
+GetStrCfg_RVA -> 0x4a17c10 single-nonhelper sz 112 (old None )
+GolfOverlap_RVA -> 0x54a9890 inlined-in-exec sz 603 (old 88 )
+GetPlayerPawn_RVA -> 0x3ec7c90 single-nonhelper sz 20 (old None )
+GetLocalInst_RVA -> 0x54f2b70 inlined-in-exec sz 133 (old 255 )
+A2GetNetMode_RVA -> 0x22ac640 inlined-in-exec sz 308 (old 188 )
+NotifyLeftArena_RVA -> 0x54f82b0 inlined-in-exec sz 157 (old 56 )
+ReqLogin_RVA -> 0x53dabb0 inlined-in-exec sz 192 (old 61 )
+GolfBallInCup_RVA -> 0x55b3900 single-nonhelper sz 24 (old 21 )
+netmode IsServer impl 0x22ad0b0
+netmode IsClient impl 0x22aca50
+netmode GetNetMode impl 0x22ac640
+netmode KSL_IsServer impl 0x3c097d0
+netmode IsDedicatedServer impl 0x22acd10
+DONE

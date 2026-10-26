@@ -1,0 +1,674 @@
+{
+ "GIsClient_RVA": {
+  "is_func": false,
+  "old_rva": "0x96D8672",
+  "old_func": null,
+  "old_size": null,
+  "strings": [],
+  "callees": [],
+  "callers_rva": [],
+  "xrefs_to": [
+   [
+    "sub_7FF673060310",
+    "0x1000329"
+   ],
+   [
+    "sub_7FF67326A060",
+    "0x120a8c7"
+   ],
+   [
+    "sub_7FF67326A060",
+    "0x120a90f"
+   ],
+   [
+    "sub_7FF6732B91B0",
+    "0x12592fb"
+   ],
+   [
+    "sub_7FF673309830",
+    "0x12a9903"
+   ],
+   [
+    "sub_7FF673309830",
+    "0x12a991c"
+   ],
+   [
+    "sub_7FF6748DDF00",
+    "0x287df12"
+   ],
+   [
+    "sub_7FF674E8A930",
+    "0x2e2ae56"
+   ],
+   [
+    "sub_7FF674E8A930",
+    "0x2e2b311"
+   ],
+   [
+    "sub_7FF6759833F0",
+    "0x392370b"
+   ]
+  ]
+ },
+ "GIsServer_RVA": {
+  "is_func": false,
+  "old_rva": "0x96D8673",
+  "old_func": null,
+  "old_size": null,
+  "strings": [],
+  "callees": [],
+  "callers_rva": [],
+  "xrefs_to": [
+   [
+    "sub_7FF67326A060",
+    "0x120a8d0"
+   ],
+   [
+    "sub_7FF67326A060",
+    "0x120a918"
+   ],
+   [
+    "sub_7FF6732B91B0",
+    "0x1259308"
+   ],
+   [
+    "sub_7FF673309830",
+    "0x12a990c"
+   ],
+   [
+    "sub_7FF673309830",
+    "0x12a9925"
+   ],
+   [
+    "sub_7FF675999F80",
+    "0x393a698"
+   ],
+   [
+    "sub_7FF67615D1E0",
+    "0x40fd21d"
+   ],
+   [
+    "sub_7FF6761652B0",
+    "0x4106808"
+   ],
+   [
+    "sub_7FF6761676B0",
+    "0x4109505"
+   ],
+   [
+    "sub_7FF6761676B0",
+    "0x4109522"
+   ]
+  ]
+ },
+ "StationStr_Data_RVA": {
+  "is_func": false,
+  "old_rva": "0x95DF980",
+  "old_func": null,
+  "old_size": null,
+  "strings": [],
+  "callees": [],
+  "callers_rva": [],
+  "xrefs_to": [
+   [
+    "sub_7FF67750FF10",
+    "0x54b005d"
+   ],
+   [
+    "sub_7FF6775104E0",
+    "0x54b050b"
+   ],
+   [
+    "sub_7FF6775104E0",
+    "0x54b064d"
+   ]
+  ]
+ },
+ "StationStr_Num_RVA": {
+  "is_func": false,
+  "old_rva": "0x95DF988",
+  "old_func": null,
+  "old_size": null,
+  "strings": [],
+  "callees": [],
+  "callers_rva": [],
+  "xrefs_to": [
+   [
+    "sub_7FF67750FF10",
+    "0x54b0040"
+   ],
+   [
+    "sub_7FF6775104E0",
+    "0x54b04f7"
+   ]
+  ]
+ },
+ "StationStr_Max_RVA": {
+  "is_func": false,
+  "old_rva": "0x95DF98C",
+  "old_func": null,
+  "old_size": null,
+  "strings": [],
+  "callees": [],
+  "callers_rva": [],
+  "xrefs_to": []
+ },
+ "FNamePoolTbl_RVA": {
+  "is_func": false,
+  "old_rva": "0x9710B80",
+  "old_func": null,
+  "old_size": null,
+  "strings": [],
+  "callees": [],
+  "callers_rva": [],
+  "xrefs_to": [
+   [
+    "sub_7FF6731970C0",
+    "0x11370fe"
+   ],
+   [
+    "sub_7FF6731970C0",
+    "0x1137107"
+   ],
+   [
+    "sub_7FF673199AA0",
+    "0x1139b33"
+   ],
+   [
+    "sub_7FF673199AA0",
+    "0x1139b3c"
+   ],
+   [
+    "sub_7FF673199B90",
+    "0x1139c4f"
+   ],
+   [
+    "sub_7FF673199B90",
+    "0x1139c58"
+   ],
+   [
+    "sub_7FF67319A090",
+    "0x113a13d"
+   ],
+   [
+    "sub_7FF67319A090",
+    "0x113a146"
+   ],
+   [
+    "sub_7FF67319F160",
+    "0x113f180"
+   ],
+   [
+    "sub_7FF67319F160",
+    "0x113f189"
+   ]
+  ]
+ },
+ "GtcVft_RVA": {
+  "is_func": false,
+  "old_rva": "0x84E6D20",
+  "old_func": null,
+  "old_size": null,
+  "strings": [],
+  "callees": [],
+  "callers_rva": [],
+  "xrefs_to": [
+   [
+    "sub_7FF677381BC0",
+    "0x5321bcf"
+   ],
+   [
+    "sub_7FF6773EB6D0",
+    "0x538b72e"
+   ]
+  ]
+ },
+ "ReplayVtable_RVA": {
+  "is_func": false,
+  "old_rva": "0x84A2B38",
+  "old_func": null,
+  "old_size": null,
+  "strings": [],
+  "callees": [],
+  "callers_rva": [],
+  "xrefs_to": [
+   [
+    "sub_7FF677353BA0",
+    "0x52f3bd0"
+   ],
+   [
+    "sub_7FF677355300",
+    "0x52f5314"
+   ]
+  ]
+ },
+ "SimIntegrate_RVA": {
+  "is_func": true,
+  "old_rva": "0x547F7A0",
+  "old_func": "sub_7FF6774DF7A0",
+  "old_size": 8636,
+  "strings": [],
+  "callees": [
+   "UStateTreeNodeBlueprintBase::RequestTransition_Implementation",
+   "UAnimInstance::DynamicMontage_IsPlayingFrom_Implementation",
+   "?StaticClass@UA2BallEntity@@SAPEAVUClass@@XZ"
+  ],
+  "callers_rva": [
+   "0x5464630",
+   "0x547f4d0",
+   "0x5489c20"
+  ],
+  "xrefs_to": []
+ },
+ "StepSim_RVA": {
+  "is_func": true,
+  "old_rva": "0x54863C0",
+  "old_func": "sub_7FF6774E63C0",
+  "old_size": 4501,
+  "strings": [],
+  "callees": [
+   "UAnimInstance::DynamicMontage_IsPlayingFrom_Implementation",
+   "?StaticClass@UPrimitiveComponent@@SAPEAVUClass@@XZ"
+  ],
+  "callers_rva": [],
+  "xrefs_to": []
+ },
+ "Reconcile_RVA": {
+  "is_func": true,
+  "old_rva": "0x545BD80",
+  "old_func": "sub_7FF6774BBD80",
+  "old_size": 3874,
+  "strings": [],
+  "callees": [
+   "UAnimInstance::MontageSync_Follow_Implementation",
+   "UAnimInstance::DynamicMontage_IsPlayingFrom_Implementation",
+   "?StaticClass@UPrimitiveComponent@@SAPEAVUClass@@XZ",
+   "?StaticClass@ADiscEntity@@SAPEAVUClass@@XZ",
+   "?StaticClass@AVRPawn@@SAPEAVUClass@@XZ"
+  ],
+  "callers_rva": [],
+  "xrefs_to": []
+ },
+ "BallAdvance_RVA": {
+  "is_func": true,
+  "old_rva": "0x5464630",
+  "old_func": "sub_7FF6774C4630",
+  "old_size": 436,
+  "strings": [],
+  "callees": [],
+  "callers_rva": [
+   "0x54863c0"
+  ],
+  "xrefs_to": []
+ },
+ "BallReconcile_RVA": {
+  "is_func": true,
+  "old_rva": "0x548FC40",
+  "old_func": "sub_7FF6774EFC40",
+  "old_size": 1602,
+  "strings": [],
+  "callees": [
+   "UStateTreeNodeBlueprintBase::RequestTransition_Implementation",
+   "memmove"
+  ],
+  "callers_rva": [
+   "0x54863c0",
+   "0x5489c20"
+  ],
+  "xrefs_to": []
+ },
+ "IngestInput_RVA": {
+  "is_func": true,
+  "old_rva": "0x54599B0",
+  "old_func": "sub_7FF6774B99B0",
+  "old_size": 1248,
+  "strings": [],
+  "callees": [
+   "memmove"
+  ],
+  "callers_rva": [
+   "0x547f7a0",
+   "0x54e35b0",
+   "0x54e8da0",
+   "0x55033d0"
+  ],
+  "xrefs_to": []
+ },
+ "SendResults_RVA": {
+  "is_func": true,
+  "old_rva": "0x534A7F0",
+  "old_func": "sub_7FF6773AA7F0",
+  "old_size": 437,
+  "strings": [],
+  "callees": [
+   "memcpy"
+  ],
+  "callers_rva": [
+   "0x54863c0"
+  ],
+  "xrefs_to": []
+ },
+ "ReplaySnapshot_RVA": {
+  "is_func": true,
+  "old_rva": "0x5482110",
+  "old_func": "sub_7FF6774E2110",
+  "old_size": 1299,
+  "strings": [],
+  "callees": [],
+  "callers_rva": [
+   "0x5487560"
+  ],
+  "xrefs_to": []
+ },
+ "ReplayPostStep_RVA": {
+  "is_func": true,
+  "old_rva": "0x5487560",
+  "old_func": "sub_7FF6774E7560",
+  "old_size": 677,
+  "strings": [],
+  "callees": [
+   "UA2SessionSubsystem::GetNetworkCompatibleChangelistPure"
+  ],
+  "callers_rva": [
+   "0x53f8eb0"
+  ],
+  "xrefs_to": []
+ },
+ "CosmeticCmp_RVA": {
+  "is_func": true,
+  "old_rva": "0x53DA880",
+  "old_func": "sub_7FF67743A880",
+  "old_size": 156,
+  "strings": [],
+  "callees": [
+   "UCreateMeshObjectTypeProperties::GetCurrentCreateMeshType_Implementation"
+  ],
+  "callers_rva": [
+   "0x53f2ee0"
+  ],
+  "xrefs_to": []
+ },
+ "FNameResolve_RVA": {
+  "is_func": true,
+  "old_rva": "0x114D690",
+  "old_func": "sub_7FF6731AD690",
+  "old_size": 388,
+  "strings": [],
+  "callees": [],
+  "callers_rva": [
+   "0xfb5c50",
+   "0xfe76b0",
+   "0xfe7920",
+   "0xfe7af0",
+   "0xfe7cd0",
+   "0xfe98e0",
+   "0x103d940",
+   "0x10438d0",
+   "0x104ab20",
+   "0x10501a0"
+  ],
+  "xrefs_to": []
+ },
+ "EvtDispatch_RVA": {
+  "is_func": true,
+  "old_rva": "0x466A240",
+  "old_func": "sub_7FF6766CA240",
+  "old_size": 354,
+  "strings": [],
+  "callees": [],
+  "callers_rva": [
+   "0x465d5d0",
+   "0x466a220",
+   "0x4679070",
+   "0x467a5e0",
+   "0x467a6b0"
+  ],
+  "xrefs_to": []
+ },
+ "TextLayoutLeaf_RVA": {
+  "is_func": true,
+  "old_rva": "0x1EC07A0",
+  "old_func": "sub_7FF673F207A0",
+  "old_size": 485,
+  "strings": [],
+  "callees": [
+   "__security_check_cookie",
+   "memcpy"
+  ],
+  "callers_rva": [],
+  "xrefs_to": []
+ },
+ "RolesFetched_RVA": {
+  "is_func": true,
+  "old_rva": "0x5510C40",
+  "old_func": "sub_7FF677570C40",
+  "old_size": 291,
+  "strings": [],
+  "callees": [
+   "UCreateMeshObjectTypeProperties::GetCurrentCreateMeshType_Implementation"
+  ],
+  "callers_rva": [],
+  "xrefs_to": []
+ },
+ "FetchRoles_RVA": {
+  "is_func": true,
+  "old_rva": "0x54B04E0",
+  "old_func": "sub_7FF6775104E0",
+  "old_size": 764,
+  "strings": [
+   "/roles",
+   "/users/",
+   "/stations/"
+  ],
+  "callees": [
+   "UTargetingSubsystem::StartAsyncTargetingRequest_Implementation"
+  ],
+  "callers_rva": [
+   "0x55119a0"
+  ],
+  "xrefs_to": []
+ },
+ "JoinBuild_RVA": {
+  "is_func": true,
+  "old_rva": "0x5432A40",
+  "old_func": "sub_7FF677492A40",
+  "old_size": 1990,
+  "strings": [],
+  "callees": [
+   "UTargetingSubsystem::StartAsyncTargetingRequest_Implementation",
+   "UKismetMathLibrary::UtcNow",
+   "__security_check_cookie"
+  ],
+  "callers_rva": [
+   "0x543c570"
+  ],
+  "xrefs_to": []
+ },
+ "SendJoin_RVA": {
+  "is_func": true,
+  "old_rva": "0x52EE2E0",
+  "old_func": "sub_7FF67734E2E0",
+  "old_size": 703,
+  "strings": [],
+  "callees": [
+   "memcpy"
+  ],
+  "callers_rva": [
+   "0x543c570"
+  ],
+  "xrefs_to": []
+ },
+ "JwtBuild_RVA": {
+  "is_func": true,
+  "old_rva": "0x544D9B0",
+  "old_func": "sub_7FF6774AD9B0",
+  "old_size": 2223,
+  "strings": [
+   "{ \"iss\": \"",
+   "\"exp\": ",
+   "\"vxa\": \"",
+   "\"vxi\": "
+  ],
+  "callees": [
+   "unknown_libname_34",
+   "__security_check_cookie",
+   "memcpy"
+  ],
+  "callers_rva": [
+   "0x5432a40",
+   "0x5433210"
+  ],
+  "xrefs_to": []
+ },
+ "ReqLogin_RVA": {
+  "is_func": true,
+  "old_rva": "0x543C7B0",
+  "old_func": "UA2OnlineCommunicationsComponent::RequestVivoxLoginToken_Implementation",
+  "old_size": 61,
+  "strings": [],
+  "callees": [],
+  "callers_rva": [],
+  "xrefs_to": []
+ },
+ "NotifyLeftArena_RVA": {
+  "is_func": true,
+  "old_rva": "0x5502B00",
+  "old_func": "AVRPawn::Server_NotifyPlayerLeftArena_Implementation",
+  "old_size": 56,
+  "strings": [],
+  "callees": [],
+  "callers_rva": [],
+  "xrefs_to": []
+ },
+ "GolfBallInCup_RVA": {
+  "is_func": true,
+  "old_rva": "0x53DC320",
+  "old_func": "AGolfCup::BallInCup_Implementation",
+  "old_size": 21,
+  "strings": [],
+  "callees": [],
+  "callers_rva": [
+   "0x5322680"
+  ],
+  "xrefs_to": []
+ },
+ "BallSimGetWorld_RVA": {
+  "is_func": true,
+  "old_rva": "0x3509AB0",
+  "old_func": "sub_7FF675569AB0",
+  "old_size": 136,
+  "strings": [],
+  "callees": [
+   "?StaticClass@ULevel@@SAPEAVUClass@@XZ"
+  ],
+  "callers_rva": [
+   "0x2d9a250",
+   "0x2daa940",
+   "0x2daba20",
+   "0x2daba90",
+   "0x2dabc90",
+   "0x2dabd60",
+   "0x2dabe30",
+   "0x2dadfe0",
+   "0x2dae2b0",
+   "0x2daea50"
+  ],
+  "xrefs_to": []
+ },
+ "WorldGetNetMode_RVA": {
+  "is_func": true,
+  "old_rva": "0x4040990",
+  "old_func": "sub_7FF6760A0990",
+  "old_size": 410,
+  "strings": [],
+  "callees": [
+   "UReplaySubsystem::IsPlaying",
+   "UReplaySubsystem::IsRecording"
+  ],
+  "callers_rva": [
+   "0x2e8ab40",
+   "0x2f207a0",
+   "0x319fa70",
+   "0x31b53b0",
+   "0x33f5740",
+   "0x350b680",
+   "0x35c6a50",
+   "0x35c71e0",
+   "0x35c7410",
+   "0x365dd00"
+  ],
+  "xrefs_to": []
+ },
+ "A2GetNetMode_RVA": {
+  "is_func": true,
+  "old_rva": "0x54AF360",
+  "old_func": "UA2NetworkUtilityBPFL::GetNetMode_Implementation",
+  "old_size": 188,
+  "strings": [],
+  "callees": [],
+  "callers_rva": [
+   "0x5330680"
+  ],
+  "xrefs_to": []
+ },
+ "PrintString_RVA": {
+  "is_func": true,
+  "old_rva": "0x3A29B20",
+  "old_func": "sub_7FF675A89B20",
+  "old_size": 1010,
+  "strings": [],
+  "callees": [
+   "?StartProfileThreadUsage@MemoryMgr@AK@@YAXXZ",
+   "UKismetMathLibrary::Conv_LinearColorToColor_Implementation",
+   "UGameplayStatics::GetPlayerController_Implementation",
+   "?StaticClass@ULocalPlayer@@SAPEAVUClass@@XZ",
+   "_Init_thread_footer",
+   "_Init_thread_header",
+   "memcpy"
+  ],
+  "callers_rva": [
+   "0x3a7e100",
+   "0x3a7e350",
+   "0x3a7e5e0"
+  ],
+  "xrefs_to": []
+ },
+ "GetPlayerPawn_RVA": {
+  "is_func": true,
+  "old_rva": "0x3D24C40",
+  "old_func": "UGameplayStatics::GetPlayerPawn_Implementation",
+  "old_size": 20,
+  "strings": [],
+  "callees": [],
+  "callers_rva": [
+   "0x386b420",
+   "0x3880690",
+   "0x38822c0",
+   "0x3947ae0",
+   "0x4d27ab0",
+   "0x53f8eb0"
+  ],
+  "xrefs_to": []
+ },
+ "GetLocalInst_RVA": {
+  "is_func": true,
+  "old_rva": "0x54EAC60",
+  "old_func": "AVRPawn::GetLocalInstanceWithWorld_Implementation",
+  "old_size": 255,
+  "strings": [],
+  "callees": [],
+  "callers_rva": [
+   "0x5350400",
+   "0x5361570",
+   "0x536f0c0",
+   "0x536f170",
+   "0x537a160",
+   "0x53e8f00",
+   "0x53f1e90",
+   "0x53f8a10",
+   "0x53f8af0",
+   "0x53f8bd0"
+  ],
+  "xrefs_to": []
+ }
+}

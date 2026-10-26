@@ -1,0 +1,67 @@
+{
+ "UpdGameState_RVA": {
+  "impl": "0x55a06c0",
+  "via": "tail(2 nh) sz=174; sizebest=0x55a06c0",
+  "conf": "med"
+ },
+ "StartTimerCd_RVA": {
+  "impl": "0x559abd0",
+  "via": "tail(2 nh) sz=700; sizebest=0x559abd0",
+  "conf": "med"
+ },
+ "IsRunningSimulate_RVA": {
+  "impl": "0x54a1930",
+  "via": "inlined-or-VIRTUAL",
+  "conf": "high"
+ },
+ "GetBoolCfg_RVA": {
+  "impl": "0x4a12ec0",
+  "via": "single-nonhelper sz=96",
+  "conf": "high"
+ },
+ "GetNumCfg_RVA": {
+  "impl": "0x4a169d0",
+  "via": "single-nonhelper sz=106",
+  "conf": "high"
+ },
+ "GetStrCfg_RVA": {
+  "impl": "0x4a17c10",
+  "via": "single-nonhelper sz=112",
+  "conf": "high"
+ },
+ "GolfOverlap_RVA": {
+  "impl": "0x54a9890",
+  "via": "inlined-or-VIRTUAL",
+  "conf": "high"
+ },
+ "GetPlayerPawn_RVA": {
+  "impl": "0x3ec7c90",
+  "via": "tail(2 nh) sz=20; sizebest=0x3ec7c90",
+  "conf": "med"
+ },
+ "GetLocalInst_RVA": {
+  "impl": "0x5810b30",
+  "via": "single-nonhelper sz=272",
+  "conf": "high"
+ },
+ "A2GetNetMode_RVA": {
+  "impl": "0x41f5a60",
+  "via": "tail(3 nh) sz=410; sizebest=0x14db9c0",
+  "conf": "med"
+ },
+ "NotifyLeftArena_RVA": {
+  "impl": "0x54f82b0",
+  "via": "inlined-or-VIRTUAL",
+  "conf": "high"
+ },
+ "ReqLogin_RVA": {
+  "impl": "0x53dabb0",
+  "via": "inlined-or-VIRTUAL",
+  "conf": "high"
+ },
+ "GolfBallInCup_RVA": {
+  "impl": "0x55b3900",
+  "via": "single-nonhelper sz=24",
+  "conf": "high"
+ }
+}
