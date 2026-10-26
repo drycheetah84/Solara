@@ -147,10 +147,12 @@ func main() {
 	flag.Parse()
 
 	logPath := filepath.Join(os.TempDir(), "HalcyonA2.log")
-	var startOff int64
-	if fi, err := os.Stat(logPath); err == nil {
-		startOff = fi.Size() // only show lines written after we inject
+	// Clear the log before injecting: the DLL opens it append-mode, so it otherwise
+	// accumulates every past run and old crashes drown the current one.
+	if err := os.Remove(logPath); err == nil {
+		fmt.Println("[a2inject] cleared old", logPath)
 	}
+	var startOff int64 // fresh file → tail from 0
 
 	target := uint32(*pid)
 	if target == 0 {
