@@ -101,8 +101,8 @@ _GC_OLD = ('''        const int wasP = *reinterpret_cast<int*>(b + 0x94C76B8);
         *reinterpret_cast<int*>(b + 0x94C8444) = 0;   // gc.CreateGCClusters = 0
         printf("[HalcyonA2] gc cvar backing vars set DIRECTLY: AllowParallelGC %d->0, CreateGCClusters %d->0\\n",
             wasP, wasC);''')
-_GC_NEW = ('''        void* pa = reinterpret_cast<void*>(b + 0x94C76B8);   // TODO-47031: stale 22284 cvar RVAs
-        void* pc = reinterpret_cast<void*>(b + 0x94C8444);
+_GC_NEW = ('''        void* pa = reinterpret_cast<void*>(b + 0xA480348);   // [47031] gc.AllowParallelGC backing int (was 22284 0x94C76B8)
+        void* pc = reinterpret_cast<void*>(b + 0xA4810D4);   // [47031] gc.CreateGCClusters backing int (was 22284 0x94C8444)
         if (HxPageWritable(pa) && HxPageWritable(pc)) {
             const int wasP = *reinterpret_cast<int*>(pa);
             const int wasC = *reinterpret_cast<int*>(pc);
@@ -115,6 +115,22 @@ _GC_NEW = ('''        void* pa = reinterpret_cast<void*>(b + 0x94C76B8);   // TO
         }''')
 if _GC_OLD in new:
     new = new.replace(_GC_OLD, _GC_NEW, 1)
+
+# Disable parallel GC + clustering at the very start of Main (resolved 47031
+# cvar backing ints) — the cluster ref-pass crashes during early load and the
+# console-command path does not apply in time.
+_EARLY_ANCHOR = '    PatchEntitlementExit(GetBase(), "load");\n    PatchBallSpawnerNullEntity(GetBase());\n'
+_EARLY_ADD = _EARLY_ANCHOR + (
+    '\n    // [47031 BRINGUP] kill parallel GC + clustering ASAP (cvar backing ints, resolved 47031 RVAs).\n'
+    '    {\n'
+    '        const uintptr_t b0 = GetBase();\n'
+    '        void* pa = reinterpret_cast<void*>(b0 + 0xA480348);   // gc.AllowParallelGC\n'
+    '        void* pc = reinterpret_cast<void*>(b0 + 0xA4810D4);   // gc.CreateGCClusters\n'
+    '        if (HxPageWritable(pa)) *reinterpret_cast<int*>(pa) = 0;\n'
+    '        if (HxPageWritable(pc)) *reinterpret_cast<int*>(pc) = 0;\n'
+    '    }\n')
+if _EARLY_ANCHOR in new and '0xA480348) ' not in new.split(_EARLY_ANCHOR)[0][-400:]:
+    new = new.replace(_EARLY_ANCHOR, _EARLY_ADD, 1)
 
 out = os.path.join(SRV, "dllmain_47031.cpp")
 open(out, "w", encoding="utf-8", newline="\n").write(new)

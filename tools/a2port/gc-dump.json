@@ -1,0 +1,58 @@
+{
+ "crash": {
+  "0x4e3a31a": {
+   "func": "sub_144E3A280",
+   "func_rva": "0x4e3a280",
+   "decomp": "__int64 __fastcall sub_144E3A280(__int64 *a1)\n{\n  __int64 v1; // r8\n  __int64 v3; // rdx\n  unsigned int v4; // ecx\n  int v5; // eax\n  bool v6; // zf\n  __int64 v7; // rax\n  __int64 v8; // rsi\n  __int64 v9; // rax\n  int *v10; // rbx\n  __int64 result; // rax\n  int *i; // rdi\n  _QWORD *v13; // rbx\n  int v14; // [rsp+40h] [rbp+8h] BYREF\n  char v15; // [rsp+50h] [rbp+18h] BYREF\n\n  v1 = *a1;\n  v3 = -2048144789 * ((unsigned int)((unsigned __int64)*a1 >> 4) ^ ((unsigned int)((unsigned __int64)*a1 >> 4) >> 16));\n  v4 = -1028477387\n     * (v3\n      ^ ((-2048144789 * ((unsigned int)((unsigned __int64)*a1 >> 4) ^ ((unsigned int)((unsigned __int64)*a1 >> 4) >> 16))) >> 13));\n  if ( dword_14A497C08 == dword_14A497C34 )\n    goto LABEL_8;\n  v3 = (__int64)&unk_14A497C38;\n  if ( qword_14A497C40 != 0 )\n    v3 = qword_14A497C40;\n  v5 = *(_DWORD *)(v3 + 4LL * ((v4 ^ HIWORD(v4)) & (dword_14A497C48 - 1)));\n  if ( v5 == -1 )\n  {\nLABEL_8:\n    v7 = 0;\n  }\n  else\n  {\n    v3 = qword_14A497C00;\n    while ( 1 )\n    {\n      v6 = *(_QWORD *)(qword_14A497C00 + 24LL * v5) == v1;\n      v7 = qword_14A497C00 + 24LL * v5;\n      if ( v6 )\n        break;\n      v5 = *(_DWORD *)(v7 + 16);\n      if ( v5 == -1 )\n        goto LABEL_8;\n    }\n  }\n  v8 = *(_QWORD *)(v7 + 8);\n  v9 = a1[1];\n  v10 = *(int **)v9;\n  result = *(int *)(v9 + 8);\n  for ( i = &v10[result]; v10 != i; ++v10 )\n  {\n    v14 = *v10;\n    result = sub_141207AF0(v8 + 288, &v15, &v14, 0);\n  }\n  v13 = (_QWORD *)a1[1];\n  if ( v13 != nullptr )\n  {\n    if ( *v13 != 0 )\n      sub_141177030(*v13, v3);\n    return sub_1411232D0(v13, 16);\n  }\n  return result;\n}\n"
+  },
+  "0x4e3cfb0": {
+   "func": "sub_144E3CFB0",
+   "func_rva": "0x4e3cfb0",
+   "decomp": "// attributes: thunk\n__int64 __fastcall sub_144E3CFB0(__int64 *a1)\n{\n  return sub_144E3A280(a1);\n}\n"
+  },
+  "0x2e5f4e4": {
+   "func": "sub_142E5F420",
+   "func_rva": "0x2e5f420",
+   "decomp": "__int64 __fastcall sub_142E5F420(unsigned int **a1)\n{\n  _DWORD *v2; // rdx\n  __int64 v3; // r14\n  _DWORD *v4; // r14\n  __int64 v5; // rbx\n  __int64 v6; // rbp\n  __int128 *v7; // rsi\n  __int128 *v8; // rcx\n  void (__fastcall *v9)(__int64, __int64 *); // rdi\n  __int64 v10; // rax\n  __int128 v11; // xmm4\n  __int128 v12; // xmm5\n  void (__fastcall *v13)(__int64, __int64 *); // rax\n  __int128 v14; // xmm2\n  __int128 v15; // xmm3\n  __int128 v16; // xmm0\n  __int128 v17; // xmm1\n  __int128 *v18; // rcx\n  __int64 v19; // rcx\n  __int64 v20; // rdx\n  __int64 result; // rax\n  __int128 v22; // [rsp+30h] [rbp-68h]\n  __int128 v23; // [rsp+40h] [rbp-58h]\n  __int128 v24; // [rsp+50h] [rbp-48h] BYREF\n  __int128 v25; // [rsp+60h] [rbp-38h]\n\n  if ( _InterlockedCompareExchange8((volatile signed __int8 *)*a1 + 40, 1, 0) != 0 )\n    sub_141109BF0();\n  v2 = *a1;\n  v3 = **a1;\n  *v2 = v3 ^ 1;\n  v4 = &v2[4 * v3];\n  if ( _InterlockedCompareExchange8((volatile signed __int8 *)*a1 + 40, 0, 1) != 1 )\n    sub_1411108D0();\n  v5 = *((_QWORD *)v4 + 1);\n  v6 = v5 + 96LL * (int)v4[4];\n  if ( v5 != v6 )\n  {\n    v7 = (__int128 *)(v5 + 32);\n    do\n    {\n      v8 = v7 + 2;\n      v9 = *(void (__fastcall **)(__int64, __int64 *))v7;\n      if ( *((_QWORD *)v7 + 2) != 0 )\n        v8 = *((__int128 **)v7 + 2);\n      v10 = (*(__int64 (__fastcall **)(__int128 *))(*(_QWORD *)v8 + 8LL))(v8);\n      v9(v10, &qword_14A4A7A98);\n      v11 = *v7;\n      v12 = v7[1];\n      v13 = *(void (__fastcall **)(__int64, __int64 *))v7;\n      v14 = v7[2];\n      v15 = v7[3];\n      *(_QWORD *)&v22 = 0;\n      *v7 = v22;\n      v16 = v24;\n      *(_QWORD *)&v23 = 0;\n      v7[1] = v23;\n      v17 = v25;\n      v7[2] = v16;\n      v7[3] = v17;\n      *((_QWORD *)&v22 + 1) = *((_QWORD *)&v11 + 1);\n      *((_QWORD *)&v23 + 1) = *((_QWORD *)&v12 + 1);\n      v24 = v14;\n      v25 = v15;\n      if ( v13 != nullptr )\n      {\n        v18 = &v24;\n        if ( (_QWORD)v12 != 0 )\n          v18 = (__int128 *)v12;\n        (*(void (__fastcall **)(__int128 *))(*(_QWORD *)v18 + 16LL))(v18);\n      }\n      v5 += 96;\n      v7 += 6;\n    }\n    while ( v5 != v6 );\n  }\n  v19 = *((_QWORD *)v4 + 1);\n  v20 = (unsigned int)v4[4];\n  if ( (int)v4[5] < 0 )\n  {\n    result = sub_142E56DE0(v19, v20);\n    v4[4] = 0;\n    if ( v4[5] != 0 )\n      return sub_1411CBE50(v4 + 2, 0);\n  }\n  else\n  {\n    result = sub_142E56DE0(v19, v20);\n    v4[4] = 0;\n  }\n  return result;\n}\n"
+  },
+  "0x111fe4f": {
+   "func": "sub_14111FE00",
+   "func_rva": "0x111fe00",
+   "decomp": "__int64 __fastcall sub_14111FE00(unsigned int a1)\n{\n  unsigned __int64 v1; // rdi\n  DWORD v2; // eax\n  _DWORD *Value; // rbx\n  __int64 v4; // rax\n  __int64 v5; // rcx\n  __int64 result; // rax\n\n  v1 = a1;\n  if ( byte_14A69E040 != 0 )\n  {\n    v2 = dword_14A69DFC0;\n  }\n  else\n  {\n    qword_14A69E000 = 0;\n    v2 = TlsAlloc();\n    dword_14A69DFC0 = v2;\n    byte_14A69E040 = 1;\n  }\n  Value = TlsGetValue(v2);\n  if ( Value == nullptr )\n  {\n    v4 = sub_1454FF5E0(12);\n    Value = (_DWORD *)v4;\n    if ( v4 != 0 )\n    {\n      *(_QWORD *)v4 = 0;\n      *(_DWORD *)(v4 + 8) = 0;\n    }\n    else\n    {\n      Value = nullptr;\n    }\n    TlsSetValue(dword_14A69DFC0, Value);\n  }\n  if ( (int)Value[2] >= 64 )\n  {\n    if ( *Value != 0 )\n      sub_141124860(&qword_14A69E000);\n    *Value = Value[1];\n    *(_QWORD *)(Value + 1) = 0;\n  }\n  if ( (_DWORD)v1 != 0 )\n    v5 = qword_14A695EC0[v1 >> 14] + 24 * (v1 & 0x3FFF);\n  else\n    v5 = 0;\n  *(_QWORD *)v5 &= 0xFFFFFFFFFC000000uLL;\n  *(_DWORD *)(v5 + 16) = 0;\n  result = (unsigned int)Value[1];\n  *(_QWORD *)(v5 + 8) = result;\n  ++Value[2];\n  Value[1] = v1;\n  return result;\n}\n"
+  }
+ },
+ "cvars": {
+  "gc.AllowParallelGC": [
+   {
+    "func_rva": "0xce87c0",
+    "func": "sub_140CE87C0",
+    "int_globals": [
+     {
+      "rva": "0xa480348",
+      "size": 4,
+      "name": "dword_14A480348",
+      "at": "0xce87eb",
+      "disasm": "lea     r8, dword_14A480348"
+     }
+    ],
+    "decomp": "int sub_140CE87C0()\n{\n  __int64 v0; // rcx\n  __int64 v1; // rax\n  __int64 v2; // rdi\n  _QWORD *v3; // rbx\n  bool v4; // cc\n\n  v0 = qword_14A69E4E0;\n  if ( qword_14A69E4E0 == 0 )\n  {\n    sub_14114FF30();\n    v0 = qword_14A69E4E0;\n  }\n  qword_14A7AA070 = (*(__int64 (__fastcall **)(__int64, const wchar_t *, int *, const wchar_t *, _DWORD))(*(_QWORD *)v0 + 56LL))(\n                      v0,\n                      L\"gc.AllowParallelGC\",\n                      &dword_14A480348,\n                      L\"Used to control parallel GC.\",\n                      0);\n  qword_14A7AA068 = (__int64)&FAutoConsoleObject::`vftable';\n  if ( ((*(__int64 (__fastcall **)(__int64))(*(_QWORD *)qword_14A7AA070 + 24LL))(qword_14A7AA070) & 0x200) != 0 )\n  {\n    v1 = sub_141134940();\n  }\n  else if ( ((*(__int64 (__fastcall **)(__int64))(*(_QWORD *)qword_14A7AA070 + 24LL))(qword_14A7AA070) & 0x400) != 0 )\n  {\n    v1 = sub_1411349B0();\n  }\n  else\n  {\n    if ( ((*(__int64 (__fastcall **)(__int64))(*(_QWORD *)qword_14A7AA070 + 24LL))(qword_14A7AA070) & 0x800) == 0 )\n      goto LABEL_12;\n    v1 = sub_1411348D0();\n  }\n  v2 = *(int *)(v1 + 8);\n  v3 = (_QWORD *)v1;\n  v4 = (unsigned int)(v2 + 1) <= *(_DWORD *)(v1 + 12);\n  *(_DWORD *)(v1 + 8) = v2 + 1;\n  if ( !v4 )\n    sub_14110CF80(v1, (unsigned int)v2);\n  *(_QWORD *)(*v3 + 8 * v2) = &qword_14A7AA068;\nLABEL_12:\n  qword_14A7AA068 = (__int64)&FAutoConsoleVariableRef::`vftable';\n  return atexit(sub_147E11AF0);\n}\n"
+   }
+  ],
+  "gc.CreateGCClusters": [
+   {
+    "func_rva": "0xcf4ae0",
+    "func": "sub_140CF4AE0",
+    "int_globals": [
+     {
+      "rva": "0xa4810d4",
+      "size": 4,
+      "name": "dword_14A4810D4",
+      "at": "0xcf4b0b",
+      "disasm": "lea     r8, dword_14A4810D4"
+     }
+    ],
+    "decomp": "int sub_140CF4AE0()\n{\n  __int64 v0; // rcx\n  __int64 v1; // rax\n  __int64 v2; // rdi\n  _QWORD *v3; // rbx\n  bool v4; // cc\n\n  v0 = qword_14A69E4E0;\n  if ( qword_14A69E4E0 == 0 )\n  {\n    sub_14114FF30();\n    v0 = qword_14A69E4E0;\n  }\n  qword_14A7C3678 = (*(__int64 (__fastcall **)(__int64, const wchar_t *, int *, const wchar_t *, _DWORD))(*(_QWORD *)v0 + 56LL))(\n                      v0,\n                      L\"gc.CreateGCClusters\",\n                      &dword_14A4810D4,\n                      L\"If true, the engine will attempt to create clusters of objects for better garbage collection performance.\",\n                      0);\n  qword_14A7C3670 = (__int64)&FAutoConsoleObject::`vftable';\n  if ( ((*(__int64 (__fastcall **)(__int64))(*(_QWORD *)qword_14A7C3678 + 24LL))(qword_14A7C3678) & 0x200) != 0 )\n  {\n    v1 = sub_141134940();\n  }\n  else if ( ((*(__int64 (__fastcall **)(__int64))(*(_QWORD *)qword_14A7C3678 + 24LL))(qword_14A7C3678) & 0x400) != 0 )\n  {\n    v1 = sub_1411349B0();\n  }\n  else\n  {\n    if ( ((*(__int64 (__fastcall **)(__int64))(*(_QWORD *)qword_14A7C3678 + 24LL))(qword_14A7C3678) & 0x800) == 0 )\n      goto LABEL_12;\n    v1 = sub_1411348D0();\n  }\n  v2 = *(int *)(v1 + 8);\n  v3 = (_QWORD *)v1;\n  v4 = (unsigned int)(v2 + 1) <= *(_DWORD *)(v1 + 12);\n  *(_DWORD *)(v1 + 8) = v2 + 1;\n  if ( !v4 )\n    sub_14110CF80(v1, (unsigned int)v2);\n  *(_QWORD *)(*v3 + 8 * v2) = &qword_14A7C3670;\nLABEL_12:\n  qword_14A7C3670 = (__int64)&FAutoConsoleVariableRef::`vftable';\n  return atexit(sub_147E139C0);\n}\n"
+   }
+  ]
+ }
+}

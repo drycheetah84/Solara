@@ -1,0 +1,8 @@
+imagebase 0x140000000
+crash 0x4e3a31a sub_144E3A280
+crash 0x4e3cfb0 sub_144E3CFB0
+crash 0x2e5f4e4 sub_142E5F420
+crash 0x111fe4f sub_14111FE00
+cvar gc.AllowParallelGC funcs ['0xce87c0']
+cvar gc.CreateGCClusters funcs ['0xcf4ae0']
+DONE
