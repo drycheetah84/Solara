@@ -55,6 +55,34 @@ new2 = new.replace(
 spine = (new2 != new)
 new = new2
 
+# [47031 BRINGUP] Hook-install gate: skip every MinHook install whose target
+# offset is not yet verified at runtime, so a stale 22284 address can never have
+# a trampoline written over it. ProcessEvent (valid SDK offset, pass-through) and
+# Terminate/Exit (kernel32) stay unconditional.
+import re as _re
+GATE = (
+    '#pragma comment(lib, "iphlpapi.lib")\n\n'
+    '// [47031 BRINGUP] Master gate for hooks whose target offset is not yet\n'
+    '// verified against the live 47031 process. OFF => the install is SKIPPED\n'
+    '// (no trampoline at a stale address) and Orig is nulled. Flip true / per-\n'
+    '// offset as offsets are confirmed at runtime.\n'
+    'static bool g_gameplayHooks = false;\n'
+    'static inline MH_STATUS MH_CreateHookG(LPVOID pTarget, LPVOID pDetour, LPVOID* ppOriginal)\n'
+    '{\n'
+    '    if (!g_gameplayHooks) { if (ppOriginal) *ppOriginal = nullptr; return MH_OK; }\n'
+    '    return MH_CreateHook(pTarget, pDetour, ppOriginal);\n'
+    '}\n'
+)
+if '#pragma comment(lib, "iphlpapi.lib")' in new and 'MH_CreateHookG' not in new:
+    new = new.replace('#pragma comment(lib, "iphlpapi.lib")\n', GATE, 1)
+    # gate every install, then restore the always-valid three
+    new = new.replace('MH_CreateHook(', 'MH_CreateHookG(')
+    for keep in ('ProcessEvent_Hook', 'TerminateProcess_Hook', 'ExitProcess_Hook'):
+        new = _re.sub(r'MH_CreateHookG\((?=[^;\n]*' + keep + r')', 'MH_CreateHook(', new)
+    # fix the wrapper body itself (it must call the real MH_CreateHook)
+    new = new.replace('return MH_CreateHookG(pTarget, pDetour, ppOriginal);',
+                      'return MH_CreateHook(pTarget, pDetour, ppOriginal);')
+
 out = os.path.join(SRV, "dllmain_47031.cpp")
 open(out, "w", encoding="utf-8", newline="\n").write(new)
 print("wrote", out)
