@@ -139,7 +139,7 @@ func tailLog(path string, from int64) {
 }
 
 func main() {
-	def := `C:\Users\drych\ProjectDrift\Solara\Server\build\47031\x64\Release\HalcyonA2.dll`
+	def := `C:\Users\drych\ProjectDrift\Solara\build\47031\x64\Release\HalcyonA2.dll`
 	dll := flag.String("dll", def, "path to HalcyonA2.dll")
 	proc := flag.String("proc", "A2-Win64-Shipping.exe", "target process name")
 	pid := flag.Int("pid", 0, "target pid (overrides -proc)")
