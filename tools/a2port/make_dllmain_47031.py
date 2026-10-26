@@ -155,6 +155,37 @@ _OPEN_NEW = ('''    bool doOpen = false;
 if _OPEN_OLD in new:
     new = new.replace(_OPEN_OLD, _OPEN_NEW, 1)
 
+# [BRINGUP] gate the station self-init / deployment-fetch retry loop (reads 3 stale
+# 22284 inline addrs -> derefs garbage, crashes every retry).
+_DF_OLD = ('''    std::thread([]() {
+        for (int i = 0; i < 600 && !g_deployFetchDone; ++i) { SafeTriggerDeploymentFetch(); Sleep(200); }
+        }).detach();
+    printf("[HalcyonA2] [PORT 22284] station self-init thread started (sub_54B13D0)\\n");''')
+_DF_NEW = ('''    if (wcsstr(GetCommandLineW(), L"-HalcyonDeployFetch")) {
+        std::thread([]() {
+            for (int i = 0; i < 600 && !g_deployFetchDone; ++i) { SafeTriggerDeploymentFetch(); Sleep(200); }
+            }).detach();
+        printf("[HalcyonA2] [PORT 22284] station self-init thread started (sub_54B13D0)\\n");
+    } else {
+        printf("[HalcyonA2] BRINGUP: station self-init (deployment fetch) GATED OFF (stale offsets; -HalcyonDeployFetch to force)\\n");
+    }''')
+if _DF_OLD in new:
+    new = new.replace(_DF_OLD, _DF_NEW, 1)
+
+# VEH re-entrancy guard (a fault inside the crash reporter must not infinite-recurse).
+_VEH_OLD = ('''        code != 0xC0000374u /* [EXITTRACE] heap corruption */ && code != 0xC00000FDu /* stack overflow (alt) */)
+        return EXCEPTION_CONTINUE_SEARCH;
+    const uintptr_t base = GetBase();''')
+_VEH_NEW = ('''        code != 0xC0000374u /* [EXITTRACE] heap corruption */ && code != 0xC00000FDu /* stack overflow (alt) */)
+        return EXCEPTION_CONTINUE_SEARCH;
+    static thread_local int s_inVeh = 0;
+    if (s_inVeh) return EXCEPTION_CONTINUE_SEARCH;
+    struct VehGuard { int* p; ~VehGuard() { *p = 0; } } _vg{ &s_inVeh };
+    s_inVeh = 1;
+    const uintptr_t base = GetBase();''')
+if _VEH_OLD in new:
+    new = new.replace(_VEH_OLD, _VEH_NEW, 1)
+
 out = os.path.join(SRV, "dllmain_47031.cpp")
 open(out, "w", encoding="utf-8", newline="\n").write(new)
 print("wrote", out)
