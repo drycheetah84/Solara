@@ -1,0 +1,771 @@
+{
+ "SimIntegrate_RVA": {
+  "old_size": 8636,
+  "old_callees_raw": [
+   "UStateTreeNodeBlueprintBase::RequestTransition_Implementation",
+   "UAnimInstance::DynamicMontage_IsPlayingFrom_Implementation",
+   "?StaticClass@UA2BallEntity@@SAPEAVUClass@@XZ"
+  ],
+  "new_callees_used": [
+   "UStateTreeNodeBlueprintBase::RequestTransition",
+   "UAnimInstance::DynamicMontage_IsPlayingFrom"
+  ],
+  "candidates": []
+ },
+ "StepSim_RVA": {
+  "old_size": 4501,
+  "old_callees_raw": [
+   "UAnimInstance::DynamicMontage_IsPlayingFrom_Implementation",
+   "?StaticClass@UPrimitiveComponent@@SAPEAVUClass@@XZ"
+  ],
+  "new_callees_used": [
+   "UAnimInstance::DynamicMontage_IsPlayingFrom"
+  ],
+  "candidates": []
+ },
+ "Reconcile_RVA": {
+  "old_size": 3874,
+  "old_callees_raw": [
+   "UAnimInstance::MontageSync_Follow_Implementation",
+   "UAnimInstance::DynamicMontage_IsPlayingFrom_Implementation",
+   "?StaticClass@UPrimitiveComponent@@SAPEAVUClass@@XZ",
+   "?StaticClass@ADiscEntity@@SAPEAVUClass@@XZ",
+   "?StaticClass@AVRPawn@@SAPEAVUClass@@XZ"
+  ],
+  "new_callees_used": [
+   "UAnimInstance::MontageSync_Follow",
+   "UAnimInstance::DynamicMontage_IsPlayingFrom"
+  ],
+  "candidates": []
+ },
+ "BallAdvance_RVA": {
+  "old_size": 436,
+  "old_callees_raw": [],
+  "new_callees_used": [],
+  "result": "no-named-callees"
+ },
+ "BallReconcile_RVA": {
+  "old_size": 1602,
+  "old_callees_raw": [
+   "UStateTreeNodeBlueprintBase::RequestTransition_Implementation",
+   "memmove"
+  ],
+  "new_callees_used": [
+   "UStateTreeNodeBlueprintBase::RequestTransition",
+   "memmove"
+  ],
+  "candidates": [
+   {
+    "rva": "0x1198000",
+    "hits": 1,
+    "of": 2,
+    "size": 464,
+    "name": "sub_141198000"
+   },
+   {
+    "rva": "0x1380000",
+    "hits": 1,
+    "of": 2,
+    "size": 160,
+    "name": "sub_141380000"
+   },
+   {
+    "rva": "0x3940000",
+    "hits": 1,
+    "of": 2,
+    "size": 320,
+    "name": "sub_143940000"
+   },
+   {
+    "rva": "0x3d20000",
+    "hits": 1,
+    "of": 2,
+    "size": 1548,
+    "name": "sub_143D20000"
+   },
+   {
+    "rva": "0x5230000",
+    "hits": 1,
+    "of": 2,
+    "size": 571,
+    "name": "sub_145230000"
+   },
+   {
+    "rva": "0x6088000",
+    "hits": 1,
+    "of": 2,
+    "size": 337,
+    "name": "sub_146088000"
+   },
+   {
+    "rva": "0x3c40010",
+    "hits": 1,
+    "of": 2,
+    "size": 676,
+    "name": "sub_143C40010"
+   },
+   {
+    "rva": "0x3d88010",
+    "hits": 1,
+    "of": 2,
+    "size": 353,
+    "name": "sub_143D88010"
+   }
+  ],
+  "pick": {
+   "rva": "0x3d20000",
+   "hits": 1,
+   "of": 2,
+   "size": 1548,
+   "conf": "low",
+   "tie": 8
+  }
+ },
+ "IngestInput_RVA": {
+  "old_size": 1248,
+  "old_callees_raw": [
+   "memmove"
+  ],
+  "new_callees_used": [
+   "memmove"
+  ],
+  "candidates": [
+   {
+    "rva": "0x1198000",
+    "hits": 1,
+    "of": 1,
+    "size": 464,
+    "name": "sub_141198000"
+   },
+   {
+    "rva": "0x1380000",
+    "hits": 1,
+    "of": 1,
+    "size": 160,
+    "name": "sub_141380000"
+   },
+   {
+    "rva": "0x3940000",
+    "hits": 1,
+    "of": 1,
+    "size": 320,
+    "name": "sub_143940000"
+   },
+   {
+    "rva": "0x3d20000",
+    "hits": 1,
+    "of": 1,
+    "size": 1548,
+    "name": "sub_143D20000"
+   },
+   {
+    "rva": "0x5230000",
+    "hits": 1,
+    "of": 1,
+    "size": 571,
+    "name": "sub_145230000"
+   },
+   {
+    "rva": "0x6088000",
+    "hits": 1,
+    "of": 1,
+    "size": 337,
+    "name": "sub_146088000"
+   },
+   {
+    "rva": "0x3c40010",
+    "hits": 1,
+    "of": 1,
+    "size": 676,
+    "name": "sub_143C40010"
+   },
+   {
+    "rva": "0x3d88010",
+    "hits": 1,
+    "of": 1,
+    "size": 353,
+    "name": "sub_143D88010"
+   }
+  ],
+  "pick": {
+   "rva": "0x3d20000",
+   "hits": 1,
+   "of": 1,
+   "size": 1548,
+   "conf": "low",
+   "tie": 8
+  }
+ },
+ "SendResults_RVA": {
+  "old_size": 437,
+  "old_callees_raw": [
+   "memcpy"
+  ],
+  "new_callees_used": [
+   "memcpy"
+  ],
+  "candidates": [
+   {
+    "rva": "0x6888000",
+    "hits": 1,
+    "of": 1,
+    "size": 389,
+    "name": "UInterchangeSkeletonFactoryNode::SetCustomSkeletalMeshFactoryNodeUid"
+   },
+   {
+    "rva": "0x70a0000",
+    "hits": 1,
+    "of": 1,
+    "size": 393,
+    "name": "sub_1470A0000"
+   },
+   {
+    "rva": "0x77f0000",
+    "hits": 1,
+    "of": 1,
+    "size": 232,
+    "name": "sub_1477F0000"
+   },
+   {
+    "rva": "0x6740010",
+    "hits": 1,
+    "of": 1,
+    "size": 4536,
+    "name": "sub_146740010"
+   },
+   {
+    "rva": "0x7910010",
+    "hits": 1,
+    "of": 1,
+    "size": 556,
+    "name": "sub_147910010"
+   },
+   {
+    "rva": "0x7d40010",
+    "hits": 1,
+    "of": 1,
+    "size": 241,
+    "name": "sub_147D40010"
+   },
+   {
+    "rva": "0x2c48020",
+    "hits": 1,
+    "of": 1,
+    "size": 1220,
+    "name": "sub_142C48020"
+   },
+   {
+    "rva": "0x2f58020",
+    "hits": 1,
+    "of": 1,
+    "size": 200,
+    "name": "sub_142F58020"
+   }
+  ],
+  "pick": {
+   "rva": "0x70a0000",
+   "hits": 1,
+   "of": 1,
+   "size": 393,
+   "conf": "low",
+   "tie": 8
+  }
+ },
+ "ReplaySnapshot_RVA": {
+  "old_size": 1299,
+  "old_callees_raw": [],
+  "new_callees_used": [],
+  "result": "no-named-callees"
+ },
+ "ReplayPostStep_RVA": {
+  "old_size": 677,
+  "old_callees_raw": [
+   "UA2SessionSubsystem::GetNetworkCompatibleChangelistPure"
+  ],
+  "new_callees_used": [
+   "UA2SessionSubsystem::GetNetworkCompatibleChangelistPure"
+  ],
+  "candidates": []
+ },
+ "SendPhysImpl_RVA": {
+  "old_size": 252,
+  "old_callees_raw": [
+   "?StaticClass@UA2PhysicsSync@@SAPEAVUClass@@XZ"
+  ],
+  "new_callees_used": [],
+  "result": "no-named-callees"
+ },
+ "CosmeticCmp_RVA": {
+  "old_size": 156,
+  "old_callees_raw": [
+   "UCreateMeshObjectTypeProperties::GetCurrentCreateMeshType_Implementation"
+  ],
+  "new_callees_used": [
+   "UCreateMeshObjectTypeProperties::GetCurrentCreateMeshType"
+  ],
+  "candidates": []
+ },
+ "PrintString_RVA": {
+  "old_size": 1010,
+  "old_callees_raw": [
+   "?StartProfileThreadUsage@MemoryMgr@AK@@YAXXZ",
+   "UKismetMathLibrary::Conv_LinearColorToColor_Implementation",
+   "UGameplayStatics::GetPlayerController_Implementation",
+   "?StaticClass@ULocalPlayer@@SAPEAVUClass@@XZ",
+   "_Init_thread_footer",
+   "_Init_thread_header",
+   "memcpy"
+  ],
+  "new_callees_used": [
+   "?StartProfileThreadUsage@MemoryMgr@AK@@YAXXZ",
+   "UKismetMathLibrary::Conv_LinearColorToColor",
+   "UGameplayStatics::GetPlayerController",
+   "_Init_thread_footer",
+   "_Init_thread_header",
+   "memcpy"
+  ],
+  "candidates": [
+   {
+    "rva": "0x70902d0",
+    "hits": 4,
+    "of": 6,
+    "size": 828,
+    "name": "sub_1470902D0"
+   },
+   {
+    "rva": "0x7090610",
+    "hits": 4,
+    "of": 6,
+    "size": 828,
+    "name": "sub_147090610"
+   },
+   {
+    "rva": "0x7090950",
+    "hits": 4,
+    "of": 6,
+    "size": 828,
+    "name": "sub_147090950"
+   },
+   {
+    "rva": "0x41409e0",
+    "hits": 4,
+    "of": 6,
+    "size": 2084,
+    "name": "sub_1441409E0"
+   },
+   {
+    "rva": "0x7090c90",
+    "hits": 4,
+    "of": 6,
+    "size": 828,
+    "name": "sub_147090C90"
+   },
+   {
+    "rva": "0x7090fd0",
+    "hits": 4,
+    "of": 6,
+    "size": 828,
+    "name": "sub_147090FD0"
+   },
+   {
+    "rva": "0x4141210",
+    "hits": 4,
+    "of": 6,
+    "size": 2019,
+    "name": "sub_144141210"
+   },
+   {
+    "rva": "0x7091310",
+    "hits": 4,
+    "of": 6,
+    "size": 828,
+    "name": "sub_147091310"
+   }
+  ],
+  "pick": {
+   "rva": "0x70902d0",
+   "hits": 4,
+   "of": 6,
+   "size": 828,
+   "conf": "med",
+   "tie": 8
+  }
+ },
+ "BallSimGetWorld_RVA": {
+  "old_size": 136,
+  "old_callees_raw": [
+   "?StaticClass@ULevel@@SAPEAVUClass@@XZ"
+  ],
+  "new_callees_used": [],
+  "result": "no-named-callees"
+ },
+ "JoinBuild_RVA": {
+  "old_size": 1990,
+  "old_callees_raw": [
+   "UTargetingSubsystem::StartAsyncTargetingRequest_Implementation",
+   "UKismetMathLibrary::UtcNow",
+   "__security_check_cookie"
+  ],
+  "new_callees_used": [
+   "UTargetingSubsystem::StartAsyncTargetingRequest",
+   "UKismetMathLibrary::UtcNow",
+   "__security_check_cookie"
+  ],
+  "candidates": [
+   {
+    "rva": "0x1560000",
+    "hits": 1,
+    "of": 3,
+    "size": 647,
+    "name": "sub_141560000"
+   },
+   {
+    "rva": "0x3300000",
+    "hits": 1,
+    "of": 3,
+    "size": 3811,
+    "name": "sub_143300000"
+   },
+   {
+    "rva": "0x5920010",
+    "hits": 1,
+    "of": 3,
+    "size": 2201,
+    "name": "sub_145920010"
+   },
+   {
+    "rva": "0x6d20010",
+    "hits": 1,
+    "of": 3,
+    "size": 2555,
+    "name": "sub_146D20010"
+   },
+   {
+    "rva": "0x6fa0010",
+    "hits": 1,
+    "of": 3,
+    "size": 694,
+    "name": "sub_146FA0010"
+   },
+   {
+    "rva": "0x36a0020",
+    "hits": 1,
+    "of": 3,
+    "size": 2574,
+    "name": "sub_1436A0020"
+   },
+   {
+    "rva": "0x6e00020",
+    "hits": 1,
+    "of": 3,
+    "size": 5094,
+    "name": "sub_146E00020"
+   },
+   {
+    "rva": "0x2b40030",
+    "hits": 1,
+    "of": 3,
+    "size": 1449,
+    "name": "sub_142B40030"
+   }
+  ],
+  "pick": {
+   "rva": "0x5920010",
+   "hits": 1,
+   "of": 3,
+   "size": 2201,
+   "conf": "low",
+   "tie": 8
+  }
+ },
+ "SendJoin_RVA": {
+  "old_size": 703,
+  "old_callees_raw": [
+   "memcpy"
+  ],
+  "new_callees_used": [
+   "memcpy"
+  ],
+  "candidates": [
+   {
+    "rva": "0x6888000",
+    "hits": 1,
+    "of": 1,
+    "size": 389,
+    "name": "UInterchangeSkeletonFactoryNode::SetCustomSkeletalMeshFactoryNodeUid"
+   },
+   {
+    "rva": "0x70a0000",
+    "hits": 1,
+    "of": 1,
+    "size": 393,
+    "name": "sub_1470A0000"
+   },
+   {
+    "rva": "0x77f0000",
+    "hits": 1,
+    "of": 1,
+    "size": 232,
+    "name": "sub_1477F0000"
+   },
+   {
+    "rva": "0x6740010",
+    "hits": 1,
+    "of": 1,
+    "size": 4536,
+    "name": "sub_146740010"
+   },
+   {
+    "rva": "0x7910010",
+    "hits": 1,
+    "of": 1,
+    "size": 556,
+    "name": "sub_147910010"
+   },
+   {
+    "rva": "0x7d40010",
+    "hits": 1,
+    "of": 1,
+    "size": 241,
+    "name": "sub_147D40010"
+   },
+   {
+    "rva": "0x2c48020",
+    "hits": 1,
+    "of": 1,
+    "size": 1220,
+    "name": "sub_142C48020"
+   },
+   {
+    "rva": "0x2f58020",
+    "hits": 1,
+    "of": 1,
+    "size": 200,
+    "name": "sub_142F58020"
+   }
+  ],
+  "pick": {
+   "rva": "0x7910010",
+   "hits": 1,
+   "of": 1,
+   "size": 556,
+   "conf": "low",
+   "tie": 8
+  }
+ },
+ "GiveCheck_RVA": {
+  "old_size": 1100,
+  "old_callees_raw": [
+   "?StaticClass@AModuleSlot@@SAPEAVUClass@@XZ",
+   "ATicketManager::AddToTicketHolders_Implementation",
+   "ATicketManager::AddToVerifiedTicketHolders_Implementation",
+   "ATicketManager::CheckOverlappingPawnTickets_Implementation",
+   "ATicketManager::CheckTicketSuccess_Implementation"
+  ],
+  "new_callees_used": [
+   "ATicketManager::AddToTicketHolders",
+   "ATicketManager::AddToVerifiedTicketHolders",
+   "ATicketManager::CheckOverlappingPawnTickets",
+   "ATicketManager::CheckTicketSuccess"
+  ],
+  "candidates": []
+ },
+ "FetchRoles_RVA": {
+  "old_size": 764,
+  "old_callees_raw": [
+   "UTargetingSubsystem::StartAsyncTargetingRequest_Implementation"
+  ],
+  "new_callees_used": [
+   "UTargetingSubsystem::StartAsyncTargetingRequest"
+  ],
+  "candidates": []
+ },
+ "RolesFetched_RVA": {
+  "old_size": 291,
+  "old_callees_raw": [
+   "UCreateMeshObjectTypeProperties::GetCurrentCreateMeshType_Implementation"
+  ],
+  "new_callees_used": [
+   "UCreateMeshObjectTypeProperties::GetCurrentCreateMeshType"
+  ],
+  "candidates": []
+ },
+ "FNameResolve_RVA": {
+  "old_size": 388,
+  "old_callees_raw": [],
+  "new_callees_used": [],
+  "result": "no-named-callees"
+ },
+ "TextLayoutLeaf_RVA": {
+  "old_size": 485,
+  "old_callees_raw": [
+   "__security_check_cookie",
+   "memcpy"
+  ],
+  "new_callees_used": [
+   "__security_check_cookie",
+   "memcpy"
+  ],
+  "candidates": [
+   {
+    "rva": "0x36a0020",
+    "hits": 2,
+    "of": 2,
+    "size": 2574,
+    "name": "sub_1436A0020"
+   },
+   {
+    "rva": "0x5740060",
+    "hits": 2,
+    "of": 2,
+    "size": 2224,
+    "name": "sub_145740060"
+   },
+   {
+    "rva": "0x14c0070",
+    "hits": 2,
+    "of": 2,
+    "size": 1706,
+    "name": "sub_1414C0070"
+   },
+   {
+    "rva": "0x7620080",
+    "hits": 2,
+    "of": 2,
+    "size": 1389,
+    "name": "sub_147620080"
+   },
+   {
+    "rva": "0x51a00a0",
+    "hits": 2,
+    "of": 2,
+    "size": 1346,
+    "name": "sub_1451A00A0"
+   },
+   {
+    "rva": "0x4880120",
+    "hits": 2,
+    "of": 2,
+    "size": 745,
+    "name": "sub_144880120"
+   },
+   {
+    "rva": "0x7600120",
+    "hits": 2,
+    "of": 2,
+    "size": 701,
+    "name": "sub_147600120"
+   },
+   {
+    "rva": "0x11801d0",
+    "hits": 2,
+    "of": 2,
+    "size": 3160,
+    "name": "sub_1411801D0"
+   }
+  ],
+  "pick": {
+   "rva": "0x7600120",
+   "hits": 2,
+   "of": 2,
+   "size": 701,
+   "conf": "med",
+   "tie": 8
+  }
+ },
+ "EvtDispatch_RVA": {
+  "old_size": 354,
+  "old_callees_raw": [],
+  "new_callees_used": [],
+  "result": "no-named-callees"
+ },
+ "WorldGetNetMode_RVA": {
+  "old_size": 410,
+  "old_callees_raw": [
+   "UReplaySubsystem::IsPlaying",
+   "UReplaySubsystem::IsRecording"
+  ],
+  "new_callees_used": [
+   "UReplaySubsystem::IsPlaying",
+   "UReplaySubsystem::IsRecording"
+  ],
+  "candidates": []
+ },
+ "GtcTick_RVA": {
+  "old_size": 1313,
+  "old_callees_raw": [
+   "swprintf",
+   "fmod"
+  ],
+  "new_callees_used": [
+   "swprintf",
+   "fmod"
+  ],
+  "candidates": [
+   {
+    "rva": "0x559d100",
+    "hits": 2,
+    "of": 2,
+    "size": 373,
+    "name": "sub_14559D100"
+   },
+   {
+    "rva": "0x559d280",
+    "hits": 2,
+    "of": 2,
+    "size": 1243,
+    "name": "sub_14559D280"
+   },
+   {
+    "rva": "0x55780a0",
+    "hits": 2,
+    "of": 2,
+    "size": 124,
+    "name": "sub_1455780A0"
+   },
+   {
+    "rva": "0x55781c0",
+    "hits": 2,
+    "of": 2,
+    "size": 124,
+    "name": "sub_1455781C0"
+   },
+   {
+    "rva": "0x5578240",
+    "hits": 2,
+    "of": 2,
+    "size": 579,
+    "name": "sub_145578240"
+   },
+   {
+    "rva": "0x5577c70",
+    "hits": 2,
+    "of": 2,
+    "size": 124,
+    "name": "sub_145577C70"
+   },
+   {
+    "rva": "0x5577cf0",
+    "hits": 2,
+    "of": 2,
+    "size": 124,
+    "name": "sub_145577CF0"
+   },
+   {
+    "rva": "0x12d7d00",
+    "hits": 1,
+    "of": 2,
+    "size": 3419,
+    "name": "sub_1412D7D00"
+   }
+  ],
+  "pick": {
+   "rva": "0x559d280",
+   "hits": 2,
+   "of": 2,
+   "size": 1243,
+   "conf": "med",
+   "tie": 7
+  }
+ }
+}

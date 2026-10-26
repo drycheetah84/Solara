@@ -1,0 +1,25 @@
+named funcs 19528
+SimIntegrate_RVA pick None
+StepSim_RVA pick None
+Reconcile_RVA pick None
+BallAdvance_RVA no named callees
+BallReconcile_RVA pick {'rva': '0x3d20000', 'hits': 1, 'of': 2, 'size': 1548, 'conf': 'low', 'tie': 8}
+IngestInput_RVA pick {'rva': '0x3d20000', 'hits': 1, 'of': 1, 'size': 1548, 'conf': 'low', 'tie': 8}
+SendResults_RVA pick {'rva': '0x70a0000', 'hits': 1, 'of': 1, 'size': 393, 'conf': 'low', 'tie': 8}
+ReplaySnapshot_RVA no named callees
+ReplayPostStep_RVA pick None
+SendPhysImpl_RVA no named callees
+CosmeticCmp_RVA pick None
+PrintString_RVA pick {'rva': '0x70902d0', 'hits': 4, 'of': 6, 'size': 828, 'conf': 'med', 'tie': 8}
+BallSimGetWorld_RVA no named callees
+JoinBuild_RVA pick {'rva': '0x5920010', 'hits': 1, 'of': 3, 'size': 2201, 'conf': 'low', 'tie': 8}
+SendJoin_RVA pick {'rva': '0x7910010', 'hits': 1, 'of': 1, 'size': 556, 'conf': 'low', 'tie': 8}
+GiveCheck_RVA pick None
+FetchRoles_RVA pick None
+RolesFetched_RVA pick None
+FNameResolve_RVA no named callees
+TextLayoutLeaf_RVA pick {'rva': '0x7600120', 'hits': 2, 'of': 2, 'size': 701, 'conf': 'med', 'tie': 8}
+EvtDispatch_RVA no named callees
+WorldGetNetMode_RVA pick None
+GtcTick_RVA pick {'rva': '0x559d280', 'hits': 2, 'of': 2, 'size': 1243, 'conf': 'med', 'tie': 7}
+DONE
