@@ -1,0 +1,7 @@
+{"name":"sweep-authed-HalcyonSocketServer","steps":[
+ {"server":"HalcyonSocketServer","method":"GET","path":"/agents","headers":{"x-server-api-key":"${secret:SERVER_API_KEY}","x-automation-key":"${secret:AUTOMATION_KEY}","x-api-key":"${secret:ServerMasterKey}","x-dashboard-key":"difftest-admin-key"}}
+,{"server":"HalcyonSocketServer","method":"POST","path":"/spinup","headers":{"x-server-api-key":"${secret:SERVER_API_KEY}","x-automation-key":"${secret:AUTOMATION_KEY}","x-api-key":"${secret:ServerMasterKey}","x-dashboard-key":"difftest-admin-key","Content-Type":"application/json"},"body":"{}"}
+,{"server":"HalcyonSocketServer","method":"GET","path":"/watchdog","headers":{"x-server-api-key":"${secret:SERVER_API_KEY}","x-automation-key":"${secret:AUTOMATION_KEY}","x-api-key":"${secret:ServerMasterKey}","x-dashboard-key":"difftest-admin-key"}}
+,{"server":"HalcyonSocketServer","method":"POST","path":"/watchdog/retire","headers":{"x-server-api-key":"${secret:SERVER_API_KEY}","x-automation-key":"${secret:AUTOMATION_KEY}","x-api-key":"${secret:ServerMasterKey}","x-dashboard-key":"difftest-admin-key","Content-Type":"application/json"},"body":"{}"}
+,{"server":"HalcyonSocketServer","method":"POST","path":"/watchdog/resume","headers":{"x-server-api-key":"${secret:SERVER_API_KEY}","x-automation-key":"${secret:AUTOMATION_KEY}","x-api-key":"${secret:ServerMasterKey}","x-dashboard-key":"difftest-admin-key","Content-Type":"application/json"},"body":"{}"}
+]}

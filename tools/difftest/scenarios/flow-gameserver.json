@@ -1,0 +1,18 @@
+{ "name": "flow-gameserver",
+  "steps": [
+    {"server":"A2StationDbServer","method":"POST","path":"/register_server","headers":{"Content-Type":"application/json"},"body":"{\"ip\":\"1.2.3.4\",\"port\":\"7777\",\"deployment_id\":\"dep-1\",\"server_name\":\"  My Server  \",\"max_players\":12,\"region\":\"OCE\"}"},
+    {"server":"A2StationDbServer","method":"POST","path":"/register_server","headers":{"Content-Type":"application/json"},"body":"{\"ip\":\"5.6.7.8\",\"deployment_id\":\"dep-2\",\"server_name\":\"\"}"},
+    {"server":"A2StationDbServer","method":"POST","path":"/update_player_count","headers":{"Content-Type":"application/json"},"body":"{\"deployment_id\":\"dep-1\",\"player_count\":3}"},
+    {"server":"A2StationDbServer","method":"POST","path":"/server_heartbeat","headers":{"Content-Type":"application/json"},"body":"{\"deployment_id\":\"dep-1\",\"pid\":1,\"seq\":2}"},
+    {"server":"A2StationDbServer","method":"GET","path":"/v1/deployments/dep-1?include_station_config=true","headers":{"x-api-key":"${secret:ServerMasterKey}"}},
+    {"server":"A2StationDbServer","method":"GET","path":"/v1/deployments/dep-2","headers":{"x-api-key":"${secret:ServerMasterKey}"}},
+    {"server":"A2StationDbServer","method":"GET","path":"/stations/player_count"},
+    {"server":"EosGatewayServer","method":"POST","path":"/matchmaking/v1/halcyon/filter","headers":{"Content-Type":"application/json"},"body":"{\"criteria\":[],\"maxResults\":50}"},
+    {"server":"AresDashboardServer","method":"GET","path":"/api/stations","headers":{"x-dashboard-key":"difftest-admin-key"}},
+    {"server":"AresDashboardServer","method":"GET","path":"/api/deployments","headers":{"x-dashboard-key":"difftest-admin-key"}},
+    {"server":"AresDashboardServer","method":"GET","path":"/api/sessions","headers":{"x-dashboard-key":"difftest-admin-key"}},
+    {"server":"AresDashboardServer","method":"GET","path":"/api/stats","headers":{"x-dashboard-key":"difftest-admin-key"}},
+    {"server":"A2StationDbServer","method":"POST","path":"/update_player_count","headers":{"Content-Type":"application/json"},"body":"{\"deployment_id\":\"dep-1\",\"player_count\":-4}"},
+    {"server":"A2StationDbServer","method":"POST","path":"/v1/server/admin/prune_sessions","headers":{"x-api-key":"${secret:ServerMasterKey}","Content-Type":"application/json"},"body":"{}"},
+    {"server":"EosGatewayServer","method":"POST","path":"/matchmaking/v1/halcyon/filter","headers":{"Content-Type":"application/json"},"body":"{}"}
+  ] }

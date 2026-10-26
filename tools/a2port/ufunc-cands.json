@@ -1,0 +1,193 @@
+{
+ "UpdGameState_RVA": {
+  "old_impl": "0x53CB6D0",
+  "funcinfo": "0x54a2220",
+  "n": 1,
+  "old_func": "UGameStateManagerComponent::UpdateGameState_Implementation",
+  "old_strings": [
+   "currentState"
+  ],
+  "old_callees": [
+   "UNumberNetVar::SetValue_Implementation",
+   "__security_check_cookie"
+  ],
+  "old_size": 179
+ },
+ "StartTimerCd_RVA": {
+  "old_impl": "0x53C4060",
+  "funcinfo": "0x54a6810",
+  "n": 1,
+  "old_func": "UGameTimeComponent::StartTimerWithCountdown_Implementation",
+  "old_strings": [
+   "ClockStartedAt",
+   "SecondaryStartedAt",
+   "ClockPunishment",
+   "ClockProgress",
+   "SecondaryEndLength"
+  ],
+  "old_callees": [
+   "UNumberNetVar::SetValue_Implementation",
+   "__security_check_cookie"
+  ],
+  "old_size": 682
+ },
+ "ReqLogin_RVA": {
+  "old_impl": "0x543C7B0",
+  "funcinfo": "0x53dabb0",
+  "n": 1,
+  "old_func": "UA2OnlineCommunicationsComponent::RequestVivoxLoginToken_Implementation",
+  "old_strings": [],
+  "old_callees": [],
+  "old_size": 61
+ },
+ "SendPhysImpl_RVA": {
+  "old_impl": "0x5503050",
+  "funcinfo": "0x54f8b00",
+  "n": 1,
+  "old_func": "AVRPawn::Server_SendPhysicsPropData_Implementation",
+  "old_strings": [],
+  "old_callees": [
+   "?StaticClass@UA2PhysicsSync@@SAPEAVUClass@@XZ"
+  ],
+  "old_size": 252
+ },
+ "NotifyLeftArena_RVA": {
+  "old_impl": "0x5502B00",
+  "funcinfo": "0x54f82b0",
+  "n": 1,
+  "old_func": "AVRPawn::Server_NotifyPlayerLeftArena_Implementation",
+  "old_strings": [],
+  "old_callees": [],
+  "old_size": 56
+ },
+ "GolfBallInCup_RVA": {
+  "old_impl": "0x53DC320",
+  "funcinfo": "0x54a9200",
+  "n": 1,
+  "old_func": "AGolfCup::BallInCup_Implementation",
+  "old_strings": [],
+  "old_callees": [],
+  "old_size": 21
+ },
+ "GolfOverlap_RVA": {
+  "old_impl": "0x53F03B0",
+  "funcinfo": "0x54a9890",
+  "n": 1,
+  "old_func": "AGolfCup::OnGoalBeginOverlap_Implementation",
+  "old_strings": [],
+  "old_callees": [
+   "?StaticClass@ADiscEntity@@SAPEAVUClass@@XZ"
+  ],
+  "old_size": 88
+ },
+ "GiveCheck_RVA": {
+  "old_impl": "0x4723AA0",
+  "funcinfo": "0x49e79c0",
+  "n": 1,
+  "old_func": "ATicketManager::GiveAndCheckTicket_Implementation",
+  "old_strings": [],
+  "old_callees": [
+   "?StaticClass@AModuleSlot@@SAPEAVUClass@@XZ",
+   "ATicketManager::AddToTicketHolders_Implementation",
+   "ATicketManager::AddToVerifiedTicketHolders_Implementation",
+   "ATicketManager::CheckOverlappingPawnTickets_Implementation",
+   "ATicketManager::CheckTicketSuccess_Implementation"
+  ],
+  "old_size": 1100
+ },
+ "IsRunningSimulate_RVA": {
+  "old_impl": "0x531EF96",
+  "funcinfo": "0x54a1930",
+  "n": 1,
+  "old_func": "UGameplayUtilityStatics::execIsRunningSimulate",
+  "old_strings": [],
+  "old_callees": [
+   "?Reserve@WriteBytesCount@AK@@UEAA_NH@Z"
+  ],
+  "old_size": 132
+ },
+ "A2GetNetMode_RVA": {
+  "old_impl": "0x54AF360",
+  "funcinfo": "0x22ac640",
+  "n": 1,
+  "old_func": "UA2NetworkUtilityBPFL::GetNetMode_Implementation",
+  "old_strings": [],
+  "old_callees": [],
+  "old_size": 188
+ },
+ "GetLocalInst_RVA": {
+  "old_impl": "0x54EAC60",
+  "funcinfo": "0x54f2b70",
+  "n": 1,
+  "old_func": "AVRPawn::GetLocalInstanceWithWorld_Implementation",
+  "old_strings": [],
+  "old_callees": [],
+  "old_size": 255
+ },
+ "GetPlayerPawn_RVA": {
+  "old_impl": "0x3D24C40",
+  "funcinfo": "0x3ae0310",
+  "n": 1,
+  "old_func": "UGameplayStatics::GetPlayerPawn_Implementation",
+  "old_strings": [],
+  "old_callees": [],
+  "old_size": 20
+ },
+ "inline_14200_054e4470": {
+  "old_impl": "0x54e4470",
+  "funcinfo": "0x542d3f0",
+  "n": 1,
+  "old_func": "AVRPawn::Client_TicketCheckSuccess_Implementation",
+  "old_strings": [
+   "TeamPawn"
+  ],
+  "old_callees": [
+   "??0FName@@QEAA@PEB_WW4EFindName@@@Z",
+   "UPrimitiveComponent::IgnoreComponentWhenMoving_Implementation",
+   "UBasicBoostComponent::SetEnergy_Implementation",
+   "AVRPawn::UpdateAllBallIndicatorsInGamemode_Implementation",
+   "wcsstr"
+  ],
+  "old_size": 1613
+ },
+ "inline_14202_054e17e0": {
+  "old_impl": "0x54e17e0",
+  "funcinfo": "0x542ce00",
+  "n": 1,
+  "old_func": "AVRPawn::ClearTeam",
+  "old_strings": [
+   "NoPreference"
+  ],
+  "old_callees": [],
+  "old_size": 207
+ },
+ "inline_15200_05502070": {
+  "old_impl": "0x5502070",
+  "funcinfo": "0x54f7430",
+  "n": 1,
+  "old_func": "AVRPawn::Server_AttemptTakeOwnershipOfLevelEditor_Implementation",
+  "old_strings": [
+   "Level Editing"
+  ],
+  "old_callees": [
+   "?StaticClass@UBlueprintGeneratedClass@@SAPEAVUClass@@XZ",
+   "AController::Possess_Implementation",
+   "?StaticClass@APawn@@SAPEAVUClass@@XZ",
+   "?StaticClass@ALevelEditorPawn@@SAPEAVUClass@@XZ",
+   "?StaticClass@AAxPlayerState@@SAPEAVUClass@@XZ",
+   "__security_check_cookie"
+  ],
+  "old_size": 577
+ },
+ "inline_15230_046902f0": {
+  "old_impl": "0x46902f0",
+  "funcinfo": "0x49b3000",
+  "n": 1,
+  "old_func": "UA2PlayerQuestComponent::Server_SetQuests_Implementation",
+  "old_strings": [],
+  "old_callees": [
+   "?StaticClass@APawn@@SAPEAVUClass@@XZ"
+  ],
+  "old_size": 151
+ }
+}

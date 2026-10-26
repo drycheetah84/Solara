@@ -1,0 +1,2658 @@
+{
+ "all": [
+  {
+   "name": "GIsClient_RVA",
+   "rva": "0x96D8672",
+   "kind": "data",
+   "line": 36,
+   "note": "[22284] was 0x9650702",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "GIsServer_RVA",
+   "rva": "0x96D8673",
+   "kind": "data",
+   "line": 37,
+   "note": "[22284] was 0x9650703",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "StationStr_Data_RVA",
+   "rva": "0x95DF980",
+   "kind": "data",
+   "line": 50,
+   "note": "",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "StationStr_Num_RVA",
+   "rva": "0x95DF988",
+   "kind": "data",
+   "line": 51,
+   "note": "",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "StationStr_Max_RVA",
+   "rva": "0x95DF98C",
+   "kind": "data",
+   "line": 52,
+   "note": "",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "CosmeticCmp_RVA",
+   "rva": "0x53DA880",
+   "kind": "func",
+   "line": 355,
+   "note": "sub_7FF67743A880 (mesh-entry comparator)",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "FNamePoolTbl_RVA",
+   "rva": "0x9710B80",
+   "kind": "data",
+   "line": 356,
+   "note": "stru_7FF67B770B80 (name-pool block table)",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "GetBoolCfg_RVA",
+   "rva": "0x46DA020",
+   "kind": "func",
+   "line": 400,
+   "note": "sub_7FF67673A020 (UModuleStateLuaAPI::GetBoolConfigVariable impl)",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "GetNumCfg_RVA",
+   "rva": "0x46DDB20",
+   "kind": "func",
+   "line": 437,
+   "note": "",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "GetStrCfg_RVA",
+   "rva": "0x46DE7B0",
+   "kind": "func",
+   "line": 457,
+   "note": "",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "UpdGameState_RVA",
+   "rva": "0x53CB6D0",
+   "kind": "func",
+   "line": 497,
+   "note": "UGameStateManagerComponent::UpdateGameState_Implementation",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "StartTimerCd_RVA",
+   "rva": "0x53C4060",
+   "kind": "func",
+   "line": 693,
+   "note": "UGameTimeComponent::StartTimerWithCountdown_Implementation",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "GtcTick_RVA",
+   "rva": "0x53C8AF0",
+   "kind": "func",
+   "line": 694,
+   "note": "UGameTimeComponent::TickComponent (vtable slot 121)",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "GtcVft_RVA",
+   "rva": "0x84E6D20",
+   "kind": "func",
+   "line": 695,
+   "note": "UGameTimeComponent_VFT (liveness validation)",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "JwtBuild_RVA",
+   "rva": "0x544D9B0",
+   "kind": "func",
+   "line": 1850,
+   "note": "",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "ReqLogin_RVA",
+   "rva": "0x543C7B0",
+   "kind": "data",
+   "line": 1867,
+   "note": "",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "JoinBuild_RVA",
+   "rva": "0x5432A40",
+   "kind": "func",
+   "line": 2051,
+   "note": "",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "SendJoin_RVA",
+   "rva": "0x52EE2E0",
+   "kind": "func",
+   "line": 2094,
+   "note": "",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "ReplayPostStep_RVA",
+   "rva": "0x5487560",
+   "kind": "func",
+   "line": 2189,
+   "note": "sub_145487560",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "ReplayVtable_RVA",
+   "rva": "0x84A2B38",
+   "kind": "func",
+   "line": 2190,
+   "note": "off_1484A2B38 (UA2ReplaySystem)",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "ReplaySnapshot_RVA",
+   "rva": "0x5482110",
+   "kind": "func",
+   "line": 2248,
+   "note": "sub_145482110",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "Reconcile_RVA",
+   "rva": "0x545BD80",
+   "kind": "func",
+   "line": 4664,
+   "note": "",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "SendPhysImpl_RVA",
+   "rva": "0x5503050",
+   "kind": "func",
+   "line": 4822,
+   "note": "",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "SimIntegrate_RVA",
+   "rva": "0x547F7A0",
+   "kind": "func",
+   "line": 4966,
+   "note": "",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "IngestInput_RVA",
+   "rva": "0x54599B0",
+   "kind": "func",
+   "line": 5109,
+   "note": "",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "SendResults_RVA",
+   "rva": "0x534A7F0",
+   "kind": "func",
+   "line": 5306,
+   "note": "[PORT-AUDIT] was 0x54E35B0 (= the pawn-side results RECEIVER); 0x534A7F0 is the sender called from StepSim (IDA-aligned 1.00 to 20996 0x5309C40)",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "StepSim_RVA",
+   "rva": "0x54863C0",
+   "kind": "func",
+   "line": 5437,
+   "note": "",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "BallAdvance_RVA",
+   "rva": "0x5464630",
+   "kind": "func",
+   "line": 5618,
+   "note": "",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "BallReconcile_RVA",
+   "rva": "0x548FC40",
+   "kind": "func",
+   "line": 5644,
+   "note": "",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "NotifyLeftArena_RVA",
+   "rva": "0x5502B00",
+   "kind": "func",
+   "line": 5748,
+   "note": "",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "GolfBallInCup_RVA",
+   "rva": "0x53DC320",
+   "kind": "func",
+   "line": 5793,
+   "note": "[PORT-AUDIT] was 0x53DC340 (3-arg inner fn, hooked with a 2-arg thunk); 0x53DC320 = 20996 0x53986A0 equivalent",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "GolfOverlap_RVA",
+   "rva": "0x53F03B0",
+   "kind": "func",
+   "line": 5802,
+   "note": "[PORT-AUDIT] was 0x53F0410 (unrelated 10-byte fn); 0x53F03B0 = 20996 0x53AD660 equivalent (align 1.00)",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "FNameResolve_RVA",
+   "rva": "0x114D690",
+   "kind": "func",
+   "line": 5816,
+   "note": "[PORT-AUDIT] 22284 (align 1.00 to 20996 0x114E210)",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "TextLayoutLeaf_RVA",
+   "rva": "0x1EC07A0",
+   "kind": "func",
+   "line": 5834,
+   "note": "[PORT-AUDIT] 22284 (align 1.00 to 20996 0x1EC13E0)",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "EvtDispatch_RVA",
+   "rva": "0x466A240",
+   "kind": "func",
+   "line": 5849,
+   "note": "[PORT-AUDIT] 22284 (align 1.00 to 20996 0x465F820); hook still not installed (diagnostic only)",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "GiveCheck_RVA",
+   "rva": "0x4723AA0",
+   "kind": "func",
+   "line": 5904,
+   "note": "",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "GolfBall_LastHitLocation_Off",
+   "rva": "0x658",
+   "kind": "func",
+   "line": 7478,
+   "note": "",
+   "source": "const",
+   "bucket": "struct"
+  },
+  {
+   "name": "Panel_IsActive_Off",
+   "rva": "0x2C0",
+   "kind": "func",
+   "line": 7776,
+   "note": "bool IsActive (Net, RepIndex 10)",
+   "source": "const",
+   "bucket": "struct"
+  },
+  {
+   "name": "Panel_Mesh_Off",
+   "rva": "0x2E0",
+   "kind": "func",
+   "line": 7777,
+   "note": "UInstancedStaticMeshComponent* Mesh",
+   "source": "const",
+   "bucket": "struct"
+  },
+  {
+   "name": "Spawner_Disc_Off",
+   "rva": "0x580",
+   "kind": "func",
+   "line": 7778,
+   "note": "ADiscEntity* Disc (the spawner's current ball)",
+   "source": "const",
+   "bucket": "struct"
+  },
+  {
+   "name": "FetchRoles_RVA",
+   "rva": "0x54B04E0",
+   "kind": "func",
+   "line": 10601,
+   "note": "",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "RolesFetched_RVA",
+   "rva": "0x5510C40",
+   "kind": "func",
+   "line": 10612,
+   "note": "",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "IsRunningSimulate_RVA",
+   "rva": "0x531EF96",
+   "kind": "func",
+   "line": 13076,
+   "note": "[22284] was 0x52DC906",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "A2GetNetMode_RVA",
+   "rva": "0x54AF360",
+   "kind": "func",
+   "line": 13088,
+   "note": "[22284] was 0x54AF360",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "WorldGetNetMode_RVA",
+   "rva": "0x4040990",
+   "kind": "func",
+   "line": 13098,
+   "note": "[22284] was 0x4040990",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "BallSimGetWorld_RVA",
+   "rva": "0x3509AB0",
+   "kind": "func",
+   "line": 13126,
+   "note": "",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "GetLocalInst_RVA",
+   "rva": "0x54EAC60",
+   "kind": "func",
+   "line": 13153,
+   "note": "",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "GetPlayerPawn_RVA",
+   "rva": "0x3D24C40",
+   "kind": "func",
+   "line": 13169,
+   "note": "",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "BallNetPersp_RVA",
+   "rva": "0x60A0990",
+   "kind": "func",
+   "line": 13183,
+   "note": "",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "PrintString_RVA",
+   "rva": "0x3A29B20",
+   "kind": "func",
+   "line": 13201,
+   "note": "",
+   "source": "const",
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_173_0c000000",
+   "rva": "0xc000000",
+   "kind": "func",
+   "line": 173,
+   "note": "(unsigned long long)((objVt > base && objVt < base + 0x0C000000) ? objVt - base : objVt),",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "bound"
+  },
+  {
+   "name": "inline_192_0c000000",
+   "rva": "0xc000000",
+   "kind": "func",
+   "line": 192,
+   "note": "(unsigned long long)((clsVt > base && clsVt < base + 0x0C000000) ? clsVt - base : clsVt), nameCmp);",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "bound"
+  },
+  {
+   "name": "inline_227_0c000000",
+   "rva": "0xc000000",
+   "kind": "func",
+   "line": 227,
+   "note": "if (val > base && val < base + 0x0C000000)",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "bound"
+  },
+  {
+   "name": "inline_234_0c000000",
+   "rva": "0xc000000",
+   "kind": "func",
+   "line": 234,
+   "note": "(unsigned long long)((vt2 > base && vt2 < base + 0x0C000000) ? vt2 - base : vt2));",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "bound"
+  },
+  {
+   "name": "inline_259_01326b07",
+   "rva": "0x1326b07",
+   "kind": "data",
+   "line": 259,
+   "note": "static uintptr_t g_pawnSpawnCrashRip = 0;  // set at boot = base + 0x1326B07",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_276_0a5bb000",
+   "rva": "0xa5bb000",
+   "kind": "data",
+   "line": 276,
+   "note": "const uintptr_t imgEnd = base + 0x0A5BB000;",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_473_010153a0",
+   "rva": "0x10153a0",
+   "kind": "func",
+   "line": 473,
+   "note": "if (*data) reinterpret_cast<FreeFn>(base + 0x10153A0)(*data);",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_476_00fcc220",
+   "rva": "0xfcc220",
+   "kind": "func",
+   "line": 476,
+   "note": "reinterpret_cast<ReserveFn>(base + 0xFCC220)(outFStr, n, 0);",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_943_01254f50",
+   "rva": "0x1254f50",
+   "kind": "data",
+   "line": 943,
+   "note": "const uintptr_t site2 = base + 0x1254F50;   // cmp dword ptr [r14+8], 0   (5 bytes)",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_1182_054277ad",
+   "rva": "0x54277ad",
+   "kind": "data",
+   "line": 1182,
+   "note": "const uintptr_t site = base + 0x54277AD;   // cmp [rax+1D54h], ecx  (39 88 54 1D 00 00)",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_1356_0c000000",
+   "rva": "0xc000000",
+   "kind": "func",
+   "line": 1356,
+   "note": "if (v >= base && v < base + 0x0C000000ull)",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "bound"
+  },
+  {
+   "name": "inline_1410_0c000000",
+   "rva": "0xc000000",
+   "kind": "func",
+   "line": 1410,
+   "note": "const bool inGame = (ripEarly >= base && ripEarly < base + 0x0C000000ull);",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "bound"
+  },
+  {
+   "name": "inline_1466_0c000000",
+   "rva": "0xc000000",
+   "kind": "func",
+   "line": 1466,
+   "note": "if (v > base && v < base + 0x0C000000)",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "bound"
+  },
+  {
+   "name": "inline_1492_0c000000",
+   "rva": "0xc000000",
+   "kind": "func",
+   "line": 1492,
+   "note": "if (v > base && v < base + 0x0C000000)",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "bound"
+  },
+  {
+   "name": "inline_3171_012494d0",
+   "rva": "0x12494d0",
+   "kind": "func",
+   "line": 3171,
+   "note": "WriteByte(gcbase + 0x12494D0 + 0, 0x31); WriteByte(gcbase + 0x12494D0 + 1, 0xC0); WriteByte(gcbase + 0x12494D0 + 2, 0xC3",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_3171_012494d0",
+   "rva": "0x12494d0",
+   "kind": "func",
+   "line": 3171,
+   "note": "WriteByte(gcbase + 0x12494D0 + 0, 0x31); WriteByte(gcbase + 0x12494D0 + 1, 0xC0); WriteByte(gcbase + 0x12494D0 + 2, 0xC3",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_3171_012494d0",
+   "rva": "0x12494d0",
+   "kind": "func",
+   "line": 3171,
+   "note": "WriteByte(gcbase + 0x12494D0 + 0, 0x31); WriteByte(gcbase + 0x12494D0 + 1, 0xC0); WriteByte(gcbase + 0x12494D0 + 2, 0xC3",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_3172_0125f7b0",
+   "rva": "0x125f7b0",
+   "kind": "func",
+   "line": 3172,
+   "note": "WriteByte(gcbase + 0x125F7B0 + 0, 0x31); WriteByte(gcbase + 0x125F7B0 + 1, 0xC0); WriteByte(gcbase + 0x125F7B0 + 2, 0xC3",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_3172_0125f7b0",
+   "rva": "0x125f7b0",
+   "kind": "func",
+   "line": 3172,
+   "note": "WriteByte(gcbase + 0x125F7B0 + 0, 0x31); WriteByte(gcbase + 0x125F7B0 + 1, 0xC0); WriteByte(gcbase + 0x125F7B0 + 2, 0xC3",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_3172_0125f7b0",
+   "rva": "0x125f7b0",
+   "kind": "func",
+   "line": 3172,
+   "note": "WriteByte(gcbase + 0x125F7B0 + 0, 0x31); WriteByte(gcbase + 0x125F7B0 + 1, 0xC0); WriteByte(gcbase + 0x125F7B0 + 2, 0xC3",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_3303_053dc76a",
+   "rva": "0x53dc76a",
+   "kind": "func",
+   "line": 3303,
+   "note": "WriteByte(base + 0x53DC76A, 0x01);   // open the spawn gate (cmp eax,2 -> cmp eax,1) so our call passes",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_3304_053dc730",
+   "rva": "0x53dc730",
+   "kind": "func",
+   "line": 3304,
+   "note": "reinterpret_cast<__int64(__fastcall*)(void*)>(base + 0x53DC730)(subInst);   // the game's own spawner, NOW",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_7949_00fbcd70",
+   "rva": "0xfbcd70",
+   "kind": "func",
+   "line": 7949,
+   "note": "// crash reporter caught it: base+0xFBCD70 (the intended FString-copy) is now MID-WAY into an unrelated",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_8016_09c5d0a0",
+   "rva": "0x9c5d0a0",
+   "kind": "data",
+   "line": 8016,
+   "note": "void* client = *reinterpret_cast<void**>(base + 0x9C5D0A0);   // qword_9BD44F0 (dashboard client)",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_8022_04040990",
+   "rva": "0x4040990",
+   "kind": "func",
+   "line": 8022,
+   "note": "int    nm = ctx ? reinterpret_cast<GetNetModeFn>(base + 0x4040990)(ctx) : -999;              // gate B: sub_4037D80(ctx)",
+   "source": "inline",
+   "dup_of": "WorldGetNetMode_RVA",
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_8026_054b13d0",
+   "rva": "0x54b13d0",
+   "kind": "data",
+   "line": 8026,
+   "note": "reinterpret_cast<DashboardInitFn>(base + 0x54B13D0)(client);",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_8156_00fbcd70",
+   "rva": "0xfbcd70",
+   "kind": "func",
+   "line": 8156,
+   "note": "// [2026-09-03 \u2605 CRASH FIX] base+0xFBCD70 is a STALE RVA (now mid-way into sub_7FF67301CD50) \u2014 calling it",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_13226_05450000",
+   "rva": "0x5450000",
+   "kind": "data",
+   "line": 13226,
+   "note": "const uintptr_t lo = base + 0x5450000;",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_13227_054b4000",
+   "rva": "0x54b4000",
+   "kind": "data",
+   "line": 13227,
+   "note": "const uintptr_t hi = base + 0x54B4000;",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_13228_04040990",
+   "rva": "0x4040990",
+   "kind": "data",
+   "line": 13228,
+   "note": "const uintptr_t gnmA = base + 0x4040990;   // UWorld::GetNetMode",
+   "source": "inline",
+   "dup_of": "WorldGetNetMode_RVA",
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_13229_054af360",
+   "rva": "0x54af360",
+   "kind": "data",
+   "line": 13229,
+   "note": "const uintptr_t gnmB = base + 0x54AF360;   // UA2NetworkUtilityBPFL::GetNetMode",
+   "source": "inline",
+   "dup_of": "A2GetNetMode_RVA",
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_14200_054e4470",
+   "rva": "0x54e4470",
+   "kind": "func",
+   "line": 14200,
+   "note": "const int a = (int)MH_CreateHook(reinterpret_cast<void*>(base + 0x54E4470), &TeamJoin_Hook, reinterpret_cast<void**>(&Te",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_14201_054e4e10",
+   "rva": "0x54e4e10",
+   "kind": "func",
+   "line": 14201,
+   "note": "const int b = (int)MH_CreateHook(reinterpret_cast<void*>(base + 0x54E4E10), &TeamColor_Hook, reinterpret_cast<void**>(&T",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_14202_054e17e0",
+   "rva": "0x54e17e0",
+   "kind": "func",
+   "line": 14202,
+   "note": "const int c = (int)MH_CreateHook(reinterpret_cast<void*>(base + 0x54E17E0), &TeamClear_Hook, reinterpret_cast<void**>(&T",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_14252_05429424",
+   "rva": "0x5429424",
+   "kind": "func",
+   "line": 14252,
+   "note": "const uint8_t* ep = reinterpret_cast<const uint8_t*>(base + 0x5429424);",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_14257_05429427",
+   "rva": "0x5429427",
+   "kind": "func",
+   "line": 14257,
+   "note": "WriteByte(base + 0x5429427, 0xEB);",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_14273_053b3bc3",
+   "rva": "0x53b3bc3",
+   "kind": "func",
+   "line": 14273,
+   "note": "uint8_t* p = reinterpret_cast<uint8_t*>(base + 0x53B3BC3);",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_14281_053b3bcd",
+   "rva": "0x53b3bcd",
+   "kind": "func",
+   "line": 14281,
+   "note": "WriteByte(base + 0x53B3BCD, 0x7A);   // jb  +0x53B3BFD -> +0x53B3C48 (log off)",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_14282_053b3be2",
+   "rva": "0x53b3be2",
+   "kind": "func",
+   "line": 14282,
+   "note": "WriteByte(base + 0x53B3BE2, 0x65);   // jmp +0x53B3BFD -> +0x53B3C48 (after the log)",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_14425_0550f130",
+   "rva": "0x550f130",
+   "kind": "func",
+   "line": 14425,
+   "note": "WriteByte(base + 0x550F130, 0xC3);",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_14432_054863c0",
+   "rva": "0x54863c0",
+   "kind": "func",
+   "line": 14432,
+   "note": "WriteByte(base + 0x54863C0, 0xC3);",
+   "source": "inline",
+   "dup_of": "StepSim_RVA",
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_14446_01245000",
+   "rva": "0x1245000",
+   "kind": "func",
+   "line": 14446,
+   "note": "g_gcRanges[0] = base + 0x1245000; g_gcRanges[1] = base + 0x1269000;   // whole collector cluster",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_14446_01269000",
+   "rva": "0x1269000",
+   "kind": "func",
+   "line": 14446,
+   "note": "g_gcRanges[0] = base + 0x1245000; g_gcRanges[1] = base + 0x1269000;   // whole collector cluster",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_14447_0124db00",
+   "rva": "0x124db00",
+   "kind": "func",
+   "line": 14447,
+   "note": "g_gcRanges[2] = base + 0x124DB00; g_gcRanges[3] = base + 0x124DB00 + 0x8E8;",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_14447_0124db00",
+   "rva": "0x124db00",
+   "kind": "func",
+   "line": 14447,
+   "note": "g_gcRanges[2] = base + 0x124DB00; g_gcRanges[3] = base + 0x124DB00 + 0x8E8;",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_14448_0124ece0",
+   "rva": "0x124ece0",
+   "kind": "func",
+   "line": 14448,
+   "note": "g_gcRanges[4] = base + 0x124ECE0; g_gcRanges[5] = base + 0x124ECE0 + 0x7D8;",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_14448_0124ece0",
+   "rva": "0x124ece0",
+   "kind": "func",
+   "line": 14448,
+   "note": "g_gcRanges[4] = base + 0x124ECE0; g_gcRanges[5] = base + 0x124ECE0 + 0x7D8;",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_14465_01326b07",
+   "rva": "0x1326b07",
+   "kind": "func",
+   "line": 14465,
+   "note": "g_pawnSpawnCrashRip = base + 0x1326B07;   // `mov rdi,[r14+rbx]` in sub_7FF673386AD0",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_14493_054b1421",
+   "rva": "0x54b1421",
+   "kind": "func",
+   "line": 14493,
+   "note": "WriteByte(base + 0x54B1421, 0x01);",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_14512_053dc76a",
+   "rva": "0x53dc76a",
+   "kind": "func",
+   "line": 14512,
+   "note": "WriteByte(base + 0x53DC76A, 0x01);",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_14726_012f0cb0",
+   "rva": "0x12f0cb0",
+   "kind": "func",
+   "line": 14726,
+   "note": "void* drvAddr = reinterpret_cast<void*>(base + 0x12F0CB0);   // sub_7FF673350CB0 FArrayProperty copy driver",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_15151_0545ccb0",
+   "rva": "0x545ccb0",
+   "kind": "func",
+   "line": 15151,
+   "note": "void* bsAddr = reinterpret_cast<void*>(base + 0x545CCB0);",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_15157_0124f4c0",
+   "rva": "0x124f4c0",
+   "kind": "func",
+   "line": 15157,
+   "note": "void* gcbAddr = reinterpret_cast<void*>(base + 0x124F4C0);",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_15193_014363a0",
+   "rva": "0x14363a0",
+   "kind": "func",
+   "line": 15193,
+   "note": "void* shtAddr = reinterpret_cast<void*>(base + 0x14363A0);   // sub_7FF6734963A0 (Slate widget hit-test / crash site)",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_15200_05502070",
+   "rva": "0x5502070",
+   "kind": "func",
+   "line": 15200,
+   "note": "void* tleAddr = reinterpret_cast<void*>(base + 0x5502070);   // AVRPawn::Server_AttemptTakeOwnershipOfLevelEditor_Implem",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_15213_046bc830",
+   "rva": "0x46bc830",
+   "kind": "func",
+   "line": 15213,
+   "note": "MH_STATUS sNV1 = MH_CreateHook(reinterpret_cast<void*>(base + 0x46BC830), &NetVarReg_Hook, reinterpret_cast<void**>(&g_N",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_15214_047138d0",
+   "rva": "0x47138d0",
+   "kind": "func",
+   "line": 15214,
+   "note": "MH_STATUS sNV2 = MH_CreateHook(reinterpret_cast<void*>(base + 0x47138D0), &NetVarReg_Hook2, reinterpret_cast<void**>(&g_",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_15229_04690260",
+   "rva": "0x4690260",
+   "kind": "func",
+   "line": 15229,
+   "note": "MH_STATUS qa = MH_CreateHook(reinterpret_cast<void*>(base + 0x4690260), &QInit_Hook, reinterpret_cast<void**>(&QInit_Ori",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_15230_046902f0",
+   "rva": "0x46902f0",
+   "kind": "func",
+   "line": 15230,
+   "note": "MH_STATUS qb = MH_CreateHook(reinterpret_cast<void*>(base + 0x46902F0), &QSetQ_Hook, reinterpret_cast<void**>(&QSetQ_Ori",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_15233_04692f30",
+   "rva": "0x4692f30",
+   "kind": "func",
+   "line": 15233,
+   "note": "MH_STATUS qc = MH_CreateHook(reinterpret_cast<void*>(base + 0x4692F30), &QAddBundle_Hook, reinterpret_cast<void**>(&QAdd",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  },
+  {
+   "name": "inline_15234_04689030",
+   "rva": "0x4689030",
+   "kind": "func",
+   "line": 15234,
+   "note": "MH_STATUS qd = MH_CreateHook(reinterpret_cast<void*>(base + 0x4689030), &QSendSet_Hook, reinterpret_cast<void**>(&QSendS",
+   "source": "inline",
+   "dup_of": null,
+   "bucket": "rva"
+  }
+ ],
+ "porter": [
+  {
+   "name": "GIsClient_RVA",
+   "rva": "0x96D8672",
+   "kind": "data",
+   "note": "[22284] was 0x9650702"
+  },
+  {
+   "name": "GIsServer_RVA",
+   "rva": "0x96D8673",
+   "kind": "data",
+   "note": "[22284] was 0x9650703"
+  },
+  {
+   "name": "StationStr_Data_RVA",
+   "rva": "0x95DF980",
+   "kind": "data",
+   "note": ""
+  },
+  {
+   "name": "StationStr_Num_RVA",
+   "rva": "0x95DF988",
+   "kind": "data",
+   "note": ""
+  },
+  {
+   "name": "StationStr_Max_RVA",
+   "rva": "0x95DF98C",
+   "kind": "data",
+   "note": ""
+  },
+  {
+   "name": "CosmeticCmp_RVA",
+   "rva": "0x53DA880",
+   "kind": "func",
+   "note": "sub_7FF67743A880 (mesh-entry comparator)"
+  },
+  {
+   "name": "FNamePoolTbl_RVA",
+   "rva": "0x9710B80",
+   "kind": "data",
+   "note": "stru_7FF67B770B80 (name-pool block table)"
+  },
+  {
+   "name": "GetBoolCfg_RVA",
+   "rva": "0x46DA020",
+   "kind": "func",
+   "note": "sub_7FF67673A020 (UModuleStateLuaAPI::GetBoolConfigVariable impl)"
+  },
+  {
+   "name": "GetNumCfg_RVA",
+   "rva": "0x46DDB20",
+   "kind": "func",
+   "note": ""
+  },
+  {
+   "name": "GetStrCfg_RVA",
+   "rva": "0x46DE7B0",
+   "kind": "func",
+   "note": ""
+  },
+  {
+   "name": "UpdGameState_RVA",
+   "rva": "0x53CB6D0",
+   "kind": "func",
+   "note": "UGameStateManagerComponent::UpdateGameState_Implementation"
+  },
+  {
+   "name": "StartTimerCd_RVA",
+   "rva": "0x53C4060",
+   "kind": "func",
+   "note": "UGameTimeComponent::StartTimerWithCountdown_Implementation"
+  },
+  {
+   "name": "GtcTick_RVA",
+   "rva": "0x53C8AF0",
+   "kind": "func",
+   "note": "UGameTimeComponent::TickComponent (vtable slot 121)"
+  },
+  {
+   "name": "GtcVft_RVA",
+   "rva": "0x84E6D20",
+   "kind": "func",
+   "note": "UGameTimeComponent_VFT (liveness validation)"
+  },
+  {
+   "name": "JwtBuild_RVA",
+   "rva": "0x544D9B0",
+   "kind": "func",
+   "note": ""
+  },
+  {
+   "name": "ReqLogin_RVA",
+   "rva": "0x543C7B0",
+   "kind": "data",
+   "note": ""
+  },
+  {
+   "name": "JoinBuild_RVA",
+   "rva": "0x5432A40",
+   "kind": "func",
+   "note": ""
+  },
+  {
+   "name": "SendJoin_RVA",
+   "rva": "0x52EE2E0",
+   "kind": "func",
+   "note": ""
+  },
+  {
+   "name": "ReplayPostStep_RVA",
+   "rva": "0x5487560",
+   "kind": "func",
+   "note": "sub_145487560"
+  },
+  {
+   "name": "ReplayVtable_RVA",
+   "rva": "0x84A2B38",
+   "kind": "func",
+   "note": "off_1484A2B38 (UA2ReplaySystem)"
+  },
+  {
+   "name": "ReplaySnapshot_RVA",
+   "rva": "0x5482110",
+   "kind": "func",
+   "note": "sub_145482110"
+  },
+  {
+   "name": "Reconcile_RVA",
+   "rva": "0x545BD80",
+   "kind": "func",
+   "note": ""
+  },
+  {
+   "name": "SendPhysImpl_RVA",
+   "rva": "0x5503050",
+   "kind": "func",
+   "note": ""
+  },
+  {
+   "name": "SimIntegrate_RVA",
+   "rva": "0x547F7A0",
+   "kind": "func",
+   "note": ""
+  },
+  {
+   "name": "IngestInput_RVA",
+   "rva": "0x54599B0",
+   "kind": "func",
+   "note": ""
+  },
+  {
+   "name": "SendResults_RVA",
+   "rva": "0x534A7F0",
+   "kind": "func",
+   "note": "[PORT-AUDIT] was 0x54E35B0 (= the pawn-side results RECEIVER); 0x534A7F0 is the sender called from StepSim (IDA-aligned 1.00 to 20996 0x5309C40)"
+  },
+  {
+   "name": "StepSim_RVA",
+   "rva": "0x54863C0",
+   "kind": "func",
+   "note": ""
+  },
+  {
+   "name": "BallAdvance_RVA",
+   "rva": "0x5464630",
+   "kind": "func",
+   "note": ""
+  },
+  {
+   "name": "BallReconcile_RVA",
+   "rva": "0x548FC40",
+   "kind": "func",
+   "note": ""
+  },
+  {
+   "name": "NotifyLeftArena_RVA",
+   "rva": "0x5502B00",
+   "kind": "func",
+   "note": ""
+  },
+  {
+   "name": "GolfBallInCup_RVA",
+   "rva": "0x53DC320",
+   "kind": "func",
+   "note": "[PORT-AUDIT] was 0x53DC340 (3-arg inner fn, hooked with a 2-arg thunk); 0x53DC320 = 20996 0x53986A0 equivalent"
+  },
+  {
+   "name": "GolfOverlap_RVA",
+   "rva": "0x53F03B0",
+   "kind": "func",
+   "note": "[PORT-AUDIT] was 0x53F0410 (unrelated 10-byte fn); 0x53F03B0 = 20996 0x53AD660 equivalent (align 1.00)"
+  },
+  {
+   "name": "FNameResolve_RVA",
+   "rva": "0x114D690",
+   "kind": "func",
+   "note": "[PORT-AUDIT] 22284 (align 1.00 to 20996 0x114E210)"
+  },
+  {
+   "name": "TextLayoutLeaf_RVA",
+   "rva": "0x1EC07A0",
+   "kind": "func",
+   "note": "[PORT-AUDIT] 22284 (align 1.00 to 20996 0x1EC13E0)"
+  },
+  {
+   "name": "EvtDispatch_RVA",
+   "rva": "0x466A240",
+   "kind": "func",
+   "note": "[PORT-AUDIT] 22284 (align 1.00 to 20996 0x465F820); hook still not installed (diagnostic only)"
+  },
+  {
+   "name": "GiveCheck_RVA",
+   "rva": "0x4723AA0",
+   "kind": "func",
+   "note": ""
+  },
+  {
+   "name": "FetchRoles_RVA",
+   "rva": "0x54B04E0",
+   "kind": "func",
+   "note": ""
+  },
+  {
+   "name": "RolesFetched_RVA",
+   "rva": "0x5510C40",
+   "kind": "func",
+   "note": ""
+  },
+  {
+   "name": "IsRunningSimulate_RVA",
+   "rva": "0x531EF96",
+   "kind": "func",
+   "note": "[22284] was 0x52DC906"
+  },
+  {
+   "name": "A2GetNetMode_RVA",
+   "rva": "0x54AF360",
+   "kind": "func",
+   "note": "[22284] was 0x54AF360"
+  },
+  {
+   "name": "WorldGetNetMode_RVA",
+   "rva": "0x4040990",
+   "kind": "func",
+   "note": "[22284] was 0x4040990"
+  },
+  {
+   "name": "BallSimGetWorld_RVA",
+   "rva": "0x3509AB0",
+   "kind": "func",
+   "note": ""
+  },
+  {
+   "name": "GetLocalInst_RVA",
+   "rva": "0x54EAC60",
+   "kind": "func",
+   "note": ""
+  },
+  {
+   "name": "GetPlayerPawn_RVA",
+   "rva": "0x3D24C40",
+   "kind": "func",
+   "note": ""
+  },
+  {
+   "name": "BallNetPersp_RVA",
+   "rva": "0x60A0990",
+   "kind": "func",
+   "note": ""
+  },
+  {
+   "name": "PrintString_RVA",
+   "rva": "0x3A29B20",
+   "kind": "func",
+   "note": ""
+  },
+  {
+   "name": "inline_259_01326b07",
+   "rva": "0x1326b07",
+   "kind": "data",
+   "note": "static uintptr_t g_pawnSpawnCrashRip = 0;  // set at boot = base + 0x1326B07"
+  },
+  {
+   "name": "inline_276_0a5bb000",
+   "rva": "0xa5bb000",
+   "kind": "data",
+   "note": "const uintptr_t imgEnd = base + 0x0A5BB000;"
+  },
+  {
+   "name": "inline_473_010153a0",
+   "rva": "0x10153a0",
+   "kind": "func",
+   "note": "if (*data) reinterpret_cast<FreeFn>(base + 0x10153A0)(*data);"
+  },
+  {
+   "name": "inline_476_00fcc220",
+   "rva": "0xfcc220",
+   "kind": "func",
+   "note": "reinterpret_cast<ReserveFn>(base + 0xFCC220)(outFStr, n, 0);"
+  },
+  {
+   "name": "inline_943_01254f50",
+   "rva": "0x1254f50",
+   "kind": "data",
+   "note": "const uintptr_t site2 = base + 0x1254F50;   // cmp dword ptr [r14+8], 0   (5 bytes)"
+  },
+  {
+   "name": "inline_1182_054277ad",
+   "rva": "0x54277ad",
+   "kind": "data",
+   "note": "const uintptr_t site = base + 0x54277AD;   // cmp [rax+1D54h], ecx  (39 88 54 1D 00 00)"
+  },
+  {
+   "name": "inline_3171_012494d0",
+   "rva": "0x12494d0",
+   "kind": "func",
+   "note": "WriteByte(gcbase + 0x12494D0 + 0, 0x31); WriteByte(gcbase + 0x12494D0 + 1, 0xC0); WriteByte(gcbase + 0x12494D0 + 2, 0xC3"
+  },
+  {
+   "name": "inline_3172_0125f7b0",
+   "rva": "0x125f7b0",
+   "kind": "func",
+   "note": "WriteByte(gcbase + 0x125F7B0 + 0, 0x31); WriteByte(gcbase + 0x125F7B0 + 1, 0xC0); WriteByte(gcbase + 0x125F7B0 + 2, 0xC3"
+  },
+  {
+   "name": "inline_3303_053dc76a",
+   "rva": "0x53dc76a",
+   "kind": "func",
+   "note": "WriteByte(base + 0x53DC76A, 0x01);   // open the spawn gate (cmp eax,2 -> cmp eax,1) so our call passes"
+  },
+  {
+   "name": "inline_3304_053dc730",
+   "rva": "0x53dc730",
+   "kind": "func",
+   "note": "reinterpret_cast<__int64(__fastcall*)(void*)>(base + 0x53DC730)(subInst);   // the game's own spawner, NOW"
+  },
+  {
+   "name": "inline_7949_00fbcd70",
+   "rva": "0xfbcd70",
+   "kind": "func",
+   "note": "// crash reporter caught it: base+0xFBCD70 (the intended FString-copy) is now MID-WAY into an unrelated"
+  },
+  {
+   "name": "inline_8016_09c5d0a0",
+   "rva": "0x9c5d0a0",
+   "kind": "data",
+   "note": "void* client = *reinterpret_cast<void**>(base + 0x9C5D0A0);   // qword_9BD44F0 (dashboard client)"
+  },
+  {
+   "name": "inline_8026_054b13d0",
+   "rva": "0x54b13d0",
+   "kind": "data",
+   "note": "reinterpret_cast<DashboardInitFn>(base + 0x54B13D0)(client);"
+  },
+  {
+   "name": "inline_13226_05450000",
+   "rva": "0x5450000",
+   "kind": "data",
+   "note": "const uintptr_t lo = base + 0x5450000;"
+  },
+  {
+   "name": "inline_13227_054b4000",
+   "rva": "0x54b4000",
+   "kind": "data",
+   "note": "const uintptr_t hi = base + 0x54B4000;"
+  },
+  {
+   "name": "inline_14200_054e4470",
+   "rva": "0x54e4470",
+   "kind": "func",
+   "note": "const int a = (int)MH_CreateHook(reinterpret_cast<void*>(base + 0x54E4470), &TeamJoin_Hook, reinterpret_cast<void**>(&Te"
+  },
+  {
+   "name": "inline_14201_054e4e10",
+   "rva": "0x54e4e10",
+   "kind": "func",
+   "note": "const int b = (int)MH_CreateHook(reinterpret_cast<void*>(base + 0x54E4E10), &TeamColor_Hook, reinterpret_cast<void**>(&T"
+  },
+  {
+   "name": "inline_14202_054e17e0",
+   "rva": "0x54e17e0",
+   "kind": "func",
+   "note": "const int c = (int)MH_CreateHook(reinterpret_cast<void*>(base + 0x54E17E0), &TeamClear_Hook, reinterpret_cast<void**>(&T"
+  },
+  {
+   "name": "inline_14252_05429424",
+   "rva": "0x5429424",
+   "kind": "func",
+   "note": "const uint8_t* ep = reinterpret_cast<const uint8_t*>(base + 0x5429424);"
+  },
+  {
+   "name": "inline_14257_05429427",
+   "rva": "0x5429427",
+   "kind": "func",
+   "note": "WriteByte(base + 0x5429427, 0xEB);"
+  },
+  {
+   "name": "inline_14273_053b3bc3",
+   "rva": "0x53b3bc3",
+   "kind": "func",
+   "note": "uint8_t* p = reinterpret_cast<uint8_t*>(base + 0x53B3BC3);"
+  },
+  {
+   "name": "inline_14281_053b3bcd",
+   "rva": "0x53b3bcd",
+   "kind": "func",
+   "note": "WriteByte(base + 0x53B3BCD, 0x7A);   // jb  +0x53B3BFD -> +0x53B3C48 (log off)"
+  },
+  {
+   "name": "inline_14282_053b3be2",
+   "rva": "0x53b3be2",
+   "kind": "func",
+   "note": "WriteByte(base + 0x53B3BE2, 0x65);   // jmp +0x53B3BFD -> +0x53B3C48 (after the log)"
+  },
+  {
+   "name": "inline_14425_0550f130",
+   "rva": "0x550f130",
+   "kind": "func",
+   "note": "WriteByte(base + 0x550F130, 0xC3);"
+  },
+  {
+   "name": "inline_14446_01245000",
+   "rva": "0x1245000",
+   "kind": "func",
+   "note": "g_gcRanges[0] = base + 0x1245000; g_gcRanges[1] = base + 0x1269000;   // whole collector cluster"
+  },
+  {
+   "name": "inline_14446_01269000",
+   "rva": "0x1269000",
+   "kind": "func",
+   "note": "g_gcRanges[0] = base + 0x1245000; g_gcRanges[1] = base + 0x1269000;   // whole collector cluster"
+  },
+  {
+   "name": "inline_14447_0124db00",
+   "rva": "0x124db00",
+   "kind": "func",
+   "note": "g_gcRanges[2] = base + 0x124DB00; g_gcRanges[3] = base + 0x124DB00 + 0x8E8;"
+  },
+  {
+   "name": "inline_14448_0124ece0",
+   "rva": "0x124ece0",
+   "kind": "func",
+   "note": "g_gcRanges[4] = base + 0x124ECE0; g_gcRanges[5] = base + 0x124ECE0 + 0x7D8;"
+  },
+  {
+   "name": "inline_14493_054b1421",
+   "rva": "0x54b1421",
+   "kind": "func",
+   "note": "WriteByte(base + 0x54B1421, 0x01);"
+  },
+  {
+   "name": "inline_14726_012f0cb0",
+   "rva": "0x12f0cb0",
+   "kind": "func",
+   "note": "void* drvAddr = reinterpret_cast<void*>(base + 0x12F0CB0);   // sub_7FF673350CB0 FArrayProperty copy driver"
+  },
+  {
+   "name": "inline_15151_0545ccb0",
+   "rva": "0x545ccb0",
+   "kind": "func",
+   "note": "void* bsAddr = reinterpret_cast<void*>(base + 0x545CCB0);"
+  },
+  {
+   "name": "inline_15157_0124f4c0",
+   "rva": "0x124f4c0",
+   "kind": "func",
+   "note": "void* gcbAddr = reinterpret_cast<void*>(base + 0x124F4C0);"
+  },
+  {
+   "name": "inline_15193_014363a0",
+   "rva": "0x14363a0",
+   "kind": "func",
+   "note": "void* shtAddr = reinterpret_cast<void*>(base + 0x14363A0);   // sub_7FF6734963A0 (Slate widget hit-test / crash site)"
+  },
+  {
+   "name": "inline_15200_05502070",
+   "rva": "0x5502070",
+   "kind": "func",
+   "note": "void* tleAddr = reinterpret_cast<void*>(base + 0x5502070);   // AVRPawn::Server_AttemptTakeOwnershipOfLevelEditor_Implem"
+  },
+  {
+   "name": "inline_15213_046bc830",
+   "rva": "0x46bc830",
+   "kind": "func",
+   "note": "MH_STATUS sNV1 = MH_CreateHook(reinterpret_cast<void*>(base + 0x46BC830), &NetVarReg_Hook, reinterpret_cast<void**>(&g_N"
+  },
+  {
+   "name": "inline_15214_047138d0",
+   "rva": "0x47138d0",
+   "kind": "func",
+   "note": "MH_STATUS sNV2 = MH_CreateHook(reinterpret_cast<void*>(base + 0x47138D0), &NetVarReg_Hook2, reinterpret_cast<void**>(&g_"
+  },
+  {
+   "name": "inline_15229_04690260",
+   "rva": "0x4690260",
+   "kind": "func",
+   "note": "MH_STATUS qa = MH_CreateHook(reinterpret_cast<void*>(base + 0x4690260), &QInit_Hook, reinterpret_cast<void**>(&QInit_Ori"
+  },
+  {
+   "name": "inline_15230_046902f0",
+   "rva": "0x46902f0",
+   "kind": "func",
+   "note": "MH_STATUS qb = MH_CreateHook(reinterpret_cast<void*>(base + 0x46902F0), &QSetQ_Hook, reinterpret_cast<void**>(&QSetQ_Ori"
+  },
+  {
+   "name": "inline_15233_04692f30",
+   "rva": "0x4692f30",
+   "kind": "func",
+   "note": "MH_STATUS qc = MH_CreateHook(reinterpret_cast<void*>(base + 0x4692F30), &QAddBundle_Hook, reinterpret_cast<void**>(&QAdd"
+  },
+  {
+   "name": "inline_15234_04689030",
+   "rva": "0x4689030",
+   "kind": "func",
+   "note": "MH_STATUS qd = MH_CreateHook(reinterpret_cast<void*>(base + 0x4689030), &QSendSet_Hook, reinterpret_cast<void**>(&QSendS"
+  }
+ ],
+ "buckets": {
+  "rva": [
+   {
+    "name": "GIsClient_RVA",
+    "rva": "0x96D8672",
+    "kind": "data",
+    "line": 36,
+    "note": "[22284] was 0x9650702",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "GIsServer_RVA",
+    "rva": "0x96D8673",
+    "kind": "data",
+    "line": 37,
+    "note": "[22284] was 0x9650703",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "StationStr_Data_RVA",
+    "rva": "0x95DF980",
+    "kind": "data",
+    "line": 50,
+    "note": "",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "StationStr_Num_RVA",
+    "rva": "0x95DF988",
+    "kind": "data",
+    "line": 51,
+    "note": "",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "StationStr_Max_RVA",
+    "rva": "0x95DF98C",
+    "kind": "data",
+    "line": 52,
+    "note": "",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "CosmeticCmp_RVA",
+    "rva": "0x53DA880",
+    "kind": "func",
+    "line": 355,
+    "note": "sub_7FF67743A880 (mesh-entry comparator)",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "FNamePoolTbl_RVA",
+    "rva": "0x9710B80",
+    "kind": "data",
+    "line": 356,
+    "note": "stru_7FF67B770B80 (name-pool block table)",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "GetBoolCfg_RVA",
+    "rva": "0x46DA020",
+    "kind": "func",
+    "line": 400,
+    "note": "sub_7FF67673A020 (UModuleStateLuaAPI::GetBoolConfigVariable impl)",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "GetNumCfg_RVA",
+    "rva": "0x46DDB20",
+    "kind": "func",
+    "line": 437,
+    "note": "",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "GetStrCfg_RVA",
+    "rva": "0x46DE7B0",
+    "kind": "func",
+    "line": 457,
+    "note": "",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "UpdGameState_RVA",
+    "rva": "0x53CB6D0",
+    "kind": "func",
+    "line": 497,
+    "note": "UGameStateManagerComponent::UpdateGameState_Implementation",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "StartTimerCd_RVA",
+    "rva": "0x53C4060",
+    "kind": "func",
+    "line": 693,
+    "note": "UGameTimeComponent::StartTimerWithCountdown_Implementation",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "GtcTick_RVA",
+    "rva": "0x53C8AF0",
+    "kind": "func",
+    "line": 694,
+    "note": "UGameTimeComponent::TickComponent (vtable slot 121)",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "GtcVft_RVA",
+    "rva": "0x84E6D20",
+    "kind": "func",
+    "line": 695,
+    "note": "UGameTimeComponent_VFT (liveness validation)",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "JwtBuild_RVA",
+    "rva": "0x544D9B0",
+    "kind": "func",
+    "line": 1850,
+    "note": "",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "ReqLogin_RVA",
+    "rva": "0x543C7B0",
+    "kind": "data",
+    "line": 1867,
+    "note": "",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "JoinBuild_RVA",
+    "rva": "0x5432A40",
+    "kind": "func",
+    "line": 2051,
+    "note": "",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "SendJoin_RVA",
+    "rva": "0x52EE2E0",
+    "kind": "func",
+    "line": 2094,
+    "note": "",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "ReplayPostStep_RVA",
+    "rva": "0x5487560",
+    "kind": "func",
+    "line": 2189,
+    "note": "sub_145487560",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "ReplayVtable_RVA",
+    "rva": "0x84A2B38",
+    "kind": "func",
+    "line": 2190,
+    "note": "off_1484A2B38 (UA2ReplaySystem)",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "ReplaySnapshot_RVA",
+    "rva": "0x5482110",
+    "kind": "func",
+    "line": 2248,
+    "note": "sub_145482110",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "Reconcile_RVA",
+    "rva": "0x545BD80",
+    "kind": "func",
+    "line": 4664,
+    "note": "",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "SendPhysImpl_RVA",
+    "rva": "0x5503050",
+    "kind": "func",
+    "line": 4822,
+    "note": "",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "SimIntegrate_RVA",
+    "rva": "0x547F7A0",
+    "kind": "func",
+    "line": 4966,
+    "note": "",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "IngestInput_RVA",
+    "rva": "0x54599B0",
+    "kind": "func",
+    "line": 5109,
+    "note": "",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "SendResults_RVA",
+    "rva": "0x534A7F0",
+    "kind": "func",
+    "line": 5306,
+    "note": "[PORT-AUDIT] was 0x54E35B0 (= the pawn-side results RECEIVER); 0x534A7F0 is the sender called from StepSim (IDA-aligned 1.00 to 20996 0x5309C40)",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "StepSim_RVA",
+    "rva": "0x54863C0",
+    "kind": "func",
+    "line": 5437,
+    "note": "",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "BallAdvance_RVA",
+    "rva": "0x5464630",
+    "kind": "func",
+    "line": 5618,
+    "note": "",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "BallReconcile_RVA",
+    "rva": "0x548FC40",
+    "kind": "func",
+    "line": 5644,
+    "note": "",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "NotifyLeftArena_RVA",
+    "rva": "0x5502B00",
+    "kind": "func",
+    "line": 5748,
+    "note": "",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "GolfBallInCup_RVA",
+    "rva": "0x53DC320",
+    "kind": "func",
+    "line": 5793,
+    "note": "[PORT-AUDIT] was 0x53DC340 (3-arg inner fn, hooked with a 2-arg thunk); 0x53DC320 = 20996 0x53986A0 equivalent",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "GolfOverlap_RVA",
+    "rva": "0x53F03B0",
+    "kind": "func",
+    "line": 5802,
+    "note": "[PORT-AUDIT] was 0x53F0410 (unrelated 10-byte fn); 0x53F03B0 = 20996 0x53AD660 equivalent (align 1.00)",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "FNameResolve_RVA",
+    "rva": "0x114D690",
+    "kind": "func",
+    "line": 5816,
+    "note": "[PORT-AUDIT] 22284 (align 1.00 to 20996 0x114E210)",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "TextLayoutLeaf_RVA",
+    "rva": "0x1EC07A0",
+    "kind": "func",
+    "line": 5834,
+    "note": "[PORT-AUDIT] 22284 (align 1.00 to 20996 0x1EC13E0)",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "EvtDispatch_RVA",
+    "rva": "0x466A240",
+    "kind": "func",
+    "line": 5849,
+    "note": "[PORT-AUDIT] 22284 (align 1.00 to 20996 0x465F820); hook still not installed (diagnostic only)",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "GiveCheck_RVA",
+    "rva": "0x4723AA0",
+    "kind": "func",
+    "line": 5904,
+    "note": "",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "FetchRoles_RVA",
+    "rva": "0x54B04E0",
+    "kind": "func",
+    "line": 10601,
+    "note": "",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "RolesFetched_RVA",
+    "rva": "0x5510C40",
+    "kind": "func",
+    "line": 10612,
+    "note": "",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "IsRunningSimulate_RVA",
+    "rva": "0x531EF96",
+    "kind": "func",
+    "line": 13076,
+    "note": "[22284] was 0x52DC906",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "A2GetNetMode_RVA",
+    "rva": "0x54AF360",
+    "kind": "func",
+    "line": 13088,
+    "note": "[22284] was 0x54AF360",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "WorldGetNetMode_RVA",
+    "rva": "0x4040990",
+    "kind": "func",
+    "line": 13098,
+    "note": "[22284] was 0x4040990",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "BallSimGetWorld_RVA",
+    "rva": "0x3509AB0",
+    "kind": "func",
+    "line": 13126,
+    "note": "",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "GetLocalInst_RVA",
+    "rva": "0x54EAC60",
+    "kind": "func",
+    "line": 13153,
+    "note": "",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "GetPlayerPawn_RVA",
+    "rva": "0x3D24C40",
+    "kind": "func",
+    "line": 13169,
+    "note": "",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "BallNetPersp_RVA",
+    "rva": "0x60A0990",
+    "kind": "func",
+    "line": 13183,
+    "note": "",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "PrintString_RVA",
+    "rva": "0x3A29B20",
+    "kind": "func",
+    "line": 13201,
+    "note": "",
+    "source": "const",
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_259_01326b07",
+    "rva": "0x1326b07",
+    "kind": "data",
+    "line": 259,
+    "note": "static uintptr_t g_pawnSpawnCrashRip = 0;  // set at boot = base + 0x1326B07",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_276_0a5bb000",
+    "rva": "0xa5bb000",
+    "kind": "data",
+    "line": 276,
+    "note": "const uintptr_t imgEnd = base + 0x0A5BB000;",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_473_010153a0",
+    "rva": "0x10153a0",
+    "kind": "func",
+    "line": 473,
+    "note": "if (*data) reinterpret_cast<FreeFn>(base + 0x10153A0)(*data);",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_476_00fcc220",
+    "rva": "0xfcc220",
+    "kind": "func",
+    "line": 476,
+    "note": "reinterpret_cast<ReserveFn>(base + 0xFCC220)(outFStr, n, 0);",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_943_01254f50",
+    "rva": "0x1254f50",
+    "kind": "data",
+    "line": 943,
+    "note": "const uintptr_t site2 = base + 0x1254F50;   // cmp dword ptr [r14+8], 0   (5 bytes)",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_1182_054277ad",
+    "rva": "0x54277ad",
+    "kind": "data",
+    "line": 1182,
+    "note": "const uintptr_t site = base + 0x54277AD;   // cmp [rax+1D54h], ecx  (39 88 54 1D 00 00)",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_3171_012494d0",
+    "rva": "0x12494d0",
+    "kind": "func",
+    "line": 3171,
+    "note": "WriteByte(gcbase + 0x12494D0 + 0, 0x31); WriteByte(gcbase + 0x12494D0 + 1, 0xC0); WriteByte(gcbase + 0x12494D0 + 2, 0xC3",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_3171_012494d0",
+    "rva": "0x12494d0",
+    "kind": "func",
+    "line": 3171,
+    "note": "WriteByte(gcbase + 0x12494D0 + 0, 0x31); WriteByte(gcbase + 0x12494D0 + 1, 0xC0); WriteByte(gcbase + 0x12494D0 + 2, 0xC3",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_3171_012494d0",
+    "rva": "0x12494d0",
+    "kind": "func",
+    "line": 3171,
+    "note": "WriteByte(gcbase + 0x12494D0 + 0, 0x31); WriteByte(gcbase + 0x12494D0 + 1, 0xC0); WriteByte(gcbase + 0x12494D0 + 2, 0xC3",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_3172_0125f7b0",
+    "rva": "0x125f7b0",
+    "kind": "func",
+    "line": 3172,
+    "note": "WriteByte(gcbase + 0x125F7B0 + 0, 0x31); WriteByte(gcbase + 0x125F7B0 + 1, 0xC0); WriteByte(gcbase + 0x125F7B0 + 2, 0xC3",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_3172_0125f7b0",
+    "rva": "0x125f7b0",
+    "kind": "func",
+    "line": 3172,
+    "note": "WriteByte(gcbase + 0x125F7B0 + 0, 0x31); WriteByte(gcbase + 0x125F7B0 + 1, 0xC0); WriteByte(gcbase + 0x125F7B0 + 2, 0xC3",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_3172_0125f7b0",
+    "rva": "0x125f7b0",
+    "kind": "func",
+    "line": 3172,
+    "note": "WriteByte(gcbase + 0x125F7B0 + 0, 0x31); WriteByte(gcbase + 0x125F7B0 + 1, 0xC0); WriteByte(gcbase + 0x125F7B0 + 2, 0xC3",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_3303_053dc76a",
+    "rva": "0x53dc76a",
+    "kind": "func",
+    "line": 3303,
+    "note": "WriteByte(base + 0x53DC76A, 0x01);   // open the spawn gate (cmp eax,2 -> cmp eax,1) so our call passes",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_3304_053dc730",
+    "rva": "0x53dc730",
+    "kind": "func",
+    "line": 3304,
+    "note": "reinterpret_cast<__int64(__fastcall*)(void*)>(base + 0x53DC730)(subInst);   // the game's own spawner, NOW",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_7949_00fbcd70",
+    "rva": "0xfbcd70",
+    "kind": "func",
+    "line": 7949,
+    "note": "// crash reporter caught it: base+0xFBCD70 (the intended FString-copy) is now MID-WAY into an unrelated",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_8016_09c5d0a0",
+    "rva": "0x9c5d0a0",
+    "kind": "data",
+    "line": 8016,
+    "note": "void* client = *reinterpret_cast<void**>(base + 0x9C5D0A0);   // qword_9BD44F0 (dashboard client)",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_8022_04040990",
+    "rva": "0x4040990",
+    "kind": "func",
+    "line": 8022,
+    "note": "int    nm = ctx ? reinterpret_cast<GetNetModeFn>(base + 0x4040990)(ctx) : -999;              // gate B: sub_4037D80(ctx)",
+    "source": "inline",
+    "dup_of": "WorldGetNetMode_RVA",
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_8026_054b13d0",
+    "rva": "0x54b13d0",
+    "kind": "data",
+    "line": 8026,
+    "note": "reinterpret_cast<DashboardInitFn>(base + 0x54B13D0)(client);",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_8156_00fbcd70",
+    "rva": "0xfbcd70",
+    "kind": "func",
+    "line": 8156,
+    "note": "// [2026-09-03 \u2605 CRASH FIX] base+0xFBCD70 is a STALE RVA (now mid-way into sub_7FF67301CD50) \u2014 calling it",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_13226_05450000",
+    "rva": "0x5450000",
+    "kind": "data",
+    "line": 13226,
+    "note": "const uintptr_t lo = base + 0x5450000;",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_13227_054b4000",
+    "rva": "0x54b4000",
+    "kind": "data",
+    "line": 13227,
+    "note": "const uintptr_t hi = base + 0x54B4000;",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_13228_04040990",
+    "rva": "0x4040990",
+    "kind": "data",
+    "line": 13228,
+    "note": "const uintptr_t gnmA = base + 0x4040990;   // UWorld::GetNetMode",
+    "source": "inline",
+    "dup_of": "WorldGetNetMode_RVA",
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_13229_054af360",
+    "rva": "0x54af360",
+    "kind": "data",
+    "line": 13229,
+    "note": "const uintptr_t gnmB = base + 0x54AF360;   // UA2NetworkUtilityBPFL::GetNetMode",
+    "source": "inline",
+    "dup_of": "A2GetNetMode_RVA",
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_14200_054e4470",
+    "rva": "0x54e4470",
+    "kind": "func",
+    "line": 14200,
+    "note": "const int a = (int)MH_CreateHook(reinterpret_cast<void*>(base + 0x54E4470), &TeamJoin_Hook, reinterpret_cast<void**>(&Te",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_14201_054e4e10",
+    "rva": "0x54e4e10",
+    "kind": "func",
+    "line": 14201,
+    "note": "const int b = (int)MH_CreateHook(reinterpret_cast<void*>(base + 0x54E4E10), &TeamColor_Hook, reinterpret_cast<void**>(&T",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_14202_054e17e0",
+    "rva": "0x54e17e0",
+    "kind": "func",
+    "line": 14202,
+    "note": "const int c = (int)MH_CreateHook(reinterpret_cast<void*>(base + 0x54E17E0), &TeamClear_Hook, reinterpret_cast<void**>(&T",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_14252_05429424",
+    "rva": "0x5429424",
+    "kind": "func",
+    "line": 14252,
+    "note": "const uint8_t* ep = reinterpret_cast<const uint8_t*>(base + 0x5429424);",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_14257_05429427",
+    "rva": "0x5429427",
+    "kind": "func",
+    "line": 14257,
+    "note": "WriteByte(base + 0x5429427, 0xEB);",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_14273_053b3bc3",
+    "rva": "0x53b3bc3",
+    "kind": "func",
+    "line": 14273,
+    "note": "uint8_t* p = reinterpret_cast<uint8_t*>(base + 0x53B3BC3);",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_14281_053b3bcd",
+    "rva": "0x53b3bcd",
+    "kind": "func",
+    "line": 14281,
+    "note": "WriteByte(base + 0x53B3BCD, 0x7A);   // jb  +0x53B3BFD -> +0x53B3C48 (log off)",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_14282_053b3be2",
+    "rva": "0x53b3be2",
+    "kind": "func",
+    "line": 14282,
+    "note": "WriteByte(base + 0x53B3BE2, 0x65);   // jmp +0x53B3BFD -> +0x53B3C48 (after the log)",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_14425_0550f130",
+    "rva": "0x550f130",
+    "kind": "func",
+    "line": 14425,
+    "note": "WriteByte(base + 0x550F130, 0xC3);",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_14432_054863c0",
+    "rva": "0x54863c0",
+    "kind": "func",
+    "line": 14432,
+    "note": "WriteByte(base + 0x54863C0, 0xC3);",
+    "source": "inline",
+    "dup_of": "StepSim_RVA",
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_14446_01245000",
+    "rva": "0x1245000",
+    "kind": "func",
+    "line": 14446,
+    "note": "g_gcRanges[0] = base + 0x1245000; g_gcRanges[1] = base + 0x1269000;   // whole collector cluster",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_14446_01269000",
+    "rva": "0x1269000",
+    "kind": "func",
+    "line": 14446,
+    "note": "g_gcRanges[0] = base + 0x1245000; g_gcRanges[1] = base + 0x1269000;   // whole collector cluster",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_14447_0124db00",
+    "rva": "0x124db00",
+    "kind": "func",
+    "line": 14447,
+    "note": "g_gcRanges[2] = base + 0x124DB00; g_gcRanges[3] = base + 0x124DB00 + 0x8E8;",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_14447_0124db00",
+    "rva": "0x124db00",
+    "kind": "func",
+    "line": 14447,
+    "note": "g_gcRanges[2] = base + 0x124DB00; g_gcRanges[3] = base + 0x124DB00 + 0x8E8;",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_14448_0124ece0",
+    "rva": "0x124ece0",
+    "kind": "func",
+    "line": 14448,
+    "note": "g_gcRanges[4] = base + 0x124ECE0; g_gcRanges[5] = base + 0x124ECE0 + 0x7D8;",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_14448_0124ece0",
+    "rva": "0x124ece0",
+    "kind": "func",
+    "line": 14448,
+    "note": "g_gcRanges[4] = base + 0x124ECE0; g_gcRanges[5] = base + 0x124ECE0 + 0x7D8;",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_14465_01326b07",
+    "rva": "0x1326b07",
+    "kind": "func",
+    "line": 14465,
+    "note": "g_pawnSpawnCrashRip = base + 0x1326B07;   // `mov rdi,[r14+rbx]` in sub_7FF673386AD0",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_14493_054b1421",
+    "rva": "0x54b1421",
+    "kind": "func",
+    "line": 14493,
+    "note": "WriteByte(base + 0x54B1421, 0x01);",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_14512_053dc76a",
+    "rva": "0x53dc76a",
+    "kind": "func",
+    "line": 14512,
+    "note": "WriteByte(base + 0x53DC76A, 0x01);",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_14726_012f0cb0",
+    "rva": "0x12f0cb0",
+    "kind": "func",
+    "line": 14726,
+    "note": "void* drvAddr = reinterpret_cast<void*>(base + 0x12F0CB0);   // sub_7FF673350CB0 FArrayProperty copy driver",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_15151_0545ccb0",
+    "rva": "0x545ccb0",
+    "kind": "func",
+    "line": 15151,
+    "note": "void* bsAddr = reinterpret_cast<void*>(base + 0x545CCB0);",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_15157_0124f4c0",
+    "rva": "0x124f4c0",
+    "kind": "func",
+    "line": 15157,
+    "note": "void* gcbAddr = reinterpret_cast<void*>(base + 0x124F4C0);",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_15193_014363a0",
+    "rva": "0x14363a0",
+    "kind": "func",
+    "line": 15193,
+    "note": "void* shtAddr = reinterpret_cast<void*>(base + 0x14363A0);   // sub_7FF6734963A0 (Slate widget hit-test / crash site)",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_15200_05502070",
+    "rva": "0x5502070",
+    "kind": "func",
+    "line": 15200,
+    "note": "void* tleAddr = reinterpret_cast<void*>(base + 0x5502070);   // AVRPawn::Server_AttemptTakeOwnershipOfLevelEditor_Implem",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_15213_046bc830",
+    "rva": "0x46bc830",
+    "kind": "func",
+    "line": 15213,
+    "note": "MH_STATUS sNV1 = MH_CreateHook(reinterpret_cast<void*>(base + 0x46BC830), &NetVarReg_Hook, reinterpret_cast<void**>(&g_N",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_15214_047138d0",
+    "rva": "0x47138d0",
+    "kind": "func",
+    "line": 15214,
+    "note": "MH_STATUS sNV2 = MH_CreateHook(reinterpret_cast<void*>(base + 0x47138D0), &NetVarReg_Hook2, reinterpret_cast<void**>(&g_",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_15229_04690260",
+    "rva": "0x4690260",
+    "kind": "func",
+    "line": 15229,
+    "note": "MH_STATUS qa = MH_CreateHook(reinterpret_cast<void*>(base + 0x4690260), &QInit_Hook, reinterpret_cast<void**>(&QInit_Ori",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_15230_046902f0",
+    "rva": "0x46902f0",
+    "kind": "func",
+    "line": 15230,
+    "note": "MH_STATUS qb = MH_CreateHook(reinterpret_cast<void*>(base + 0x46902F0), &QSetQ_Hook, reinterpret_cast<void**>(&QSetQ_Ori",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_15233_04692f30",
+    "rva": "0x4692f30",
+    "kind": "func",
+    "line": 15233,
+    "note": "MH_STATUS qc = MH_CreateHook(reinterpret_cast<void*>(base + 0x4692F30), &QAddBundle_Hook, reinterpret_cast<void**>(&QAdd",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   },
+   {
+    "name": "inline_15234_04689030",
+    "rva": "0x4689030",
+    "kind": "func",
+    "line": 15234,
+    "note": "MH_STATUS qd = MH_CreateHook(reinterpret_cast<void*>(base + 0x4689030), &QSendSet_Hook, reinterpret_cast<void**>(&QSendS",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "rva"
+   }
+  ],
+  "struct": [
+   {
+    "name": "GolfBall_LastHitLocation_Off",
+    "rva": "0x658",
+    "kind": "func",
+    "line": 7478,
+    "note": "",
+    "source": "const",
+    "bucket": "struct"
+   },
+   {
+    "name": "Panel_IsActive_Off",
+    "rva": "0x2C0",
+    "kind": "func",
+    "line": 7776,
+    "note": "bool IsActive (Net, RepIndex 10)",
+    "source": "const",
+    "bucket": "struct"
+   },
+   {
+    "name": "Panel_Mesh_Off",
+    "rva": "0x2E0",
+    "kind": "func",
+    "line": 7777,
+    "note": "UInstancedStaticMeshComponent* Mesh",
+    "source": "const",
+    "bucket": "struct"
+   },
+   {
+    "name": "Spawner_Disc_Off",
+    "rva": "0x580",
+    "kind": "func",
+    "line": 7778,
+    "note": "ADiscEntity* Disc (the spawner's current ball)",
+    "source": "const",
+    "bucket": "struct"
+   }
+  ],
+  "bound": [
+   {
+    "name": "inline_173_0c000000",
+    "rva": "0xc000000",
+    "kind": "func",
+    "line": 173,
+    "note": "(unsigned long long)((objVt > base && objVt < base + 0x0C000000) ? objVt - base : objVt),",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "bound"
+   },
+   {
+    "name": "inline_192_0c000000",
+    "rva": "0xc000000",
+    "kind": "func",
+    "line": 192,
+    "note": "(unsigned long long)((clsVt > base && clsVt < base + 0x0C000000) ? clsVt - base : clsVt), nameCmp);",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "bound"
+   },
+   {
+    "name": "inline_227_0c000000",
+    "rva": "0xc000000",
+    "kind": "func",
+    "line": 227,
+    "note": "if (val > base && val < base + 0x0C000000)",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "bound"
+   },
+   {
+    "name": "inline_234_0c000000",
+    "rva": "0xc000000",
+    "kind": "func",
+    "line": 234,
+    "note": "(unsigned long long)((vt2 > base && vt2 < base + 0x0C000000) ? vt2 - base : vt2));",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "bound"
+   },
+   {
+    "name": "inline_1356_0c000000",
+    "rva": "0xc000000",
+    "kind": "func",
+    "line": 1356,
+    "note": "if (v >= base && v < base + 0x0C000000ull)",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "bound"
+   },
+   {
+    "name": "inline_1410_0c000000",
+    "rva": "0xc000000",
+    "kind": "func",
+    "line": 1410,
+    "note": "const bool inGame = (ripEarly >= base && ripEarly < base + 0x0C000000ull);",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "bound"
+   },
+   {
+    "name": "inline_1466_0c000000",
+    "rva": "0xc000000",
+    "kind": "func",
+    "line": 1466,
+    "note": "if (v > base && v < base + 0x0C000000)",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "bound"
+   },
+   {
+    "name": "inline_1492_0c000000",
+    "rva": "0xc000000",
+    "kind": "func",
+    "line": 1492,
+    "note": "if (v > base && v < base + 0x0C000000)",
+    "source": "inline",
+    "dup_of": null,
+    "bucket": "bound"
+   }
+  ]
+ },
+ "counts": {
+  "total": 111,
+  "rva_unique": 86,
+  "rva": 99,
+  "struct": 4,
+  "bound": 8,
+  "data_in_rva": 17
+ }
+}

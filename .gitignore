@@ -1,0 +1,24 @@
+/reference/
+/graphify-out/cache/
+/bin/
+*.db
+*.db.meta
+logs/
+/config/legacy-secrets.env
+server_api_key.txt
+/tools/**/bin/
+/tools/**/obj/
+/config/generated-*
+/snapshots/
+
+/web/pak-editor/node_modules/
+/Server/
+/port/
+/ThirdParty/
+
+# RE artifacts / build binaries (regenerable or too large for GitHub)
+*.i64
+/solara.exe
+/tools/a2port/.venv/
+/tools/a2port/old-strings.json
+/tools/a2port/*.exe

@@ -1,0 +1,2880 @@
+[
+  {
+    "name": "GIsClient_RVA",
+    "rva": "0x96D8672",
+    "kind": "data",
+    "note": "[22284] was 0x9650702",
+    "status": "data (resolve via IDA xrefs)"
+  },
+  {
+    "name": "GIsServer_RVA",
+    "rva": "0x96D8673",
+    "kind": "data",
+    "note": "[22284] was 0x9650703",
+    "status": "data (resolve via IDA xrefs)"
+  },
+  {
+    "name": "StationStr_Data_RVA",
+    "rva": "0x95DF980",
+    "kind": "data",
+    "note": "",
+    "status": "data (resolve via IDA xrefs)"
+  },
+  {
+    "name": "StationStr_Num_RVA",
+    "rva": "0x95DF988",
+    "kind": "data",
+    "note": "",
+    "status": "data (resolve via IDA xrefs)"
+  },
+  {
+    "name": "StationStr_Max_RVA",
+    "rva": "0x95DF98C",
+    "kind": "data",
+    "note": "",
+    "status": "data (resolve via IDA xrefs)"
+  },
+  {
+    "new_rva": null,
+    "hits": 0,
+    "candidates": [],
+    "sig_len": 49,
+    "loose": true,
+    "sig": "40 53 48 83 EC 40 48 8B 42 08 48 8B D9 48 8D 4C 24 50 48 8B 50 18 48 89 54 24 50 48 8D 54 24 30 E8 ?? ?? ?? ?? 48 8B 03 48 8D 54 24 20 48 8B 48 18",
+    "attempts": [
+      [
+        false,
+        32,
+        0
+      ],
+      [
+        true,
+        32,
+        0
+      ],
+      [
+        true,
+        49,
+        0
+      ],
+      [
+        true,
+        80,
+        0
+      ],
+      [
+        true,
+        115,
+        0
+      ],
+      [
+        true,
+        201,
+        0
+      ]
+    ],
+    "name": "CosmeticCmp_RVA",
+    "old_rva": 87926912,
+    "kind": "func",
+    "note": "sub_7FF67743A880 (mesh-entry comparator)"
+  },
+  {
+    "name": "FNamePoolTbl_RVA",
+    "rva": "0x9710B80",
+    "kind": "data",
+    "note": "stru_7FF67B770B80 (name-pool block table)",
+    "status": "data (resolve via IDA xrefs)"
+  },
+  {
+    "new_rva": 77672128,
+    "hits": 1,
+    "sig_len": 35,
+    "loose": false,
+    "sig": "48 89 5C 24 08 48 89 74 24 10 57 48 83 EC 30 48 8B D9 48 8B F2 48 8D 4C 24 20 E8 ?? ?? ?? ?? 48 8B 4B 28",
+    "attempts": [
+      [
+        false,
+        35,
+        1
+      ]
+    ],
+    "name": "GetBoolCfg_RVA",
+    "old_rva": 74293280,
+    "kind": "func",
+    "note": "sub_7FF67673A020 (UModuleStateLuaAPI::GetBoolConfigVariable impl)"
+  },
+  {
+    "new_rva": 77687248,
+    "hits": 1,
+    "sig_len": 50,
+    "loose": true,
+    "sig": "48 89 5C 24 08 48 89 74 24 10 57 48 83 EC 40 48 8B D9 0F 29 74 24 30 48 8D 4C 24 20 48 8B F2 E8 ?? ?? ?? ?? 48 8B 4B 28 48 8B F8 48 81 C1 ?? ?? ?? ??",
+    "attempts": [
+      [
+        false,
+        36,
+        2
+      ],
+      [
+        false,
+        50,
+        0
+      ],
+      [
+        true,
+        36,
+        2
+      ],
+      [
+        true,
+        50,
+        1
+      ]
+    ],
+    "name": "GetNumCfg_RVA",
+    "old_rva": 74308384,
+    "kind": "func",
+    "note": ""
+  },
+  {
+    "new_rva": 77691920,
+    "hits": 1,
+    "sig_len": 49,
+    "loose": false,
+    "sig": "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 30 48 8B EA 48 8B D9 49 8B D0 48 8D 4C 24 20 49 8B F0 E8 ?? ?? ?? ?? 48 8B 4B 28 48 8B F8",
+    "attempts": [
+      [
+        false,
+        34,
+        2
+      ],
+      [
+        false,
+        49,
+        1
+      ]
+    ],
+    "name": "GetStrCfg_RVA",
+    "old_rva": 74311600,
+    "kind": "func",
+    "note": ""
+  },
+  {
+    "new_rva": 89786048,
+    "hits": 1,
+    "sig_len": 34,
+    "loose": false,
+    "sig": "48 89 5C 24 18 57 48 81 EC 90 00 00 00 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 84 24 80 00 00 00 0F B6 FA",
+    "attempts": [
+      [
+        false,
+        34,
+        1
+      ]
+    ],
+    "name": "UpdGameState_RVA",
+    "old_rva": 87865040,
+    "kind": "func",
+    "note": "UGameStateManagerComponent::UpdateGameState_Implementation"
+  },
+  {
+    "new_rva": 89762768,
+    "hits": 1,
+    "sig_len": 36,
+    "loose": false,
+    "sig": "48 8B C4 48 89 58 18 55 56 57 48 8D 68 A1 48 81 EC B0 00 00 00 0F 29 70 D8 0F 29 78 C8 48 8B 05 ?? ?? ?? ??",
+    "attempts": [
+      [
+        false,
+        36,
+        1
+      ]
+    ],
+    "name": "StartTimerCd_RVA",
+    "old_rva": 87834720,
+    "kind": "func",
+    "note": "UGameTimeComponent::StartTimerWithCountdown_Implementation"
+  },
+  {
+    "new_rva": null,
+    "hits": 0,
+    "candidates": [],
+    "sig_len": 52,
+    "loose": true,
+    "sig": "48 8B C4 48 89 58 10 57 48 81 EC ?? ?? ?? ?? 0F 29 78 D8 48 8B D9 44 0F 29 48 B8 0F 29 70 E8 44 0F 29 40 C8 44 0F 29 50 A8 44 0F 29 60 88 44 0F 29 6C 24 30",
+    "attempts": [
+      [
+        false,
+        36,
+        0
+      ],
+      [
+        true,
+        36,
+        0
+      ],
+      [
+        true,
+        52,
+        0
+      ],
+      [
+        true,
+        87,
+        0
+      ],
+      [
+        true,
+        130,
+        0
+      ],
+      [
+        true,
+        204,
+        0
+      ]
+    ],
+    "name": "GtcTick_RVA",
+    "old_rva": 87853808,
+    "kind": "func",
+    "note": "UGameTimeComponent::TickComponent (vtable slot 121)"
+  },
+  {
+    "new_rva": null,
+    "hits": 0,
+    "candidates": [],
+    "sig_len": 18,
+    "loose": true,
+    "sig": "C0 1B 32 45 01 00 00 00 50 A4 F9 40 01 00 00 00 B0 51",
+    "attempts": [
+      [
+        false,
+        18,
+        0
+      ],
+      [
+        true,
+        18,
+        0
+      ],
+      [
+        true,
+        18,
+        0
+      ],
+      [
+        true,
+        18,
+        0
+      ],
+      [
+        true,
+        18,
+        0
+      ],
+      [
+        true,
+        18,
+        0
+      ]
+    ],
+    "name": "GtcVft_RVA",
+    "old_rva": 139357472,
+    "kind": "func",
+    "note": "UGameTimeComponent_VFT (liveness validation)"
+  },
+  {
+    "new_rva": 87928976,
+    "hits": 1,
+    "sig_len": 83,
+    "loose": false,
+    "sig": "40 55 53 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 E8 FE FF FF 48 81 EC 18 02 00 00 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 85 00 01 00 00 4C 8B B5 80 01 00 00 0F 57 C0 44 8B A5 88 01 00 00 4C 8B EA 48 8B BD 90 01 00 00 48 8D 55 40 48 8B 9D 98 01 00 00",
+    "attempts": [
+      [
+        false,
+        35,
+        8
+      ],
+      [
+        false,
+        52,
+        2
+      ],
+      [
+        false,
+        83,
+        1
+      ]
+    ],
+    "name": "JwtBuild_RVA",
+    "old_rva": 88398256,
+    "kind": "func",
+    "note": ""
+  },
+  {
+    "name": "ReqLogin_RVA",
+    "rva": "0x543C7B0",
+    "kind": "data",
+    "note": "",
+    "status": "data (resolve via IDA xrefs)"
+  },
+  {
+    "new_rva": 53815280,
+    "hits": 1,
+    "sig_len": 36,
+    "loose": false,
+    "sig": "4C 8B DC 55 53 49 8D AB 68 FC FF FF 48 81 EC 88 04 00 00 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 85 50 03 00 00",
+    "attempts": [
+      [
+        false,
+        36,
+        1
+      ]
+    ],
+    "name": "JoinBuild_RVA",
+    "old_rva": 88287808,
+    "kind": "func",
+    "note": ""
+  },
+  {
+    "new_rva": 87903152,
+    "hits": 1,
+    "sig_len": 34,
+    "loose": false,
+    "sig": "4C 8B DC 55 49 8D 6B B9 48 81 EC 90 00 00 00 49 89 5B 08 48 8D 45 CF 49 89 73 10 49 8B F0 49 89 7B 18",
+    "attempts": [
+      [
+        false,
+        34,
+        1
+      ]
+    ],
+    "name": "SendJoin_RVA",
+    "old_rva": 86958816,
+    "kind": "func",
+    "note": ""
+  },
+  {
+    "new_rva": null,
+    "hits": 0,
+    "candidates": [],
+    "sig_len": 49,
+    "loose": true,
+    "sig": "48 8B C4 55 48 8D 68 A1 48 81 EC ?? ?? ?? ?? 48 89 58 08 8B 99 ?? ?? ?? ?? 48 89 70 10 48 8B F1 48 89 78 18 4C 89 70 20 44 0F 29 40 C8 44 0F 28 C1",
+    "attempts": [
+      [
+        false,
+        32,
+        0
+      ],
+      [
+        true,
+        32,
+        0
+      ],
+      [
+        true,
+        49,
+        0
+      ],
+      [
+        true,
+        93,
+        0
+      ],
+      [
+        true,
+        151,
+        0
+      ],
+      [
+        true,
+        205,
+        0
+      ]
+    ],
+    "name": "ReplayPostStep_RVA",
+    "old_rva": 88634720,
+    "kind": "func",
+    "note": "sub_145487560"
+  },
+  {
+    "new_rva": null,
+    "hits": 0,
+    "candidates": [],
+    "sig_len": 18,
+    "loose": true,
+    "sig": "00 53 2F 45 01 00 00 00 50 A4 F9 40 01 00 00 00 B0 51",
+    "attempts": [
+      [
+        false,
+        18,
+        0
+      ],
+      [
+        true,
+        18,
+        0
+      ],
+      [
+        true,
+        18,
+        0
+      ],
+      [
+        true,
+        18,
+        0
+      ],
+      [
+        true,
+        18,
+        0
+      ],
+      [
+        true,
+        18,
+        0
+      ]
+    ],
+    "name": "ReplayVtable_RVA",
+    "old_rva": 139078456,
+    "kind": "func",
+    "note": "off_1484A2B38 (UA2ReplaySystem)"
+  },
+  {
+    "new_rva": null,
+    "hits": 0,
+    "candidates": [],
+    "sig_len": 82,
+    "loose": true,
+    "sig": "40 57 48 81 EC ?? ?? ?? ?? 48 8B F9 0F 29 BC 24 ?? ?? ?? ?? 48 81 C1 ?? ?? ?? ?? 0F 28 F9 FF 15 ?? ?? ?? ?? 48 8B 05 ?? ?? ?? ?? 48 83 BF ?? ?? ?? ?? 00 48 89 87 ?? ?? ?? ?? 0F 84 ?? ?? ?? ?? 8B 57 38 48 8D 8F ?? ?? ?? ?? 48 89 9C 24 ?? ?? ?? ??",
+    "attempts": [
+      [
+        false,
+        36,
+        0
+      ],
+      [
+        true,
+        51,
+        0
+      ],
+      [
+        true,
+        82,
+        0
+      ],
+      [
+        true,
+        120,
+        0
+      ],
+      [
+        true,
+        167,
+        0
+      ],
+      [
+        true,
+        234,
+        0
+      ]
+    ],
+    "name": "ReplaySnapshot_RVA",
+    "old_rva": 88613136,
+    "kind": "func",
+    "note": "sub_145482110"
+  },
+  {
+    "new_rva": null,
+    "hits": 0,
+    "candidates": [],
+    "sig_len": 55,
+    "loose": true,
+    "sig": "48 89 4C 24 08 55 53 56 57 41 54 41 55 41 56 41 57 48 8D 6C 24 E8 48 81 EC ?? ?? ?? ?? 45 33 E4 C7 44 24 44 ?? ?? ?? ?? 4C 8D A9 ?? ?? ?? ?? 4C 89 65 E8 49 8D 75 10",
+    "attempts": [
+      [
+        false,
+        32,
+        0
+      ],
+      [
+        true,
+        32,
+        0
+      ],
+      [
+        true,
+        55,
+        0
+      ],
+      [
+        true,
+        80,
+        0
+      ],
+      [
+        true,
+        128,
+        0
+      ],
+      [
+        true,
+        201,
+        0
+      ]
+    ],
+    "name": "Reconcile_RVA",
+    "old_rva": 88456576,
+    "kind": "func",
+    "note": ""
+  },
+  {
+    "new_rva": 92431632,
+    "hits": 1,
+    "sig_len": 33,
+    "loose": false,
+    "sig": "48 85 D2 0F 84 ?? ?? ?? ?? 48 89 5C 24 18 48 89 74 24 20 57 48 81 EC B0 00 00 00 48 8B 02 49 8B D8",
+    "attempts": [
+      [
+        false,
+        33,
+        1
+      ]
+    ],
+    "name": "SendPhysImpl_RVA",
+    "old_rva": 89141328,
+    "kind": "func",
+    "note": ""
+  },
+  {
+    "new_rva": null,
+    "hits": 8,
+    "candidates": [
+      "0x15caf80",
+      "0x1a1cd70",
+      "0x1a7b4f0",
+      "0x1a7c0b0",
+      "0x1aebfc0",
+      "0x1bf7fa0",
+      "0x1bf89f0",
+      "0x1ca5ad0"
+    ],
+    "sig_len": 58,
+    "loose": true,
+    "sig": "48 8B C4 55 53 56 57 41 54 41 55 41 56 41 57 48 8D A8 ?? ?? ?? ?? 48 81 EC ?? ?? ?? ?? 0F 29 70 A8 0F 29 78 98 44 0F 29 40 88 44 0F 29 88 ?? ?? ?? ?? 44 0F 29 90 ?? ?? ?? ??",
+    "attempts": [
+      [
+        false,
+        33,
+        0
+      ],
+      [
+        true,
+        33,
+        8
+      ],
+      [
+        true,
+        58,
+        8
+      ],
+      [
+        true,
+        98,
+        0
+      ],
+      [
+        true,
+        128,
+        0
+      ],
+      [
+        true,
+        200,
+        0
+      ]
+    ],
+    "name": "SimIntegrate_RVA",
+    "old_rva": 88602528,
+    "kind": "func",
+    "note": ""
+  },
+  {
+    "new_rva": null,
+    "hits": 0,
+    "candidates": [],
+    "sig_len": 48,
+    "loose": true,
+    "sig": "48 89 5C 24 08 48 89 6C 24 18 48 89 74 24 20 57 41 56 41 57 48 83 EC 40 4C 8B BC 24 ?? ?? ?? ?? 49 8B D9 41 8B E8 4C 8B D1 44 8B CA 41 C6 07 00",
+    "attempts": [
+      [
+        false,
+        32,
+        0
+      ],
+      [
+        true,
+        32,
+        0
+      ],
+      [
+        true,
+        48,
+        0
+      ],
+      [
+        true,
+        89,
+        0
+      ],
+      [
+        true,
+        135,
+        0
+      ],
+      [
+        true,
+        202,
+        0
+      ]
+    ],
+    "name": "IngestInput_RVA",
+    "old_rva": 88447408,
+    "kind": "func",
+    "note": ""
+  },
+  {
+    "new_rva": null,
+    "hits": 0,
+    "candidates": [],
+    "sig_len": 48,
+    "loose": true,
+    "sig": "48 89 5C 24 08 48 89 74 24 10 48 89 7C 24 18 55 41 56 41 57 48 8B EC 48 83 EC 70 45 33 FF 4C 8B F1 48 8D 4D B0 44 89 7D B0 4C 89 7D B8 49 8B F9",
+    "attempts": [
+      [
+        false,
+        33,
+        0
+      ],
+      [
+        true,
+        33,
+        0
+      ],
+      [
+        true,
+        48,
+        0
+      ],
+      [
+        true,
+        84,
+        0
+      ],
+      [
+        true,
+        122,
+        0
+      ],
+      [
+        true,
+        190,
+        0
+      ]
+    ],
+    "name": "SendResults_RVA",
+    "old_rva": 87336944,
+    "kind": "func",
+    "note": "[PORT-AUDIT] was 0x54E35B0 (= the pawn-side results RECEIVER); 0x534A7F0 is the sender called from StepSim (IDA-aligned 1.00 to 20996 0x5309C40)"
+  },
+  {
+    "new_rva": null,
+    "hits": 0,
+    "candidates": [],
+    "sig_len": 48,
+    "loose": true,
+    "sig": "48 8B C4 48 89 58 10 55 56 57 41 54 41 55 41 56 41 57 48 8D A8 ?? ?? ?? ?? 48 81 EC ?? ?? ?? ?? 0F 29 70 B8 48 8B F9 0F 29 78 A8 44 0F 29 40 98",
+    "attempts": [
+      [
+        false,
+        32,
+        2
+      ],
+      [
+        false,
+        48,
+        0
+      ],
+      [
+        true,
+        32,
+        8
+      ],
+      [
+        true,
+        48,
+        0
+      ],
+      [
+        true,
+        90,
+        0
+      ],
+      [
+        true,
+        140,
+        0
+      ],
+      [
+        true,
+        220,
+        0
+      ]
+    ],
+    "name": "StepSim_RVA",
+    "old_rva": 88630208,
+    "kind": "func",
+    "note": ""
+  },
+  {
+    "new_rva": null,
+    "hits": 0,
+    "candidates": [],
+    "sig_len": 64,
+    "loose": true,
+    "sig": "40 55 41 56 41 57 48 83 EC 40 8B 81 ?? ?? ?? ?? 45 0F B6 F8 4C 8B F1 8B EA 3B 81 ?? ?? ?? ?? 0F 84 ?? ?? ?? ?? 4C 8B 89 ?? ?? ?? ?? 48 8D 81 ?? ?? ?? ?? 8B 89 ?? ?? ?? ?? 4D 85 C9 4C 0F 44 C8",
+    "attempts": [
+      [
+        false,
+        37,
+        0
+      ],
+      [
+        true,
+        37,
+        0
+      ],
+      [
+        true,
+        64,
+        0
+      ],
+      [
+        true,
+        96,
+        0
+      ],
+      [
+        true,
+        142,
+        0
+      ],
+      [
+        true,
+        193,
+        0
+      ]
+    ],
+    "name": "BallAdvance_RVA",
+    "old_rva": 88491568,
+    "kind": "func",
+    "note": ""
+  },
+  {
+    "new_rva": null,
+    "hits": 0,
+    "candidates": [],
+    "sig_len": 50,
+    "loose": true,
+    "sig": "48 8B C4 89 50 10 48 89 48 08 55 56 48 8D 68 A1 48 81 EC ?? ?? ?? ?? 45 8B 08 40 B6 01 48 89 58 E8 48 8B D9 48 89 78 E0 4C 89 60 D8 4D 8B E0 44 8B C2",
+    "attempts": [
+      [
+        false,
+        33,
+        0
+      ],
+      [
+        true,
+        33,
+        0
+      ],
+      [
+        true,
+        50,
+        0
+      ],
+      [
+        true,
+        81,
+        0
+      ],
+      [
+        true,
+        128,
+        0
+      ],
+      [
+        true,
+        203,
+        0
+      ]
+    ],
+    "name": "BallReconcile_RVA",
+    "old_rva": 88669248,
+    "kind": "func",
+    "note": ""
+  },
+  {
+    "new_rva": null,
+    "hits": 2,
+    "candidates": [
+      "0x5825200",
+      "0x5825240"
+    ],
+    "sig_len": 56,
+    "loose": true,
+    "sig": "48 89 5C 24 08 57 48 83 EC 20 48 8B F9 48 8B DA 48 81 C1 ?? ?? ?? ?? E8 ?? ?? ?? ?? 4C 8B C3 48 8D 0D ?? ?? ?? ?? 48 8B D7 48 8B 5C 24 30 48 83 C4 20 5F E9 ?? ?? ?? ??",
+    "attempts": [
+      [
+        false,
+        38,
+        0
+      ],
+      [
+        true,
+        38,
+        2
+      ],
+      [
+        true,
+        56,
+        2
+      ],
+      [
+        true,
+        84,
+        0
+      ],
+      [
+        true,
+        130,
+        0
+      ],
+      [
+        true,
+        202,
+        0
+      ]
+    ],
+    "name": "NotifyLeftArena_RVA",
+    "old_rva": 89139968,
+    "kind": "func",
+    "note": ""
+  },
+  {
+    "new_rva": null,
+    "hits": 0,
+    "candidates": [],
+    "sig_len": 54,
+    "loose": true,
+    "sig": "48 8B C1 44 8B C2 48 8B D0 48 81 C1 ?? ?? ?? ?? E9 ?? ?? ?? ?? CC CC CC CC CC CC CC CC CC CC CC 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 40 48 8B 81 ?? ?? ?? ??",
+    "attempts": [
+      [
+        false,
+        28,
+        0
+      ],
+      [
+        true,
+        32,
+        0
+      ],
+      [
+        true,
+        54,
+        0
+      ],
+      [
+        true,
+        88,
+        0
+      ],
+      [
+        true,
+        142,
+        0
+      ],
+      [
+        true,
+        205,
+        0
+      ]
+    ],
+    "name": "GolfBallInCup_RVA",
+    "old_rva": 87933728,
+    "kind": "func",
+    "note": "[PORT-AUDIT] was 0x53DC340 (3-arg inner fn, hooked with a 2-arg thunk); 0x53DC320 = 20996 0x53986A0 equivalent"
+  },
+  {
+    "new_rva": null,
+    "hits": 0,
+    "candidates": [],
+    "sig_len": 50,
+    "loose": true,
+    "sig": "4D 85 C0 74 ?? 48 89 5C 24 08 57 48 83 EC 20 49 8B F8 48 8B D9 E8 ?? ?? ?? ?? 48 8B 4F 10 4C 8D 40 30 48 63 40 38 3B 41 38 7F ?? 48 8B D0 48 8B 41 30",
+    "attempts": [
+      [
+        false,
+        34,
+        0
+      ],
+      [
+        true,
+        34,
+        0
+      ],
+      [
+        true,
+        50,
+        0
+      ],
+      [
+        true,
+        86,
+        0
+      ],
+      [
+        true,
+        128,
+        0
+      ],
+      [
+        true,
+        192,
+        0
+      ]
+    ],
+    "name": "GolfOverlap_RVA",
+    "old_rva": 88015792,
+    "kind": "func",
+    "note": "[PORT-AUDIT] was 0x53F0410 (unrelated 10-byte fn); 0x53F03B0 = 20996 0x53AD660 equivalent (align 1.00)"
+  },
+  {
+    "new_rva": 19631856,
+    "hits": 1,
+    "sig_len": 33,
+    "loose": false,
+    "sig": "48 89 5C 24 10 48 89 74 24 18 57 48 83 EC 30 83 79 04 00 48 8B FA 8B 19 48 8B F1 0F 85 ?? ?? ?? ??",
+    "attempts": [
+      [
+        false,
+        33,
+        1
+      ]
+    ],
+    "name": "FNameResolve_RVA",
+    "old_rva": 18142864,
+    "kind": "func",
+    "note": "[PORT-AUDIT] 22284 (align 1.00 to 20996 0x114E210)"
+  },
+  {
+    "new_rva": 59022496,
+    "hits": 1,
+    "sig_len": 36,
+    "loose": false,
+    "sig": "48 89 5C 24 18 48 89 74 24 20 57 48 81 EC 70 08 00 00 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 84 24 60 08 00 00",
+    "attempts": [
+      [
+        false,
+        36,
+        1
+      ]
+    ],
+    "name": "TextLayoutLeaf_RVA",
+    "old_rva": 32245664,
+    "kind": "func",
+    "note": "[PORT-AUDIT] 22284 (align 1.00 to 20996 0x1EC13E0)"
+  },
+  {
+    "new_rva": null,
+    "hits": 0,
+    "candidates": [],
+    "sig_len": 60,
+    "loose": true,
+    "sig": "48 89 6C 24 10 48 89 74 24 18 57 48 81 EC ?? ?? ?? ?? 48 8B F9 49 8B E8 48 8D 8C 24 ?? ?? ?? ?? E8 ?? ?? ?? ?? 48 8B D0 48 8B CF E8 ?? ?? ?? ?? 48 8B F0 48 85 C0 0F 84 ?? ?? ?? ??",
+    "attempts": [
+      [
+        false,
+        32,
+        0
+      ],
+      [
+        true,
+        32,
+        0
+      ],
+      [
+        true,
+        60,
+        0
+      ],
+      [
+        true,
+        103,
+        0
+      ],
+      [
+        true,
+        153,
+        0
+      ],
+      [
+        true,
+        214,
+        0
+      ]
+    ],
+    "name": "EvtDispatch_RVA",
+    "old_rva": 73835072,
+    "kind": "func",
+    "note": "[PORT-AUDIT] 22284 (align 1.00 to 20996 0x465F820); hook still not installed (diagnostic only)"
+  },
+  {
+    "new_rva": null,
+    "hits": 0,
+    "candidates": [],
+    "sig_len": 53,
+    "loose": true,
+    "sig": "44 88 4C 24 20 53 55 56 57 41 55 41 56 48 83 EC 48 45 32 ED 49 63 E8 45 0F B6 F1 48 8B DA 48 8B F9 44 38 A9 ?? ?? ?? ?? 0F 84 ?? ?? ?? ?? 48 8B B1 ?? ?? ?? ??",
+    "attempts": [
+      [
+        false,
+        33,
+        0
+      ],
+      [
+        true,
+        33,
+        0
+      ],
+      [
+        true,
+        53,
+        0
+      ],
+      [
+        true,
+        88,
+        0
+      ],
+      [
+        true,
+        136,
+        0
+      ],
+      [
+        true,
+        202,
+        0
+      ]
+    ],
+    "name": "GiveCheck_RVA",
+    "old_rva": 74594976,
+    "kind": "func",
+    "note": ""
+  },
+  {
+    "new_rva": null,
+    "hits": 0,
+    "candidates": [],
+    "sig_len": 65,
+    "loose": true,
+    "sig": "48 89 5C 24 10 48 89 7C 24 18 55 48 8D 6C 24 A9 48 81 EC ?? ?? ?? ?? 83 3D ?? ?? ?? ?? 00 48 8B F9 48 8B DA 48 8D 0D ?? ?? ?? ?? 48 0F 45 0D ?? ?? ?? ?? 48 8D 15 ?? ?? ?? ?? E8 ?? ?? ?? ?? 85 C0",
+    "attempts": [
+      [
+        false,
+        33,
+        0
+      ],
+      [
+        true,
+        33,
+        0
+      ],
+      [
+        true,
+        65,
+        0
+      ],
+      [
+        true,
+        118,
+        0
+      ],
+      [
+        true,
+        157,
+        0
+      ],
+      [
+        true,
+        216,
+        0
+      ]
+    ],
+    "name": "FetchRoles_RVA",
+    "old_rva": 88802528,
+    "kind": "func",
+    "note": ""
+  },
+  {
+    "new_rva": null,
+    "hits": 0,
+    "candidates": [],
+    "sig_len": 57,
+    "loose": true,
+    "sig": "48 89 5C 24 18 48 89 7C 24 20 41 56 48 83 EC 30 4C 8B F2 48 8B F9 E8 ?? ?? ?? ?? 48 8B C8 E8 ?? ?? ?? ?? 48 8B D8 48 85 C0 0F 84 ?? ?? ?? ?? 48 8B 8F ?? ?? ?? ?? 48 85 C9",
+    "attempts": [
+      [
+        false,
+        35,
+        0
+      ],
+      [
+        true,
+        35,
+        0
+      ],
+      [
+        true,
+        57,
+        0
+      ],
+      [
+        true,
+        92,
+        0
+      ],
+      [
+        true,
+        140,
+        0
+      ],
+      [
+        true,
+        207,
+        0
+      ]
+    ],
+    "name": "RolesFetched_RVA",
+    "old_rva": 89197632,
+    "kind": "func",
+    "note": ""
+  },
+  {
+    "new_rva": 88954102,
+    "hits": 1,
+    "sig_len": 83,
+    "loose": false,
+    "sig": "48 8B 43 20 48 8B 4C 24 38 48 85 C0 40 0F 95 C7 48 03 F8 48 89 7B 20 E8 ?? ?? ?? ?? 48 8B 5C 24 30 88 06 48 8B 74 24 40 48 83 C4 20 5F C3 CC CC CC CC CC CC CC CC CC CC CC CC 48 89 5C 24 08 48 89 74 24 18 57 48 83 EC 20 33 FF 48 8B DA 48 89 7C 24 48",
+    "attempts": [
+      [
+        false,
+        33,
+        8
+      ],
+      [
+        false,
+        46,
+        8
+      ],
+      [
+        false,
+        83,
+        1
+      ]
+    ],
+    "name": "IsRunningSimulate_RVA",
+    "old_rva": 87158678,
+    "kind": "func",
+    "note": "[22284] was 0x52DC906"
+  },
+  {
+    "new_rva": null,
+    "hits": 0,
+    "candidates": [],
+    "sig_len": 53,
+    "loose": true,
+    "sig": "40 53 48 83 EC 40 48 8B D9 48 85 C9 75 ?? 48 89 4C 24 50 4C 8B C1 48 8D 0D ?? ?? ?? ?? B2 02 E8 ?? ?? ?? ?? 32 C0 48 83 C4 40 5B C3 48 8B 01 FF 90 ?? ?? ?? ??",
+    "attempts": [
+      [
+        false,
+        36,
+        0
+      ],
+      [
+        true,
+        36,
+        0
+      ],
+      [
+        true,
+        53,
+        0
+      ],
+      [
+        true,
+        86,
+        0
+      ],
+      [
+        true,
+        128,
+        0
+      ],
+      [
+        true,
+        188,
+        0
+      ]
+    ],
+    "name": "A2GetNetMode_RVA",
+    "old_rva": 88798048,
+    "kind": "func",
+    "note": "[22284] was 0x54AF360"
+  },
+  {
+    "new_rva": 69163616,
+    "hits": 1,
+    "sig_len": 33,
+    "loose": false,
+    "sig": "40 53 48 81 EC 90 00 00 00 48 8B D9 48 8B 49 38 48 85 C9 75 ?? 48 8B 8B F0 00 00 00 48 85 C9 74 ??",
+    "attempts": [
+      [
+        false,
+        33,
+        1
+      ]
+    ],
+    "name": "WorldGetNetMode_RVA",
+    "old_rva": 67373456,
+    "kind": "func",
+    "note": "[22284] was 0x4040990"
+  },
+  {
+    "new_rva": 57211840,
+    "hits": 1,
+    "sig_len": 34,
+    "loose": false,
+    "sig": "40 53 48 83 EC 20 8B 41 08 48 8B D9 C1 E8 04 A8 01 75 ?? 48 8B 41 20 48 85 C0 74 ?? 8B 40 08 C1 E8 0F",
+    "attempts": [
+      [
+        false,
+        34,
+        1
+      ]
+    ],
+    "name": "BallSimGetWorld_RVA",
+    "old_rva": 55614128,
+    "kind": "func",
+    "note": ""
+  },
+  {
+    "new_rva": null,
+    "hits": 0,
+    "candidates": [],
+    "sig_len": 59,
+    "loose": true,
+    "sig": "48 85 C9 74 ?? 0F B6 81 ?? ?? ?? ?? 3C 02 74 ?? 3C 04 74 ?? 48 8B 81 ?? ?? ?? ?? 4C 8B 40 30 41 0F B6 08 83 E9 01 74 ?? 83 E9 01 74 ?? 83 F9 01 75 ?? 45 8B 80 ?? ?? ?? ?? EB ??",
+    "attempts": [
+      [
+        false,
+        35,
+        0
+      ],
+      [
+        true,
+        35,
+        0
+      ],
+      [
+        true,
+        59,
+        0
+      ],
+      [
+        true,
+        123,
+        0
+      ],
+      [
+        true,
+        165,
+        0
+      ],
+      [
+        true,
+        211,
+        0
+      ]
+    ],
+    "name": "GetLocalInst_RVA",
+    "old_rva": 89042016,
+    "kind": "func",
+    "note": ""
+  },
+  {
+    "new_rva": null,
+    "hits": 0,
+    "candidates": [],
+    "sig_len": 55,
+    "loose": true,
+    "sig": "48 8B 81 ?? ?? ?? ?? 48 85 C0 75 ?? 48 8B 81 ?? ?? ?? ?? C3 CC CC CC CC CC CC CC CC CC CC CC CC 48 89 5C 24 08 57 48 83 EC 20 8B DA 48 8B F9 E8 ?? ?? ?? ?? 48 8B C8",
+    "attempts": [
+      [
+        false,
+        25,
+        0
+      ],
+      [
+        true,
+        37,
+        0
+      ],
+      [
+        true,
+        55,
+        0
+      ],
+      [
+        true,
+        86,
+        0
+      ],
+      [
+        true,
+        124,
+        0
+      ],
+      [
+        true,
+        202,
+        0
+      ]
+    ],
+    "name": "GetPlayerPawn_RVA",
+    "old_rva": 64113728,
+    "kind": "func",
+    "note": ""
+  },
+  {
+    "new_rva": 112881936,
+    "hits": 1,
+    "sig_len": 26,
+    "loose": false,
+    "sig": "C9 F3 0F 10 83 A8 00 00 00 0F 5A C0 66 0F 2F C8 76 ?? B0 01 48 83 C4 30 5B C3",
+    "attempts": [
+      [
+        false,
+        26,
+        1
+      ]
+    ],
+    "name": "BallNetPersp_RVA",
+    "old_rva": 101321104,
+    "kind": "func",
+    "note": ""
+  },
+  {
+    "new_rva": 62709488,
+    "hits": 1,
+    "sig_len": 33,
+    "loose": false,
+    "sig": "48 89 5C 24 08 48 89 74 24 10 55 57 41 54 41 56 41 57 48 8D 6C 24 E1 48 81 EC A0 00 00 00 48 8B DA",
+    "attempts": [
+      [
+        false,
+        33,
+        1
+      ]
+    ],
+    "name": "PrintString_RVA",
+    "old_rva": 60988192,
+    "kind": "func",
+    "note": ""
+  },
+  {
+    "name": "inline_259_01326b07",
+    "rva": "0x1326b07",
+    "kind": "data",
+    "note": "static uintptr_t g_pawnSpawnCrashRip = 0;  // set at boot = base + 0x1326B07",
+    "status": "data (resolve via IDA xrefs)"
+  },
+  {
+    "name": "inline_276_0a5bb000",
+    "rva": "0xa5bb000",
+    "kind": "data",
+    "note": "const uintptr_t imgEnd = base + 0x0A5BB000;",
+    "status": "data (resolve via IDA xrefs)"
+  },
+  {
+    "new_rva": 18313264,
+    "hits": 1,
+    "sig_len": 40,
+    "loose": false,
+    "sig": "48 85 C9 74 ?? 53 48 83 EC 20 48 8B D9 48 8B 0D ?? ?? ?? ?? 48 85 C9 75 ?? E8 ?? ?? ?? ?? 48 8B 0D ?? ?? ?? ?? 48 8B 01",
+    "attempts": [
+      [
+        false,
+        40,
+        1
+      ]
+    ],
+    "name": "inline_473_010153a0",
+    "old_rva": 16864160,
+    "kind": "func",
+    "note": "if (*data) reinterpret_cast<FreeFn>(base + 0x10153A0)(*data);"
+  },
+  {
+    "new_rva": 17990304,
+    "hits": 1,
+    "sig_len": 207,
+    "loose": false,
+    "sig": "48 89 5C 24 08 48 89 74 24 10 57 48 83 EC 30 48 63 DA 41 8B F0 48 8B F9 85 D2 74 ?? 48 8B CB BA 02 00 00 00 48 03 C9 E8 ?? ?? ?? ?? 48 D1 E8 B9 FF FF FF 7F 3B D8 0F 4F C1 8B D8 3B DE 7E ?? 41 B9 02 00 00 00 C7 44 24 20 02 00 00 00 44 8B C3 33 D2 48 8B CF E8 ?? ?? ?? ?? 89 5F 0C 48 8B 5C 24 40 48 8B 74 24 48 48 83 C4 30 5F C3 89 77 0C 48 8B 5C 24 40 48 8B 74 24 48 48 83 C4 30 5F C3 48 89 5C 24 08 48 89 74 24 10 57 48 83 EC 30 48 63 DA 41 8B F0 48 8B F9 85 D2 74 ?? 48 8B CB BA 04 00 00 00 48 C1 E1 02 E8 ?? ?? ?? ?? 48 C1 E8 02 B9 FF FF FF 7F 3B D8 0F 4F C1 8B D8 3B DE 7E ?? 41 B9 04 00 00 00 C7 44 24 20 04 00 00 00",
+    "attempts": [
+      [
+        false,
+        36,
+        5
+      ],
+      [
+        false,
+        52,
+        2
+      ],
+      [
+        false,
+        80,
+        2
+      ],
+      [
+        false,
+        109,
+        2
+      ],
+      [
+        false,
+        207,
+        1
+      ]
+    ],
+    "name": "inline_476_00fcc220",
+    "old_rva": 16564768,
+    "kind": "func",
+    "note": "reinterpret_cast<ReserveFn>(base + 0xFCC220)(outFStr, n, 0);"
+  },
+  {
+    "name": "inline_943_01254f50",
+    "rva": "0x1254f50",
+    "kind": "data",
+    "note": "const uintptr_t site2 = base + 0x1254F50;   // cmp dword ptr [r14+8], 0   (5 bytes)",
+    "status": "data (resolve via IDA xrefs)"
+  },
+  {
+    "name": "inline_1182_054277ad",
+    "rva": "0x54277ad",
+    "kind": "data",
+    "note": "const uintptr_t site = base + 0x54277AD;   // cmp [rax+1D54h], ecx  (39 88 54 1D 00 00)",
+    "status": "data (resolve via IDA xrefs)"
+  },
+  {
+    "new_rva": 20841520,
+    "hits": 1,
+    "sig_len": 37,
+    "loose": false,
+    "sig": "48 89 5C 24 08 57 48 83 EC 30 80 3D ?? ?? ?? ?? 00 0F B6 DA 8B F9 74 ?? 80 3D ?? ?? ?? ?? 05 0F 82 ?? ?? ?? ??",
+    "attempts": [
+      [
+        false,
+        37,
+        1
+      ]
+    ],
+    "name": "inline_3171_012494d0",
+    "old_rva": 19174608,
+    "kind": "func",
+    "note": "WriteByte(gcbase + 0x12494D0 + 0, 0x31); WriteByte(gcbase + 0x12494D0 + 1, 0xC0); WriteByte(gcbase + 0x12494D0 + 2, 0xC3"
+  },
+  {
+    "new_rva": null,
+    "hits": 0,
+    "candidates": [],
+    "sig_len": 55,
+    "loose": true,
+    "sig": "48 8B C4 55 48 8D A8 ?? ?? ?? ?? 48 81 EC ?? ?? ?? ?? 48 89 58 F0 48 89 78 E0 48 8B F9 4C 89 60 D8 45 33 E4 44 38 25 ?? ?? ?? ?? 4C 89 70 D0 4C 89 78 C8 44 0F B6 FA",
+    "attempts": [
+      [
+        false,
+        33,
+        0
+      ],
+      [
+        true,
+        33,
+        0
+      ],
+      [
+        true,
+        55,
+        0
+      ],
+      [
+        true,
+        81,
+        0
+      ],
+      [
+        true,
+        130,
+        0
+      ],
+      [
+        true,
+        201,
+        0
+      ]
+    ],
+    "name": "inline_3172_0125f7b0",
+    "old_rva": 19265456,
+    "kind": "func",
+    "note": "WriteByte(gcbase + 0x125F7B0 + 0, 0x31); WriteByte(gcbase + 0x125F7B0 + 1, 0xC0); WriteByte(gcbase + 0x125F7B0 + 2, 0xC3"
+  },
+  {
+    "new_rva": null,
+    "hits": 0,
+    "candidates": [],
+    "sig_len": 80,
+    "loose": true,
+    "sig": "02 74 21 48 8B CF E8 ?? ?? ?? ?? 48 85 C0 0F 84 ?? ?? ?? ?? 48 8B C8 E8 ?? ?? ?? ?? 85 C0 0F 85 ?? ?? ?? ?? 48 8D 4C 24 70 48 89 9C 24 ?? ?? ?? ?? E8 ?? ?? ?? ?? 41 B8 ?? ?? ?? ?? C6 84 24 ?? ?? ?? ?? 01 48 8D 15 ?? ?? ?? ?? 48 8D 4C 24 30",
+    "attempts": [
+      [
+        false,
+        41,
+        0
+      ],
+      [
+        true,
+        41,
+        0
+      ],
+      [
+        true,
+        80,
+        0
+      ],
+      [
+        true,
+        113,
+        0
+      ],
+      [
+        true,
+        153,
+        0
+      ],
+      [
+        true,
+        224,
+        0
+      ]
+    ],
+    "name": "inline_3303_053dc76a",
+    "old_rva": 87934826,
+    "kind": "func",
+    "note": "WriteByte(base + 0x53DC76A, 0x01);   // open the spawn gate (cmp eax,2 -> cmp eax,1) so our call passes"
+  },
+  {
+    "new_rva": null,
+    "hits": 0,
+    "candidates": [],
+    "sig_len": 72,
+    "loose": true,
+    "sig": "40 57 48 81 EC ?? ?? ?? ?? 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 84 24 ?? ?? ?? ?? 48 8B F9 E8 ?? ?? ?? ?? 48 8B CF E8 ?? ?? ?? ?? 48 85 C0 74 ?? 48 8B C8 E8 ?? ?? ?? ?? 83 F8 02 74 ?? 48 8B CF E8 ?? ?? ?? ?? 48 85 C0",
+    "attempts": [
+      [
+        false,
+        35,
+        0
+      ],
+      [
+        true,
+        46,
+        2
+      ],
+      [
+        true,
+        72,
+        0
+      ],
+      [
+        true,
+        118,
+        0
+      ],
+      [
+        true,
+        171,
+        0
+      ],
+      [
+        true,
+        229,
+        0
+      ]
+    ],
+    "name": "inline_3304_053dc730",
+    "old_rva": 87934768,
+    "kind": "func",
+    "note": "reinterpret_cast<__int64(__fastcall*)(void*)>(base + 0x53DC730)(subInst);   // the game's own spawner, NOW"
+  },
+  {
+    "new_rva": null,
+    "hits": 8,
+    "candidates": [
+      "0xc7c6ed",
+      "0xc7d65d",
+      "0x1137c8c",
+      "0x11877b8",
+      "0x138ce40",
+      "0x13dea10",
+      "0x14fee4b",
+      "0x15854e5"
+    ],
+    "sig_len": 6,
+    "loose": true,
+    "sig": "08 33 C0 48 83 C4",
+    "attempts": [
+      [
+        false,
+        6,
+        8
+      ],
+      [
+        false,
+        6,
+        8
+      ],
+      [
+        false,
+        6,
+        8
+      ],
+      [
+        false,
+        6,
+        8
+      ],
+      [
+        false,
+        6,
+        8
+      ],
+      [
+        true,
+        6,
+        8
+      ],
+      [
+        true,
+        6,
+        8
+      ],
+      [
+        true,
+        6,
+        8
+      ],
+      [
+        true,
+        6,
+        8
+      ],
+      [
+        true,
+        6,
+        8
+      ]
+    ],
+    "name": "inline_7949_00fbcd70",
+    "old_rva": 16502128,
+    "kind": "func",
+    "note": "// crash reporter caught it: base+0xFBCD70 (the intended FString-copy) is now MID-WAY into an unrelated"
+  },
+  {
+    "name": "inline_8016_09c5d0a0",
+    "rva": "0x9c5d0a0",
+    "kind": "data",
+    "note": "void* client = *reinterpret_cast<void**>(base + 0x9C5D0A0);   // qword_9BD44F0 (dashboard client)",
+    "status": "data (resolve via IDA xrefs)"
+  },
+  {
+    "name": "inline_8026_054b13d0",
+    "rva": "0x54b13d0",
+    "kind": "data",
+    "note": "reinterpret_cast<DashboardInitFn>(base + 0x54B13D0)(client);",
+    "status": "data (resolve via IDA xrefs)"
+  },
+  {
+    "name": "inline_13226_05450000",
+    "rva": "0x5450000",
+    "kind": "data",
+    "note": "const uintptr_t lo = base + 0x5450000;",
+    "status": "data (resolve via IDA xrefs)"
+  },
+  {
+    "name": "inline_13227_054b4000",
+    "rva": "0x54b4000",
+    "kind": "data",
+    "note": "const uintptr_t hi = base + 0x54B4000;",
+    "status": "data (resolve via IDA xrefs)"
+  },
+  {
+    "new_rva": 75403840,
+    "hits": 1,
+    "sig_len": 33,
+    "loose": false,
+    "sig": "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 48 89 7C 24 20 41 54 41 56 41 57 48 83 EC 30 48 8B F9",
+    "attempts": [
+      [
+        false,
+        33,
+        1
+      ]
+    ],
+    "name": "inline_14200_054e4470",
+    "old_rva": 89015408,
+    "kind": "func",
+    "note": "const int a = (int)MH_CreateHook(reinterpret_cast<void*>(base + 0x54E4470), &TeamJoin_Hook, reinterpret_cast<void**>(&Te"
+  },
+  {
+    "new_rva": null,
+    "hits": 0,
+    "candidates": [],
+    "sig_len": 62,
+    "loose": true,
+    "sig": "48 85 C9 74 ?? 53 48 83 EC 20 48 8B D9 44 88 81 ?? ?? ?? ?? 48 8B 89 ?? ?? ?? ?? 48 85 C9 74 ?? E8 ?? ?? ?? ?? 48 8D 8B ?? ?? ?? ?? E8 ?? ?? ?? ?? 48 83 C4 20 5B C3 CC CC CC CC CC CC CC",
+    "attempts": [
+      [
+        false,
+        32,
+        0
+      ],
+      [
+        true,
+        44,
+        0
+      ],
+      [
+        true,
+        62,
+        0
+      ],
+      [
+        true,
+        87,
+        0
+      ],
+      [
+        true,
+        132,
+        0
+      ],
+      [
+        true,
+        201,
+        0
+      ]
+    ],
+    "name": "inline_14201_054e4e10",
+    "old_rva": 89017872,
+    "kind": "func",
+    "note": "const int b = (int)MH_CreateHook(reinterpret_cast<void*>(base + 0x54E4E10), &TeamColor_Hook, reinterpret_cast<void**>(&T"
+  },
+  {
+    "new_rva": null,
+    "hits": 0,
+    "candidates": [],
+    "sig_len": 50,
+    "loose": true,
+    "sig": "48 85 C9 0F 84 ?? ?? ?? ?? 57 48 83 EC 50 48 8B F9 48 89 5C 24 48 48 89 74 24 40 48 8D 15 ?? ?? ?? ?? 33 F6 48 8D 4C 24 78 48 89 74 24 70 44 8D 46 01",
+    "attempts": [
+      [
+        false,
+        34,
+        0
+      ],
+      [
+        true,
+        34,
+        0
+      ],
+      [
+        true,
+        50,
+        0
+      ],
+      [
+        true,
+        90,
+        0
+      ],
+      [
+        true,
+        138,
+        0
+      ],
+      [
+        true,
+        201,
+        0
+      ]
+    ],
+    "name": "inline_14202_054e17e0",
+    "old_rva": 89004000,
+    "kind": "func",
+    "note": "const int c = (int)MH_CreateHook(reinterpret_cast<void*>(base + 0x54E17E0), &TeamClear_Hook, reinterpret_cast<void**>(&T"
+  },
+  {
+    "new_rva": 87883156,
+    "hits": 1,
+    "sig_len": 46,
+    "loose": false,
+    "sig": "40 84 ED 75 ?? 80 3D ?? ?? ?? ?? 02 72 ?? 83 7F 08 00 74 ?? 4C 8B 07 EB ?? 4C 8D 05 ?? ?? ?? ?? 48 8D 15 ?? ?? ?? ?? 48 8D 0D ?? ?? ?? ??",
+    "attempts": [
+      [
+        false,
+        46,
+        1
+      ]
+    ],
+    "name": "inline_14252_05429424",
+    "old_rva": 88249380,
+    "kind": "func",
+    "note": "const uint8_t* ep = reinterpret_cast<const uint8_t*>(base + 0x5429424);"
+  },
+  {
+    "new_rva": 87883159,
+    "hits": 1,
+    "sig_len": 48,
+    "loose": false,
+    "sig": "75 ?? 80 3D ?? ?? ?? ?? 02 72 ?? 83 7F 08 00 74 ?? 4C 8B 07 EB ?? 4C 8D 05 ?? ?? ?? ?? 48 8D 15 ?? ?? ?? ?? 48 8D 0D ?? ?? ?? ?? E8 ?? ?? ?? ??",
+    "attempts": [
+      [
+        false,
+        48,
+        1
+      ]
+    ],
+    "name": "inline_14257_05429427",
+    "old_rva": 88249383,
+    "kind": "func",
+    "note": "WriteByte(base + 0x5429427, 0xEB);"
+  },
+  {
+    "new_rva": null,
+    "hits": 0,
+    "candidates": [],
+    "sig_len": 88,
+    "loose": true,
+    "sig": "75 ?? 80 3D ?? ?? ?? ?? 02 72 ?? 48 8D 15 ?? ?? ?? ?? 48 8D 0D ?? ?? ?? ?? E8 ?? ?? ?? ?? EB ?? 80 BB ?? ?? ?? ?? 00 74 ?? 48 8B 8B ?? ?? ?? ?? 4C 8B C3 B2 01 E8 ?? ?? ?? ?? BA ?? ?? ?? ?? 48 89 B3 ?? ?? ?? ?? 48 8B CD E8 ?? ?? ?? ?? 4C 8B C5 48 8D 8E ?? ?? ?? ??",
+    "attempts": [
+      [
+        false,
+        48,
+        0
+      ],
+      [
+        true,
+        53,
+        0
+      ],
+      [
+        true,
+        88,
+        0
+      ],
+      [
+        true,
+        125,
+        0
+      ],
+      [
+        true,
+        166,
+        0
+      ],
+      [
+        true,
+        228,
+        0
+      ]
+    ],
+    "name": "inline_14273_053b3bc3",
+    "old_rva": 87768003,
+    "kind": "func",
+    "note": "uint8_t* p = reinterpret_cast<uint8_t*>(base + 0x53B3BC3);"
+  },
+  {
+    "new_rva": null,
+    "hits": 8,
+    "candidates": [
+      "0x1000",
+      "0x1001",
+      "0x1002",
+      "0x1003",
+      "0x1004",
+      "0x1005",
+      "0x1006",
+      "0x1007"
+    ],
+    "sig_len": 0,
+    "loose": true,
+    "sig": "",
+    "attempts": [
+      [
+        false,
+        0,
+        8
+      ],
+      [
+        false,
+        0,
+        8
+      ],
+      [
+        false,
+        0,
+        8
+      ],
+      [
+        false,
+        0,
+        8
+      ],
+      [
+        false,
+        0,
+        8
+      ],
+      [
+        true,
+        0,
+        8
+      ],
+      [
+        true,
+        0,
+        8
+      ],
+      [
+        true,
+        0,
+        8
+      ],
+      [
+        true,
+        0,
+        8
+      ],
+      [
+        true,
+        0,
+        8
+      ]
+    ],
+    "name": "inline_14281_053b3bcd",
+    "old_rva": 87768013,
+    "kind": "func",
+    "note": "WriteByte(base + 0x53B3BCD, 0x7A);   // jb  +0x53B3BFD -> +0x53B3C48 (log off)"
+  },
+  {
+    "new_rva": null,
+    "hits": 0,
+    "candidates": [],
+    "sig_len": 75,
+    "loose": true,
+    "sig": "1A 80 ?? ?? ?? ?? 00 00 74 ?? 48 8B 8B ?? ?? ?? ?? 4C 8B C3 B2 01 E8 ?? ?? ?? ?? BA ?? ?? ?? ?? 48 89 B3 ?? ?? ?? ?? 48 8B CD E8 ?? ?? ?? ?? 4C 8B C5 48 8D 8E ?? ?? ?? ?? 8B D0 E8 ?? ?? ?? ?? 83 F8 FF 74 ?? 48 98 48 8D 0C 80",
+    "attempts": [
+      [
+        false,
+        32,
+        0
+      ],
+      [
+        true,
+        50,
+        0
+      ],
+      [
+        true,
+        75,
+        0
+      ],
+      [
+        true,
+        112,
+        0
+      ],
+      [
+        true,
+        147,
+        0
+      ],
+      [
+        true,
+        212,
+        0
+      ]
+    ],
+    "name": "inline_14282_053b3be2",
+    "old_rva": 87768034,
+    "kind": "func",
+    "note": "WriteByte(base + 0x53B3BE2, 0x65);   // jmp +0x53B3BFD -> +0x53B3C48 (after the log)"
+  },
+  {
+    "new_rva": null,
+    "hits": 0,
+    "candidates": [],
+    "sig_len": 52,
+    "loose": true,
+    "sig": "48 8B 89 ?? ?? ?? ?? 48 8B 01 48 FF A0 ?? ?? ?? ?? CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC 44 0F B6 8A ?? ?? ?? ?? 4C 8B C1 0F B6 09 0F B6 C1 41 32 C1",
+    "attempts": [
+      [
+        false,
+        24,
+        0
+      ],
+      [
+        true,
+        32,
+        8
+      ],
+      [
+        true,
+        52,
+        0
+      ],
+      [
+        true,
+        82,
+        0
+      ],
+      [
+        true,
+        128,
+        0
+      ],
+      [
+        true,
+        200,
+        0
+      ]
+    ],
+    "name": "inline_14425_0550f130",
+    "old_rva": 89190704,
+    "kind": "func",
+    "note": "WriteByte(base + 0x550F130, 0xC3);"
+  },
+  {
+    "new_rva": null,
+    "hits": 0,
+    "candidates": [],
+    "sig_len": 48,
+    "loose": true,
+    "sig": "8B 0F 48 8D 4C 24 78 4C 8B 47 F8 48 8B 57 F0 E8 ?? ?? ?? ?? 83 7D 80 00 4C 8D 35 ?? ?? ?? ?? 4C 8B 4F E8 48 8D 4C 24 68 4C 8B 47 E0 48 8B 57 D8",
+    "attempts": [
+      [
+        false,
+        35,
+        0
+      ],
+      [
+        true,
+        35,
+        0
+      ],
+      [
+        true,
+        48,
+        0
+      ],
+      [
+        true,
+        82,
+        0
+      ],
+      [
+        true,
+        131,
+        0
+      ],
+      [
+        true,
+        211,
+        0
+      ]
+    ],
+    "name": "inline_14446_01245000",
+    "old_rva": 19156992,
+    "kind": "func",
+    "note": "g_gcRanges[0] = base + 0x1245000; g_gcRanges[1] = base + 0x1269000;   // whole collector cluster"
+  },
+  {
+    "new_rva": null,
+    "hits": 8,
+    "candidates": [
+      "0x1000",
+      "0x1001",
+      "0x1002",
+      "0x1003",
+      "0x1004",
+      "0x1005",
+      "0x1006",
+      "0x1007"
+    ],
+    "sig_len": 0,
+    "loose": true,
+    "sig": "",
+    "attempts": [
+      [
+        false,
+        0,
+        8
+      ],
+      [
+        false,
+        0,
+        8
+      ],
+      [
+        false,
+        0,
+        8
+      ],
+      [
+        false,
+        0,
+        8
+      ],
+      [
+        false,
+        0,
+        8
+      ],
+      [
+        true,
+        0,
+        8
+      ],
+      [
+        true,
+        0,
+        8
+      ],
+      [
+        true,
+        0,
+        8
+      ],
+      [
+        true,
+        0,
+        8
+      ],
+      [
+        true,
+        0,
+        8
+      ]
+    ],
+    "name": "inline_14446_01269000",
+    "old_rva": 19304448,
+    "kind": "func",
+    "note": "g_gcRanges[0] = base + 0x1245000; g_gcRanges[1] = base + 0x1269000;   // whole collector cluster"
+  },
+  {
+    "new_rva": null,
+    "hits": 2,
+    "candidates": [
+      "0x13e4f40",
+      "0x13e5830"
+    ],
+    "sig_len": 53,
+    "loose": true,
+    "sig": "48 89 5C 24 10 48 89 6C 24 18 48 89 74 24 20 57 41 54 41 55 41 56 41 57 48 81 EC ?? ?? ?? ?? 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 84 24 ?? ?? ?? ?? 4C 8B 41 08",
+    "attempts": [
+      [
+        false,
+        38,
+        2
+      ],
+      [
+        false,
+        49,
+        2
+      ],
+      [
+        false,
+        83,
+        2
+      ],
+      [
+        false,
+        132,
+        2
+      ],
+      [
+        false,
+        200,
+        2
+      ],
+      [
+        true,
+        38,
+        8
+      ],
+      [
+        true,
+        53,
+        2
+      ],
+      [
+        true,
+        93,
+        2
+      ],
+      [
+        true,
+        156,
+        2
+      ],
+      [
+        true,
+        221,
+        2
+      ]
+    ],
+    "name": "inline_14447_0124db00",
+    "old_rva": 19192576,
+    "kind": "func",
+    "note": "g_gcRanges[2] = base + 0x124DB00; g_gcRanges[3] = base + 0x124DB00 + 0x8E8;"
+  },
+  {
+    "new_rva": null,
+    "hits": 2,
+    "candidates": [
+      "0x13e6120",
+      "0x13e6900"
+    ],
+    "sig_len": 51,
+    "loose": true,
+    "sig": "48 89 5C 24 10 48 89 74 24 18 55 57 41 54 41 56 41 57 48 8B EC 48 83 EC 50 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 45 F0 0F 10 41 08 33 C0 41 B9 ?? ?? ?? ??",
+    "attempts": [
+      [
+        false,
+        32,
+        2
+      ],
+      [
+        false,
+        51,
+        2
+      ],
+      [
+        false,
+        80,
+        2
+      ],
+      [
+        false,
+        130,
+        2
+      ],
+      [
+        false,
+        200,
+        2
+      ],
+      [
+        true,
+        32,
+        2
+      ],
+      [
+        true,
+        51,
+        2
+      ],
+      [
+        true,
+        80,
+        2
+      ],
+      [
+        true,
+        130,
+        2
+      ],
+      [
+        true,
+        200,
+        2
+      ]
+    ],
+    "name": "inline_14448_0124ece0",
+    "old_rva": 19197152,
+    "kind": "func",
+    "note": "g_gcRanges[4] = base + 0x124ECE0; g_gcRanges[5] = base + 0x124ECE0 + 0x7D8;"
+  },
+  {
+    "new_rva": null,
+    "hits": 0,
+    "candidates": [],
+    "sig_len": 61,
+    "loose": true,
+    "sig": "02 0F 85 92 ?? ?? ?? ?? 89 9C 24 ?? ?? ?? ?? 48 89 BC 24 ?? ?? ?? ?? 4C 89 7C 24 50 4C 89 7C 24 58 E8 ?? ?? ?? ?? 48 8B C8 4C 89 7C 24 20 41 B1 01 4C 8D 44 24 50 48 8D 15 ?? ?? ?? ??",
+    "attempts": [
+      [
+        false,
+        33,
+        0
+      ],
+      [
+        true,
+        41,
+        0
+      ],
+      [
+        true,
+        61,
+        0
+      ],
+      [
+        true,
+        102,
+        0
+      ],
+      [
+        true,
+        137,
+        0
+      ],
+      [
+        true,
+        207,
+        0
+      ]
+    ],
+    "name": "inline_14493_054b1421",
+    "old_rva": 88806433,
+    "kind": "func",
+    "note": "WriteByte(base + 0x54B1421, 0x01);"
+  },
+  {
+    "new_rva": 21512608,
+    "hits": 1,
+    "sig_len": 50,
+    "loose": false,
+    "sig": "48 89 5C 24 10 48 89 6C 24 18 48 89 74 24 20 48 89 4C 24 08 57 41 54 41 55 41 56 41 57 48 83 EC 50 0F B6 71 70 48 8B D9 48 8B 49 78 4D 8B E8 48 8B FA",
+    "attempts": [
+      [
+        false,
+        33,
+        8
+      ],
+      [
+        false,
+        50,
+        1
+      ]
+    ],
+    "name": "inline_14726_012f0cb0",
+    "old_rva": 19860656,
+    "kind": "func",
+    "note": "void* drvAddr = reinterpret_cast<void*>(base + 0x12F0CB0);   // sub_7FF673350CB0 FArrayProperty copy driver"
+  },
+  {
+    "new_rva": null,
+    "hits": 0,
+    "candidates": [],
+    "sig_len": 60,
+    "loose": true,
+    "sig": "4C 8B DC 55 49 8D AB ?? ?? ?? ?? 48 81 EC ?? ?? ?? ?? 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 85 ?? ?? ?? ?? 48 8B 85 ?? ?? ?? ?? 49 89 5B F0 8B DA 49 89 73 E8 49 89 7B E0 4D 89 63 D8",
+    "attempts": [
+      [
+        false,
+        35,
+        0
+      ],
+      [
+        true,
+        46,
+        4
+      ],
+      [
+        true,
+        60,
+        0
+      ],
+      [
+        true,
+        88,
+        0
+      ],
+      [
+        true,
+        134,
+        0
+      ],
+      [
+        true,
+        200,
+        0
+      ]
+    ],
+    "name": "inline_15151_0545ccb0",
+    "old_rva": 88460464,
+    "kind": "func",
+    "note": "void* bsAddr = reinterpret_cast<void*>(base + 0x545CCB0);"
+  },
+  {
+    "new_rva": null,
+    "hits": 2,
+    "candidates": [
+      "0x13e6120",
+      "0x13e6900"
+    ],
+    "sig_len": 51,
+    "loose": true,
+    "sig": "48 89 5C 24 10 48 89 74 24 18 55 57 41 54 41 56 41 57 48 8B EC 48 83 EC 50 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 45 F0 0F 10 41 08 33 C0 41 B9 ?? ?? ?? ??",
+    "attempts": [
+      [
+        false,
+        32,
+        2
+      ],
+      [
+        false,
+        51,
+        2
+      ],
+      [
+        false,
+        80,
+        2
+      ],
+      [
+        false,
+        130,
+        2
+      ],
+      [
+        false,
+        200,
+        2
+      ],
+      [
+        true,
+        32,
+        2
+      ],
+      [
+        true,
+        51,
+        2
+      ],
+      [
+        true,
+        80,
+        2
+      ],
+      [
+        true,
+        130,
+        2
+      ],
+      [
+        true,
+        200,
+        2
+      ]
+    ],
+    "name": "inline_15157_0124f4c0",
+    "old_rva": 19199168,
+    "kind": "func",
+    "note": "void* gcbAddr = reinterpret_cast<void*>(base + 0x124F4C0);"
+  },
+  {
+    "new_rva": null,
+    "hits": 0,
+    "candidates": [],
+    "sig_len": 63,
+    "loose": true,
+    "sig": "4C 89 44 24 18 55 53 56 57 41 54 41 55 41 56 48 8D AC 24 ?? ?? ?? ?? 48 81 EC ?? ?? ?? ?? 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 45 60 F3 0F 10 85 ?? ?? ?? ?? 45 33 F6 F3 0F 5C 81 ?? ?? ?? ??",
+    "attempts": [
+      [
+        false,
+        37,
+        0
+      ],
+      [
+        true,
+        37,
+        0
+      ],
+      [
+        true,
+        63,
+        0
+      ],
+      [
+        true,
+        95,
+        0
+      ],
+      [
+        true,
+        147,
+        0
+      ],
+      [
+        true,
+        200,
+        0
+      ]
+    ],
+    "name": "inline_15193_014363a0",
+    "old_rva": 21193632,
+    "kind": "func",
+    "note": "void* shtAddr = reinterpret_cast<void*>(base + 0x14363A0);   // sub_7FF6734963A0 (Slate widget hit-test / crash site)"
+  },
+  {
+    "new_rva": 92420992,
+    "hits": 1,
+    "sig_len": 44,
+    "loose": true,
+    "sig": "48 85 D2 0F 84 ?? ?? ?? ?? 56 57 48 81 EC ?? ?? ?? ?? 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 84 24 ?? ?? ?? ?? 48 83 BA ?? ?? ?? ?? 00",
+    "attempts": [
+      [
+        false,
+        36,
+        0
+      ],
+      [
+        true,
+        44,
+        1
+      ]
+    ],
+    "name": "inline_15200_05502070",
+    "old_rva": 89137264,
+    "kind": "func",
+    "note": "void* tleAddr = reinterpret_cast<void*>(base + 0x5502070);   // AVRPawn::Server_AttemptTakeOwnershipOfLevelEditor_Implem"
+  },
+  {
+    "new_rva": null,
+    "hits": 2,
+    "candidates": [
+      "0x49db950",
+      "0x4a61380"
+    ],
+    "sig_len": 78,
+    "loose": true,
+    "sig": "40 53 48 83 EC 20 80 3D ?? ?? ?? ?? 00 48 8B D9 75 ?? E8 ?? ?? ?? ?? 80 3D ?? ?? ?? ?? 00 75 ?? 48 8B 15 ?? ?? ?? ?? 48 8D 4C 24 38 41 B8 ?? ?? ?? ?? E8 ?? ?? ?? ?? 48 8B 15 ?? ?? ?? ?? 48 8D 4C 24 40 41 B8 ?? ?? ?? ?? E8 ?? ?? ?? ??",
+    "attempts": [
+      [
+        false,
+        44,
+        2
+      ],
+      [
+        false,
+        67,
+        2
+      ],
+      [
+        false,
+        101,
+        2
+      ],
+      [
+        false,
+        142,
+        2
+      ],
+      [
+        false,
+        215,
+        0
+      ],
+      [
+        true,
+        44,
+        2
+      ],
+      [
+        true,
+        78,
+        2
+      ],
+      [
+        true,
+        116,
+        2
+      ],
+      [
+        true,
+        160,
+        0
+      ],
+      [
+        true,
+        254,
+        0
+      ]
+    ],
+    "name": "inline_15213_046bc830",
+    "old_rva": 74172464,
+    "kind": "func",
+    "note": "MH_STATUS sNV1 = MH_CreateHook(reinterpret_cast<void*>(base + 0x46BC830), &NetVarReg_Hook, reinterpret_cast<void**>(&g_N"
+  },
+  {
+    "new_rva": null,
+    "hits": 2,
+    "candidates": [
+      "0x49db950",
+      "0x4a61380"
+    ],
+    "sig_len": 78,
+    "loose": true,
+    "sig": "40 53 48 83 EC 20 80 3D ?? ?? ?? ?? 00 48 8B D9 75 ?? E8 ?? ?? ?? ?? 80 3D ?? ?? ?? ?? 00 75 ?? 48 8B 15 ?? ?? ?? ?? 48 8D 4C 24 38 41 B8 ?? ?? ?? ?? E8 ?? ?? ?? ?? 48 8B 15 ?? ?? ?? ?? 48 8D 4C 24 40 41 B8 ?? ?? ?? ?? E8 ?? ?? ?? ??",
+    "attempts": [
+      [
+        false,
+        44,
+        2
+      ],
+      [
+        false,
+        67,
+        2
+      ],
+      [
+        false,
+        101,
+        2
+      ],
+      [
+        false,
+        142,
+        2
+      ],
+      [
+        false,
+        204,
+        0
+      ],
+      [
+        true,
+        44,
+        2
+      ],
+      [
+        true,
+        78,
+        2
+      ],
+      [
+        true,
+        116,
+        2
+      ],
+      [
+        true,
+        158,
+        0
+      ],
+      [
+        true,
+        211,
+        0
+      ]
+    ],
+    "name": "inline_15214_047138d0",
+    "old_rva": 74528976,
+    "kind": "func",
+    "note": "MH_STATUS sNV2 = MH_CreateHook(reinterpret_cast<void*>(base + 0x47138D0), &NetVarReg_Hook2, reinterpret_cast<void**>(&g_"
+  },
+  {
+    "new_rva": null,
+    "hits": 0,
+    "candidates": [],
+    "sig_len": 59,
+    "loose": true,
+    "sig": "48 89 5C 24 08 57 48 83 EC 20 48 83 B9 ?? ?? ?? ?? 00 48 8B FA 48 8B D9 75 ?? E8 ?? ?? ?? ?? 48 85 C0 74 ?? 48 8B 83 ?? ?? ?? ?? 48 85 C0 75 ?? 48 8B CB E8 ?? ?? ?? ?? 48 8B C8",
+    "attempts": [
+      [
+        false,
+        34,
+        0
+      ],
+      [
+        true,
+        34,
+        0
+      ],
+      [
+        true,
+        59,
+        0
+      ],
+      [
+        true,
+        88,
+        0
+      ],
+      [
+        true,
+        141,
+        0
+      ],
+      [
+        true,
+        202,
+        0
+      ]
+    ],
+    "name": "inline_15229_04690260",
+    "old_rva": 73990752,
+    "kind": "func",
+    "note": "MH_STATUS qa = MH_CreateHook(reinterpret_cast<void*>(base + 0x4690260), &QInit_Hook, reinterpret_cast<void**>(&QInit_Ori"
+  },
+  {
+    "new_rva": 77245376,
+    "hits": 1,
+    "sig_len": 34,
+    "loose": false,
+    "sig": "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 20 48 8B 81 A0 00 00 00 41 0F B6 F0 48 8B EA",
+    "attempts": [
+      [
+        false,
+        34,
+        1
+      ]
+    ],
+    "name": "inline_15230_046902f0",
+    "old_rva": 73990896,
+    "kind": "func",
+    "note": "MH_STATUS qb = MH_CreateHook(reinterpret_cast<void*>(base + 0x46902F0), &QSetQ_Hook, reinterpret_cast<void**>(&QSetQ_Ori"
+  },
+  {
+    "new_rva": null,
+    "hits": 0,
+    "candidates": [],
+    "sig_len": 54,
+    "loose": true,
+    "sig": "48 89 5C 24 10 55 56 57 41 54 41 55 41 56 41 57 48 8D 6C 24 E0 48 81 EC ?? ?? ?? ?? 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 45 10 48 8D B1 ?? ?? ?? ?? 44 88 4C 24 30",
+    "attempts": [
+      [
+        false,
+        35,
+        6
+      ],
+      [
+        false,
+        49,
+        0
+      ],
+      [
+        true,
+        35,
+        6
+      ],
+      [
+        true,
+        54,
+        0
+      ],
+      [
+        true,
+        81,
+        0
+      ],
+      [
+        true,
+        129,
+        0
+      ],
+      [
+        true,
+        201,
+        0
+      ]
+    ],
+    "name": "inline_15233_04692f30",
+    "old_rva": 74002224,
+    "kind": "func",
+    "note": "MH_STATUS qc = MH_CreateHook(reinterpret_cast<void*>(base + 0x4692F30), &QAddBundle_Hook, reinterpret_cast<void**>(&QAdd"
+  },
+  {
+    "new_rva": null,
+    "hits": 0,
+    "candidates": [],
+    "sig_len": 49,
+    "loose": true,
+    "sig": "48 89 5C 24 08 48 89 74 24 10 48 89 7C 24 18 4C 89 64 24 20 55 41 56 41 57 48 8B EC 48 83 EC 70 33 C0 4C 8B F9 48 8D 4D B0 48 89 45 B0 48 89 45 B8",
+    "attempts": [
+      [
+        false,
+        32,
+        8
+      ],
+      [
+        false,
+        49,
+        0
+      ],
+      [
+        true,
+        32,
+        8
+      ],
+      [
+        true,
+        49,
+        0
+      ],
+      [
+        true,
+        80,
+        0
+      ],
+      [
+        true,
+        129,
+        0
+      ],
+      [
+        true,
+        200,
+        0
+      ]
+    ],
+    "name": "inline_15234_04689030",
+    "old_rva": 73961520,
+    "kind": "func",
+    "note": "MH_STATUS qd = MH_CreateHook(reinterpret_cast<void*>(base + 0x4689030), &QSendSet_Hook, reinterpret_cast<void**>(&QSendS"
+  }
+]

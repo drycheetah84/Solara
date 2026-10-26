@@ -1,0 +1,3 @@
+{"name":"sweep-authed-EosWsServer","steps":[
+ {"server":"EosWsServer","method":"GET","path":"/","headers":{"x-server-api-key":"${secret:SERVER_API_KEY}","x-automation-key":"${secret:AUTOMATION_KEY}","x-api-key":"${secret:ServerMasterKey}","x-dashboard-key":"difftest-admin-key"}}
+]}

@@ -1,0 +1,25 @@
+{"name":"sweep-anon-EosGatewayServer","steps":[
+ {"server":"EosGatewayServer","method":"POST","path":"/auth/v1/accounts/deviceid","headers":{}}
+,{"server":"EosGatewayServer","method":"POST","path":"/auth/v1/oauth/token","headers":{}}
+,{"server":"EosGatewayServer","method":"GET","path":"/auth/v1/oauth/.well-known/jwks.json","headers":{}}
+,{"server":"EosGatewayServer","method":"POST","path":"/auth/v1/turn/credentials","headers":{}}
+,{"server":"EosGatewayServer","method":"GET","path":"/rtc/v1/x1/room/x1","headers":{}}
+,{"server":"EosGatewayServer","method":"GET","path":"/sdk/v1/default","headers":{}}
+,{"server":"EosGatewayServer","method":"GET","path":"/sdk/v1/product/x1","headers":{}}
+,{"server":"EosGatewayServer","method":"POST","path":"/matchmaking/v1/x1/filter","headers":{}}
+,{"server":"EosGatewayServer","method":"POST","path":"/lobby/v1/x1/lobbies/filter","headers":{}}
+,{"server":"EosGatewayServer","method":"POST","path":"/lobby/v1/x1/lobbies","headers":{}}
+,{"server":"EosGatewayServer","method":"GET","path":"/lobby/v1/x1/lobbies/x1","headers":{}}
+,{"server":"EosGatewayServer","method":"PUT","path":"/lobby/v1/x1/lobbies/x1","headers":{}}
+,{"server":"EosGatewayServer","method":"POST","path":"/lobby/v1/x1/lobbies/x1/members/x1","headers":{}}
+,{"server":"EosGatewayServer","method":"DELETE","path":"/lobby/v1/x1/lobbies/x1/members/x1","headers":{}}
+,{"server":"EosGatewayServer","method":"POST","path":"/matchmaking/v1/x1/sessions/x1/publicplayers/x1","headers":{}}
+,{"server":"EosGatewayServer","method":"DELETE","path":"/matchmaking/v1/x1/sessions/x1/publicplayers/x1","headers":{}}
+,{"server":"EosGatewayServer","method":"POST","path":"/user/v3/product-users/search","headers":{}}
+,{"server":"EosGatewayServer","method":"POST","path":"/telemetry/data/datarouter/api/v1/public/data","headers":{}}
+,{"server":"EosGatewayServer","method":"POST","path":"/datarouter/api/v1/public/data/clients","headers":{}}
+,{"server":"EosGatewayServer","method":"GET","path":"/datastorage/v2/access/deployment/x1/private/x1/x1","headers":{}}
+,{"server":"EosGatewayServer","method":"GET","path":"/datastorage/v2/data/deployment/x1/private/x1/x1","headers":{}}
+,{"server":"EosGatewayServer","method":"PUT","path":"/datastorage/v2/data/deployment/x1/private/x1/x1","headers":{}}
+,{"server":"EosGatewayServer","method":"POST","path":"/epic/presence/internal/v1/_/x1/presence/x1","headers":{}}
+]}

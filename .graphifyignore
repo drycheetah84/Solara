@@ -1,0 +1,9 @@
+**/bin/
+**/obj/
+**/node_modules/
+**/.next/
+**/package-lock.json
+reference/halcyon/backend/dashboard/public/
+**/*.db
+**/testdata/
+logs/

@@ -1,0 +1,10 @@
+{ "name": "smoke",
+  "steps": [
+    {"server":"MothershipServer","method":"GET","path":"/v1/title-data"},
+    {"server":"MothershipServer","method":"GET","path":"/v1/userdata/client"},
+    {"server":"MothershipServer","method":"GET","path":"/v1/does-not-exist"},
+    {"server":"MothershipServer","method":"OPTIONS","path":"/v1/title-data"},
+    {"server":"A2StationDbServer","method":"GET","path":"//v1/deployments/abc?include_station_config=true"},
+    {"server":"AresDashboardServer","method":"GET","path":"/api/stations"},
+    {"server":"EosGatewayServer","method":"GET","path":"/auth/v1/oauth/.well-known/jwks.json"}
+  ] }

@@ -1,0 +1,952 @@
+[
+ {
+  "name": "GIsClient_RVA",
+  "conf": "todo-data",
+  "old": "0x96D8672",
+  "is_func": false,
+  "inner": 0,
+  "old_func": "",
+  "new_lead": null,
+  "strings": [],
+  "callees": [],
+  "xref_funcs": []
+ },
+ {
+  "name": "GIsServer_RVA",
+  "conf": "todo-data",
+  "old": "0x96D8673",
+  "is_func": false,
+  "inner": 0,
+  "old_func": "",
+  "new_lead": null,
+  "strings": [],
+  "callees": [],
+  "xref_funcs": [
+   "AARSharedWorldPlayerController::ClientInitSharedWorld_Implementation",
+   "AARSharedWorldPlayerController::ClientUpdateARWorldData_Implementation",
+   "AARSharedWorldPlayerController::ClientUpdatePreviewImageData_Implementation"
+  ]
+ },
+ {
+  "name": "StationStr_Data_RVA",
+  "conf": "todo-data",
+  "old": "0x95DF980",
+  "is_func": false,
+  "inner": 0,
+  "old_func": "",
+  "new_lead": null,
+  "strings": [],
+  "callees": [],
+  "xref_funcs": []
+ },
+ {
+  "name": "StationStr_Num_RVA",
+  "conf": "todo-data",
+  "old": "0x95DF988",
+  "is_func": false,
+  "inner": 0,
+  "old_func": "",
+  "new_lead": null,
+  "strings": [],
+  "callees": [],
+  "xref_funcs": []
+ },
+ {
+  "name": "StationStr_Max_RVA",
+  "conf": "todo-data",
+  "old": "0x95DF98C",
+  "is_func": false,
+  "inner": 0,
+  "old_func": "",
+  "new_lead": null,
+  "strings": [],
+  "callees": [],
+  "xref_funcs": []
+ },
+ {
+  "name": "CosmeticCmp_RVA",
+  "conf": "none",
+  "old": "0x53DA880",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF67743A880",
+  "new_lead": null,
+  "strings": [],
+  "callees": [
+   "UCreateMeshObjectTypeProperties::GetCurrentCreateMeshType_Implementation"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "FNamePoolTbl_RVA",
+  "conf": "todo-data",
+  "old": "0x9710B80",
+  "is_func": false,
+  "inner": 0,
+  "old_func": "",
+  "new_lead": null,
+  "strings": [],
+  "callees": [],
+  "xref_funcs": [
+   "FName__AppendString",
+   "FName__AppendString"
+  ]
+ },
+ {
+  "name": "GetBoolCfg_RVA",
+  "conf": "low",
+  "old": "0x46DA020",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF67673A020",
+  "new_lead": "0x4a12e70",
+  "strings": [],
+  "callees": [],
+  "xref_funcs": []
+ },
+ {
+  "name": "GetNumCfg_RVA",
+  "conf": "low",
+  "old": "0x46DDB20",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF67673DB20",
+  "new_lead": "0x4a169a0",
+  "strings": [],
+  "callees": [],
+  "xref_funcs": []
+ },
+ {
+  "name": "GetStrCfg_RVA",
+  "conf": "low",
+  "old": "0x46DE7B0",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF67673E7B0",
+  "new_lead": "0x4a17c10",
+  "strings": [],
+  "callees": [],
+  "xref_funcs": []
+ },
+ {
+  "name": "GtcTick_RVA",
+  "conf": "none",
+  "old": "0x53C8AF0",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF677428AF0",
+  "new_lead": null,
+  "strings": [],
+  "callees": [
+   "swprintf",
+   "fmod"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "GtcVft_RVA",
+  "conf": "todo-data",
+  "old": "0x84E6D20",
+  "is_func": false,
+  "inner": 0,
+  "old_func": "",
+  "new_lead": null,
+  "strings": [],
+  "callees": [],
+  "xref_funcs": []
+ },
+ {
+  "name": "JoinBuild_RVA",
+  "conf": "low",
+  "old": "0x5432A40",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF677492A40",
+  "new_lead": "0x33527f0",
+  "strings": [],
+  "callees": [
+   "UTargetingSubsystem::StartAsyncTargetingRequest_Implementation",
+   "UKismetMathLibrary::UtcNow",
+   "__security_check_cookie"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "SendJoin_RVA",
+  "conf": "low",
+  "old": "0x52EE2E0",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF67734E2E0",
+  "new_lead": "0x53d4950",
+  "strings": [],
+  "callees": [
+   "memcpy"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "ReplayPostStep_RVA",
+  "conf": "none",
+  "old": "0x5487560",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF6774E7560",
+  "new_lead": null,
+  "strings": [],
+  "callees": [
+   "UA2SessionSubsystem::GetNetworkCompatibleChangelistPure"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "ReplayVtable_RVA",
+  "conf": "todo-data",
+  "old": "0x84A2B38",
+  "is_func": false,
+  "inner": 0,
+  "old_func": "",
+  "new_lead": null,
+  "strings": [],
+  "callees": [],
+  "xref_funcs": []
+ },
+ {
+  "name": "ReplaySnapshot_RVA",
+  "conf": "none",
+  "old": "0x5482110",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF6774E2110",
+  "new_lead": null,
+  "strings": [],
+  "callees": [],
+  "xref_funcs": []
+ },
+ {
+  "name": "Reconcile_RVA",
+  "conf": "none",
+  "old": "0x545BD80",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF6774BBD80",
+  "new_lead": null,
+  "strings": [],
+  "callees": [
+   "UAnimInstance::MontageSync_Follow_Implementation",
+   "UAnimInstance::DynamicMontage_IsPlayingFrom_Implementation",
+   "?StaticClass@UPrimitiveComponent@@SAPEAVUClass@@XZ",
+   "?StaticClass@ADiscEntity@@SAPEAVUClass@@XZ",
+   "?StaticClass@AVRPawn@@SAPEAVUClass@@XZ"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "SimIntegrate_RVA",
+  "conf": "none",
+  "old": "0x547F7A0",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF6774DF7A0",
+  "new_lead": null,
+  "strings": [],
+  "callees": [
+   "UStateTreeNodeBlueprintBase::RequestTransition_Implementation",
+   "UAnimInstance::DynamicMontage_IsPlayingFrom_Implementation",
+   "?StaticClass@UA2BallEntity@@SAPEAVUClass@@XZ"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "IngestInput_RVA",
+  "conf": "none",
+  "old": "0x54599B0",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF6774B99B0",
+  "new_lead": null,
+  "strings": [],
+  "callees": [
+   "memmove"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "SendResults_RVA",
+  "conf": "none",
+  "old": "0x534A7F0",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF6773AA7F0",
+  "new_lead": null,
+  "strings": [],
+  "callees": [
+   "memcpy"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "StepSim_RVA",
+  "conf": "none",
+  "old": "0x54863C0",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF6774E63C0",
+  "new_lead": null,
+  "strings": [],
+  "callees": [
+   "UAnimInstance::DynamicMontage_IsPlayingFrom_Implementation",
+   "?StaticClass@UPrimitiveComponent@@SAPEAVUClass@@XZ"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "BallAdvance_RVA",
+  "conf": "none",
+  "old": "0x5464630",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF6774C4630",
+  "new_lead": null,
+  "strings": [],
+  "callees": [],
+  "xref_funcs": []
+ },
+ {
+  "name": "BallReconcile_RVA",
+  "conf": "none",
+  "old": "0x548FC40",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF6774EFC40",
+  "new_lead": null,
+  "strings": [],
+  "callees": [
+   "UStateTreeNodeBlueprintBase::RequestTransition_Implementation",
+   "memmove"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "FNameResolve_RVA",
+  "conf": "low",
+  "old": "0x114D690",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF6731AD690",
+  "new_lead": "0x12b8e10",
+  "strings": [],
+  "callees": [],
+  "xref_funcs": []
+ },
+ {
+  "name": "TextLayoutLeaf_RVA",
+  "conf": "low",
+  "old": "0x1EC07A0",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF673F207A0",
+  "new_lead": "0x3849c50",
+  "strings": [],
+  "callees": [
+   "__security_check_cookie",
+   "memcpy"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "EvtDispatch_RVA",
+  "conf": "none",
+  "old": "0x466A240",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF6766CA240",
+  "new_lead": null,
+  "strings": [],
+  "callees": [],
+  "xref_funcs": []
+ },
+ {
+  "name": "GolfBall_LastHitLocation_Off",
+  "conf": "todo-data",
+  "old": "0x658",
+  "is_func": false,
+  "inner": 0,
+  "old_func": "",
+  "new_lead": null,
+  "strings": [],
+  "callees": [],
+  "xref_funcs": []
+ },
+ {
+  "name": "Panel_IsActive_Off",
+  "conf": "todo-data",
+  "old": "0x2C0",
+  "is_func": false,
+  "inner": 0,
+  "old_func": "",
+  "new_lead": null,
+  "strings": [],
+  "callees": [],
+  "xref_funcs": []
+ },
+ {
+  "name": "Panel_Mesh_Off",
+  "conf": "todo-data",
+  "old": "0x2E0",
+  "is_func": false,
+  "inner": 0,
+  "old_func": "",
+  "new_lead": null,
+  "strings": [],
+  "callees": [],
+  "xref_funcs": []
+ },
+ {
+  "name": "Spawner_Disc_Off",
+  "conf": "todo-data",
+  "old": "0x580",
+  "is_func": false,
+  "inner": 0,
+  "old_func": "",
+  "new_lead": null,
+  "strings": [],
+  "callees": [],
+  "xref_funcs": []
+ },
+ {
+  "name": "RolesFetched_RVA",
+  "conf": "none",
+  "old": "0x5510C40",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF677570C40",
+  "new_lead": null,
+  "strings": [],
+  "callees": [
+   "UCreateMeshObjectTypeProperties::GetCurrentCreateMeshType_Implementation"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "IsRunningSimulate_RVA",
+  "conf": "med",
+  "old": "0x531EF96",
+  "is_func": true,
+  "inner": 86,
+  "old_func": "UGameplayUtilityStatics::execIsRunningSimulate",
+  "new_lead": "0x531ef96",
+  "strings": [],
+  "callees": [
+   "?Reserve@WriteBytesCount@AK@@UEAA_NH@Z"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "WorldGetNetMode_RVA",
+  "conf": "low",
+  "old": "0x4040990",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF6760A0990",
+  "new_lead": "0x41f5790",
+  "strings": [],
+  "callees": [
+   "UReplaySubsystem::IsPlaying",
+   "UReplaySubsystem::IsRecording"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "BallSimGetWorld_RVA",
+  "conf": "low",
+  "old": "0x3509AB0",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF675569AB0",
+  "new_lead": "0x368fbc0",
+  "strings": [],
+  "callees": [
+   "?StaticClass@ULevel@@SAPEAVUClass@@XZ"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "BallNetPersp_RVA",
+  "conf": "low",
+  "old": "0x60A0990",
+  "is_func": true,
+  "inner": 64,
+  "old_func": "sub_7FF678100950",
+  "new_lead": "0x6ba7050",
+  "strings": [],
+  "callees": [],
+  "xref_funcs": []
+ },
+ {
+  "name": "PrintString_RVA",
+  "conf": "low",
+  "old": "0x3A29B20",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF675A89B20",
+  "new_lead": "0x3bcdb20",
+  "strings": [],
+  "callees": [
+   "?StartProfileThreadUsage@MemoryMgr@AK@@YAXXZ",
+   "UKismetMathLibrary::Conv_LinearColorToColor_Implementation",
+   "UGameplayStatics::GetPlayerController_Implementation",
+   "?StaticClass@ULocalPlayer@@SAPEAVUClass@@XZ",
+   "_Init_thread_footer",
+   "_Init_thread_header",
+   "memcpy"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "inline_259_01326b07",
+  "conf": "none",
+  "old": "0x1326b07",
+  "is_func": true,
+  "inner": 55,
+  "old_func": "sub_7FF673386AD0",
+  "new_lead": null,
+  "strings": [],
+  "callees": [],
+  "xref_funcs": []
+ },
+ {
+  "name": "inline_276_0a5bb000",
+  "conf": "todo-data",
+  "old": "0xa5bb000",
+  "is_func": false,
+  "inner": 0,
+  "old_func": "",
+  "new_lead": null,
+  "strings": [],
+  "callees": [],
+  "xref_funcs": []
+ },
+ {
+  "name": "inline_473_010153a0",
+  "conf": "low",
+  "old": "0x10153a0",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF6730753A0",
+  "new_lead": "0x1176f00",
+  "strings": [],
+  "callees": [],
+  "xref_funcs": []
+ },
+ {
+  "name": "inline_476_00fcc220",
+  "conf": "low",
+  "old": "0xfcc220",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF67302C220",
+  "new_lead": "0x1128200",
+  "strings": [],
+  "callees": [],
+  "xref_funcs": []
+ },
+ {
+  "name": "inline_943_01254f50",
+  "conf": "none",
+  "old": "0x1254f50",
+  "is_func": true,
+  "inner": 528,
+  "old_func": "sub_7FF6732B4D40",
+  "new_lead": null,
+  "strings": [],
+  "callees": [
+   "__alloca_probe",
+   "__security_check_cookie",
+   "memset"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "inline_1182_054277ad",
+  "conf": "none",
+  "old": "0x54277ad",
+  "is_func": true,
+  "inner": 333,
+  "old_func": "sub_7FF677487660",
+  "new_lead": null,
+  "strings": [],
+  "callees": [
+   "?StaticClass@AVRPlayerController@@SAPEAVUClass@@XZ"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "inline_3171_012494d0",
+  "conf": "low",
+  "old": "0x12494d0",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF6732A94D0",
+  "new_lead": "0x13e01a0",
+  "strings": [],
+  "callees": [],
+  "xref_funcs": []
+ },
+ {
+  "name": "inline_3172_0125f7b0",
+  "conf": "none",
+  "old": "0x125f7b0",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF6732BF7B0",
+  "new_lead": null,
+  "strings": [],
+  "callees": [],
+  "xref_funcs": []
+ },
+ {
+  "name": "inline_3303_053dc76a",
+  "conf": "med",
+  "old": "0x53dc76a",
+  "is_func": true,
+  "inner": 58,
+  "old_func": "sub_7FF67743C730",
+  "new_lead": "0x53dc76a",
+  "strings": [
+   "BallSimManager"
+  ],
+  "callees": [
+   "?StaticClass@ABallSimManager@@SAPEAVUClass@@XZ",
+   "__security_check_cookie"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "inline_7949_00fbcd70",
+  "conf": "none",
+  "old": "0xfbcd70",
+  "is_func": true,
+  "inner": 32,
+  "old_func": "sub_7FF67301CD50",
+  "new_lead": null,
+  "strings": [],
+  "callees": [
+   "UCreateMeshObjectTypeProperties::GetCurrentCreateMeshType_Implementation",
+   "memmove"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "inline_8016_09c5d0a0",
+  "conf": "todo-data",
+  "old": "0x9c5d0a0",
+  "is_func": false,
+  "inner": 0,
+  "old_func": "",
+  "new_lead": null,
+  "strings": [],
+  "callees": [],
+  "xref_funcs": [
+   "UA2StationDashboardSubsystem::GlobalGetMotd"
+  ]
+ },
+ {
+  "name": "inline_13226_05450000",
+  "conf": "none",
+  "old": "0x5450000",
+  "is_func": true,
+  "inner": 624,
+  "old_func": "sub_7FF6774AFD90",
+  "new_lead": null,
+  "strings": [],
+  "callees": [
+   "memmove"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "inline_14201_054e4e10",
+  "conf": "none",
+  "old": "0x54e4e10",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF677544E10",
+  "new_lead": null,
+  "strings": [],
+  "callees": [],
+  "xref_funcs": []
+ },
+ {
+  "name": "inline_14252_05429424",
+  "conf": "low",
+  "old": "0x5429424",
+  "is_func": true,
+  "inner": 84,
+  "old_func": "sub_7FF6774893D0",
+  "new_lead": "0x53cfcd4",
+  "strings": [],
+  "callees": [
+   "UTargetingSubsystem::StartAsyncTargetingRequest_Implementation"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "inline_14257_05429427",
+  "conf": "low",
+  "old": "0x5429427",
+  "is_func": true,
+  "inner": 87,
+  "old_func": "sub_7FF6774893D0",
+  "new_lead": "0x53cfcd7",
+  "strings": [],
+  "callees": [
+   "UTargetingSubsystem::StartAsyncTargetingRequest_Implementation"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "inline_14273_053b3bc3",
+  "conf": "none",
+  "old": "0x53b3bc3",
+  "is_func": true,
+  "inner": 179,
+  "old_func": "sub_7FF677413B10",
+  "new_lead": null,
+  "strings": [],
+  "callees": [
+   "UAnimInstance::MontageSync_Follow_Implementation"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "inline_14281_053b3bcd",
+  "conf": "none",
+  "old": "0x53b3bcd",
+  "is_func": true,
+  "inner": 189,
+  "old_func": "sub_7FF677413B10",
+  "new_lead": null,
+  "strings": [],
+  "callees": [
+   "UAnimInstance::MontageSync_Follow_Implementation"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "inline_14282_053b3be2",
+  "conf": "none",
+  "old": "0x53b3be2",
+  "is_func": true,
+  "inner": 210,
+  "old_func": "sub_7FF677413B10",
+  "new_lead": null,
+  "strings": [],
+  "callees": [
+   "UAnimInstance::MontageSync_Follow_Implementation"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "inline_14425_0550f130",
+  "conf": "none",
+  "old": "0x550f130",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF67756F130",
+  "new_lead": null,
+  "strings": [],
+  "callees": [],
+  "xref_funcs": []
+ },
+ {
+  "name": "inline_14446_01245000",
+  "conf": "none",
+  "old": "0x1245000",
+  "is_func": true,
+  "inner": 304,
+  "old_func": "sub_7FF6732A4ED0",
+  "new_lead": null,
+  "strings": [],
+  "callees": [
+   "__security_check_cookie"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "inline_14446_01269000",
+  "conf": "none",
+  "old": "0x1269000",
+  "is_func": true,
+  "inner": 1088,
+  "old_func": "sub_7FF6732C8BC0",
+  "new_lead": null,
+  "strings": [],
+  "callees": [
+   "__security_check_cookie"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "inline_14447_0124db00",
+  "conf": "none",
+  "old": "0x124db00",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF6732ADB00",
+  "new_lead": null,
+  "strings": [],
+  "callees": [
+   "__security_check_cookie"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "inline_14448_0124ece0",
+  "conf": "none",
+  "old": "0x124ece0",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF6732AECE0",
+  "new_lead": null,
+  "strings": [],
+  "callees": [
+   "__security_check_cookie"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "inline_14493_054b1421",
+  "conf": "med",
+  "old": "0x54b1421",
+  "is_func": true,
+  "inner": 81,
+  "old_func": "sub_7FF6775113D0",
+  "new_lead": "0x54b1421",
+  "strings": [
+   "https://api.oriondrift.net",
+   "server_launched"
+  ],
+  "callees": [
+   "UTargetingSubsystem::StartAsyncTargetingRequest_Implementation",
+   "__security_check_cookie"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "inline_14726_012f0cb0",
+  "conf": "low",
+  "old": "0x12f0cb0",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF673350CB0",
+  "new_lead": "0x1482d30",
+  "strings": [],
+  "callees": [
+   "memcpy"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "inline_15151_0545ccb0",
+  "conf": "none",
+  "old": "0x545ccb0",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF6774BCCB0",
+  "new_lead": null,
+  "strings": [],
+  "callees": [
+   "UAnimInstance::MontageSync_Follow_Implementation",
+   "?StaticClass@UA2BallEntity@@SAPEAVUClass@@XZ"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "inline_15157_0124f4c0",
+  "conf": "none",
+  "old": "0x124f4c0",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF6732AF4C0",
+  "new_lead": null,
+  "strings": [],
+  "callees": [
+   "__security_check_cookie"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "inline_15193_014363a0",
+  "conf": "none",
+  "old": "0x14363a0",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF6734963A0",
+  "new_lead": null,
+  "strings": [],
+  "callees": [
+   "UWidget::GetPaintSpaceGeometry",
+   "__security_check_cookie",
+   "memmove"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "inline_15213_046bc830",
+  "conf": "none",
+  "old": "0x46bc830",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF67671C830",
+  "new_lead": null,
+  "strings": [
+   "NetworkedVariable"
+  ],
+  "callees": [],
+  "xref_funcs": []
+ },
+ {
+  "name": "inline_15214_047138d0",
+  "conf": "none",
+  "old": "0x47138d0",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF6767738D0",
+  "new_lead": null,
+  "strings": [
+   "NetworkedVariable"
+  ],
+  "callees": [],
+  "xref_funcs": []
+ },
+ {
+  "name": "inline_15233_04692f30",
+  "conf": "none",
+  "old": "0x4692f30",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF6766F2F30",
+  "new_lead": null,
+  "strings": [],
+  "callees": [
+   "UAnimInstance::DynamicMontage_IsPlayingFrom_Implementation",
+   "__security_check_cookie"
+  ],
+  "xref_funcs": []
+ },
+ {
+  "name": "inline_15234_04689030",
+  "conf": "none",
+  "old": "0x4689030",
+  "is_func": true,
+  "inner": 0,
+  "old_func": "sub_7FF6766E9030",
+  "new_lead": null,
+  "strings": [],
+  "callees": [
+   "UCreateMeshObjectTypeProperties::GetOutputTypeNamesFunc_Implementation"
+  ],
+  "xref_funcs": []
+ }
+]

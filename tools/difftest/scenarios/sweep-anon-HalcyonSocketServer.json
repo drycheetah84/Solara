@@ -1,0 +1,7 @@
+{"name":"sweep-anon-HalcyonSocketServer","steps":[
+ {"server":"HalcyonSocketServer","method":"GET","path":"/agents","headers":{}}
+,{"server":"HalcyonSocketServer","method":"POST","path":"/spinup","headers":{}}
+,{"server":"HalcyonSocketServer","method":"GET","path":"/watchdog","headers":{}}
+,{"server":"HalcyonSocketServer","method":"POST","path":"/watchdog/retire","headers":{}}
+,{"server":"HalcyonSocketServer","method":"POST","path":"/watchdog/resume","headers":{}}
+]}

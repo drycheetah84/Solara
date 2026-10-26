@@ -1,0 +1,2934 @@
+{
+ "UpdGameState_RVA": {
+  "funcinfo": "0x54a2220",
+  "old_impl": "0x53CB6D0",
+  "old_func": "UGameStateManagerComponent::UpdateGameState_Implementation",
+  "old_strings": [
+   "currentState"
+  ],
+  "old_callees": [
+   "UNumberNetVar::SetValue_Implementation",
+   "__security_check_cookie"
+  ],
+  "old_size": 179,
+  "funcinfo_fn": {
+   "rva": "0x54a2220",
+   "name": "sub_1454A2220",
+   "size": 123,
+   "strings": [],
+   "named_callees": [],
+   "sub_callees": [
+    "0x14d2c80",
+    "0x14de5c0",
+    "0x14de5f0",
+    "0x55a06c0"
+   ],
+   "sub_callee_sizes": [
+    [
+     "0x14d2c80",
+     164
+    ],
+    [
+     "0x14de5c0",
+     38
+    ],
+    [
+     "0x14de5f0",
+     90
+    ],
+    [
+     "0x55a06c0",
+     174
+    ]
+   ]
+  },
+  "sub_targets": [
+   {
+    "rva": "0x14d2c80",
+    "name": "sub_1414D2C80",
+    "size": 164,
+    "strings": [
+     "@SVATAWH",
+     "F",
+     "H"
+    ],
+    "named_callees": [
+     "_Init_thread_header",
+     "atexit",
+     "_Init_thread_footer"
+    ],
+    "sub_callees": [
+     "0x14d3780",
+     "0x13d6df0"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x14d3780",
+      164
+     ],
+     [
+      "0x13d6df0",
+      292
+     ]
+    ]
+   },
+   {
+    "rva": "0x14de5c0",
+    "name": "sub_1414DE5C0",
+    "size": 38,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14de5f0",
+    "name": "sub_1414DE5F0",
+    "size": 90,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x55a06c0",
+    "name": "sub_1455A06C0",
+    "size": 174,
+    "strings": [
+     "2",
+     "currentState"
+    ],
+    "named_callees": [
+     "__security_check_cookie"
+    ],
+    "sub_callees": [
+     "0x12a9010",
+     "0x494cbe0",
+     "0x4950090",
+     "0x4985a60"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x12a9010",
+      203
+     ],
+     [
+      "0x494cbe0",
+      1061
+     ],
+     [
+      "0x4950090",
+      429
+     ],
+     [
+      "0x4985a60",
+      14
+     ]
+    ]
+   }
+  ]
+ },
+ "StartTimerCd_RVA": {
+  "funcinfo": "0x54a6810",
+  "old_impl": "0x53C4060",
+  "old_func": "UGameTimeComponent::StartTimerWithCountdown_Implementation",
+  "old_strings": [
+   "ClockStartedAt",
+   "SecondaryStartedAt",
+   "ClockPunishment",
+   "ClockProgress",
+   "SecondaryEndLength"
+  ],
+  "old_callees": [
+   "UNumberNetVar::SetValue_Implementation",
+   "__security_check_cookie"
+  ],
+  "old_size": 682,
+  "funcinfo_fn": {
+   "rva": "0x54a6810",
+   "name": "sub_1454A6810",
+   "size": 128,
+   "strings": [],
+   "named_callees": [],
+   "sub_callees": [
+    "0x14d2e90",
+    "0x14de5c0",
+    "0x14de5f0",
+    "0x559abd0"
+   ],
+   "sub_callee_sizes": [
+    [
+     "0x14d2e90",
+     172
+    ],
+    [
+     "0x14de5c0",
+     38
+    ],
+    [
+     "0x14de5f0",
+     90
+    ],
+    [
+     "0x559abd0",
+     700
+    ]
+   ]
+  },
+  "sub_targets": [
+   {
+    "rva": "0x14d2e90",
+    "name": "sub_1414D2E90",
+    "size": 172,
+    "strings": [
+     "H",
+     "F"
+    ],
+    "named_callees": [
+     "_Init_thread_header",
+     "atexit",
+     "_Init_thread_footer"
+    ],
+    "sub_callees": [
+     "0x14d3780",
+     "0x13d6df0"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x14d3780",
+      164
+     ],
+     [
+      "0x13d6df0",
+      292
+     ]
+    ]
+   },
+   {
+    "rva": "0x14de5c0",
+    "name": "sub_1414DE5C0",
+    "size": 38,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14de5f0",
+    "name": "sub_1414DE5F0",
+    "size": 90,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x559abd0",
+    "name": "sub_14559ABD0",
+    "size": 700,
+    "strings": [
+     "2",
+     "ClockStartedAt",
+     "SecondaryStartedAt",
+     "ClockPunishment",
+     "ClockProgress",
+     "SecondaryEndLength"
+    ],
+    "named_callees": [
+     "__security_check_cookie"
+    ],
+    "sub_callees": [
+     "0x12a9010",
+     "0x494cbe0",
+     "0x38de0f0",
+     "0x4950090",
+     "0x4985a60",
+     "0x12a9010",
+     "0x494cbe0",
+     "0x38de0f0",
+     "0x4950090",
+     "0x4985a60",
+     "0x12a9010",
+     "0x494cbe0"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x12a9010",
+      203
+     ],
+     [
+      "0x494cbe0",
+      1061
+     ],
+     [
+      "0x38de0f0",
+      99
+     ],
+     [
+      "0x4950090",
+      429
+     ],
+     [
+      "0x4985a60",
+      14
+     ],
+     [
+      "0x12a9010",
+      203
+     ],
+     [
+      "0x494cbe0",
+      1061
+     ],
+     [
+      "0x38de0f0",
+      99
+     ],
+     [
+      "0x4950090",
+      429
+     ],
+     [
+      "0x4985a60",
+      14
+     ],
+     [
+      "0x12a9010",
+      203
+     ],
+     [
+      "0x494cbe0",
+      1061
+     ]
+    ]
+   }
+  ]
+ },
+ "ReqLogin_RVA": {
+  "funcinfo": "0x53dabb0",
+  "old_impl": "0x543C7B0",
+  "old_func": "UA2OnlineCommunicationsComponent::RequestVivoxLoginToken_Implementation",
+  "old_strings": [],
+  "old_callees": [],
+  "old_size": 61,
+  "funcinfo_fn": {
+   "rva": "0x53dabb0",
+   "name": "sub_1453DABB0",
+   "size": 192,
+   "strings": [
+    "R"
+   ],
+   "named_callees": [],
+   "sub_callees": [
+    "0x150e900",
+    "0x14de5c0",
+    "0x14de5f0",
+    "0x1401f20",
+    "0x1177030"
+   ],
+   "sub_callee_sizes": [
+    [
+     "0x150e900",
+     164
+    ],
+    [
+     "0x14de5c0",
+     38
+    ],
+    [
+     "0x14de5f0",
+     90
+    ],
+    [
+     "0x1401f20",
+     8
+    ],
+    [
+     "0x1177030",
+     52
+    ]
+   ]
+  },
+  "sub_targets": [
+   {
+    "rva": "0x150e900",
+    "name": "sub_14150E900",
+    "size": 164,
+    "strings": [
+     "H",
+     "F"
+    ],
+    "named_callees": [
+     "_Init_thread_header",
+     "atexit",
+     "_Init_thread_footer"
+    ],
+    "sub_callees": [
+     "0x14923a0",
+     "0x13d6df0"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x14923a0",
+      162
+     ],
+     [
+      "0x13d6df0",
+      292
+     ]
+    ]
+   },
+   {
+    "rva": "0x14de5c0",
+    "name": "sub_1414DE5C0",
+    "size": 38,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14de5f0",
+    "name": "sub_1414DE5F0",
+    "size": 90,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x1401f20",
+    "name": "sub_141401F20",
+    "size": 8,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x1177030",
+    "name": "sub_141177030",
+    "size": 52,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [
+     "0x1177080"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x1177080",
+      333
+     ]
+    ]
+   }
+  ]
+ },
+ "SendPhysImpl_RVA": {
+  "funcinfo": "0x54f8b00",
+  "old_impl": "0x5503050",
+  "old_func": "AVRPawn::Server_SendPhysicsPropData_Implementation",
+  "old_strings": [],
+  "old_callees": [
+   "?StaticClass@UA2PhysicsSync@@SAPEAVUClass@@XZ"
+  ],
+  "old_size": 252,
+  "funcinfo_fn": {
+   "rva": "0x54f8b00",
+   "name": "sub_1454F8B00",
+   "size": 436,
+   "strings": [],
+   "named_callees": [],
+   "sub_callees": [
+    "0x14922f0",
+    "0x14de5c0",
+    "0x14de5f0",
+    "0x541a1c0",
+    "0x541a1c0",
+    "0x14d3ba0",
+    "0x14de5c0",
+    "0x14de5f0"
+   ],
+   "sub_callee_sizes": [
+    [
+     "0x14922f0",
+     164
+    ],
+    [
+     "0x14de5c0",
+     38
+    ],
+    [
+     "0x14de5f0",
+     90
+    ],
+    [
+     "0x541a1c0",
+     757
+    ],
+    [
+     "0x541a1c0",
+     757
+    ],
+    [
+     "0x14d3ba0",
+     164
+    ],
+    [
+     "0x14de5c0",
+     38
+    ],
+    [
+     "0x14de5f0",
+     90
+    ]
+   ]
+  },
+  "sub_targets": [
+   {
+    "rva": "0x14922f0",
+    "name": "sub_1414922F0",
+    "size": 164,
+    "strings": [
+     "H",
+     "F"
+    ],
+    "named_callees": [
+     "_Init_thread_header",
+     "atexit",
+     "_Init_thread_footer"
+    ],
+    "sub_callees": [
+     "0x14923a0",
+     "0x13d6df0"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x14923a0",
+      162
+     ],
+     [
+      "0x13d6df0",
+      292
+     ]
+    ]
+   },
+   {
+    "rva": "0x14de5c0",
+    "name": "sub_1414DE5C0",
+    "size": 38,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14de5f0",
+    "name": "sub_1414DE5F0",
+    "size": 90,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x541a1c0",
+    "name": "sub_14541A1C0",
+    "size": 757,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x541a1c0",
+    "name": "sub_14541A1C0",
+    "size": 757,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14d3ba0",
+    "name": "sub_1414D3BA0",
+    "size": 164,
+    "strings": [
+     "H",
+     "F"
+    ],
+    "named_callees": [
+     "_Init_thread_header",
+     "atexit",
+     "_Init_thread_footer"
+    ],
+    "sub_callees": [
+     "0x14923a0",
+     "0x13d6df0"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x14923a0",
+      162
+     ],
+     [
+      "0x13d6df0",
+      292
+     ]
+    ]
+   },
+   {
+    "rva": "0x14de5c0",
+    "name": "sub_1414DE5C0",
+    "size": 38,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14de5f0",
+    "name": "sub_1414DE5F0",
+    "size": 90,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   }
+  ]
+ },
+ "NotifyLeftArena_RVA": {
+  "funcinfo": "0x54f82b0",
+  "old_impl": "0x5502B00",
+  "old_func": "AVRPawn::Server_NotifyPlayerLeftArena_Implementation",
+  "old_strings": [],
+  "old_callees": [],
+  "old_size": 56,
+  "funcinfo_fn": {
+   "rva": "0x54f82b0",
+   "name": "sub_1454F82B0",
+   "size": 157,
+   "strings": [],
+   "named_callees": [],
+   "sub_callees": [
+    "0x150e900",
+    "0x14de5c0",
+    "0x14de5f0",
+    "0x1177030"
+   ],
+   "sub_callee_sizes": [
+    [
+     "0x150e900",
+     164
+    ],
+    [
+     "0x14de5c0",
+     38
+    ],
+    [
+     "0x14de5f0",
+     90
+    ],
+    [
+     "0x1177030",
+     52
+    ]
+   ]
+  },
+  "sub_targets": [
+   {
+    "rva": "0x150e900",
+    "name": "sub_14150E900",
+    "size": 164,
+    "strings": [
+     "H",
+     "F"
+    ],
+    "named_callees": [
+     "_Init_thread_header",
+     "atexit",
+     "_Init_thread_footer"
+    ],
+    "sub_callees": [
+     "0x14923a0",
+     "0x13d6df0"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x14923a0",
+      162
+     ],
+     [
+      "0x13d6df0",
+      292
+     ]
+    ]
+   },
+   {
+    "rva": "0x14de5c0",
+    "name": "sub_1414DE5C0",
+    "size": 38,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14de5f0",
+    "name": "sub_1414DE5F0",
+    "size": 90,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x1177030",
+    "name": "sub_141177030",
+    "size": 52,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [
+     "0x1177080"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x1177080",
+      333
+     ]
+    ]
+   }
+  ]
+ },
+ "GolfBallInCup_RVA": {
+  "funcinfo": "0x54a9200",
+  "old_impl": "0x53DC320",
+  "old_func": "AGolfCup::BallInCup_Implementation",
+  "old_strings": [],
+  "old_callees": [],
+  "old_size": 21,
+  "funcinfo_fn": {
+   "rva": "0x54a9200",
+   "name": "sub_1454A9200",
+   "size": 199,
+   "strings": [],
+   "named_callees": [],
+   "sub_callees": [
+    "0x14d3200",
+    "0x14de5c0",
+    "0x14de5f0",
+    "0x14922f0",
+    "0x14de5c0",
+    "0x14de5f0",
+    "0x55b3900"
+   ],
+   "sub_callee_sizes": [
+    [
+     "0x14d3200",
+     164
+    ],
+    [
+     "0x14de5c0",
+     38
+    ],
+    [
+     "0x14de5f0",
+     90
+    ],
+    [
+     "0x14922f0",
+     164
+    ],
+    [
+     "0x14de5c0",
+     38
+    ],
+    [
+     "0x14de5f0",
+     90
+    ],
+    [
+     "0x55b3900",
+     24
+    ]
+   ]
+  },
+  "sub_targets": [
+   {
+    "rva": "0x14d3200",
+    "name": "sub_1414D3200",
+    "size": 164,
+    "strings": [
+     "@SVAVAWH",
+     "F",
+     "H"
+    ],
+    "named_callees": [
+     "_Init_thread_header",
+     "atexit",
+     "_Init_thread_footer"
+    ],
+    "sub_callees": [
+     "0x14d3780",
+     "0x13d6df0"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x14d3780",
+      164
+     ],
+     [
+      "0x13d6df0",
+      292
+     ]
+    ]
+   },
+   {
+    "rva": "0x14de5c0",
+    "name": "sub_1414DE5C0",
+    "size": 38,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14de5f0",
+    "name": "sub_1414DE5F0",
+    "size": 90,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14922f0",
+    "name": "sub_1414922F0",
+    "size": 164,
+    "strings": [
+     "H",
+     "F"
+    ],
+    "named_callees": [
+     "_Init_thread_header",
+     "atexit",
+     "_Init_thread_footer"
+    ],
+    "sub_callees": [
+     "0x14923a0",
+     "0x13d6df0"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x14923a0",
+      162
+     ],
+     [
+      "0x13d6df0",
+      292
+     ]
+    ]
+   },
+   {
+    "rva": "0x14de5c0",
+    "name": "sub_1414DE5C0",
+    "size": 38,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14de5f0",
+    "name": "sub_1414DE5F0",
+    "size": 90,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x55b3900",
+    "name": "sub_1455B3900",
+    "size": 24,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [
+     "0x54a8f20"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x54a8f20",
+      34
+     ]
+    ]
+   }
+  ]
+ },
+ "GolfOverlap_RVA": {
+  "funcinfo": "0x54a9890",
+  "old_impl": "0x53F03B0",
+  "old_func": "AGolfCup::OnGoalBeginOverlap_Implementation",
+  "old_strings": [],
+  "old_callees": [
+   "?StaticClass@ADiscEntity@@SAPEAVUClass@@XZ"
+  ],
+  "old_size": 88,
+  "funcinfo_fn": {
+   "rva": "0x54a9890",
+   "name": "sub_1454A9890",
+   "size": 603,
+   "strings": [],
+   "named_callees": [
+    "memset"
+   ],
+   "sub_callees": [
+    "0x14922f0",
+    "0x14de5c0",
+    "0x14de5f0",
+    "0x14922f0",
+    "0x14de5c0",
+    "0x14de5f0",
+    "0x14922f0",
+    "0x14de5c0",
+    "0x14de5f0",
+    "0x14d3200",
+    "0x14de5c0",
+    "0x14de5f0"
+   ],
+   "sub_callee_sizes": [
+    [
+     "0x14922f0",
+     164
+    ],
+    [
+     "0x14de5c0",
+     38
+    ],
+    [
+     "0x14de5f0",
+     90
+    ],
+    [
+     "0x14922f0",
+     164
+    ],
+    [
+     "0x14de5c0",
+     38
+    ],
+    [
+     "0x14de5f0",
+     90
+    ],
+    [
+     "0x14922f0",
+     164
+    ],
+    [
+     "0x14de5c0",
+     38
+    ],
+    [
+     "0x14de5f0",
+     90
+    ],
+    [
+     "0x14d3200",
+     164
+    ],
+    [
+     "0x14de5c0",
+     38
+    ],
+    [
+     "0x14de5f0",
+     90
+    ]
+   ]
+  },
+  "sub_targets": [
+   {
+    "rva": "0x14922f0",
+    "name": "sub_1414922F0",
+    "size": 164,
+    "strings": [
+     "H",
+     "F"
+    ],
+    "named_callees": [
+     "_Init_thread_header",
+     "atexit",
+     "_Init_thread_footer"
+    ],
+    "sub_callees": [
+     "0x14923a0",
+     "0x13d6df0"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x14923a0",
+      162
+     ],
+     [
+      "0x13d6df0",
+      292
+     ]
+    ]
+   },
+   {
+    "rva": "0x14de5c0",
+    "name": "sub_1414DE5C0",
+    "size": 38,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14de5f0",
+    "name": "sub_1414DE5F0",
+    "size": 90,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14922f0",
+    "name": "sub_1414922F0",
+    "size": 164,
+    "strings": [
+     "H",
+     "F"
+    ],
+    "named_callees": [
+     "_Init_thread_header",
+     "atexit",
+     "_Init_thread_footer"
+    ],
+    "sub_callees": [
+     "0x14923a0",
+     "0x13d6df0"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x14923a0",
+      162
+     ],
+     [
+      "0x13d6df0",
+      292
+     ]
+    ]
+   },
+   {
+    "rva": "0x14de5c0",
+    "name": "sub_1414DE5C0",
+    "size": 38,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14de5f0",
+    "name": "sub_1414DE5F0",
+    "size": 90,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14922f0",
+    "name": "sub_1414922F0",
+    "size": 164,
+    "strings": [
+     "H",
+     "F"
+    ],
+    "named_callees": [
+     "_Init_thread_header",
+     "atexit",
+     "_Init_thread_footer"
+    ],
+    "sub_callees": [
+     "0x14923a0",
+     "0x13d6df0"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x14923a0",
+      162
+     ],
+     [
+      "0x13d6df0",
+      292
+     ]
+    ]
+   },
+   {
+    "rva": "0x14de5c0",
+    "name": "sub_1414DE5C0",
+    "size": 38,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14de5f0",
+    "name": "sub_1414DE5F0",
+    "size": 90,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14d3200",
+    "name": "sub_1414D3200",
+    "size": 164,
+    "strings": [
+     "@SVAVAWH",
+     "F",
+     "H"
+    ],
+    "named_callees": [
+     "_Init_thread_header",
+     "atexit",
+     "_Init_thread_footer"
+    ],
+    "sub_callees": [
+     "0x14d3780",
+     "0x13d6df0"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x14d3780",
+      164
+     ],
+     [
+      "0x13d6df0",
+      292
+     ]
+    ]
+   },
+   {
+    "rva": "0x14de5c0",
+    "name": "sub_1414DE5C0",
+    "size": 38,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14de5f0",
+    "name": "sub_1414DE5F0",
+    "size": 90,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   }
+  ]
+ },
+ "GiveCheck_RVA": {
+  "funcinfo": "0x49e79c0",
+  "old_impl": "0x4723AA0",
+  "old_func": "ATicketManager::GiveAndCheckTicket_Implementation",
+  "old_strings": [],
+  "old_callees": [
+   "?StaticClass@AModuleSlot@@SAPEAVUClass@@XZ",
+   "ATicketManager::AddToTicketHolders_Implementation",
+   "ATicketManager::AddToVerifiedTicketHolders_Implementation",
+   "ATicketManager::CheckOverlappingPawnTickets_Implementation",
+   "ATicketManager::CheckTicketSuccess_Implementation"
+  ],
+  "old_size": 1100,
+  "funcinfo_fn": {
+   "rva": "0x49e79c0",
+   "name": "sub_1449E79C0",
+   "size": 442,
+   "strings": [],
+   "named_callees": [],
+   "sub_callees": [
+    "0x14d32b0",
+    "0x14de5c0",
+    "0x14de5f0",
+    "0x14d3200",
+    "0x14de5c0",
+    "0x14de5f0",
+    "0x1492240",
+    "0x14de5c0",
+    "0x14de5f0",
+    "0x1492240",
+    "0x14de5c0",
+    "0x14de5f0"
+   ],
+   "sub_callee_sizes": [
+    [
+     "0x14d32b0",
+     164
+    ],
+    [
+     "0x14de5c0",
+     38
+    ],
+    [
+     "0x14de5f0",
+     90
+    ],
+    [
+     "0x14d3200",
+     164
+    ],
+    [
+     "0x14de5c0",
+     38
+    ],
+    [
+     "0x14de5f0",
+     90
+    ],
+    [
+     "0x1492240",
+     164
+    ],
+    [
+     "0x14de5c0",
+     38
+    ],
+    [
+     "0x14de5f0",
+     90
+    ],
+    [
+     "0x1492240",
+     164
+    ],
+    [
+     "0x14de5c0",
+     38
+    ],
+    [
+     "0x14de5f0",
+     90
+    ]
+   ]
+  },
+  "sub_targets": [
+   {
+    "rva": "0x14d32b0",
+    "name": "sub_1414D32B0",
+    "size": 164,
+    "strings": [
+     "@SWATAWH",
+     "F",
+     "H"
+    ],
+    "named_callees": [
+     "_Init_thread_header",
+     "atexit",
+     "_Init_thread_footer"
+    ],
+    "sub_callees": [
+     "0x14923a0",
+     "0x13d6df0"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x14923a0",
+      162
+     ],
+     [
+      "0x13d6df0",
+      292
+     ]
+    ]
+   },
+   {
+    "rva": "0x14de5c0",
+    "name": "sub_1414DE5C0",
+    "size": 38,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14de5f0",
+    "name": "sub_1414DE5F0",
+    "size": 90,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14d3200",
+    "name": "sub_1414D3200",
+    "size": 164,
+    "strings": [
+     "@SVAVAWH",
+     "F",
+     "H"
+    ],
+    "named_callees": [
+     "_Init_thread_header",
+     "atexit",
+     "_Init_thread_footer"
+    ],
+    "sub_callees": [
+     "0x14d3780",
+     "0x13d6df0"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x14d3780",
+      164
+     ],
+     [
+      "0x13d6df0",
+      292
+     ]
+    ]
+   },
+   {
+    "rva": "0x14de5c0",
+    "name": "sub_1414DE5C0",
+    "size": 38,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14de5f0",
+    "name": "sub_1414DE5F0",
+    "size": 90,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x1492240",
+    "name": "sub_141492240",
+    "size": 164,
+    "strings": [
+     "H",
+     "F"
+    ],
+    "named_callees": [
+     "_Init_thread_header",
+     "atexit",
+     "_Init_thread_footer"
+    ],
+    "sub_callees": [
+     "0x14923a0",
+     "0x13d6df0"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x14923a0",
+      162
+     ],
+     [
+      "0x13d6df0",
+      292
+     ]
+    ]
+   },
+   {
+    "rva": "0x14de5c0",
+    "name": "sub_1414DE5C0",
+    "size": 38,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14de5f0",
+    "name": "sub_1414DE5F0",
+    "size": 90,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x1492240",
+    "name": "sub_141492240",
+    "size": 164,
+    "strings": [
+     "H",
+     "F"
+    ],
+    "named_callees": [
+     "_Init_thread_header",
+     "atexit",
+     "_Init_thread_footer"
+    ],
+    "sub_callees": [
+     "0x14923a0",
+     "0x13d6df0"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x14923a0",
+      162
+     ],
+     [
+      "0x13d6df0",
+      292
+     ]
+    ]
+   },
+   {
+    "rva": "0x14de5c0",
+    "name": "sub_1414DE5C0",
+    "size": 38,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14de5f0",
+    "name": "sub_1414DE5F0",
+    "size": 90,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   }
+  ]
+ },
+ "IsRunningSimulate_RVA": {
+  "funcinfo": "0x54a1930",
+  "old_impl": "0x531EF96",
+  "old_func": "UGameplayUtilityStatics::execIsRunningSimulate",
+  "old_strings": [],
+  "old_callees": [
+   "?Reserve@WriteBytesCount@AK@@UEAA_NH@Z"
+  ],
+  "old_size": 132,
+  "funcinfo_fn": {
+   "rva": "0x54a1930",
+   "name": "sub_1454A1930",
+   "size": 132,
+   "strings": [],
+   "named_callees": [
+    "?Reserve@WriteBytesCount@AK@@UEAA_NH@Z"
+   ],
+   "sub_callees": [
+    "0x14922f0",
+    "0x14de5c0",
+    "0x14de5f0"
+   ],
+   "sub_callee_sizes": [
+    [
+     "0x14922f0",
+     164
+    ],
+    [
+     "0x14de5c0",
+     38
+    ],
+    [
+     "0x14de5f0",
+     90
+    ]
+   ]
+  },
+  "sub_targets": [
+   {
+    "rva": "0x14922f0",
+    "name": "sub_1414922F0",
+    "size": 164,
+    "strings": [
+     "H",
+     "F"
+    ],
+    "named_callees": [
+     "_Init_thread_header",
+     "atexit",
+     "_Init_thread_footer"
+    ],
+    "sub_callees": [
+     "0x14923a0",
+     "0x13d6df0"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x14923a0",
+      162
+     ],
+     [
+      "0x13d6df0",
+      292
+     ]
+    ]
+   },
+   {
+    "rva": "0x14de5c0",
+    "name": "sub_1414DE5C0",
+    "size": 38,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14de5f0",
+    "name": "sub_1414DE5F0",
+    "size": 90,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   }
+  ]
+ },
+ "A2GetNetMode_RVA": {
+  "funcinfo": "0x22ac640",
+  "old_impl": "0x54AF360",
+  "old_func": "UA2NetworkUtilityBPFL::GetNetMode_Implementation",
+  "old_strings": [],
+  "old_callees": [],
+  "old_size": 188,
+  "funcinfo_fn": {
+   "rva": "0x22ac640",
+   "name": "sub_1422AC640",
+   "size": 308,
+   "strings": [
+    "A"
+   ],
+   "named_callees": [],
+   "sub_callees": [
+    "0x14922f0",
+    "0x14de5c0",
+    "0x14de5f0",
+    "0x14db9c0",
+    "0x14fef00",
+    "0x11246d0",
+    "0x14db9c0",
+    "0x1177030",
+    "0x1177030",
+    "0x41f5a60"
+   ],
+   "sub_callee_sizes": [
+    [
+     "0x14922f0",
+     164
+    ],
+    [
+     "0x14de5c0",
+     38
+    ],
+    [
+     "0x14de5f0",
+     90
+    ],
+    [
+     "0x14db9c0",
+     212
+    ],
+    [
+     "0x14fef00",
+     399
+    ],
+    [
+     "0x11246d0",
+     393
+    ],
+    [
+     "0x14db9c0",
+     212
+    ],
+    [
+     "0x1177030",
+     52
+    ],
+    [
+     "0x1177030",
+     52
+    ],
+    [
+     "0x41f5a60",
+     410
+    ]
+   ]
+  },
+  "sub_targets": [
+   {
+    "rva": "0x14922f0",
+    "name": "sub_1414922F0",
+    "size": 164,
+    "strings": [
+     "H",
+     "F"
+    ],
+    "named_callees": [
+     "_Init_thread_header",
+     "atexit",
+     "_Init_thread_footer"
+    ],
+    "sub_callees": [
+     "0x14923a0",
+     "0x13d6df0"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x14923a0",
+      162
+     ],
+     [
+      "0x13d6df0",
+      292
+     ]
+    ]
+   },
+   {
+    "rva": "0x14de5c0",
+    "name": "sub_1414DE5C0",
+    "size": 38,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14de5f0",
+    "name": "sub_1414DE5F0",
+    "size": 90,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14db9c0",
+    "name": "sub_1414DB9C0",
+    "size": 212,
+    "strings": [
+     "2"
+    ],
+    "named_callees": [
+     "__alloca_probe",
+     "__security_check_cookie"
+    ],
+    "sub_callees": [
+     "0x11e1ab0",
+     "0x124d4e0",
+     "0x1250ce0",
+     "0x1267db0"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x11e1ab0",
+      90
+     ],
+     [
+      "0x124d4e0",
+      48
+     ],
+     [
+      "0x1250ce0",
+      182
+     ],
+     [
+      "0x1267db0",
+      15
+     ]
+    ]
+   },
+   {
+    "rva": "0x14fef00",
+    "name": "sub_1414FEF00",
+    "size": 399,
+    "strings": [
+     "2",
+     "N"
+    ],
+    "named_callees": [
+     "j_memcpy",
+     "__security_check_cookie"
+    ],
+    "sub_callees": [
+     "0x14ff090",
+     "0x1487990",
+     "0x1487990",
+     "0x1273000",
+     "0x1273000",
+     "0x12ad420",
+     "0x111b060",
+     "0x1267db0"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x14ff090",
+      166
+     ],
+     [
+      "0x1487990",
+      173
+     ],
+     [
+      "0x1487990",
+      173
+     ],
+     [
+      "0x1273000",
+      207
+     ],
+     [
+      "0x1273000",
+      207
+     ],
+     [
+      "0x12ad420",
+      189
+     ],
+     [
+      "0x111b060",
+      272
+     ],
+     [
+      "0x1267db0",
+      15
+     ]
+    ]
+   },
+   {
+    "rva": "0x11246d0",
+    "name": "sub_1411246D0",
+    "size": 393,
+    "strings": [
+     "2"
+    ],
+    "named_callees": [
+     "j_memcpy",
+     "__security_check_cookie"
+    ],
+    "sub_callees": [
+     "0x112be30",
+     "0x11864a0",
+     "0x1129420",
+     "0x1128d40",
+     "0x1177030",
+     "0x1122ac0"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x112be30",
+      8
+     ],
+     [
+      "0x11864a0",
+      79
+     ],
+     [
+      "0x1129420",
+      98
+     ],
+     [
+      "0x1128d40",
+      144
+     ],
+     [
+      "0x1177030",
+      52
+     ],
+     [
+      "0x1122ac0",
+      34
+     ]
+    ]
+   },
+   {
+    "rva": "0x14db9c0",
+    "name": "sub_1414DB9C0",
+    "size": 212,
+    "strings": [
+     "2"
+    ],
+    "named_callees": [
+     "__alloca_probe",
+     "__security_check_cookie"
+    ],
+    "sub_callees": [
+     "0x11e1ab0",
+     "0x124d4e0",
+     "0x1250ce0",
+     "0x1267db0"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x11e1ab0",
+      90
+     ],
+     [
+      "0x124d4e0",
+      48
+     ],
+     [
+      "0x1250ce0",
+      182
+     ],
+     [
+      "0x1267db0",
+      15
+     ]
+    ]
+   },
+   {
+    "rva": "0x1177030",
+    "name": "sub_141177030",
+    "size": 52,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [
+     "0x1177080"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x1177080",
+      333
+     ]
+    ]
+   },
+   {
+    "rva": "0x1177030",
+    "name": "sub_141177030",
+    "size": 52,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [
+     "0x1177080"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x1177080",
+      333
+     ]
+    ]
+   },
+   {
+    "rva": "0x41f5a60",
+    "name": "sub_1441F5A60",
+    "size": 410,
+    "strings": [
+     "l"
+    ],
+    "named_callees": [],
+    "sub_callees": [
+     "0x3a4e420",
+     "0x3a4e460",
+     "0x3d2b4a0",
+     "0x41694c0",
+     "0x419e610",
+     "0x41bea20",
+     "0x35ebf90",
+     "0x35ebf90",
+     "0x35ebf90",
+     "0x41bea20"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x3a4e420",
+      49
+     ],
+     [
+      "0x3a4e460",
+      52
+     ],
+     [
+      "0x3d2b4a0",
+      45
+     ],
+     [
+      "0x41694c0",
+      60
+     ],
+     [
+      "0x419e610",
+      6621
+     ],
+     [
+      "0x41bea20",
+      216
+     ],
+     [
+      "0x35ebf90",
+      115
+     ],
+     [
+      "0x35ebf90",
+      115
+     ],
+     [
+      "0x35ebf90",
+      115
+     ],
+     [
+      "0x41bea20",
+      216
+     ]
+    ]
+   }
+  ]
+ },
+ "GetLocalInst_RVA": {
+  "funcinfo": "0x54f2b70",
+  "old_impl": "0x54EAC60",
+  "old_func": "AVRPawn::GetLocalInstanceWithWorld_Implementation",
+  "old_strings": [],
+  "old_callees": [],
+  "old_size": 255,
+  "funcinfo_fn": {
+   "rva": "0x54f2b70",
+   "name": "sub_1454F2B70",
+   "size": 133,
+   "strings": [],
+   "named_callees": [],
+   "sub_callees": [
+    "0x14922f0",
+    "0x14de5c0",
+    "0x14de5f0",
+    "0x5810b30"
+   ],
+   "sub_callee_sizes": [
+    [
+     "0x14922f0",
+     164
+    ],
+    [
+     "0x14de5c0",
+     38
+    ],
+    [
+     "0x14de5f0",
+     90
+    ],
+    [
+     "0x5810b30",
+     272
+    ]
+   ]
+  },
+  "sub_targets": [
+   {
+    "rva": "0x14922f0",
+    "name": "sub_1414922F0",
+    "size": 164,
+    "strings": [
+     "H",
+     "F"
+    ],
+    "named_callees": [
+     "_Init_thread_header",
+     "atexit",
+     "_Init_thread_footer"
+    ],
+    "sub_callees": [
+     "0x14923a0",
+     "0x13d6df0"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x14923a0",
+      162
+     ],
+     [
+      "0x13d6df0",
+      292
+     ]
+    ]
+   },
+   {
+    "rva": "0x14de5c0",
+    "name": "sub_1414DE5C0",
+    "size": 38,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14de5f0",
+    "name": "sub_1414DE5F0",
+    "size": 90,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x5810b30",
+    "name": "sub_145810B30",
+    "size": 272,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   }
+  ]
+ },
+ "GetPlayerPawn_RVA": {
+  "funcinfo": "0x3ae0310",
+  "old_impl": "0x3D24C40",
+  "old_func": "UGameplayStatics::GetPlayerPawn_Implementation",
+  "old_strings": [],
+  "old_callees": [],
+  "old_size": 20,
+  "funcinfo_fn": {
+   "rva": "0x3ae0310",
+   "name": "sub_143AE0310",
+   "size": 229,
+   "strings": [],
+   "named_callees": [],
+   "sub_callees": [
+    "0x14922f0",
+    "0x14de5c0",
+    "0x14de5f0",
+    "0x14d3200",
+    "0x14de5c0",
+    "0x14de5f0",
+    "0x3abc750",
+    "0x3ec7c90"
+   ],
+   "sub_callee_sizes": [
+    [
+     "0x14922f0",
+     164
+    ],
+    [
+     "0x14de5c0",
+     38
+    ],
+    [
+     "0x14de5f0",
+     90
+    ],
+    [
+     "0x14d3200",
+     164
+    ],
+    [
+     "0x14de5c0",
+     38
+    ],
+    [
+     "0x14de5f0",
+     90
+    ],
+    [
+     "0x3abc750",
+     373
+    ],
+    [
+     "0x3ec7c90",
+     20
+    ]
+   ]
+  },
+  "sub_targets": [
+   {
+    "rva": "0x14922f0",
+    "name": "sub_1414922F0",
+    "size": 164,
+    "strings": [
+     "H",
+     "F"
+    ],
+    "named_callees": [
+     "_Init_thread_header",
+     "atexit",
+     "_Init_thread_footer"
+    ],
+    "sub_callees": [
+     "0x14923a0",
+     "0x13d6df0"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x14923a0",
+      162
+     ],
+     [
+      "0x13d6df0",
+      292
+     ]
+    ]
+   },
+   {
+    "rva": "0x14de5c0",
+    "name": "sub_1414DE5C0",
+    "size": 38,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14de5f0",
+    "name": "sub_1414DE5F0",
+    "size": 90,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14d3200",
+    "name": "sub_1414D3200",
+    "size": 164,
+    "strings": [
+     "@SVAVAWH",
+     "F",
+     "H"
+    ],
+    "named_callees": [
+     "_Init_thread_header",
+     "atexit",
+     "_Init_thread_footer"
+    ],
+    "sub_callees": [
+     "0x14d3780",
+     "0x13d6df0"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x14d3780",
+      164
+     ],
+     [
+      "0x13d6df0",
+      292
+     ]
+    ]
+   },
+   {
+    "rva": "0x14de5c0",
+    "name": "sub_1414DE5C0",
+    "size": 38,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14de5f0",
+    "name": "sub_1414DE5F0",
+    "size": 90,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x3abc750",
+    "name": "sub_143ABC750",
+    "size": 373,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [
+     "0x4169580",
+     "0x3f1bc60",
+     "0x3ec78e0",
+     "0x41f0910",
+     "0x1519a80"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x4169580",
+      259
+     ],
+     [
+      "0x3f1bc60",
+      70
+     ],
+     [
+      "0x3ec78e0",
+      56
+     ],
+     [
+      "0x41f0910",
+      21
+     ],
+     [
+      "0x1519a80",
+      80
+     ]
+    ]
+   },
+   {
+    "rva": "0x3ec7c90",
+    "name": "sub_143EC7C90",
+    "size": 20,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   }
+  ]
+ },
+ "inline_14200_054e4470": {
+  "funcinfo": "0x542d3f0",
+  "old_impl": "0x54e4470",
+  "old_func": "AVRPawn::Client_TicketCheckSuccess_Implementation",
+  "old_strings": [
+   "TeamPawn"
+  ],
+  "old_callees": [
+   "??0FName@@QEAA@PEB_WW4EFindName@@@Z",
+   "UPrimitiveComponent::IgnoreComponentWhenMoving_Implementation",
+   "UBasicBoostComponent::SetEnergy_Implementation",
+   "AVRPawn::UpdateAllBallIndicatorsInGamemode_Implementation",
+   "wcsstr"
+  ],
+  "old_size": 1613,
+  "funcinfo_fn": {
+   "rva": "0x542d3f0",
+   "name": "sub_14542D3F0",
+   "size": 498,
+   "strings": [
+    "NoPreference"
+   ],
+   "named_callees": [],
+   "sub_callees": [
+    "0x14d3200",
+    "0x14de5c0",
+    "0x14de5f0",
+    "0x12a9010",
+    "0x12a9010",
+    "0x14d3ba0",
+    "0x14de5c0",
+    "0x14de5f0",
+    "0x14d3150",
+    "0x14de5c0",
+    "0x14de5f0",
+    "0x14922f0"
+   ],
+   "sub_callee_sizes": [
+    [
+     "0x14d3200",
+     164
+    ],
+    [
+     "0x14de5c0",
+     38
+    ],
+    [
+     "0x14de5f0",
+     90
+    ],
+    [
+     "0x12a9010",
+     203
+    ],
+    [
+     "0x12a9010",
+     203
+    ],
+    [
+     "0x14d3ba0",
+     164
+    ],
+    [
+     "0x14de5c0",
+     38
+    ],
+    [
+     "0x14de5f0",
+     90
+    ],
+    [
+     "0x14d3150",
+     164
+    ],
+    [
+     "0x14de5c0",
+     38
+    ],
+    [
+     "0x14de5f0",
+     90
+    ],
+    [
+     "0x14922f0",
+     164
+    ]
+   ]
+  },
+  "sub_targets": [
+   {
+    "rva": "0x14d3200",
+    "name": "sub_1414D3200",
+    "size": 164,
+    "strings": [
+     "@SVAVAWH",
+     "F",
+     "H"
+    ],
+    "named_callees": [
+     "_Init_thread_header",
+     "atexit",
+     "_Init_thread_footer"
+    ],
+    "sub_callees": [
+     "0x14d3780",
+     "0x13d6df0"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x14d3780",
+      164
+     ],
+     [
+      "0x13d6df0",
+      292
+     ]
+    ]
+   },
+   {
+    "rva": "0x14de5c0",
+    "name": "sub_1414DE5C0",
+    "size": 38,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14de5f0",
+    "name": "sub_1414DE5F0",
+    "size": 90,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x12a9010",
+    "name": "sub_1412A9010",
+    "size": 203,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [
+     "0x12a7760",
+     "0x12af030"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x12a7760",
+      211
+     ],
+     [
+      "0x12af030",
+      307
+     ]
+    ]
+   },
+   {
+    "rva": "0x12a9010",
+    "name": "sub_1412A9010",
+    "size": 203,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [
+     "0x12a7760",
+     "0x12af030"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x12a7760",
+      211
+     ],
+     [
+      "0x12af030",
+      307
+     ]
+    ]
+   },
+   {
+    "rva": "0x14d3ba0",
+    "name": "sub_1414D3BA0",
+    "size": 164,
+    "strings": [
+     "H",
+     "F"
+    ],
+    "named_callees": [
+     "_Init_thread_header",
+     "atexit",
+     "_Init_thread_footer"
+    ],
+    "sub_callees": [
+     "0x14923a0",
+     "0x13d6df0"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x14923a0",
+      162
+     ],
+     [
+      "0x13d6df0",
+      292
+     ]
+    ]
+   },
+   {
+    "rva": "0x14de5c0",
+    "name": "sub_1414DE5C0",
+    "size": 38,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14de5f0",
+    "name": "sub_1414DE5F0",
+    "size": 90,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14d3150",
+    "name": "sub_1414D3150",
+    "size": 164,
+    "strings": [
+     "@SVAVAWH",
+     "F",
+     "H"
+    ],
+    "named_callees": [
+     "_Init_thread_header",
+     "atexit",
+     "_Init_thread_footer"
+    ],
+    "sub_callees": [
+     "0x14d3780",
+     "0x13d6df0"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x14d3780",
+      164
+     ],
+     [
+      "0x13d6df0",
+      292
+     ]
+    ]
+   },
+   {
+    "rva": "0x14de5c0",
+    "name": "sub_1414DE5C0",
+    "size": 38,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14de5f0",
+    "name": "sub_1414DE5F0",
+    "size": 90,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14922f0",
+    "name": "sub_1414922F0",
+    "size": 164,
+    "strings": [
+     "H",
+     "F"
+    ],
+    "named_callees": [
+     "_Init_thread_header",
+     "atexit",
+     "_Init_thread_footer"
+    ],
+    "sub_callees": [
+     "0x14923a0",
+     "0x13d6df0"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x14923a0",
+      162
+     ],
+     [
+      "0x13d6df0",
+      292
+     ]
+    ]
+   }
+  ]
+ },
+ "inline_14202_054e17e0": {
+  "funcinfo": "0x542ce00",
+  "old_impl": "0x54e17e0",
+  "old_func": "AVRPawn::ClearTeam",
+  "old_strings": [
+   "NoPreference"
+  ],
+  "old_callees": [],
+  "old_size": 207,
+  "funcinfo_fn": {
+   "rva": "0x542ce00",
+   "name": "sub_14542CE00",
+   "size": 26,
+   "strings": [],
+   "named_callees": [],
+   "sub_callees": [
+    "0x5502140"
+   ],
+   "sub_callee_sizes": [
+    [
+     "0x5502140",
+     287
+    ]
+   ]
+  },
+  "sub_targets": [
+   {
+    "rva": "0x5502140",
+    "name": "sub_145502140",
+    "size": 287,
+    "strings": [
+     "NoPreference"
+    ],
+    "named_callees": [],
+    "sub_callees": [
+     "0x12a9010",
+     "0x12a9010",
+     "0x2013590",
+     "0x56600c0",
+     "0x33929d0"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x12a9010",
+      203
+     ],
+     [
+      "0x12a9010",
+      203
+     ],
+     [
+      "0x2013590",
+      178
+     ],
+     [
+      "0x56600c0",
+      154
+     ],
+     [
+      "0x33929d0",
+      7
+     ]
+    ]
+   }
+  ]
+ },
+ "inline_15200_05502070": {
+  "funcinfo": "0x54f7430",
+  "old_impl": "0x5502070",
+  "old_func": "AVRPawn::Server_AttemptTakeOwnershipOfLevelEditor_Implementation",
+  "old_strings": [
+   "Level Editing"
+  ],
+  "old_callees": [
+   "?StaticClass@UBlueprintGeneratedClass@@SAPEAVUClass@@XZ",
+   "AController::Possess_Implementation",
+   "?StaticClass@APawn@@SAPEAVUClass@@XZ",
+   "?StaticClass@ALevelEditorPawn@@SAPEAVUClass@@XZ",
+   "?StaticClass@AAxPlayerState@@SAPEAVUClass@@XZ",
+   "__security_check_cookie"
+  ],
+  "old_size": 577,
+  "funcinfo_fn": {
+   "rva": "0x54f7430",
+   "name": "sub_1454F7430",
+   "size": 137,
+   "strings": [],
+   "named_callees": [],
+   "sub_callees": [
+    "0x14922f0",
+    "0x14de5c0",
+    "0x14de5f0"
+   ],
+   "sub_callee_sizes": [
+    [
+     "0x14922f0",
+     164
+    ],
+    [
+     "0x14de5c0",
+     38
+    ],
+    [
+     "0x14de5f0",
+     90
+    ]
+   ]
+  },
+  "sub_targets": [
+   {
+    "rva": "0x14922f0",
+    "name": "sub_1414922F0",
+    "size": 164,
+    "strings": [
+     "H",
+     "F"
+    ],
+    "named_callees": [
+     "_Init_thread_header",
+     "atexit",
+     "_Init_thread_footer"
+    ],
+    "sub_callees": [
+     "0x14923a0",
+     "0x13d6df0"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x14923a0",
+      162
+     ],
+     [
+      "0x13d6df0",
+      292
+     ]
+    ]
+   },
+   {
+    "rva": "0x14de5c0",
+    "name": "sub_1414DE5C0",
+    "size": 38,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14de5f0",
+    "name": "sub_1414DE5F0",
+    "size": 90,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   }
+  ]
+ },
+ "inline_15230_046902f0": {
+  "funcinfo": "0x49b3000",
+  "old_impl": "0x46902f0",
+  "old_func": "UA2PlayerQuestComponent::Server_SetQuests_Implementation",
+  "old_strings": [],
+  "old_callees": [
+   "?StaticClass@APawn@@SAPEAVUClass@@XZ"
+  ],
+  "old_size": 151,
+  "funcinfo_fn": {
+   "rva": "0x49b3000",
+   "name": "sub_1449B3000",
+   "size": 416,
+   "strings": [],
+   "named_callees": [],
+   "sub_callees": [
+    "0x14d3ba0",
+    "0x14de5c0",
+    "0x14de5f0",
+    "0x1492240",
+    "0x14de5c0",
+    "0x14de5f0",
+    "0x4997300",
+    "0x1177030",
+    "0x4997340",
+    "0x1177030",
+    "0x49972a0",
+    "0x1177030"
+   ],
+   "sub_callee_sizes": [
+    [
+     "0x14d3ba0",
+     164
+    ],
+    [
+     "0x14de5c0",
+     38
+    ],
+    [
+     "0x14de5f0",
+     90
+    ],
+    [
+     "0x1492240",
+     164
+    ],
+    [
+     "0x14de5c0",
+     38
+    ],
+    [
+     "0x14de5f0",
+     90
+    ],
+    [
+     "0x4997300",
+     64
+    ],
+    [
+     "0x1177030",
+     52
+    ],
+    [
+     "0x4997340",
+     67
+    ],
+    [
+     "0x1177030",
+     52
+    ],
+    [
+     "0x49972a0",
+     95
+    ],
+    [
+     "0x1177030",
+     52
+    ]
+   ]
+  },
+  "sub_targets": [
+   {
+    "rva": "0x14d3ba0",
+    "name": "sub_1414D3BA0",
+    "size": 164,
+    "strings": [
+     "H",
+     "F"
+    ],
+    "named_callees": [
+     "_Init_thread_header",
+     "atexit",
+     "_Init_thread_footer"
+    ],
+    "sub_callees": [
+     "0x14923a0",
+     "0x13d6df0"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x14923a0",
+      162
+     ],
+     [
+      "0x13d6df0",
+      292
+     ]
+    ]
+   },
+   {
+    "rva": "0x14de5c0",
+    "name": "sub_1414DE5C0",
+    "size": 38,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14de5f0",
+    "name": "sub_1414DE5F0",
+    "size": 90,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x1492240",
+    "name": "sub_141492240",
+    "size": 164,
+    "strings": [
+     "H",
+     "F"
+    ],
+    "named_callees": [
+     "_Init_thread_header",
+     "atexit",
+     "_Init_thread_footer"
+    ],
+    "sub_callees": [
+     "0x14923a0",
+     "0x13d6df0"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x14923a0",
+      162
+     ],
+     [
+      "0x13d6df0",
+      292
+     ]
+    ]
+   },
+   {
+    "rva": "0x14de5c0",
+    "name": "sub_1414DE5C0",
+    "size": 38,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x14de5f0",
+    "name": "sub_1414DE5F0",
+    "size": 90,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [],
+    "sub_callee_sizes": []
+   },
+   {
+    "rva": "0x4997300",
+    "name": "sub_144997300",
+    "size": 64,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [
+     "0x1263de0",
+     "0x1177030"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x1263de0",
+      66
+     ],
+     [
+      "0x1177030",
+      52
+     ]
+    ]
+   },
+   {
+    "rva": "0x1177030",
+    "name": "sub_141177030",
+    "size": 52,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [
+     "0x1177080"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x1177080",
+      333
+     ]
+    ]
+   },
+   {
+    "rva": "0x4997340",
+    "name": "sub_144997340",
+    "size": 67,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [
+     "0x1177030",
+     "0x1177030"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x1177030",
+      52
+     ],
+     [
+      "0x1177030",
+      52
+     ]
+    ]
+   },
+   {
+    "rva": "0x1177030",
+    "name": "sub_141177030",
+    "size": 52,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [
+     "0x1177080"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x1177080",
+      333
+     ]
+    ]
+   },
+   {
+    "rva": "0x49972a0",
+    "name": "sub_1449972A0",
+    "size": 95,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [
+     "0x1177030",
+     "0x1177030",
+     "0x1177030",
+     "0x1177030"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x1177030",
+      52
+     ],
+     [
+      "0x1177030",
+      52
+     ],
+     [
+      "0x1177030",
+      52
+     ],
+     [
+      "0x1177030",
+      52
+     ]
+    ]
+   },
+   {
+    "rva": "0x1177030",
+    "name": "sub_141177030",
+    "size": 52,
+    "strings": [],
+    "named_callees": [],
+    "sub_callees": [
+     "0x1177080"
+    ],
+    "sub_callee_sizes": [
+     [
+      "0x1177080",
+      333
+     ]
+    ]
+   }
+  ]
+ }
+}

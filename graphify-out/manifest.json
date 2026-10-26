@@ -1,0 +1,2474 @@
+{
+  "cmd/solara/main.go": {
+    "mtime": 1792968691.70041,
+    "seen": 1792971378.2510767,
+    "ast_hash": "2c9b1dd09a63e9b368787dcc3c89f281",
+    "semantic_hash": "2c9b1dd09a63e9b368787dcc3c89f281"
+  },
+  "go.mod": {
+    "mtime": 1792970245.9720843,
+    "seen": 1792971378.2510767,
+    "ast_hash": "eb74b4a6d75f4ece4fb27b6e7fefcb93",
+    "semantic_hash": "eb74b4a6d75f4ece4fb27b6e7fefcb93"
+  },
+  "internal/ares/a2netcompat.go": {
+    "mtime": 1792971183.1869729,
+    "seen": 1792971378.2510767,
+    "ast_hash": "5c9673558bfdf3e82c876334e05ed9df",
+    "semantic_hash": "5c9673558bfdf3e82c876334e05ed9df"
+  },
+  "internal/ares/a2station_deployments.go": {
+    "mtime": 1792970819.5268064,
+    "seen": 1792971378.2510767,
+    "ast_hash": "97d1b8cc92ea890d9522fefa3eac258a",
+    "semantic_hash": "97d1b8cc92ea890d9522fefa3eac258a"
+  },
+  "internal/ares/a2station_events.go": {
+    "mtime": 1792970827.5719807,
+    "seen": 1792971378.2510767,
+    "ast_hash": "f0c51e6c9968bf440aaba6b7508ec446",
+    "semantic_hash": "f0c51e6c9968bf440aaba6b7508ec446"
+  },
+  "internal/ares/a2station_fleets.go": {
+    "mtime": 1792970819.5278075,
+    "seen": 1792971378.2510767,
+    "ast_hash": "a891608c9e67e8adaa73d9c7f357cce8",
+    "semantic_hash": "a891608c9e67e8adaa73d9c7f357cce8"
+  },
+  "internal/ares/a2station_helpers.go": {
+    "mtime": 1792970843.1895504,
+    "seen": 1792971378.2510767,
+    "ast_hash": "7824f80a84c45b02b7a6db6435729dd8",
+    "semantic_hash": "7824f80a84c45b02b7a6db6435729dd8"
+  },
+  "internal/ares/a2station_server.go": {
+    "mtime": 1792969370.2875614,
+    "seen": 1792971378.2510767,
+    "ast_hash": "02bd16c58bef018cbe0e94baa1597409",
+    "semantic_hash": "02bd16c58bef018cbe0e94baa1597409"
+  },
+  "internal/ares/a2station_servers.go": {
+    "mtime": 1792970821.7672293,
+    "seen": 1792971378.2510767,
+    "ast_hash": "7a5db993200a562f5d58dc4b19bef5d0",
+    "semantic_hash": "7a5db993200a562f5d58dc4b19bef5d0"
+  },
+  "internal/ares/a2station_stations.go": {
+    "mtime": 1792970887.155083,
+    "seen": 1792971378.2510767,
+    "ast_hash": "d624f63a97ba089e1c94153ad28d8b86",
+    "semantic_hash": "d624f63a97ba089e1c94153ad28d8b86"
+  },
+  "internal/ares/a2station_test.go": {
+    "mtime": 1792971020.6048846,
+    "seen": 1792971378.2510767,
+    "ast_hash": "4c260d77f0e51e9c0abefac90f901142",
+    "semantic_hash": "4c260d77f0e51e9c0abefac90f901142"
+  },
+  "internal/ares/a2station_users.go": {
+    "mtime": 1792970891.0936081,
+    "seen": 1792971378.2510767,
+    "ast_hash": "eea8ec8967a5629b8c93f41d24535164",
+    "semantic_hash": "eea8ec8967a5629b8c93f41d24535164"
+  },
+  "internal/ares/dashboard_auth.go": {
+    "mtime": 1792968933.9242792,
+    "seen": 1792971378.2510767,
+    "ast_hash": "7c49840b2a3d729fb948132788b8d385",
+    "semantic_hash": "7c49840b2a3d729fb948132788b8d385"
+  },
+  "internal/ares/dashboard_drafters.go": {
+    "mtime": 1792969135.6202357,
+    "seen": 1792971378.2510767,
+    "ast_hash": "cdb8c08edfb5483739b8970f595bd4f2",
+    "semantic_hash": "cdb8c08edfb5483739b8970f595bd4f2"
+  },
+  "internal/ares/dashboard_dtos.go": {
+    "mtime": 1792971165.425447,
+    "seen": 1792971378.2510767,
+    "ast_hash": "c551a76175d00e00b3ba930f35072106",
+    "semantic_hash": "c551a76175d00e00b3ba930f35072106"
+  },
+  "internal/ares/dashboard_handlers.go": {
+    "mtime": 1792970922.574809,
+    "seen": 1792971378.2510767,
+    "ast_hash": "1701c76a4c5faca339927ec60cae46d1",
+    "semantic_hash": "1701c76a4c5faca339927ec60cae46d1"
+  },
+  "internal/ares/dashboard_server.go": {
+    "mtime": 1792970947.418214,
+    "seen": 1792971378.2510767,
+    "ast_hash": "59e4a32997ab5d9f8518f108a054f0da",
+    "semantic_hash": "59e4a32997ab5d9f8518f108a054f0da"
+  },
+  "internal/ares/dashboard_test.go": {
+    "mtime": 1792970618.2112863,
+    "seen": 1792971378.2510767,
+    "ast_hash": "ca24ddd7a16e6d4f234899f5fbf9920a",
+    "semantic_hash": "ca24ddd7a16e6d4f234899f5fbf9920a"
+  },
+  "internal/ares/dashboard_util.go": {
+    "mtime": 1792970901.4191103,
+    "seen": 1792971378.2510767,
+    "ast_hash": "25653509c151223c3eb20669d4444120",
+    "semantic_hash": "25653509c151223c3eb20669d4444120"
+  },
+  "internal/ares/dbroundtrip_test.go": {
+    "mtime": 1792971165.3531232,
+    "seen": 1792971378.2510767,
+    "ast_hash": "4e578edf6c50937cb2662b72d0fa1416",
+    "semantic_hash": "4e578edf6c50937cb2662b72d0fa1416"
+  },
+  "internal/ares/drafter_permissions.go": {
+    "mtime": 1792970981.265154,
+    "seen": 1792971378.2510767,
+    "ast_hash": "ef46328e7f70b1be6274b1b33c505a90",
+    "semantic_hash": "ef46328e7f70b1be6274b1b33c505a90"
+  },
+  "internal/ares/drafters_original_test.go": {
+    "mtime": 1792970306.5952296,
+    "seen": 1792971378.2510767,
+    "ast_hash": "4c78316d3b85e6de7b88be75d9cdfdfd",
+    "semantic_hash": "4c78316d3b85e6de7b88be75d9cdfdfd"
+  },
+  "internal/ares/fuzzysharp.go": {
+    "mtime": 1792969920.092899,
+    "seen": 1792971378.2510767,
+    "ast_hash": "32731ae63dabac0f5def5ece7d961e43",
+    "semantic_hash": "32731ae63dabac0f5def5ece7d961e43"
+  },
+  "internal/ares/models/deployments.go": {
+    "mtime": 1792970774.8270228,
+    "seen": 1792971378.2510767,
+    "ast_hash": "30e8539f9535fdd22c6846af3f75462d",
+    "semantic_hash": "30e8539f9535fdd22c6846af3f75462d"
+  },
+  "internal/ares/models/events.go": {
+    "mtime": 1792970730.8761072,
+    "seen": 1792971378.2510767,
+    "ast_hash": "01140ad58ca54414d4a5066cf497d9d2",
+    "semantic_hash": "01140ad58ca54414d4a5066cf497d9d2"
+  },
+  "internal/ares/models/models_test.go": {
+    "mtime": 1792970774.912904,
+    "seen": 1792971378.2510767,
+    "ast_hash": "366b523ee52e21e9d5e3549eb12de402",
+    "semantic_hash": "366b523ee52e21e9d5e3549eb12de402"
+  },
+  "internal/ares/models/paged.go": {
+    "mtime": 1792968849.7070746,
+    "seen": 1792971378.2510767,
+    "ast_hash": "992e29d01ad86840a7ff4f9f5a9ed47b",
+    "semantic_hash": "992e29d01ad86840a7ff4f9f5a9ed47b"
+  },
+  "internal/ares/models/stations.go": {
+    "mtime": 1792970730.877672,
+    "seen": 1792971378.2510767,
+    "ast_hash": "7b7cb04e4354c55d62beb506ddef09f9",
+    "semantic_hash": "7b7cb04e4354c55d62beb506ddef09f9"
+  },
+  "internal/ares/models/users.go": {
+    "mtime": 1792970730.8125248,
+    "seen": 1792971378.2510767,
+    "ast_hash": "1cfe2dc1b4a744fda72c612b7dec40c8",
+    "semantic_hash": "1cfe2dc1b4a744fda72c612b7dec40c8"
+  },
+  "internal/ares/netvar_dump_store.go": {
+    "mtime": 1792969939.1635618,
+    "seen": 1792971378.2510767,
+    "ast_hash": "feb8f4dc7c605ca06afd6e278636a6a7",
+    "semantic_hash": "feb8f4dc7c605ca06afd6e278636a6a7"
+  },
+  "internal/ares/netvar_overrides_file.go": {
+    "mtime": 1792970860.2350078,
+    "seen": 1792971378.2510767,
+    "ast_hash": "a33ab539933c92c29226497356c2258c",
+    "semantic_hash": "a33ab539933c92c29226497356c2258c"
+  },
+  "internal/ares/program.go": {
+    "mtime": 1792968502.928424,
+    "seen": 1792971378.2510767,
+    "ast_hash": "cecf63bc9e22e5d6b6c421aad3e4ed34",
+    "semantic_hash": "cecf63bc9e22e5d6b6c421aad3e4ed34"
+  },
+  "internal/ares/spec_levels_store.go": {
+    "mtime": 1792970854.3360705,
+    "seen": 1792971378.2510767,
+    "ast_hash": "6ced5dcce08e37f4a594a3db5afd5678",
+    "semantic_hash": "6ced5dcce08e37f4a594a3db5afd5678"
+  },
+  "internal/ares/station_acl.go": {
+    "mtime": 1792970860.1867065,
+    "seen": 1792971378.2510767,
+    "ast_hash": "42e975c493e080b3c5a8c4a922a86245",
+    "semantic_hash": "42e975c493e080b3c5a8c4a922a86245"
+  },
+  "internal/di/di.go": {
+    "mtime": 1792968357.7781947,
+    "seen": 1792971378.2510767,
+    "ast_hash": "6e9ff71e4e723a9489389af18dc3d621",
+    "semantic_hash": "6e9ff71e4e723a9489389af18dc3d621"
+  },
+  "internal/docdb/bytedata.go": {
+    "mtime": 1792968269.8777063,
+    "seen": 1792971378.2510767,
+    "ast_hash": "8890daccbfdb8de999af43c89eda393d",
+    "semantic_hash": "8890daccbfdb8de999af43c89eda393d"
+  },
+  "internal/docdb/codec.go": {
+    "mtime": 1792970581.080141,
+    "seen": 1792971378.2510767,
+    "ast_hash": "b5512a0c1ca37912289a747aff86c5cb",
+    "semantic_hash": "b5512a0c1ca37912289a747aff86c5cb"
+  },
+  "internal/docdb/collection.go": {
+    "mtime": 1792968297.842411,
+    "seen": 1792971378.2510767,
+    "ast_hash": "f0e2b3e6a1d450e67ce3b6372aedfa48",
+    "semantic_hash": "f0e2b3e6a1d450e67ce3b6372aedfa48"
+  },
+  "internal/docdb/database.go": {
+    "mtime": 1792969991.3874128,
+    "seen": 1792971378.2510767,
+    "ast_hash": "3bce35e8343a2b7e07e0d9c5ba98e233",
+    "semantic_hash": "3bce35e8343a2b7e07e0d9c5ba98e233"
+  },
+  "internal/docdb/docdb_test.go": {
+    "mtime": 1792970581.1200168,
+    "seen": 1792971378.2510767,
+    "ast_hash": "4a44881f7b7861243929cabccdfef45c",
+    "semantic_hash": "4a44881f7b7861243929cabccdfef45c"
+  },
+  "internal/docdb/import.go": {
+    "mtime": 1792968632.0357919,
+    "seen": 1792971378.2510767,
+    "ast_hash": "b0c1d4a2f6a38fdf11a714459123a0c1",
+    "semantic_hash": "b0c1d4a2f6a38fdf11a714459123a0c1"
+  },
+  "internal/docdb/import_test.go": {
+    "mtime": 1792968659.8719764,
+    "seen": 1792971378.2510767,
+    "ast_hash": "1f80fc8c666f57005b7bc8388b95000c",
+    "semantic_hash": "1f80fc8c666f57005b7bc8388b95000c"
+  },
+  "internal/dotnet/datetime.go": {
+    "mtime": 1792968299.970507,
+    "seen": 1792971378.2510767,
+    "ast_hash": "98a5fcb7830ab360b7ddf62e0f88f846",
+    "semantic_hash": "98a5fcb7830ab360b7ddf62e0f88f846"
+  },
+  "internal/dotnet/misc.go": {
+    "mtime": 1792967756.3818874,
+    "seen": 1792971378.2510767,
+    "ast_hash": "d5b754c19b24e282ec6e7be62610b6df",
+    "semantic_hash": "d5b754c19b24e282ec6e7be62610b6df"
+  },
+  "internal/eos/eos_test.go": {
+    "mtime": 1792969642.7634056,
+    "seen": 1792971378.2510767,
+    "ast_hash": "2f6cfb0b9a10f990d1770291aa84918a",
+    "semantic_hash": "2f6cfb0b9a10f990d1770291aa84918a"
+  },
+  "internal/eos/gateway.go": {
+    "mtime": 1792969425.1309326,
+    "seen": 1792971378.2510767,
+    "ast_hash": "1e41015f06dd54f8d3da11550412e8f1",
+    "semantic_hash": "1e41015f06dd54f8d3da11550412e8f1"
+  },
+  "internal/eos/gateway_handlers.go": {
+    "mtime": 1792969380.7464018,
+    "seen": 1792971378.2510767,
+    "ast_hash": "72e059260cbf66aa4d383a474d0f0e07",
+    "semantic_hash": "72e059260cbf66aa4d383a474d0f0e07"
+  },
+  "internal/eos/gateway_playerdata.go": {
+    "mtime": 1792969412.7681282,
+    "seen": 1792971378.2510767,
+    "ast_hash": "dc4be5edb396b9b2d8955c6d07f6868e",
+    "semantic_hash": "dc4be5edb396b9b2d8955c6d07f6868e"
+  },
+  "internal/eos/gateway_presence.go": {
+    "mtime": 1792969416.1953654,
+    "seen": 1792971378.2510767,
+    "ast_hash": "b3ee044ef00194fec4e44226f15ab104",
+    "semantic_hash": "b3ee044ef00194fec4e44226f15ab104"
+  },
+  "internal/eos/jwt.go": {
+    "mtime": 1792969091.3933866,
+    "seen": 1792971378.2510767,
+    "ast_hash": "08538932bda6a0494611c88ba096fb6d",
+    "semantic_hash": "08538932bda6a0494611c88ba096fb6d"
+  },
+  "internal/eos/lobbyws.go": {
+    "mtime": 1792969201.1867223,
+    "seen": 1792971378.2510767,
+    "ast_hash": "07bf7393f7aac4b0050e0ff1c36b85c0",
+    "semantic_hash": "07bf7393f7aac4b0050e0ff1c36b85c0"
+  },
+  "internal/eos/models/dict.go": {
+    "mtime": 1792968972.030005,
+    "seen": 1792971378.2510767,
+    "ast_hash": "5369fcb139d4441b1df65d508c39e248",
+    "semantic_hash": "5369fcb139d4441b1df65d508c39e248"
+  },
+  "internal/eos/models/lobby.go": {
+    "mtime": 1792969026.3947003,
+    "seen": 1792971378.2510767,
+    "ast_hash": "322a0b46db237d0b64de2d9b1e39f7dc",
+    "semantic_hash": "322a0b46db237d0b64de2d9b1e39f7dc"
+  },
+  "internal/eos/models/matchmaking.go": {
+    "mtime": 1792969012.8875184,
+    "seen": 1792971378.2510767,
+    "ast_hash": "3eee7b5748575081eba322055d9e3685",
+    "semantic_hash": "3eee7b5748575081eba322055d9e3685"
+  },
+  "internal/eos/models/misc.go": {
+    "mtime": 1792969025.2864213,
+    "seen": 1792971378.2510767,
+    "ast_hash": "38ac4ffd72dfa1099d3385178b04ae2d",
+    "semantic_hash": "38ac4ffd72dfa1099d3385178b04ae2d"
+  },
+  "internal/eos/netcompat.go": {
+    "mtime": 1792969046.2137704,
+    "seen": 1792971378.2510767,
+    "ast_hash": "0e0857cdf0ffb91d415d73545ae9c151",
+    "semantic_hash": "0e0857cdf0ffb91d415d73545ae9c151"
+  },
+  "internal/eos/observability.go": {
+    "mtime": 1792969068.7593863,
+    "seen": 1792971378.2510767,
+    "ast_hash": "5d89a0e56d75271eab8eec034df6e5e2",
+    "semantic_hash": "5d89a0e56d75271eab8eec034df6e5e2"
+  },
+  "internal/eos/responses/custom_endpoints.json": {
+    "mtime": 1792968951.5511374,
+    "seen": 1792971378.2510767,
+    "ast_hash": "041e3f0904573549da3013e7aacb41de",
+    "semantic_hash": "041e3f0904573549da3013e7aacb41de"
+  },
+  "internal/eos/responses/default_endpoints.json": {
+    "mtime": 1792968951.5662136,
+    "seen": 1792971378.2510767,
+    "ast_hash": "4da729f2f3967429e9ca696c37554588",
+    "semantic_hash": "4da729f2f3967429e9ca696c37554588"
+  },
+  "internal/eos/responses/matchmaking.json": {
+    "mtime": 1792968951.5814369,
+    "seen": 1792971378.2510767,
+    "ast_hash": "f84d4f07078d52cbfd8ab70e52694fc0",
+    "semantic_hash": "f84d4f07078d52cbfd8ab70e52694fc0"
+  },
+  "internal/eos/rtc.go": {
+    "mtime": 1792969096.6338403,
+    "seen": 1792971378.2510767,
+    "ast_hash": "fd9da5bd6efb9b6692d9f1ee4ff2c0fb",
+    "semantic_hash": "fd9da5bd6efb9b6692d9f1ee4ff2c0fb"
+  },
+  "internal/eos/stomp.go": {
+    "mtime": 1792969146.1021702,
+    "seen": 1792971378.2510767,
+    "ast_hash": "8e457b26b936211977723fbfded3674a",
+    "semantic_hash": "8e457b26b936211977723fbfded3674a"
+  },
+  "internal/eos/websocket.go": {
+    "mtime": 1792969125.4771314,
+    "seen": 1792971378.2510767,
+    "ast_hash": "0bca487c403364042f18a3d1ed51bc0f",
+    "semantic_hash": "0bca487c403364042f18a3d1ed51bc0f"
+  },
+  "internal/eos/wsserver.go": {
+    "mtime": 1792969424.1008332,
+    "seen": 1792971378.2510767,
+    "ast_hash": "afdd1b5f4069b0bf8de1052c7a917133",
+    "semantic_hash": "afdd1b5f4069b0bf8de1052c7a917133"
+  },
+  "internal/halcyonsocket/agenthub.go": {
+    "mtime": 1792969197.1724184,
+    "seen": 1792971378.2510767,
+    "ast_hash": "8924c4c4b66a9d83fa060bdfe4610c2a",
+    "semantic_hash": "8924c4c4b66a9d83fa060bdfe4610c2a"
+  },
+  "internal/halcyonsocket/agenthub_test.go": {
+    "mtime": 1792969430.4889858,
+    "seen": 1792971378.2510767,
+    "ast_hash": "f02f7baa46ceca0c081b72980facd2d1",
+    "semantic_hash": "f02f7baa46ceca0c081b72980facd2d1"
+  },
+  "internal/halcyonsocket/helpers_test.go": {
+    "mtime": 1792969430.243703,
+    "seen": 1792971378.2510767,
+    "ast_hash": "3a2e5550ac7407aecf7e22f30edf3e40",
+    "semantic_hash": "3a2e5550ac7407aecf7e22f30edf3e40"
+  },
+  "internal/halcyonsocket/models.go": {
+    "mtime": 1792968821.1442516,
+    "seen": 1792971378.2510767,
+    "ast_hash": "61fd3a61908b4d60b12bee7987bc5bfb",
+    "semantic_hash": "61fd3a61908b4d60b12bee7987bc5bfb"
+  },
+  "internal/halcyonsocket/models_test.go": {
+    "mtime": 1792969468.458197,
+    "seen": 1792971378.2510767,
+    "ast_hash": "21d840a830b9d8f138e4e54403387da2",
+    "semantic_hash": "21d840a830b9d8f138e4e54403387da2"
+  },
+  "internal/halcyonsocket/netcompat.go": {
+    "mtime": 1792969197.261986,
+    "seen": 1792971378.2510767,
+    "ast_hash": "4a9ca70d92185ab0c431da207474e801",
+    "semantic_hash": "4a9ca70d92185ab0c431da207474e801"
+  },
+  "internal/halcyonsocket/server.go": {
+    "mtime": 1792969197.187679,
+    "seen": 1792971378.2510767,
+    "ast_hash": "cf372354e60c44cf1662e33fa111859b",
+    "semantic_hash": "cf372354e60c44cf1662e33fa111859b"
+  },
+  "internal/halcyonsocket/server_test.go": {
+    "mtime": 1792969456.8095975,
+    "seen": 1792971378.2510767,
+    "ast_hash": "c2a8dfcebbf91fc2c8cc1447bca46174",
+    "semantic_hash": "c2a8dfcebbf91fc2c8cc1447bca46174"
+  },
+  "internal/halcyonsocket/watchdog.go": {
+    "mtime": 1792969197.2628822,
+    "seen": 1792971378.2510767,
+    "ast_hash": "c68942265767e387efb3cd2918859d59",
+    "semantic_hash": "c68942265767e387efb3cd2918859d59"
+  },
+  "internal/halcyonsocket/watchdog_test.go": {
+    "mtime": 1792969366.8643975,
+    "seen": 1792971378.2510767,
+    "ast_hash": "dd65806aa438cfe0d8fca88f5dc06c50",
+    "semantic_hash": "dd65806aa438cfe0d8fca88f5dc06c50"
+  },
+  "internal/host/elevate_unix.go": {
+    "mtime": 1792968706.1821582,
+    "seen": 1792971378.2510767,
+    "ast_hash": "8377cd83ded8abfef4b9bbddc4f97c5a",
+    "semantic_hash": "8377cd83ded8abfef4b9bbddc4f97c5a"
+  },
+  "internal/host/elevate_windows.go": {
+    "mtime": 1792968706.1581845,
+    "seen": 1792971378.2510767,
+    "ast_hash": "88b569925ef9a45c48195b3720f40a60",
+    "semantic_hash": "88b569925ef9a45c48195b3720f40a60"
+  },
+  "internal/host/host.go": {
+    "mtime": 1792970328.515809,
+    "seen": 1792971378.2510767,
+    "ast_hash": "6970a6806bc52c8aed39937cdab9d28a",
+    "semantic_hash": "6970a6806bc52c8aed39937cdab9d28a"
+  },
+  "internal/host/module_initialization.go": {
+    "mtime": 1792968706.2058046,
+    "seen": 1792971378.2510767,
+    "ast_hash": "5c8ab68e6900a355e5e822b31868cf54",
+    "semantic_hash": "5c8ab68e6900a355e5e822b31868cf54"
+  },
+  "internal/hosting/binding.go": {
+    "mtime": 1792968139.6661317,
+    "seen": 1792971378.2510767,
+    "ast_hash": "309204d3424676daaf8e4199aa759175",
+    "semantic_hash": "309204d3424676daaf8e4199aa759175"
+  },
+  "internal/hosting/request.go": {
+    "mtime": 1792968050.2748985,
+    "seen": 1792971378.2510767,
+    "ast_hash": "4a779ae12128f1aa12d97885be75cee1",
+    "semantic_hash": "4a779ae12128f1aa12d97885be75cee1"
+  },
+  "internal/hosting/results.go": {
+    "mtime": 1792968075.2289426,
+    "seen": 1792971378.2510767,
+    "ast_hash": "475964b8c9351d0ca168bdfa1f724224",
+    "semantic_hash": "475964b8c9351d0ca168bdfa1f724224"
+  },
+  "internal/hosting/server.go": {
+    "mtime": 1792969042.946478,
+    "seen": 1792971378.2510767,
+    "ast_hash": "5752016553d3fa74f11aa059974a2650",
+    "semantic_hash": "5752016553d3fa74f11aa059974a2650"
+  },
+  "internal/hosting/server_test.go": {
+    "mtime": 1792968473.7514985,
+    "seen": 1792971378.2510767,
+    "ast_hash": "a19c702d88a198462e665f92926bc7f0",
+    "semantic_hash": "a19c702d88a198462e665f92926bc7f0"
+  },
+  "internal/hosting/static_files.go": {
+    "mtime": 1792968785.1637566,
+    "seen": 1792971378.2510767,
+    "ast_hash": "11fd07e18e3048635f46c698ac1fa1fb",
+    "semantic_hash": "11fd07e18e3048635f46c698ac1fa1fb"
+  },
+  "internal/hosting/storage_container.go": {
+    "mtime": 1792968785.1637566,
+    "seen": 1792971378.2510767,
+    "ast_hash": "476a302b43abb6878f44564b890f1c45",
+    "semantic_hash": "476a302b43abb6878f44564b890f1c45"
+  },
+  "internal/hosting/storage_container_test.go": {
+    "mtime": 1792968800.6815228,
+    "seen": 1792971378.2510767,
+    "ast_hash": "2e66cde46af3e45591bbfd98666b344c",
+    "semantic_hash": "2e66cde46af3e45591bbfd98666b344c"
+  },
+  "internal/logging/logging.go": {
+    "mtime": 1792967984.6088197,
+    "seen": 1792971378.2510767,
+    "ast_hash": "8d4945cc5b49ac6538172278348b2cd8",
+    "semantic_hash": "8d4945cc5b49ac6538172278348b2cd8"
+  },
+  "internal/mothership/auth_handlers.go": {
+    "mtime": 1792970843.2738783,
+    "seen": 1792971378.2510767,
+    "ast_hash": "8f6e46fa01c0f9a6f73bc678cd59e5df",
+    "semantic_hash": "8f6e46fa01c0f9a6f73bc678cd59e5df"
+  },
+  "internal/mothership/commerce.go": {
+    "mtime": 1792970885.1403644,
+    "seen": 1792971378.2510767,
+    "ast_hash": "1385edacc838efbda4304a7860cb6e80",
+    "semantic_hash": "1385edacc838efbda4304a7860cb6e80"
+  },
+  "internal/mothership/dbroundtrip_test.go": {
+    "mtime": 1792971061.4021618,
+    "seen": 1792971378.2510767,
+    "ast_hash": "36fbf41dd7491ef371a6a3dabc94e810",
+    "semantic_hash": "36fbf41dd7491ef371a6a3dabc94e810"
+  },
+  "internal/mothership/handlers_test.go": {
+    "mtime": 1792971032.297137,
+    "seen": 1792971378.2510767,
+    "ast_hash": "162c4576a89b55c3cdfab5568d3bc42d",
+    "semantic_hash": "162c4576a89b55c3cdfab5568d3bc42d"
+  },
+  "internal/mothership/helpers.go": {
+    "mtime": 1792970843.3293726,
+    "seen": 1792971378.2510767,
+    "ast_hash": "2b7974380811ab1aca61f7f83a583337",
+    "semantic_hash": "2b7974380811ab1aca61f7f83a583337"
+  },
+  "internal/mothership/inventory.go": {
+    "mtime": 1792970933.0055223,
+    "seen": 1792971378.2510767,
+    "ast_hash": "4de8010044731dd307784ec5280a1b20",
+    "semantic_hash": "4de8010044731dd307784ec5280a1b20"
+  },
+  "internal/mothership/jsonnode.go": {
+    "mtime": 1792970843.3633745,
+    "seen": 1792971378.2510767,
+    "ast_hash": "5e0956dc6161ec48b043516944653932",
+    "semantic_hash": "5e0956dc6161ec48b043516944653932"
+  },
+  "internal/mothership/meta.go": {
+    "mtime": 1792970843.3803127,
+    "seen": 1792971378.2510767,
+    "ast_hash": "4a86f13dbbeac1ea90f6a6a2cfcb03b3",
+    "semantic_hash": "4a86f13dbbeac1ea90f6a6a2cfcb03b3"
+  },
+  "internal/mothership/misc.go": {
+    "mtime": 1792970885.1418781,
+    "seen": 1792971378.2510767,
+    "ast_hash": "52dbdf73878c0fd34414c1fe21746bbd",
+    "semantic_hash": "52dbdf73878c0fd34414c1fe21746bbd"
+  },
+  "internal/mothership/models/auth.go": {
+    "mtime": 1792970701.1112616,
+    "seen": 1792971378.2510767,
+    "ast_hash": "88738ed5bf25cd170251bdfc0957b7dc",
+    "semantic_hash": "88738ed5bf25cd170251bdfc0957b7dc"
+  },
+  "internal/mothership/models/commerce.go": {
+    "mtime": 1792970701.1249096,
+    "seen": 1792971378.2510767,
+    "ast_hash": "be62d92188ddc55ea1b7c48003bea7af",
+    "semantic_hash": "be62d92188ddc55ea1b7c48003bea7af"
+  },
+  "internal/mothership/models/content.go": {
+    "mtime": 1792970701.1385639,
+    "seen": 1792971378.2510767,
+    "ast_hash": "a0c2b21a2382e0c02d436c435088ceac",
+    "semantic_hash": "a0c2b21a2382e0c02d436c435088ceac"
+  },
+  "internal/mothership/models/doc.go": {
+    "mtime": 1792970682.899748,
+    "seen": 1792971378.2510767,
+    "ast_hash": "868b3ed15c18116e8dbe7addbd8c4281",
+    "semantic_hash": "868b3ed15c18116e8dbe7addbd8c4281"
+  },
+  "internal/mothership/models/moderation.go": {
+    "mtime": 1792970701.1511278,
+    "seen": 1792971378.2510767,
+    "ast_hash": "6f289b5d89d3fd4cc0e38f0f0dffa1a8",
+    "semantic_hash": "6f289b5d89d3fd4cc0e38f0f0dffa1a8"
+  },
+  "internal/mothership/models/progression.go": {
+    "mtime": 1792970701.1636407,
+    "seen": 1792971378.2510767,
+    "ast_hash": "9f61960e6d40b13d5b1c9fce2445ab76",
+    "semantic_hash": "9f61960e6d40b13d5b1c9fce2445ab76"
+  },
+  "internal/mothership/models/social.go": {
+    "mtime": 1792970701.1751864,
+    "seen": 1792971378.2510767,
+    "ast_hash": "bb5d026cdb0badfa5cffaa2d3d5d8684",
+    "semantic_hash": "bb5d026cdb0badfa5cffaa2d3d5d8684"
+  },
+  "internal/mothership/models/strings.go": {
+    "mtime": 1792970696.18486,
+    "seen": 1792971378.2510767,
+    "ast_hash": "b3e0476212d00f1529d19e385f2fd63a",
+    "semantic_hash": "b3e0476212d00f1529d19e385f2fd63a"
+  },
+  "internal/mothership/moderation.go": {
+    "mtime": 1792970885.1403644,
+    "seen": 1792971378.2510767,
+    "ast_hash": "140a96bd5963679b8aa49242b25c3833",
+    "semantic_hash": "140a96bd5963679b8aa49242b25c3833"
+  },
+  "internal/mothership/mothership_test.go": {
+    "mtime": 1792970991.211398,
+    "seen": 1792971378.2510767,
+    "ast_hash": "0e5353516854da95eb0af55a1c805c08",
+    "semantic_hash": "0e5353516854da95eb0af55a1c805c08"
+  },
+  "internal/mothership/players.go": {
+    "mtime": 1792970903.2127705,
+    "seen": 1792971378.2510767,
+    "ast_hash": "7f9d96922f034985509d17f61644966e",
+    "semantic_hash": "7f9d96922f034985509d17f61644966e"
+  },
+  "internal/mothership/progression.go": {
+    "mtime": 1792970885.1418781,
+    "seen": 1792971378.2510767,
+    "ast_hash": "43b62cab68e952035794f1c518affd06",
+    "semantic_hash": "43b62cab68e952035794f1c518affd06"
+  },
+  "internal/mothership/routes.go": {
+    "mtime": 1792970843.523896,
+    "seen": 1792971378.2510767,
+    "ast_hash": "6f70bdd6ce4b53cea7643f2789e820b2",
+    "semantic_hash": "6f70bdd6ce4b53cea7643f2789e820b2"
+  },
+  "internal/mothership/server.go": {
+    "mtime": 1792970911.7889752,
+    "seen": 1792971378.2510767,
+    "ast_hash": "801db46a89aade86959cf8dca95f6136",
+    "semantic_hash": "801db46a89aade86959cf8dca95f6136"
+  },
+  "internal/mothership/sharedgroup.go": {
+    "mtime": 1792970911.7523098,
+    "seen": 1792971378.2510767,
+    "ast_hash": "d608291fda50228c4ca1a6130cb9f006",
+    "semantic_hash": "d608291fda50228c4ca1a6130cb9f006"
+  },
+  "internal/mothership/strnull.go": {
+    "mtime": 1792970843.5963595,
+    "seen": 1792971378.2510767,
+    "ast_hash": "ae3bdd77360ac2e233de435cfdfc976f",
+    "semantic_hash": "ae3bdd77360ac2e233de435cfdfc976f"
+  },
+  "internal/mothership/titles.go": {
+    "mtime": 1792970919.6824694,
+    "seen": 1792971378.2510767,
+    "ast_hash": "42d0ce1c9adc7105ca1c3da59aa9fb23",
+    "semantic_hash": "42d0ce1c9adc7105ca1c3da59aa9fb23"
+  },
+  "internal/mothership/userdata.go": {
+    "mtime": 1792970927.0450213,
+    "seen": 1792971378.2510767,
+    "ast_hash": "b5da4fb7a0b488e8cb46352074e63796",
+    "semantic_hash": "b5da4fb7a0b488e8cb46352074e63796"
+  },
+  "internal/secrets/secrets.go": {
+    "mtime": 1792968452.5074747,
+    "seen": 1792971378.2510767,
+    "ast_hash": "f37a3e445cbfcf36e674846d8e41f3a1",
+    "semantic_hash": "f37a3e445cbfcf36e674846d8e41f3a1"
+  },
+  "internal/stj/decode.go": {
+    "mtime": 1792967862.4154496,
+    "seen": 1792971378.2510767,
+    "ast_hash": "f8df7575f93286396f2e13a63cce5ff7",
+    "semantic_hash": "f8df7575f93286396f2e13a63cce5ff7"
+  },
+  "internal/stj/element.go": {
+    "mtime": 1792969685.6981566,
+    "seen": 1792971378.2510767,
+    "ast_hash": "934258753f176349869317295cf50923",
+    "semantic_hash": "934258753f176349869317295cf50923"
+  },
+  "internal/stj/encode.go": {
+    "mtime": 1792968299.9712143,
+    "seen": 1792971378.2510767,
+    "ast_hash": "4e1ae80624d50cc692b2cb5f035f329b",
+    "semantic_hash": "4e1ae80624d50cc692b2cb5f035f329b"
+  },
+  "internal/stj/stj_test.go": {
+    "mtime": 1792969685.7802098,
+    "seen": 1792971378.2510767,
+    "ast_hash": "79702d7a8024a6763ce0dfceae142806",
+    "semantic_hash": "79702d7a8024a6763ce0dfceae142806"
+  },
+  "tools/difftest-oracle/Program.cs": {
+    "mtime": 1792970403.9267054,
+    "seen": 1792971378.2520761,
+    "ast_hash": "78111d0e858c8aee2c2f3a7c5fb0d45b",
+    "semantic_hash": "78111d0e858c8aee2c2f3a7c5fb0d45b"
+  },
+  "tools/difftest-oracle/difftest-oracle.csproj": {
+    "mtime": 1792968958.9865913,
+    "seen": 1792971378.2520761,
+    "ast_hash": "1f851304078151756e8566bc5c811dac",
+    "semantic_hash": "1f851304078151756e8566bc5c811dac"
+  },
+  "tools/difftest/main.go": {
+    "mtime": 1792971268.708589,
+    "seen": 1792971378.2520761,
+    "ast_hash": "b0d41ef66efbc95c254e16fc84d6490f",
+    "semantic_hash": "b0d41ef66efbc95c254e16fc84d6490f"
+  },
+  "tools/difftest/scenarios/flow-gameserver.json": {
+    "mtime": 1792970710.9430208,
+    "seen": 1792971378.2520761,
+    "ast_hash": "9c52e3e3b55c8ba022913d5da283c13a",
+    "semantic_hash": "9c52e3e3b55c8ba022913d5da283c13a"
+  },
+  "tools/difftest/scenarios/flow-mothership.json": {
+    "mtime": 1792970710.9716134,
+    "seen": 1792971378.2520761,
+    "ast_hash": "a76e2098e0d202753b6ebdc373960ecb",
+    "semantic_hash": "a76e2098e0d202753b6ebdc373960ecb"
+  },
+  "tools/difftest/scenarios/smoke.json": {
+    "mtime": 1792969033.0998418,
+    "seen": 1792971378.2520761,
+    "ast_hash": "38d69ff28ce0803725d81b07f27174e9",
+    "semantic_hash": "38d69ff28ce0803725d81b07f27174e9"
+  },
+  "tools/difftest/scenarios/sweep-anon-A2StationDbServer.json": {
+    "mtime": 1792970435.579069,
+    "seen": 1792971378.2520761,
+    "ast_hash": "69fc56b0ba069dfe6869f256399ef7ee",
+    "semantic_hash": "69fc56b0ba069dfe6869f256399ef7ee"
+  },
+  "tools/difftest/scenarios/sweep-anon-AresDashboardServer.json": {
+    "mtime": 1792970435.6072495,
+    "seen": 1792971378.2520761,
+    "ast_hash": "0f7e7d9737efd1ea34797ffd1d2cb520",
+    "semantic_hash": "0f7e7d9737efd1ea34797ffd1d2cb520"
+  },
+  "tools/difftest/scenarios/sweep-anon-EosGatewayServer.json": {
+    "mtime": 1792970435.638392,
+    "seen": 1792971378.2520761,
+    "ast_hash": "af55167c50394e4df56f314e0bf7e224",
+    "semantic_hash": "af55167c50394e4df56f314e0bf7e224"
+  },
+  "tools/difftest/scenarios/sweep-anon-EosWsServer.json": {
+    "mtime": 1792970435.6674452,
+    "seen": 1792971378.2520761,
+    "ast_hash": "ae64b51be427a125861e456406632f5e",
+    "semantic_hash": "ae64b51be427a125861e456406632f5e"
+  },
+  "tools/difftest/scenarios/sweep-anon-HalcyonSocketServer.json": {
+    "mtime": 1792970435.6954932,
+    "seen": 1792971378.2520761,
+    "ast_hash": "8a37dce7e475c31df3957885936a0c9e",
+    "semantic_hash": "8a37dce7e475c31df3957885936a0c9e"
+  },
+  "tools/difftest/scenarios/sweep-anon-MothershipServer.json": {
+    "mtime": 1792970435.5504835,
+    "seen": 1792971378.2520761,
+    "ast_hash": "f6b7c6bd20061a74e33c5ea1269591dc",
+    "semantic_hash": "f6b7c6bd20061a74e33c5ea1269591dc"
+  },
+  "tools/difftest/scenarios/sweep-authed-A2StationDbServer.json": {
+    "mtime": 1792970435.7524128,
+    "seen": 1792971378.2520761,
+    "ast_hash": "aa2c6e7836b75ef5b7986296451f4d17",
+    "semantic_hash": "aa2c6e7836b75ef5b7986296451f4d17"
+  },
+  "tools/difftest/scenarios/sweep-authed-AresDashboardServer.json": {
+    "mtime": 1792970435.780156,
+    "seen": 1792971378.2520761,
+    "ast_hash": "be1a101ff40c9c84ee1edaa930f53bc5",
+    "semantic_hash": "be1a101ff40c9c84ee1edaa930f53bc5"
+  },
+  "tools/difftest/scenarios/sweep-authed-EosGatewayServer.json": {
+    "mtime": 1792970435.8085954,
+    "seen": 1792971378.2520761,
+    "ast_hash": "58b5ef9ac19b9f3af78babe8d8c3d5ba",
+    "semantic_hash": "58b5ef9ac19b9f3af78babe8d8c3d5ba"
+  },
+  "tools/difftest/scenarios/sweep-authed-EosWsServer.json": {
+    "mtime": 1792970435.8357997,
+    "seen": 1792971378.2520761,
+    "ast_hash": "d054d58a6f1002ce36f87ea54507a0fa",
+    "semantic_hash": "d054d58a6f1002ce36f87ea54507a0fa"
+  },
+  "tools/difftest/scenarios/sweep-authed-HalcyonSocketServer.json": {
+    "mtime": 1792970435.863089,
+    "seen": 1792971378.2520761,
+    "ast_hash": "cad458d250c147d42ea1a1698369f461",
+    "semantic_hash": "cad458d250c147d42ea1a1698369f461"
+  },
+  "tools/difftest/scenarios/sweep-authed-MothershipServer.json": {
+    "mtime": 1792970435.7238696,
+    "seen": 1792971378.2520761,
+    "ast_hash": "1cd306232fa0846ee54a34c5353a6299",
+    "semantic_hash": "1cd306232fa0846ee54a34c5353a6299"
+  },
+  "tools/difftest/subst.go": {
+    "mtime": 1792970422.600898,
+    "seen": 1792971378.2520761,
+    "ast_hash": "a095c01e1f3c7e5e604adc89ce5b2e88",
+    "semantic_hash": "a095c01e1f3c7e5e604adc89ce5b2e88"
+  },
+  "tools/litedb-export/Program.cs": {
+    "mtime": 1792968614.16941,
+    "seen": 1792971378.2520761,
+    "ast_hash": "531faf1411503d4de78a99e890052d99",
+    "semantic_hash": "531faf1411503d4de78a99e890052d99"
+  },
+  "tools/litedb-export/litedb-export.csproj": {
+    "mtime": 1792968614.143851,
+    "seen": 1792971378.2520761,
+    "ast_hash": "02a3597891e17ae148ffbca99a7baf40",
+    "semantic_hash": "02a3597891e17ae148ffbca99a7baf40"
+  },
+  "tools/oracle-ares-db/Program.cs": {
+    "mtime": 1792971080.6266587,
+    "seen": 1792971378.2520761,
+    "ast_hash": "794a8814e9dca9c7cc157c0a9648770a",
+    "semantic_hash": "794a8814e9dca9c7cc157c0a9648770a"
+  },
+  "tools/oracle-ares-db/oracle-ares-db.csproj": {
+    "mtime": 1792971064.2063735,
+    "seen": 1792971378.2520761,
+    "ast_hash": "b23bd6fc60167a81f7c9da1b09e0a74c",
+    "semantic_hash": "b23bd6fc60167a81f7c9da1b09e0a74c"
+  },
+  "tools/oracle-ares/Program.cs": {
+    "mtime": 1792969989.9747584,
+    "seen": 1792971378.2520761,
+    "ast_hash": "3c1b6534bf11d6777d4033fecf040fe6",
+    "semantic_hash": "3c1b6534bf11d6777d4033fecf040fe6"
+  },
+  "tools/oracle-ares/oracle-ares.csproj": {
+    "mtime": 1792968944.5321126,
+    "seen": 1792971378.2520761,
+    "ast_hash": "a30df2011ba86f0050e488f8bd3af609",
+    "semantic_hash": "a30df2011ba86f0050e488f8bd3af609"
+  },
+  "tools/oracle-eos/Program.cs": {
+    "mtime": 1792968740.0095599,
+    "seen": 1792971378.2520761,
+    "ast_hash": "4dc6b3b02060234d938e8f78961fa1fb",
+    "semantic_hash": "4dc6b3b02060234d938e8f78961fa1fb"
+  },
+  "tools/oracle-eos/oracle-eos.csproj": {
+    "mtime": 1792968706.5249782,
+    "seen": 1792971378.2520761,
+    "ast_hash": "3c59fe360ee8d642b2110d6db645c9d9",
+    "semantic_hash": "3c59fe360ee8d642b2110d6db645c9d9"
+  },
+  "tools/oracle-halcyonsocket/Program.cs": {
+    "mtime": 1792969140.7182183,
+    "seen": 1792971378.2520761,
+    "ast_hash": "688d272d8e19d403ee5caf8869a61542",
+    "semantic_hash": "688d272d8e19d403ee5caf8869a61542"
+  },
+  "tools/oracle-halcyonsocket/oracle-halcyonsocket.csproj": {
+    "mtime": 1792969146.82075,
+    "seen": 1792971378.2520761,
+    "ast_hash": "e6f644f6a4d8be75f8fa20c482fa9383",
+    "semantic_hash": "e6f644f6a4d8be75f8fa20c482fa9383"
+  },
+  "tools/oracle-mothership-db/Program.cs": {
+    "mtime": 1792970755.9082315,
+    "seen": 1792971378.2520761,
+    "ast_hash": "2e9cd4a03fef5b8133677d83c1360ecf",
+    "semantic_hash": "2e9cd4a03fef5b8133677d83c1360ecf"
+  },
+  "tools/oracle-mothership-db/oracle-mothership-db.csproj": {
+    "mtime": 1792970751.4965703,
+    "seen": 1792971378.2520761,
+    "ast_hash": "9ee899630856ea91fafdb040c12934ab",
+    "semantic_hash": "9ee899630856ea91fafdb040c12934ab"
+  },
+  "tools/oracle-mothership/Program.cs": {
+    "mtime": 1792969537.0699112,
+    "seen": 1792971378.2520761,
+    "ast_hash": "4fef0604401c84942e91a7d51072d926",
+    "semantic_hash": "4fef0604401c84942e91a7d51072d926"
+  },
+  "tools/oracle-mothership/oracle-mothership.csproj": {
+    "mtime": 1792969516.5550923,
+    "seen": 1792971378.2520761,
+    "ast_hash": "9ee899630856ea91fafdb040c12934ab",
+    "semantic_hash": "9ee899630856ea91fafdb040c12934ab"
+  },
+  "tools/oracle2/P.cs": {
+    "mtime": 1792967681.2999945,
+    "seen": 1792971378.2520761,
+    "ast_hash": "044257d62a0e392770cd2fa076be9e59",
+    "semantic_hash": "044257d62a0e392770cd2fa076be9e59"
+  },
+  "tools/oracle2/o.csproj": {
+    "mtime": 1792967675.8157709,
+    "seen": 1792971378.2520761,
+    "ast_hash": "64a9d472d2eedc01cd9df80c63fb9035",
+    "semantic_hash": "64a9d472d2eedc01cd9df80c63fb9035"
+  },
+  "tools/oracle/Program.cs": {
+    "mtime": 1792970529.4744935,
+    "seen": 1792971378.2520761,
+    "ast_hash": "b63e2613356cd931e5bcd70baaa86900",
+    "semantic_hash": "b63e2613356cd931e5bcd70baaa86900"
+  },
+  "tools/oracle/oracle.csproj": {
+    "mtime": 1792967636.9728935,
+    "seen": 1792971378.2520761,
+    "ast_hash": "276018bb2e7906bfb5fab513f9d657fd",
+    "semantic_hash": "276018bb2e7906bfb5fab513f9d657fd"
+  },
+  "tools/routes/Program.cs": {
+    "mtime": 1792968792.8667462,
+    "seen": 1792971378.2520761,
+    "ast_hash": "41649424c3b62518d18b1087329e2ae3",
+    "semantic_hash": "41649424c3b62518d18b1087329e2ae3"
+  },
+  "tools/routes/routes.csproj": {
+    "mtime": 1792968316.0893226,
+    "seen": 1792971378.2520761,
+    "ast_hash": "20a8215c70c65cf0a35a1addeaf68f4a",
+    "semantic_hash": "20a8215c70c65cf0a35a1addeaf68f4a"
+  },
+  "tools/scripts/extract-legacy-secrets.sh": {
+    "mtime": 1792968442.91705,
+    "seen": 1792971378.2520761,
+    "ast_hash": "74ffabc41a17d700784b38246068c751",
+    "semantic_hash": "74ffabc41a17d700784b38246068c751"
+  },
+  "ARCHITECTURE.md": {
+    "mtime": 1792968846.9093878,
+    "seen": 1792971350.952416,
+    "ast_hash": "fd620bd31f6f1b44b93d32b75302ddab",
+    "semantic_hash": ""
+  },
+  "CLAUDE.md": {
+    "mtime": 1792967150.8464959,
+    "seen": 1792971350.952416,
+    "ast_hash": "1221e7ebcae3ec69106b19e1e28af75b",
+    "semantic_hash": ""
+  },
+  "KNOWN_ISSUES.md": {
+    "mtime": 1792968880.5225308,
+    "seen": 1792971350.952416,
+    "ast_hash": "aed065827fce86f84c23768606ac1ed9",
+    "semantic_hash": ""
+  },
+  "MIGRATION_STATUS.md": {
+    "mtime": 1792968919.3756013,
+    "seen": 1792971350.952416,
+    "ast_hash": "3f787ba03d0ff9b9fa244c11b184fe70",
+    "semantic_hash": ""
+  },
+  "docs/BUILD_AND_DEPLOY.md": {
+    "mtime": 1792970729.0379844,
+    "seen": 1792971350.952416,
+    "ast_hash": "4be8e4c003ce24a4cd8b0e01629f51cc",
+    "semantic_hash": ""
+  },
+  "docs/CONFIGURATION.md": {
+    "mtime": 1792968901.812556,
+    "seen": 1792971350.952416,
+    "ast_hash": "44953f280b7cdf66e205278ef1d4c10f",
+    "semantic_hash": ""
+  },
+  "docs/DATA_MIGRATION.md": {
+    "mtime": 1792968908.9239535,
+    "seen": 1792971350.952416,
+    "ast_hash": "59e690fea6a2effc23bc6a274108ef62",
+    "semantic_hash": ""
+  },
+  "docs/PORTING_GUIDE.md": {
+    "mtime": 1792968457.158323,
+    "seen": 1792971350.952416,
+    "ast_hash": "582e6ffae6902a30eddf551e82c40ae3",
+    "semantic_hash": ""
+  },
+  "docs/unregistered_endpoints.txt": {
+    "mtime": 1792968316.1272168,
+    "seen": 1792971350.952416,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": ""
+  },
+  "internal/ares/assets/index.html": {
+    "mtime": 1792968824.860134,
+    "seen": 1792971350.952416,
+    "ast_hash": "ffaf25b81b8710b82e6ee3cf466f4cbb",
+    "semantic_hash": ""
+  },
+  "internal/hosting/assets/internal_server_error.html": {
+    "mtime": 1792967966.5943682,
+    "seen": 1792971350.952416,
+    "ast_hash": "da3ab332af704f0aeee03feb2639c00e",
+    "semantic_hash": ""
+  },
+  "reference/halcyon/Redeploy-Vps.ps1": {
+    "mtime": 1790534428.6640165,
+    "seen": 1792971378.2510767,
+    "ast_hash": "9601dae61ad6045c7913358145f482f5",
+    "semantic_hash": "9601dae61ad6045c7913358145f482f5"
+  },
+  "reference/halcyon/backend/OrionDriftBackend.sln": {
+    "mtime": 1790114374.9805498,
+    "seen": 1792971378.2510767,
+    "ast_hash": "331315012ee4946568b049c61a267749",
+    "semantic_hash": "331315012ee4946568b049c61a267749"
+  },
+  "reference/halcyon/backend/dashboard/app/api/[...path]/route.ts": {
+    "mtime": 1790534452.2884421,
+    "seen": 1792971378.2510767,
+    "ast_hash": "fd208dbc73825b5cb8da563a21a2b0aa",
+    "semantic_hash": "fd208dbc73825b5cb8da563a21a2b0aa"
+  },
+  "reference/halcyon/backend/dashboard/app/dash-login/route.ts": {
+    "mtime": 1790534452.2874348,
+    "seen": 1792971378.2510767,
+    "ast_hash": "886bdca5748d12068bb499e9f4195993",
+    "semantic_hash": "886bdca5748d12068bb499e9f4195993"
+  },
+  "reference/halcyon/backend/dashboard/app/deployments/page.tsx": {
+    "mtime": 1790114374.987238,
+    "seen": 1792971378.2510767,
+    "ast_hash": "f960332a9c84b4df98047dcd4058cafc",
+    "semantic_hash": "f960332a9c84b4df98047dcd4058cafc"
+  },
+  "reference/halcyon/backend/dashboard/app/drafters/page.tsx": {
+    "mtime": 1790555924.3161995,
+    "seen": 1792971378.2510767,
+    "ast_hash": "b4138e34c974cd4f9241c56dc9c84bb1",
+    "semantic_hash": "b4138e34c974cd4f9241c56dc9c84bb1"
+  },
+  "reference/halcyon/backend/dashboard/app/events/page.tsx": {
+    "mtime": 1790114374.9882443,
+    "seen": 1792971378.2510767,
+    "ast_hash": "d9f46e02cc246f13699c2baf8d936da3",
+    "semantic_hash": "d9f46e02cc246f13699c2baf8d936da3"
+  },
+  "reference/halcyon/backend/dashboard/app/game/[...path]/route.ts": {
+    "mtime": 1790534435.296189,
+    "seen": 1792971378.2510767,
+    "ast_hash": "235fae5308a21f96e42328174b5542f0",
+    "semantic_hash": "235fae5308a21f96e42328174b5542f0"
+  },
+  "reference/halcyon/backend/dashboard/app/layout.tsx": {
+    "mtime": 1790114374.9897683,
+    "seen": 1792971378.2510767,
+    "ast_hash": "463bb0ffaa48d4ba1c75f381837099a3",
+    "semantic_hash": "463bb0ffaa48d4ba1c75f381837099a3"
+  },
+  "reference/halcyon/backend/dashboard/app/login/page.tsx": {
+    "mtime": 1790530412.2362251,
+    "seen": 1792971378.2510767,
+    "ast_hash": "088ec2c8bc57911cb2e0f75a25c96dca",
+    "semantic_hash": "088ec2c8bc57911cb2e0f75a25c96dca"
+  },
+  "reference/halcyon/backend/dashboard/app/page.tsx": {
+    "mtime": 1790114374.9912677,
+    "seen": 1792971378.2510767,
+    "ast_hash": "b99c28de28587b3fab66e9099bc8d4f4",
+    "semantic_hash": "b99c28de28587b3fab66e9099bc8d4f4"
+  },
+  "reference/halcyon/backend/dashboard/app/stations/[id]/LevelsTab.tsx": {
+    "mtime": 1790114374.9923043,
+    "seen": 1792971378.2510767,
+    "ast_hash": "bac824110708781839c2cdde30e7338c",
+    "semantic_hash": "bac824110708781839c2cdde30e7338c"
+  },
+  "reference/halcyon/backend/dashboard/app/stations/[id]/NetvarsTab.tsx": {
+    "mtime": 1790114374.99335,
+    "seen": 1792971378.2510767,
+    "ast_hash": "02aa18a56beaafa66d82ca0a607c834b",
+    "semantic_hash": "02aa18a56beaafa66d82ca0a607c834b"
+  },
+  "reference/halcyon/backend/dashboard/app/stations/[id]/page.tsx": {
+    "mtime": 1790555924.3335824,
+    "seen": 1792971378.2510767,
+    "ast_hash": "8b1c136fb4d68f0d74368f767d8099c0",
+    "semantic_hash": "8b1c136fb4d68f0d74368f767d8099c0"
+  },
+  "reference/halcyon/backend/dashboard/app/stations/page.tsx": {
+    "mtime": 1790114374.9948676,
+    "seen": 1792971378.2510767,
+    "ast_hash": "28b6ec0bd5f3df9e3120b2963d5a7125",
+    "semantic_hash": "28b6ec0bd5f3df9e3120b2963d5a7125"
+  },
+  "reference/halcyon/backend/dashboard/app/telemetry/page.tsx": {
+    "mtime": 1790114374.9965377,
+    "seen": 1792971378.2510767,
+    "ast_hash": "7cb1e080f906188940cc4708e120ce90",
+    "semantic_hash": "7cb1e080f906188940cc4708e120ce90"
+  },
+  "reference/halcyon/backend/dashboard/app/users/page.tsx": {
+    "mtime": 1790114374.997053,
+    "seen": 1792971378.2510767,
+    "ast_hash": "e9f95885e3fb5f089aed3b532e820f19",
+    "semantic_hash": "e9f95885e3fb5f089aed3b532e820f19"
+  },
+  "reference/halcyon/backend/dashboard/app/ws/page.tsx": {
+    "mtime": 1790114374.997053,
+    "seen": 1792971378.2510767,
+    "ast_hash": "32c608984a9bf4055cb06cea2f29793c",
+    "semantic_hash": "32c608984a9bf4055cb06cea2f29793c"
+  },
+  "reference/halcyon/backend/dashboard/components/DraftersPanel.tsx": {
+    "mtime": 1790556048.631982,
+    "seen": 1792971378.2510767,
+    "ast_hash": "ca9b20af382d7692a162b0ead0947204",
+    "semantic_hash": "ca9b20af382d7692a162b0ead0947204"
+  },
+  "reference/halcyon/backend/dashboard/components/Sidebar.tsx": {
+    "mtime": 1790555924.3283348,
+    "seen": 1792971378.2510767,
+    "ast_hash": "e24dbd251a450773d42d3eb899ad36e0",
+    "semantic_hash": "e24dbd251a450773d42d3eb899ad36e0"
+  },
+  "reference/halcyon/backend/dashboard/components/TopBar.tsx": {
+    "mtime": 1790534435.2982135,
+    "seen": 1792971378.2510767,
+    "ast_hash": "e4a8ec852ecf7051f5328aff77c5e854",
+    "semantic_hash": "e4a8ec852ecf7051f5328aff77c5e854"
+  },
+  "reference/halcyon/backend/dashboard/eslint.config.mjs": {
+    "mtime": 1790114374.9994261,
+    "seen": 1792971378.2510767,
+    "ast_hash": "6c4307ffa009658f5c97f5629094c0c2",
+    "semantic_hash": "6c4307ffa009658f5c97f5629094c0c2"
+  },
+  "reference/halcyon/backend/dashboard/lib/api.ts": {
+    "mtime": 1790534435.297206,
+    "seen": 1792971378.2510767,
+    "ast_hash": "c8a1024f7f4d5548159f25d576f03b78",
+    "semantic_hash": "c8a1024f7f4d5548159f25d576f03b78"
+  },
+  "reference/halcyon/backend/dashboard/lib/backend-proxy.ts": {
+    "mtime": 1790534435.2941892,
+    "seen": 1792971378.2510767,
+    "ast_hash": "9bfd3e5c8c8a993a57eb36032a812990",
+    "semantic_hash": "9bfd3e5c8c8a993a57eb36032a812990"
+  },
+  "reference/halcyon/backend/dashboard/lib/session.ts": {
+    "mtime": 1790534435.2931907,
+    "seen": 1792971378.2510767,
+    "ast_hash": "2b0c32f4d7e00f1b5835cbd881bad684",
+    "semantic_hash": "2b0c32f4d7e00f1b5835cbd881bad684"
+  },
+  "reference/halcyon/backend/dashboard/lib/utils.ts": {
+    "mtime": 1790114375.000433,
+    "seen": 1792971378.2510767,
+    "ast_hash": "acfc3407e5848a7383f0b9c0c22cf307",
+    "semantic_hash": "acfc3407e5848a7383f0b9c0c22cf307"
+  },
+  "reference/halcyon/backend/dashboard/next-env.d.ts": {
+    "mtime": 1790534464.8447683,
+    "seen": 1792971378.2510767,
+    "ast_hash": "b698cdd97fe8e3bd16dcd74899ad7cef",
+    "semantic_hash": "b698cdd97fe8e3bd16dcd74899ad7cef"
+  },
+  "reference/halcyon/backend/dashboard/next.config.ts": {
+    "mtime": 1790534435.2982135,
+    "seen": 1792971378.2510767,
+    "ast_hash": "9f904e6174114a11c600ddc6790f47a9",
+    "semantic_hash": "9f904e6174114a11c600ddc6790f47a9"
+  },
+  "reference/halcyon/backend/dashboard/package.json": {
+    "mtime": 1790534509.7174046,
+    "seen": 1792971378.2510767,
+    "ast_hash": "5802c5228e2ecdbf5c82d01b4f8004da",
+    "semantic_hash": "5802c5228e2ecdbf5c82d01b4f8004da"
+  },
+  "reference/halcyon/backend/dashboard/postcss.config.mjs": {
+    "mtime": 1790114375.0035908,
+    "seen": 1792971378.2510767,
+    "ast_hash": "481fac0fdecd70e1821cc30b86030c1a",
+    "semantic_hash": "481fac0fdecd70e1821cc30b86030c1a"
+  },
+  "reference/halcyon/backend/dashboard/proxy.ts": {
+    "mtime": 1790534452.284928,
+    "seen": 1792971378.2510767,
+    "ast_hash": "aef8ec904a89ef4096d67c50c660a02f",
+    "semantic_hash": "aef8ec904a89ef4096d67c50c660a02f"
+  },
+  "reference/halcyon/backend/dashboard/tests/auth.test.mjs": {
+    "mtime": 1790534525.2062333,
+    "seen": 1792971378.2510767,
+    "ast_hash": "46d15523bb0e9f154acf4806acebd7b9",
+    "semantic_hash": "46d15523bb0e9f154acf4806acebd7b9"
+  },
+  "reference/halcyon/backend/dashboard/tsconfig.json": {
+    "mtime": 1790114375.0076444,
+    "seen": 1792971378.2510767,
+    "ast_hash": "ab575e944f15d39a5486cf9fca385c5e",
+    "semantic_hash": "ab575e944f15d39a5486cf9fca385c5e"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.AAMothership/AUnrealFeatures.AAMothership.csproj": {
+    "mtime": 1790114375.010276,
+    "seen": 1792971378.2510767,
+    "ast_hash": "aa7c11d989fa15cb80cdbdfb450fde9f",
+    "semantic_hash": "aa7c11d989fa15cb80cdbdfb450fde9f"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.AAMothership/Models/MothershipAnalyticsEventDbObject.cs": {
+    "mtime": 1790114375.0112815,
+    "seen": 1792971378.2510767,
+    "ast_hash": "ad43904864b50bebb48b230a0da59441",
+    "semantic_hash": "ad43904864b50bebb48b230a0da59441"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.AAMothership/Models/MothershipApiKeyDbObject.cs": {
+    "mtime": 1790114375.0112815,
+    "seen": 1792971378.2510767,
+    "ast_hash": "c9e545b9441a4710a0b6e96e5afd230f",
+    "semantic_hash": "c9e545b9441a4710a0b6e96e5afd230f"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.AAMothership/Models/MothershipAssociationDbObject.cs": {
+    "mtime": 1790114375.0124826,
+    "seen": 1792971378.2510767,
+    "ast_hash": "be6e72c9a13418fd75287235450674b3",
+    "semantic_hash": "be6e72c9a13418fd75287235450674b3"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.AAMothership/Models/MothershipBanDbObject.cs": {
+    "mtime": 1790114375.0124826,
+    "seen": 1792971378.2510767,
+    "ast_hash": "902984b5b41c52b6ebb471bfdd5c9b1b",
+    "semantic_hash": "902984b5b41c52b6ebb471bfdd5c9b1b"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.AAMothership/Models/MothershipDeploymentDbObject.cs": {
+    "mtime": 1790114375.0136173,
+    "seen": 1792971378.2510767,
+    "ast_hash": "ba39cc1a791d300e0ed814932589d9cf",
+    "semantic_hash": "ba39cc1a791d300e0ed814932589d9cf"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.AAMothership/Models/MothershipEntitlementDbObject.cs": {
+    "mtime": 1790114375.0136173,
+    "seen": 1792971378.2510767,
+    "ast_hash": "4b86b17d9a2001a363a29f2fd94c9af8",
+    "semantic_hash": "4b86b17d9a2001a363a29f2fd94c9af8"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.AAMothership/Models/MothershipEnvironmentDbObject.cs": {
+    "mtime": 1790114375.0146248,
+    "seen": 1792971378.2510767,
+    "ast_hash": "44a17781cb1289815c007dfce58fda67",
+    "semantic_hash": "44a17781cb1289815c007dfce58fda67"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.AAMothership/Models/MothershipFriendEntryDbObject.cs": {
+    "mtime": 1790114375.0151298,
+    "seen": 1792971378.2510767,
+    "ast_hash": "e7b23d5752c2375ea67fae85cc544a4e",
+    "semantic_hash": "e7b23d5752c2375ea67fae85cc544a4e"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.AAMothership/Models/MothershipInventoryItemDbObject.cs": {
+    "mtime": 1790114375.0151298,
+    "seen": 1792971378.2510767,
+    "ast_hash": "df55dd7fe153aad69a1a2711b6ca74b6",
+    "semantic_hash": "df55dd7fe153aad69a1a2711b6ca74b6"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.AAMothership/Models/MothershipLinkDbObject.cs": {
+    "mtime": 1790114375.0151298,
+    "seen": 1792971378.2510767,
+    "ast_hash": "6981a0a678aeab066967fbd50c57d2f9",
+    "semantic_hash": "6981a0a678aeab066967fbd50c57d2f9"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.AAMothership/Models/MothershipMuteDbObject.cs": {
+    "mtime": 1790114375.0161846,
+    "seen": 1792971378.2510767,
+    "ast_hash": "50717fb3d67857cff94bb39d0204e8ba",
+    "semantic_hash": "50717fb3d67857cff94bb39d0204e8ba"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.AAMothership/Models/MothershipNotificationDbObject.cs": {
+    "mtime": 1790114375.0161846,
+    "seen": 1792971378.2510767,
+    "ast_hash": "5d70a2c33887aaa79607107df4312815",
+    "semantic_hash": "5d70a2c33887aaa79607107df4312815"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.AAMothership/Models/MothershipOfferBindingDbObject.cs": {
+    "mtime": 1790114375.0173192,
+    "seen": 1792971378.2510767,
+    "ast_hash": "c7c7709889448b50dac61eee6f087106",
+    "semantic_hash": "c7c7709889448b50dac61eee6f087106"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.AAMothership/Models/MothershipOfferDbObject.cs": {
+    "mtime": 1790114375.017835,
+    "seen": 1792971378.2510767,
+    "ast_hash": "7dd02bf6c78b167cb8053f63199047ff",
+    "semantic_hash": "7dd02bf6c78b167cb8053f63199047ff"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.AAMothership/Models/MothershipOfferDisplayDbObject.cs": {
+    "mtime": 1790114375.0183516,
+    "seen": 1792971378.2510767,
+    "ast_hash": "145b5187022d0b06a80194ebf9b0e7c7",
+    "semantic_hash": "145b5187022d0b06a80194ebf9b0e7c7"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.AAMothership/Models/MothershipPlayerDbObject.cs": {
+    "mtime": 1790114375.0183516,
+    "seen": 1792971378.2510767,
+    "ast_hash": "6501cb9cf73c64b06277b80d78be0d05",
+    "semantic_hash": "6501cb9cf73c64b06277b80d78be0d05"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.AAMothership/Models/MothershipPrivacyStateDbObject.cs": {
+    "mtime": 1790114375.0194204,
+    "seen": 1792971378.2510767,
+    "ast_hash": "db17ef0350d1ff38c47f5f9e54fccab9",
+    "semantic_hash": "db17ef0350d1ff38c47f5f9e54fccab9"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.AAMothership/Models/MothershipProgressionTrackBindingDbObject.cs": {
+    "mtime": 1790114375.0194204,
+    "seen": 1792971378.2510767,
+    "ast_hash": "6e4e26e735506b90b90a62eef553a184",
+    "semantic_hash": "6e4e26e735506b90b90a62eef553a184"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.AAMothership/Models/MothershipProgressionTrackDbObject.cs": {
+    "mtime": 1790114375.0208752,
+    "seen": 1792971378.2510767,
+    "ast_hash": "766d899ad2c0f8aaba232da49173e6bc",
+    "semantic_hash": "766d899ad2c0f8aaba232da49173e6bc"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.AAMothership/Models/MothershipProgressionTreeBindingDbObject.cs": {
+    "mtime": 1790114375.0208752,
+    "seen": 1792971378.2510767,
+    "ast_hash": "d67f9e3803b1410ccf1994053e59481a",
+    "semantic_hash": "d67f9e3803b1410ccf1994053e59481a"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.AAMothership/Models/MothershipProgressionTreeDbObject.cs": {
+    "mtime": 1790114375.0208752,
+    "seen": 1792971378.2510767,
+    "ast_hash": "5257b35f4662454b06569e167057bd09",
+    "semantic_hash": "5257b35f4662454b06569e167057bd09"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.AAMothership/Models/MothershipReportDbObject.cs": {
+    "mtime": 1790114375.0222545,
+    "seen": 1792971378.2510767,
+    "ast_hash": "22162401b886b7cad7aaae09283d7d77",
+    "semantic_hash": "22162401b886b7cad7aaae09283d7d77"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.AAMothership/Models/MothershipSessionDbObject.cs": {
+    "mtime": 1790114375.0222545,
+    "seen": 1792971378.2510767,
+    "ast_hash": "8aee4e6939651ef678f98427c4125b9b",
+    "semantic_hash": "8aee4e6939651ef678f98427c4125b9b"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.AAMothership/Models/MothershipSharedGroupDbObject.cs": {
+    "mtime": 1790114375.0232606,
+    "seen": 1792971378.2510767,
+    "ast_hash": "5395f8cf1a3c35c1ae045bee1cfa6a7a",
+    "semantic_hash": "5395f8cf1a3c35c1ae045bee1cfa6a7a"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.AAMothership/Models/MothershipTitleDataDbObject.cs": {
+    "mtime": 1790114375.0237653,
+    "seen": 1792971378.2510767,
+    "ast_hash": "1500a857364b33568fe4e3e838cbd269",
+    "semantic_hash": "1500a857364b33568fe4e3e838cbd269"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.AAMothership/Models/MothershipTitleDbObject.cs": {
+    "mtime": 1790114375.0237653,
+    "seen": 1792971378.2510767,
+    "ast_hash": "5ad17db5070c881f28549b9799f140d8",
+    "semantic_hash": "5ad17db5070c881f28549b9799f140d8"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.AAMothership/Models/MothershipTransactionCatalogDbObject.cs": {
+    "mtime": 1790114375.0244913,
+    "seen": 1792971378.2510767,
+    "ast_hash": "964a859c19f7e04fe366c5d0005a3fd5",
+    "semantic_hash": "964a859c19f7e04fe366c5d0005a3fd5"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.AAMothership/Models/MothershipUserDataDbObject.cs": {
+    "mtime": 1790114375.0251408,
+    "seen": 1792971378.2510767,
+    "ast_hash": "7be37ec556f0bb14df0acddde4f55f23",
+    "semantic_hash": "7be37ec556f0bb14df0acddde4f55f23"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.AAMothership/Models/MothershipUserDataMetadataDbObject.cs": {
+    "mtime": 1790114375.0256462,
+    "seen": 1792971378.2510767,
+    "ast_hash": "9d4ecb8fdd6dbd118b0b5f8b1b1752a3",
+    "semantic_hash": "9d4ecb8fdd6dbd118b0b5f8b1b1752a3"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.AAMothership/Models/MothershipV2PlayerDbObject.cs": {
+    "mtime": 1790114375.026167,
+    "seen": 1792971378.2510767,
+    "ast_hash": "6c6a2c33a253b76ba4e59ab820c03617",
+    "semantic_hash": "6c6a2c33a253b76ba4e59ab820c03617"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.AAMothership/MothershipServer.cs": {
+    "mtime": 1790537357.0119424,
+    "seen": 1792971378.2510767,
+    "ast_hash": "bfcfb7881a3c6a8a0cb110a0c1a451c0",
+    "semantic_hash": "bfcfb7881a3c6a8a0cb110a0c1a451c0"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/AUnrealFeatures.Ares.csproj": {
+    "mtime": 1790114375.0283277,
+    "seen": 1792971378.2510767,
+    "ast_hash": "5399de5bf7c50b3e2faff161a732b13b",
+    "semantic_hash": "5399de5bf7c50b3e2faff161a732b13b"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/ApiKeyResponse.cs": {
+    "mtime": 1790114375.0294397,
+    "seen": 1792971378.2510767,
+    "ast_hash": "56384c8c4c83511364260e4e6cf8b7cc",
+    "semantic_hash": "56384c8c4c83511364260e4e6cf8b7cc"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/AssignPermsBody.cs": {
+    "mtime": 1790114375.0309622,
+    "seen": 1792971378.2510767,
+    "ast_hash": "1b2b3c0ee1116a4cf104416a3c6858e9",
+    "semantic_hash": "1b2b3c0ee1116a4cf104416a3c6858e9"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/BanRequest.cs": {
+    "mtime": 1790114375.0314841,
+    "seen": 1792971378.2510767,
+    "ast_hash": "0818b0293c6375ddfb07879ae4847a76",
+    "semantic_hash": "0818b0293c6375ddfb07879ae4847a76"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/BanResponse.cs": {
+    "mtime": 1790114375.0314841,
+    "seen": 1792971378.2510767,
+    "ast_hash": "2500e078303cbbf109af73281922bc5b",
+    "semantic_hash": "2500e078303cbbf109af73281922bc5b"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/ClientLoginDeployment.cs": {
+    "mtime": 1790114375.0325806,
+    "seen": 1792971378.2510767,
+    "ast_hash": "01f47ce75e9a6272488113fbccb6fca0",
+    "semantic_hash": "01f47ce75e9a6272488113fbccb6fca0"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/ClientLoginRequest.cs": {
+    "mtime": 1790114375.0325806,
+    "seen": 1792971378.2510767,
+    "ast_hash": "3ee50122f55ca136ac6b75728c2d8a0c",
+    "semantic_hash": "3ee50122f55ca136ac6b75728c2d8a0c"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/ClientLoginResponse.cs": {
+    "mtime": 1790114375.0335855,
+    "seen": 1792971378.2510767,
+    "ast_hash": "507b52771c088346533052927f3a39b9",
+    "semantic_hash": "507b52771c088346533052927f3a39b9"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/ClientLoginV2Response.cs": {
+    "mtime": 1790114375.0335855,
+    "seen": 1792971378.2510767,
+    "ast_hash": "8f54875ae299001ff6c0438e8397ac71",
+    "semantic_hash": "8f54875ae299001ff6c0438e8397ac71"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/CreateDeploymentResponse.cs": {
+    "mtime": 1790114375.0342507,
+    "seen": 1792971378.2510767,
+    "ast_hash": "835e170c2e2e78a9e894d8d41843c22b",
+    "semantic_hash": "835e170c2e2e78a9e894d8d41843c22b"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/CreateRoleRequest.cs": {
+    "mtime": 1790114375.0348725,
+    "seen": 1792971378.2510767,
+    "ast_hash": "2650e6667e5a86dda6ed28d9a5fc4e0f",
+    "semantic_hash": "2650e6667e5a86dda6ed28d9a5fc4e0f"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/CreateStationRequest.cs": {
+    "mtime": 1790114375.0348725,
+    "seen": 1792971378.2510767,
+    "ast_hash": "0d2a78cb5c6d471d634428c4da4e6d81",
+    "semantic_hash": "0d2a78cb5c6d471d634428c4da4e6d81"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/CreateStationResponse.cs": {
+    "mtime": 1790114375.0348725,
+    "seen": 1792971378.2510767,
+    "ast_hash": "3b6f708b4fbb1c0616ac02b648200f2b",
+    "semantic_hash": "3b6f708b4fbb1c0616ac02b648200f2b"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/DeploymentDbObject.cs": {
+    "mtime": 1790114375.0361788,
+    "seen": 1792971378.2510767,
+    "ast_hash": "af2e78debe87bd895df7b389b4f825d1",
+    "semantic_hash": "af2e78debe87bd895df7b389b4f825d1"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/DeploymentRequest.cs": {
+    "mtime": 1790114375.0361788,
+    "seen": 1792971378.2510767,
+    "ast_hash": "6c5b1bcdf39ec26b496a7016954fff77",
+    "semantic_hash": "6c5b1bcdf39ec26b496a7016954fff77"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/DeploymentsResponsePage.cs": {
+    "mtime": 1790114375.037304,
+    "seen": 1792971378.2510767,
+    "ast_hash": "0f8ab21bc6a2104ef806058058710adb",
+    "semantic_hash": "0f8ab21bc6a2104ef806058058710adb"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/EventSignupDbObject.cs": {
+    "mtime": 1790114375.037304,
+    "seen": 1792971378.2510767,
+    "ast_hash": "776334f86fc167aa80ceba55c5a087b8",
+    "semantic_hash": "776334f86fc167aa80ceba55c5a087b8"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/EventSignupResponse.cs": {
+    "mtime": 1790114375.037304,
+    "seen": 1792971378.2510767,
+    "ast_hash": "b2a1d5cd61fe36f37a171f110fc8938c",
+    "semantic_hash": "b2a1d5cd61fe36f37a171f110fc8938c"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/FleetResponse.cs": {
+    "mtime": 1790114375.0388417,
+    "seen": 1792971378.2510767,
+    "ast_hash": "dae4c9c5ee45555c00e252832c2be7cb",
+    "semantic_hash": "dae4c9c5ee45555c00e252832c2be7cb"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/FleetResponsePage.cs": {
+    "mtime": 1790114375.039355,
+    "seen": 1792971378.2510767,
+    "ast_hash": "6c7c27181a6f7d88233ae0e03a4b6b56",
+    "semantic_hash": "6c7c27181a6f7d88233ae0e03a4b6b56"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/FleetStationResponse.cs": {
+    "mtime": 1790114375.0394135,
+    "seen": 1792971378.2510767,
+    "ast_hash": "0a1115bd98b64584af2023f89f729c8b",
+    "semantic_hash": "0a1115bd98b64584af2023f89f729c8b"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/HTTPValidationError.cs": {
+    "mtime": 1790114375.039919,
+    "seen": 1792971378.2510767,
+    "ast_hash": "01b71b42b84c7da1a2ce0ae4bf191dcf",
+    "semantic_hash": "01b71b42b84c7da1a2ce0ae4bf191dcf"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/LogInServerRequest.cs": {
+    "mtime": 1790114375.0405693,
+    "seen": 1792971378.2510767,
+    "ast_hash": "3a08557b342537c86a497e738ca77762",
+    "semantic_hash": "3a08557b342537c86a497e738ca77762"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/LogInServerResponse.cs": {
+    "mtime": 1790114375.0405693,
+    "seen": 1792971378.2510767,
+    "ast_hash": "93c1a7057880c60a9adda8e0f1b3e81d",
+    "semantic_hash": "93c1a7057880c60a9adda8e0f1b3e81d"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/PagedResponse.cs": {
+    "mtime": 1790114375.0414436,
+    "seen": 1792971378.2510767,
+    "ast_hash": "15bf6c1927ccba1ad59adafdffebdbf1",
+    "semantic_hash": "15bf6c1927ccba1ad59adafdffebdbf1"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/RegionResponse.cs": {
+    "mtime": 1790114375.0419533,
+    "seen": 1792971378.2510767,
+    "ast_hash": "6fcf79d13350d14b456f2371aee88c1f",
+    "semantic_hash": "6fcf79d13350d14b456f2371aee88c1f"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/RegisterServerModels.cs": {
+    "mtime": 1790114375.0419533,
+    "seen": 1792971378.2510767,
+    "ast_hash": "7204374165e1832bf5f7910b20355418",
+    "semantic_hash": "7204374165e1832bf5f7910b20355418"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/RoleData.cs": {
+    "mtime": 1790114375.042987,
+    "seen": 1792971378.2510767,
+    "ast_hash": "bdb8f4ea4d56eff5a3265924eef5ebb5",
+    "semantic_hash": "bdb8f4ea4d56eff5a3265924eef5ebb5"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/ServerDeploymentResponse.cs": {
+    "mtime": 1790114375.042987,
+    "seen": 1792971378.2510767,
+    "ast_hash": "58051aa966a2f07c826e97caa0086b05",
+    "semantic_hash": "58051aa966a2f07c826e97caa0086b05"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/ServerDeploymentResponsePage.cs": {
+    "mtime": 1790114375.0444808,
+    "seen": 1792971378.2510767,
+    "ast_hash": "5da4cdc059c778b04d5b19d8630b47b2",
+    "semantic_hash": "5da4cdc059c778b04d5b19d8630b47b2"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/ServerEventDbObject.cs": {
+    "mtime": 1790114375.0444808,
+    "seen": 1792971378.2510767,
+    "ast_hash": "8b2a649a64892359e55393730cbce274",
+    "semantic_hash": "8b2a649a64892359e55393730cbce274"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/ServerEventRequest.cs": {
+    "mtime": 1790114375.0454874,
+    "seen": 1792971378.2510767,
+    "ast_hash": "c480d3557e8e16f9d4fad26ef9e97281",
+    "semantic_hash": "c480d3557e8e16f9d4fad26ef9e97281"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/ServerEventResponse.cs": {
+    "mtime": 1790114375.0460515,
+    "seen": 1792971378.2510767,
+    "ast_hash": "e5f75dfc25c336fdf195d54d6e8a75e2",
+    "semantic_hash": "e5f75dfc25c336fdf195d54d6e8a75e2"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/ServerEventResponsePage.cs": {
+    "mtime": 1790114375.0465584,
+    "seen": 1792971378.2510767,
+    "ast_hash": "3c2ebaafa6a79c5164e60870d1d903ce",
+    "semantic_hash": "3c2ebaafa6a79c5164e60870d1d903ce"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/StationDbObject.cs": {
+    "mtime": 1790114375.0470786,
+    "seen": 1792971378.2510767,
+    "ast_hash": "10d425842b25014b5e893c39a0ef5b52",
+    "semantic_hash": "10d425842b25014b5e893c39a0ef5b52"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/StationDeploymentResponse.cs": {
+    "mtime": 1790114375.0470786,
+    "seen": 1792971378.2510767,
+    "ast_hash": "ec7b3b7fd530dbd60ad508813aebb185",
+    "semantic_hash": "ec7b3b7fd530dbd60ad508813aebb185"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/StationEventDbObject.cs": {
+    "mtime": 1790114375.0470786,
+    "seen": 1792971378.2510767,
+    "ast_hash": "48de814a5147fb0ced63225e156a7f3c",
+    "semantic_hash": "48de814a5147fb0ced63225e156a7f3c"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/StationEventSignupInfo.cs": {
+    "mtime": 1790114375.0480971,
+    "seen": 1792971378.2510767,
+    "ast_hash": "2baee7a571b3b4eec0feb2de82fce473",
+    "semantic_hash": "2baee7a571b3b4eec0feb2de82fce473"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/StationEventSignups.cs": {
+    "mtime": 1790114375.0480971,
+    "seen": 1792971378.2510767,
+    "ast_hash": "354df0fcfb831d4e55e5e81a6d34730f",
+    "semantic_hash": "354df0fcfb831d4e55e5e81a6d34730f"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/StationEvents.cs": {
+    "mtime": 1790114375.0492435,
+    "seen": 1792971378.2510767,
+    "ast_hash": "84185f9f95e8e44a830833c20bb3245d",
+    "semantic_hash": "84185f9f95e8e44a830833c20bb3245d"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/StationPerm.cs": {
+    "mtime": 1790114375.0492435,
+    "seen": 1792971378.2510767,
+    "ast_hash": "ed769a3f651facc6b8e5f231ae195003",
+    "semantic_hash": "ed769a3f651facc6b8e5f231ae195003"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/StationResponse.cs": {
+    "mtime": 1790114375.0492435,
+    "seen": 1792971378.2510767,
+    "ast_hash": "1d2f84170c147822db70cee35b872b2a",
+    "semantic_hash": "1d2f84170c147822db70cee35b872b2a"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/StationResponsePage.cs": {
+    "mtime": 1790114375.0502498,
+    "seen": 1792971378.2510767,
+    "ast_hash": "d2052da0c502ad3a643135fae4e0609d",
+    "semantic_hash": "d2052da0c502ad3a643135fae4e0609d"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/StationsPageV2.cs": {
+    "mtime": 1790114375.0507698,
+    "seen": 1792971378.2510767,
+    "ast_hash": "ca9ed8348cf334069850b8f0b77b9745",
+    "semantic_hash": "ca9ed8348cf334069850b8f0b77b9745"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/SuccessBoolean.cs": {
+    "mtime": 1790114375.0512834,
+    "seen": 1792971378.2510767,
+    "ast_hash": "99c8474040daeb91e415ca8680904793",
+    "semantic_hash": "99c8474040daeb91e415ca8680904793"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/UpdateStationRequest.cs": {
+    "mtime": 1790114375.051796,
+    "seen": 1792971378.2510767,
+    "ast_hash": "9baf611d9ac93b3abd37044baa981721",
+    "semantic_hash": "9baf611d9ac93b3abd37044baa981721"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/UpdateStationResponse.cs": {
+    "mtime": 1790114375.0523098,
+    "seen": 1792971378.2510767,
+    "ast_hash": "32f6cec175cb04606529da3d5822753b",
+    "semantic_hash": "32f6cec175cb04606529da3d5822753b"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/UserApiKeyDbObject.cs": {
+    "mtime": 1790114375.0523098,
+    "seen": 1792971378.2510767,
+    "ast_hash": "24e250625cc6b49db12ca19f40332e12",
+    "semantic_hash": "24e250625cc6b49db12ca19f40332e12"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/UserData.cs": {
+    "mtime": 1790114375.0523098,
+    "seen": 1792971378.2510767,
+    "ast_hash": "e3d9e1fd01ca27d80ded40a2ce0a3744",
+    "semantic_hash": "e3d9e1fd01ca27d80ded40a2ce0a3744"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/UserDataResponse.cs": {
+    "mtime": 1790114375.0538023,
+    "seen": 1792971378.2510767,
+    "ast_hash": "52a7aeb28c191f017c9df8ae755acd0a",
+    "semantic_hash": "52a7aeb28c191f017c9df8ae755acd0a"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/UserDataV1Response.cs": {
+    "mtime": 1790114375.054446,
+    "seen": 1792971378.2510767,
+    "ast_hash": "74daf9515a5e6481a3f12a5b163c5cf1",
+    "semantic_hash": "74daf9515a5e6481a3f12a5b163c5cf1"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/UserRequest.cs": {
+    "mtime": 1790114375.0549514,
+    "seen": 1792971378.2510767,
+    "ast_hash": "3f49905e1da6de07cead3c439cb8e918",
+    "semantic_hash": "3f49905e1da6de07cead3c439cb8e918"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/UserRoleByNameRequest.cs": {
+    "mtime": 1790114375.0549514,
+    "seen": 1792971378.2510767,
+    "ast_hash": "8ea0ffab182fd257784aa77c431220aa",
+    "semantic_hash": "8ea0ffab182fd257784aa77c431220aa"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/UserRoleByNameResponse.cs": {
+    "mtime": 1790114375.0549514,
+    "seen": 1792971378.2510767,
+    "ast_hash": "e70cbfddf5ca5e467ef3a4cd72266832",
+    "semantic_hash": "e70cbfddf5ca5e467ef3a4cd72266832"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/UsersResponse.cs": {
+    "mtime": 1790114375.0564616,
+    "seen": 1792971378.2510767,
+    "ast_hash": "9e33ff137b75b3158bd67a0d48384d6d",
+    "semantic_hash": "9e33ff137b75b3158bd67a0d48384d6d"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Models/UsersResponsePage.cs": {
+    "mtime": 1790114375.056975,
+    "seen": 1792971378.2510767,
+    "ast_hash": "ec2e9e06fc80956bf7c69b94cb57aca6",
+    "semantic_hash": "ec2e9e06fc80956bf7c69b94cb57aca6"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Program.cs": {
+    "mtime": 1790556108.5128775,
+    "seen": 1792971378.2510767,
+    "ast_hash": "dda8c2689d898853626cc55e9266424d",
+    "semantic_hash": "dda8c2689d898853626cc55e9266424d"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Servers/A2StationDbServer.cs": {
+    "mtime": 1790558843.2743535,
+    "seen": 1792971378.2510767,
+    "ast_hash": "5b5d19644bf5670b7049580d40c76041",
+    "semantic_hash": "5b5d19644bf5670b7049580d40c76041"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Servers/DashboardAuthPreprocessor.cs": {
+    "mtime": 1790555867.6352172,
+    "seen": 1792971378.2510767,
+    "ast_hash": "6c78f61a67e4b3923ebc8c679cbc57be",
+    "semantic_hash": "6c78f61a67e4b3923ebc8c679cbc57be"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Servers/DashboardServer.cs": {
+    "mtime": 1790555867.6268184,
+    "seen": 1792971378.2510767,
+    "ast_hash": "732b9bffb107bee05416599a182f9cdb",
+    "semantic_hash": "732b9bffb107bee05416599a182f9cdb"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Servers/DrafterPermissions.cs": {
+    "mtime": 1790558067.1216698,
+    "seen": 1792971378.2510767,
+    "ast_hash": "fac006ad7ba6fcb103e5ea6b519fcb67",
+    "semantic_hash": "fac006ad7ba6fcb103e5ea6b519fcb67"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Servers/NetvarDumpStore.cs": {
+    "mtime": 1790114375.0608613,
+    "seen": 1792971378.2510767,
+    "ast_hash": "3ba424c212bb4deac375c033ae6c3822",
+    "semantic_hash": "3ba424c212bb4deac375c033ae6c3822"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Servers/NetvarOverridesFile.cs": {
+    "mtime": 1790114375.0618691,
+    "seen": 1792971378.2510767,
+    "ast_hash": "6ac82905185341f2070cb63516d47345",
+    "semantic_hash": "6ac82905185341f2070cb63516d47345"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Servers/SpecLevelsStore.cs": {
+    "mtime": 1790530412.2729259,
+    "seen": 1792971378.2510767,
+    "ast_hash": "d097e622c951c1b330aa30f61dae624f",
+    "semantic_hash": "d097e622c951c1b330aa30f61dae624f"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Ares/Servers/StationAcl.cs": {
+    "mtime": 1790114375.0623746,
+    "seen": 1792971378.2510767,
+    "ast_hash": "d9dd3c71d3c6dce462097723b4bab8c2",
+    "semantic_hash": "d9dd3c71d3c6dce462097723b4bab8c2"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.DependencyInjection/AUnrealFeatures.DependencyInjection/AUnrealFeatures.DependencyInjection.csproj": {
+    "mtime": 1790114375.0634048,
+    "seen": 1792971378.2510767,
+    "ast_hash": "5bdef6abc4b9763a6d55db50d4549d57",
+    "semantic_hash": "5bdef6abc4b9763a6d55db50d4549d57"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.DependencyInjection/AUnrealFeatures.DependencyInjection/CompositeServiceProvider.cs": {
+    "mtime": 1790114375.0644116,
+    "seen": 1792971378.2510767,
+    "ast_hash": "6770b88e4643973bc858e908ec81b477",
+    "semantic_hash": "6770b88e4643973bc858e908ec81b477"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.DependencyInjection/AUnrealFeatures.DependencyInjection/DependencyServiceBuilder.cs": {
+    "mtime": 1790114375.064916,
+    "seen": 1792971378.2510767,
+    "ast_hash": "02423df0284d4f3d042dada956b5ad83",
+    "semantic_hash": "02423df0284d4f3d042dada956b5ad83"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.DependencyInjection/AUnrealFeatures.DependencyInjection/DependencyServiceProvider.cs": {
+    "mtime": 1790114375.064916,
+    "seen": 1792971378.2510767,
+    "ast_hash": "447dfe57354fbc07c78c387a0bb8acfe",
+    "semantic_hash": "447dfe57354fbc07c78c387a0bb8acfe"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.DependencyInjection/AUnrealFeatures.DependencyInjection/InjectAttribute.cs": {
+    "mtime": 1790114375.064916,
+    "seen": 1792971378.2510767,
+    "ast_hash": "991a7c81ff376f9dd07be224a9b1b17e",
+    "semantic_hash": "991a7c81ff376f9dd07be224a9b1b17e"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.DependencyInjection/AUnrealFeatures.DependencyInjection/ServiceBuilder.cs": {
+    "mtime": 1790114375.066019,
+    "seen": 1792971378.2510767,
+    "ast_hash": "6e53efa465ad8f4e20e6d687afdbd748",
+    "semantic_hash": "6e53efa465ad8f4e20e6d687afdbd748"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.DependencyInjection/AUnrealFeatures.DependencyInjection/ServiceHost.cs": {
+    "mtime": 1790114375.066019,
+    "seen": 1792971378.2510767,
+    "ast_hash": "559a7c05e613ba454b43e7550c22fa09",
+    "semantic_hash": "559a7c05e613ba454b43e7550c22fa09"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.DependencyInjection/AUnrealFeatures.DependencyInjection/ServiceProvider.cs": {
+    "mtime": 1790114375.067071,
+    "seen": 1792971378.2510767,
+    "ast_hash": "0f67ec0c2621188a355b27d376393759",
+    "semantic_hash": "0f67ec0c2621188a355b27d376393759"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.EOSSDK/AUnrealFeatures.EOSSDK/AUnrealFeatures.EOSSDK.csproj": {
+    "mtime": 1790114375.0681157,
+    "seen": 1792971378.2510767,
+    "ast_hash": "27d997de472aa22f74db75fbac41ebb3",
+    "semantic_hash": "27d997de472aa22f74db75fbac41ebb3"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.EOSSDK/AUnrealFeatures.EOSSDK/EosGatewayServer.PlayerDataStorage.cs": {
+    "mtime": 1790114375.0681157,
+    "seen": 1792971378.2510767,
+    "ast_hash": "406853b1c91891f8fbc0cef942ea0b71",
+    "semantic_hash": "406853b1c91891f8fbc0cef942ea0b71"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.EOSSDK/AUnrealFeatures.EOSSDK/EosGatewayServer.Presence.cs": {
+    "mtime": 1790114375.0692625,
+    "seen": 1792971378.2510767,
+    "ast_hash": "4260549bfe28d4a7435751f375ff31a5",
+    "semantic_hash": "4260549bfe28d4a7435751f375ff31a5"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.EOSSDK/AUnrealFeatures.EOSSDK/EosGatewayServer.cs": {
+    "mtime": 1790114375.0702684,
+    "seen": 1792971378.2510767,
+    "ast_hash": "5eed795f54b0a155bc563a8c58ca078e",
+    "semantic_hash": "5eed795f54b0a155bc563a8c58ca078e"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.EOSSDK/AUnrealFeatures.EOSSDK/EosJwtFactory.cs": {
+    "mtime": 1790114375.0702684,
+    "seen": 1792971378.2510767,
+    "ast_hash": "5e600dd91604a1cfd0498183b442fe45",
+    "semantic_hash": "5e600dd91604a1cfd0498183b442fe45"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.EOSSDK/AUnrealFeatures.EOSSDK/EosObservabilityStore.cs": {
+    "mtime": 1790114375.0714495,
+    "seen": 1792971378.2510767,
+    "ast_hash": "46d3539e72b46722803f6af07971126d",
+    "semantic_hash": "46d3539e72b46722803f6af07971126d"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.EOSSDK/AUnrealFeatures.EOSSDK/EosWsServer.cs": {
+    "mtime": 1790114375.0722995,
+    "seen": 1792971378.2510767,
+    "ast_hash": "c2f72b91ebca8c9c7714400174099d0d",
+    "semantic_hash": "c2f72b91ebca8c9c7714400174099d0d"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.EOSSDK/AUnrealFeatures.EOSSDK/LobbyWsHelper.cs": {
+    "mtime": 1790114375.0728064,
+    "seen": 1792971378.2510767,
+    "ast_hash": "4d793ea8d4fc09bc4cac89d82e2bbf2a",
+    "semantic_hash": "4d793ea8d4fc09bc4cac89d82e2bbf2a"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.EOSSDK/AUnrealFeatures.EOSSDK/Models/EosLobbyModels.cs": {
+    "mtime": 1790114375.0728064,
+    "seen": 1792971378.2510767,
+    "ast_hash": "f3c46f8b2df798116fea9e3b97ac25e3",
+    "semantic_hash": "f3c46f8b2df798116fea9e3b97ac25e3"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.EOSSDK/AUnrealFeatures.EOSSDK/Models/EosMatchmakingModels.cs": {
+    "mtime": 1790114375.073961,
+    "seen": 1792971378.2510767,
+    "ast_hash": "ca7123c7587125652d6ede9df4b0a351",
+    "semantic_hash": "ca7123c7587125652d6ede9df4b0a351"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.EOSSDK/AUnrealFeatures.EOSSDK/Models/EosOAuthTokenResponse.cs": {
+    "mtime": 1790114375.0749927,
+    "seen": 1792971378.2510767,
+    "ast_hash": "2008811b3ff4864d0d2f8dae4bc4075f",
+    "semantic_hash": "2008811b3ff4864d0d2f8dae4bc4075f"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.EOSSDK/AUnrealFeatures.EOSSDK/Models/EosSessionInfo.cs": {
+    "mtime": 1790114375.0749927,
+    "seen": 1792971378.2510767,
+    "ast_hash": "0ee4afccc39ea7753c2c44425d4a04bc",
+    "semantic_hash": "0ee4afccc39ea7753c2c44425d4a04bc"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.EOSSDK/AUnrealFeatures.EOSSDK/Models/EosTelemetryRequest.cs": {
+    "mtime": 1790114375.0749927,
+    "seen": 1792971378.2510767,
+    "ast_hash": "db7ed54ee5eb11195bf8749f1b731964",
+    "semantic_hash": "db7ed54ee5eb11195bf8749f1b731964"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.EOSSDK/AUnrealFeatures.EOSSDK/Models/EosTurnCredentialsResponse.cs": {
+    "mtime": 1790114375.076011,
+    "seen": 1792971378.2510767,
+    "ast_hash": "8a731e1cd50cc1f4381d44fddac0a76e",
+    "semantic_hash": "8a731e1cd50cc1f4381d44fddac0a76e"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.EOSSDK/AUnrealFeatures.EOSSDK/Responses/custom_endpoints.json": {
+    "mtime": 1790535942.9346747,
+    "seen": 1792971378.2510767,
+    "ast_hash": "041e3f0904573549da3013e7aacb41de",
+    "semantic_hash": "041e3f0904573549da3013e7aacb41de"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.EOSSDK/AUnrealFeatures.EOSSDK/Responses/default_endpoints.json": {
+    "mtime": 1790535942.9346747,
+    "seen": 1792971378.2510767,
+    "ast_hash": "4da729f2f3967429e9ca696c37554588",
+    "semantic_hash": "4da729f2f3967429e9ca696c37554588"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.EOSSDK/AUnrealFeatures.EOSSDK/Responses/matchmaking.json": {
+    "mtime": 1790114375.0782058,
+    "seen": 1792971378.2510767,
+    "ast_hash": "f84d4f07078d52cbfd8ab70e52694fc0",
+    "semantic_hash": "f84d4f07078d52cbfd8ab70e52694fc0"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.EOSSDK/AUnrealFeatures.EOSSDK/RtcHelper.cs": {
+    "mtime": 1790114375.0782058,
+    "seen": 1792971378.2520761,
+    "ast_hash": "ccfd2a2fd1e05cffe4461e711b1b1ef8",
+    "semantic_hash": "ccfd2a2fd1e05cffe4461e711b1b1ef8"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.EOSSDK/AUnrealFeatures.EOSSDK/StompHelper.cs": {
+    "mtime": 1790114375.079428,
+    "seen": 1792971378.2520761,
+    "ast_hash": "08a60377f2d4dd6c75958f43440a09ea",
+    "semantic_hash": "08a60377f2d4dd6c75958f43440a09ea"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.HalcyonSocket/AUnrealFeatures.HalcyonSocket.csproj": {
+    "mtime": 1790114375.0804336,
+    "seen": 1792971378.2520761,
+    "ast_hash": "421f0997c9e241062c02499773b4b58c",
+    "semantic_hash": "421f0997c9e241062c02499773b4b58c"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.HalcyonSocket/AgentHub.cs": {
+    "mtime": 1790114375.0804336,
+    "seen": 1792971378.2520761,
+    "ast_hash": "5ed93dd66f5c5ecc6e2d768a0f795d24",
+    "semantic_hash": "5ed93dd66f5c5ecc6e2d768a0f795d24"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.HalcyonSocket/HalcyonSocketServer.cs": {
+    "mtime": 1790114375.0815165,
+    "seen": 1792971378.2520761,
+    "ast_hash": "6a30213c3994a5b6c59693a5ceb5f870",
+    "semantic_hash": "6a30213c3994a5b6c59693a5ceb5f870"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.HalcyonSocket/ServerWatchdog.cs": {
+    "mtime": 1790530412.2820363,
+    "seen": 1792971378.2520761,
+    "ast_hash": "4acb1d7bd9018174bce0e234c74845a3",
+    "semantic_hash": "4acb1d7bd9018174bce0e234c74845a3"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting.csproj": {
+    "mtime": 1790114375.0830853,
+    "seen": 1792971378.2520761,
+    "ast_hash": "074405094b03f50cbaef04feeec66ddc",
+    "semantic_hash": "074405094b03f50cbaef04feeec66ddc"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Application/HostApplication.cs": {
+    "mtime": 1790114375.0836005,
+    "seen": 1792971378.2520761,
+    "ast_hash": "bdabda0bbcf2426a6d1f85b0e35b79c5",
+    "semantic_hash": "bdabda0bbcf2426a6d1f85b0e35b79c5"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Application/IHostApplication.cs": {
+    "mtime": 1790114375.0846086,
+    "seen": 1792971378.2520761,
+    "ast_hash": "6a85a94d6285457bed26ab7da15e469b",
+    "semantic_hash": "6a85a94d6285457bed26ab7da15e469b"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Database/AstraDatabase.cs": {
+    "mtime": 1790114375.0851145,
+    "seen": 1792971378.2520761,
+    "ast_hash": "a62fc853716e89fe6f0f17518cf9b7ed",
+    "semantic_hash": "a62fc853716e89fe6f0f17518cf9b7ed"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Database/AstraDatabaseBuilder.cs": {
+    "mtime": 1790114375.0851145,
+    "seen": 1792971378.2520761,
+    "ast_hash": "68a13a016a9b37e34bfbfc767e44ccea",
+    "semantic_hash": "68a13a016a9b37e34bfbfc767e44ccea"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Database/AstraDatabaseBytedata.cs": {
+    "mtime": 1790114375.0864756,
+    "seen": 1792971378.2520761,
+    "ast_hash": "84cf63e4270e0bb26f8474de3187095c",
+    "semantic_hash": "84cf63e4270e0bb26f8474de3187095c"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Database/AstraDatabaseCollectionMetadata.cs": {
+    "mtime": 1790114375.0874832,
+    "seen": 1792971378.2520761,
+    "ast_hash": "55685f47090595ba61bfeab56dd597b5",
+    "semantic_hash": "55685f47090595ba61bfeab56dd597b5"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Database/AstraDatabaseManager.cs": {
+    "mtime": 1790114375.0884926,
+    "seen": 1792971378.2520761,
+    "ast_hash": "b74b99e8d8b161ad4b331ad172609c99",
+    "semantic_hash": "b74b99e8d8b161ad4b331ad172609c99"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Database/AstraDbObject.cs": {
+    "mtime": 1790114375.0889978,
+    "seen": 1792971378.2520761,
+    "ast_hash": "faf241c1e1a08abcf4588df8cf228c96",
+    "semantic_hash": "faf241c1e1a08abcf4588df8cf228c96"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Database/Interfaces/IDatabase.cs": {
+    "mtime": 1790114375.0900548,
+    "seen": 1792971378.2520761,
+    "ast_hash": "511b0c1b22c346fa2aa5792c0a518250",
+    "semantic_hash": "511b0c1b22c346fa2aa5792c0a518250"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Database/Interfaces/IDatabaseBuilder.cs": {
+    "mtime": 1790114375.0900548,
+    "seen": 1792971378.2520761,
+    "ast_hash": "3fa9c9e9ee367f0b2796647b2e0baaf4",
+    "semantic_hash": "3fa9c9e9ee367f0b2796647b2e0baaf4"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Database/Interfaces/IDatabaseBytedata.cs": {
+    "mtime": 1790114375.0910797,
+    "seen": 1792971378.2520761,
+    "ast_hash": "a22e5a2e318f37e501795181e7a1a5da",
+    "semantic_hash": "a22e5a2e318f37e501795181e7a1a5da"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Database/Interfaces/IDatabaseCollectionMetadata.cs": {
+    "mtime": 1790114375.0910797,
+    "seen": 1792971378.2520761,
+    "ast_hash": "f678165b953bbc6fb8e7ecc0f5f47b9f",
+    "semantic_hash": "f678165b953bbc6fb8e7ecc0f5f47b9f"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Database/Interfaces/IDatabaseManager.cs": {
+    "mtime": 1790114375.0921135,
+    "seen": 1792971378.2520761,
+    "ast_hash": "e0296433aa7381102e7cc40cd8a8f4e7",
+    "semantic_hash": "e0296433aa7381102e7cc40cd8a8f4e7"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Database/Interfaces/IDbObject.cs": {
+    "mtime": 1790114375.0921135,
+    "seen": 1792971378.2520761,
+    "ast_hash": "0fe4589e6ea9a9fd5eca9204e7ad6f4c",
+    "semantic_hash": "0fe4589e6ea9a9fd5eca9204e7ad6f4c"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/Actions/HtmlDocumentActionResult.cs": {
+    "mtime": 1790114375.0944328,
+    "seen": 1792971378.2520761,
+    "ast_hash": "0d92310968f6021f78766a4fb8699b3d",
+    "semantic_hash": "0d92310968f6021f78766a4fb8699b3d"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/Actions/HtmlDocumentCache.cs": {
+    "mtime": 1790114375.095438,
+    "seen": 1792971378.2520761,
+    "ast_hash": "be00f783303e7bf02854e3bbcfaa95ff",
+    "semantic_hash": "be00f783303e7bf02854e3bbcfaa95ff"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/Actions/HttpStatusCodeActionResults.cs": {
+    "mtime": 1790114375.095438,
+    "seen": 1792971378.2520761,
+    "ast_hash": "143eac529437c325f2c0e84d4f9c2a6e",
+    "semantic_hash": "143eac529437c325f2c0e84d4f9c2a6e"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/Actions/Results.cs": {
+    "mtime": 1790114375.0968876,
+    "seen": 1792971378.2520761,
+    "ast_hash": "1aa4a0f15e25aec597cb92135ddb8a99",
+    "semantic_hash": "1aa4a0f15e25aec597cb92135ddb8a99"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/AstraHttpActionResult.cs": {
+    "mtime": 1790114375.0968876,
+    "seen": 1792971378.2520761,
+    "ast_hash": "633294c2373f2db339ec96c06a14b3bd",
+    "semantic_hash": "633294c2373f2db339ec96c06a14b3bd"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/AstraHttpContext.cs": {
+    "mtime": 1790114375.0979507,
+    "seen": 1792971378.2520761,
+    "ast_hash": "f1bbe636e7a6027cd3f59062805f0782",
+    "semantic_hash": "f1bbe636e7a6027cd3f59062805f0782"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/AstraHttpEndpoint.cs": {
+    "mtime": 1790114375.0979507,
+    "seen": 1792971378.2520761,
+    "ast_hash": "4d50aa5d9bb1c062cebcea138691a665",
+    "semantic_hash": "4d50aa5d9bb1c062cebcea138691a665"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/AstraHttpRequest.cs": {
+    "mtime": 1790114375.0989566,
+    "seen": 1792971378.2520761,
+    "ast_hash": "2b1a6b5e4ab2bb00fc518b47965a159e",
+    "semantic_hash": "2b1a6b5e4ab2bb00fc518b47965a159e"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/AstraHttpResponse.cs": {
+    "mtime": 1790114375.0994613,
+    "seen": 1792971378.2520761,
+    "ast_hash": "d7e68b4a015afbabce62740355172cc8",
+    "semantic_hash": "d7e68b4a015afbabce62740355172cc8"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/AstraHttpServer.EndpointScanning.cs": {
+    "mtime": 1790114375.0999782,
+    "seen": 1792971378.2520761,
+    "ast_hash": "6a3f87116a2bfacc3a571e97900d2a52",
+    "semantic_hash": "6a3f87116a2bfacc3a571e97900d2a52"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/AstraHttpServer.cs": {
+    "mtime": 1790114375.1004927,
+    "seen": 1792971378.2520761,
+    "ast_hash": "27ffbc5eac41731da1de50de8f942a89",
+    "semantic_hash": "27ffbc5eac41731da1de50de8f942a89"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/AstraHttpServerExtensions.cs": {
+    "mtime": 1790114375.1004927,
+    "seen": 1792971378.2520761,
+    "ast_hash": "f1401a8740fe180dce0f5a7625d06945",
+    "semantic_hash": "f1401a8740fe180dce0f5a7625d06945"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/AstraHttpSession.cs": {
+    "mtime": 1790114375.1004927,
+    "seen": 1792971378.2520761,
+    "ast_hash": "25af667cadb6a5f5c75a81fdcda55a2a",
+    "semantic_hash": "25af667cadb6a5f5c75a81fdcda55a2a"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/Attributes/HttpEndpointAttribute.cs": {
+    "mtime": 1790114375.1019027,
+    "seen": 1792971378.2520761,
+    "ast_hash": "a3cf0fdb3524903e2170969f298356ba",
+    "semantic_hash": "a3cf0fdb3524903e2170969f298356ba"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/Attributes/HttpProcessorAttribute.cs": {
+    "mtime": 1790114375.1029098,
+    "seen": 1792971378.2520761,
+    "ast_hash": "e6bffe84f1bc8b304298204dca111297",
+    "semantic_hash": "e6bffe84f1bc8b304298204dca111297"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/Attributes/HttpSessionProcessorAttribute.cs": {
+    "mtime": 1790114375.1029098,
+    "seen": 1792971378.2520761,
+    "ast_hash": "ca6fbd1898d98db2f8409c730e8474e8",
+    "semantic_hash": "ca6fbd1898d98db2f8409c730e8474e8"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/Binding/Attributes/FromBodyAttribute.cs": {
+    "mtime": 1790114375.1055655,
+    "seen": 1792971378.2520761,
+    "ast_hash": "905742c60e196c382d9ea51f590b0df7",
+    "semantic_hash": "905742c60e196c382d9ea51f590b0df7"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/Binding/Attributes/FromFormAttribute.cs": {
+    "mtime": 1790114375.1060834,
+    "seen": 1792971378.2520761,
+    "ast_hash": "9900205eab0aa1a97337eec012741283",
+    "semantic_hash": "9900205eab0aa1a97337eec012741283"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/Binding/Attributes/FromHeaderAttribute.cs": {
+    "mtime": 1790114375.1060834,
+    "seen": 1792971378.2520761,
+    "ast_hash": "b8c9e76d289f0501d550957fb5b09bbe",
+    "semantic_hash": "b8c9e76d289f0501d550957fb5b09bbe"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/Binding/Attributes/FromQueryAttribute.cs": {
+    "mtime": 1790114375.1071358,
+    "seen": 1792971378.2520761,
+    "ast_hash": "025ea42e6ae0011f52442940054415ec",
+    "semantic_hash": "025ea42e6ae0011f52442940054415ec"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/Binding/BindableExtensions.cs": {
+    "mtime": 1790114375.1071358,
+    "seen": 1792971378.2520761,
+    "ast_hash": "59fb9653db7f5425a601eb960d15affd",
+    "semantic_hash": "59fb9653db7f5425a601eb960d15affd"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/Controllers/AstraHttpController.cs": {
+    "mtime": 1790114375.1084895,
+    "seen": 1792971378.2520761,
+    "ast_hash": "21e8f936a9509de2e646d02cc161056c",
+    "semantic_hash": "21e8f936a9509de2e646d02cc161056c"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/Controllers/Attributes/HttpControllerAttribute.cs": {
+    "mtime": 1790114375.109673,
+    "seen": 1792971378.2520761,
+    "ast_hash": "61cded68e9e029907081166a2f726d9b",
+    "semantic_hash": "61cded68e9e029907081166a2f726d9b"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/Controllers/Attributes/HttpParentToAttribute.cs": {
+    "mtime": 1790114375.109673,
+    "seen": 1792971378.2520761,
+    "ast_hash": "f4e9cb5b23acac3ada663c54a9d59d6b",
+    "semantic_hash": "f4e9cb5b23acac3ada663c54a9d59d6b"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/Controllers/Interfaces/IHttpController.cs": {
+    "mtime": 1790114375.1111858,
+    "seen": 1792971378.2520761,
+    "ast_hash": "13501fbe926dfd0f5c0abb6db1a7d1c2",
+    "semantic_hash": "13501fbe926dfd0f5c0abb6db1a7d1c2"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/Interfaces/IHttpActionResult.cs": {
+    "mtime": 1790114375.112215,
+    "seen": 1792971378.2520761,
+    "ast_hash": "8cabab06cb8743dce975c3316ea8976e",
+    "semantic_hash": "8cabab06cb8743dce975c3316ea8976e"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/Interfaces/IHttpContext.cs": {
+    "mtime": 1790114375.112215,
+    "seen": 1792971378.2520761,
+    "ast_hash": "d5492ec58302d77722e4b5567067cec0",
+    "semantic_hash": "d5492ec58302d77722e4b5567067cec0"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/Interfaces/IHttpEndpoint.cs": {
+    "mtime": 1790114375.1137252,
+    "seen": 1792971378.2520761,
+    "ast_hash": "cf25900651b10e5cb81528c53ad831c4",
+    "semantic_hash": "cf25900651b10e5cb81528c53ad831c4"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/Interfaces/IHttpEndpointParameters.cs": {
+    "mtime": 1790114375.1142602,
+    "seen": 1792971378.2520761,
+    "ast_hash": "a36dd7c872ea2222dcf767026764b259",
+    "semantic_hash": "a36dd7c872ea2222dcf767026764b259"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/Interfaces/IHttpEndpointProcessor.cs": {
+    "mtime": 1790114375.1144218,
+    "seen": 1792971378.2520761,
+    "ast_hash": "0d436b19ef34c2a73cb582fcd986d469",
+    "semantic_hash": "0d436b19ef34c2a73cb582fcd986d469"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/Interfaces/IHttpRequest.cs": {
+    "mtime": 1790114375.114929,
+    "seen": 1792971378.2520761,
+    "ast_hash": "1036c51fda3edd45fe2ac50c4a0a3d48",
+    "semantic_hash": "1036c51fda3edd45fe2ac50c4a0a3d48"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/Interfaces/IHttpResponse.cs": {
+    "mtime": 1790114375.114929,
+    "seen": 1792971378.2520761,
+    "ast_hash": "5623d95736d893f5c3d9b37cacd4d2f2",
+    "semantic_hash": "5623d95736d893f5c3d9b37cacd4d2f2"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/Interfaces/IHttpServer.cs": {
+    "mtime": 1790114375.1159365,
+    "seen": 1792971378.2520761,
+    "ast_hash": "6e53ba9045373a68dd26687099120c98",
+    "semantic_hash": "6e53ba9045373a68dd26687099120c98"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/Interfaces/IHttpSession.cs": {
+    "mtime": 1790114375.1164415,
+    "seen": 1792971378.2520761,
+    "ast_hash": "e1574f2e7d573add89feadccd4f511d3",
+    "semantic_hash": "e1574f2e7d573add89feadccd4f511d3"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/Interfaces/IHttpSessionProcessor.cs": {
+    "mtime": 1790114375.1164415,
+    "seen": 1792971378.2520761,
+    "ast_hash": "2fb24bec086b8a0c454d07265d0fe769",
+    "semantic_hash": "2fb24bec086b8a0c454d07265d0fe769"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/Preprocessors/Default/HttpStaticFilesProcessor.cs": {
+    "mtime": 1790114375.117615,
+    "seen": 1792971378.2520761,
+    "ast_hash": "4411bf9cf0eecf106b1c3d4a29541e37",
+    "semantic_hash": "4411bf9cf0eecf106b1c3d4a29541e37"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/Preprocessors/Default/HttpStorageContainerProcessor.cs": {
+    "mtime": 1790114375.1186788,
+    "seen": 1792971378.2520761,
+    "ast_hash": "7b5cba98e57dd7e673ce6a7ff1bfda4a",
+    "semantic_hash": "7b5cba98e57dd7e673ce6a7ff1bfda4a"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/Http/Preprocessors/IHttpRequestPreprocessor.cs": {
+    "mtime": 1790114375.1196847,
+    "seen": 1792971378.2520761,
+    "ast_hash": "bcf1800f8c21222a00af480ebf6d767a",
+    "semantic_hash": "bcf1800f8c21222a00af480ebf6d767a"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/IStartStopObject.cs": {
+    "mtime": 1790114375.1202016,
+    "seen": 1792971378.2520761,
+    "ast_hash": "9fc07e098cdcfea9be2a25c265edb249",
+    "semantic_hash": "9fc07e098cdcfea9be2a25c265edb249"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/ModuleInitialization.cs": {
+    "mtime": 1790530412.284048,
+    "seen": 1792971378.2520761,
+    "ast_hash": "0f358868c434fcef8a0f9dfe9c0b3b70",
+    "semantic_hash": "0f358868c434fcef8a0f9dfe9c0b3b70"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/SDK/ScopedReference.cs": {
+    "mtime": 1790114375.121235,
+    "seen": 1792971378.2520761,
+    "ast_hash": "7eb4578485a31691344018709884591e",
+    "semantic_hash": "7eb4578485a31691344018709884591e"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/StringExtensions.cs": {
+    "mtime": 1790114375.121755,
+    "seen": 1792971378.2520761,
+    "ast_hash": "46b0bc2916d9f27f6e5bf8fc08287530",
+    "semantic_hash": "46b0bc2916d9f27f6e5bf8fc08287530"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/TypeExtensions.cs": {
+    "mtime": 1790114375.1228688,
+    "seen": 1792971378.2520761,
+    "ast_hash": "11165c191fef86cc59c17d3a2c32db33",
+    "semantic_hash": "11165c191fef86cc59c17d3a2c32db33"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/WebSockets/AstraWebSocketClient.cs": {
+    "mtime": 1790114375.1234,
+    "seen": 1792971378.2520761,
+    "ast_hash": "ce6224b0ff44eaac88ab500b351990bc",
+    "semantic_hash": "ce6224b0ff44eaac88ab500b351990bc"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/WebSockets/AstraWebSocketRoute.cs": {
+    "mtime": 1790114375.1239161,
+    "seen": 1792971378.2520761,
+    "ast_hash": "18c4bf81b87e1e9d8ffa818746e5c135",
+    "semantic_hash": "18c4bf81b87e1e9d8ffa818746e5c135"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/WebSockets/AstraWebSocketServer.cs": {
+    "mtime": 1790114375.1244318,
+    "seen": 1792971378.2520761,
+    "ast_hash": "ea25ec52e7ea0c34b6c4af137c064f04",
+    "semantic_hash": "ea25ec52e7ea0c34b6c4af137c064f04"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/WebSockets/AstraWebSocketStateMachine.cs": {
+    "mtime": 1790114375.1249495,
+    "seen": 1792971378.2520761,
+    "ast_hash": "4c1adf4a99e2ca14965afafba281fe6d",
+    "semantic_hash": "4c1adf4a99e2ca14965afafba281fe6d"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/WebSockets/Attributes/WebSocketRouteAttribute.cs": {
+    "mtime": 1790114375.1259842,
+    "seen": 1792971378.2520761,
+    "ast_hash": "171eabae036a1d305ba0ac59c8d9c0a8",
+    "semantic_hash": "171eabae036a1d305ba0ac59c8d9c0a8"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/WebSockets/Attributes/WebSocketRouteProcessorAttribute.cs": {
+    "mtime": 1790114375.1266363,
+    "seen": 1792971378.2520761,
+    "ast_hash": "4f2483859c8131ffe36153f56c22f496",
+    "semantic_hash": "4f2483859c8131ffe36153f56c22f496"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/WebSockets/Interfaces/IWebSocketClient.cs": {
+    "mtime": 1790114375.127141,
+    "seen": 1792971378.2520761,
+    "ast_hash": "88b20b03242fb14781cd3aad82f29a2a",
+    "semantic_hash": "88b20b03242fb14781cd3aad82f29a2a"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/WebSockets/Interfaces/IWebSocketRoute.cs": {
+    "mtime": 1790114375.127141,
+    "seen": 1792971378.2520761,
+    "ast_hash": "365ba172007b81ef8c59cb070941d492",
+    "semantic_hash": "365ba172007b81ef8c59cb070941d492"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/WebSockets/Interfaces/IWebSocketRouteProcessor.cs": {
+    "mtime": 1790114375.1284413,
+    "seen": 1792971378.2520761,
+    "ast_hash": "b8470bae0777cf243ca787fb37528ee6",
+    "semantic_hash": "b8470bae0777cf243ca787fb37528ee6"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/WebSockets/Interfaces/IWebSocketServer.cs": {
+    "mtime": 1790114375.1284413,
+    "seen": 1792971378.2520761,
+    "ast_hash": "51298d9127be74576d2dfbfb4662770b",
+    "semantic_hash": "51298d9127be74576d2dfbfb4662770b"
+  },
+  "reference/halcyon/backend/src/AUnrealFeatures.Hosting/AUnrealFeatures.Hosting/WebSockets/Interfaces/IWebSocketStateMachine.cs": {
+    "mtime": 1790114375.1284413,
+    "seen": 1792971378.2520761,
+    "ast_hash": "3c555684d2c704dd40409d38a4ac58ff",
+    "semantic_hash": "3c555684d2c704dd40409d38a4ac58ff"
+  },
+  "reference/halcyon/backend/tests/Drafters/Drafters.csproj": {
+    "mtime": 1790555976.2741394,
+    "seen": 1792971378.2520761,
+    "ast_hash": "9bd667fd2d2af4e59132a6f4b097f687",
+    "semantic_hash": "9bd667fd2d2af4e59132a6f4b097f687"
+  },
+  "reference/halcyon/backend/tests/Drafters/Program.cs": {
+    "mtime": 1790558843.2788754,
+    "seen": 1792971378.2520761,
+    "ast_hash": "c094fe8261b64d4b6c1f93ec80a27617",
+    "semantic_hash": "c094fe8261b64d4b6c1f93ec80a27617"
+  },
+  "reference/halcyon/deploy/dashboard.sh": {
+    "mtime": 1790534507.93386,
+    "seen": 1792971378.2520761,
+    "ast_hash": "ce38901ca617289bd4cbd334b71e93b1",
+    "semantic_hash": "ce38901ca617289bd4cbd334b71e93b1"
+  },
+  "reference/halcyon/deploy/remote-redeploy.sh": {
+    "mtime": 1790534428.6630082,
+    "seen": 1792971378.2520761,
+    "ast_hash": "6ae2d356630f30cb44f55b78c944808f",
+    "semantic_hash": "6ae2d356630f30cb44f55b78c944808f"
+  },
+  "reference/halcyon/install.ps1": {
+    "mtime": 1790537328.6492794,
+    "seen": 1792971378.2520761,
+    "ast_hash": "13748cd909eaaf5f79181859a831754f",
+    "semantic_hash": "13748cd909eaaf5f79181859a831754f"
+  },
+  "reference/halcyon/install.sh": {
+    "mtime": 1790537328.6482768,
+    "seen": 1792971378.2520761,
+    "ast_hash": "cdda2ce30e497e8e8b503c6a8028b510",
+    "semantic_hash": "cdda2ce30e497e8e8b503c6a8028b510"
+  },
+  "reference/halcyon/windows/Build.ps1": {
+    "mtime": 1790540395.9329674,
+    "seen": 1792971378.2520761,
+    "ast_hash": "dff7cbfe67f15575d82a56467d7e35d6",
+    "semantic_hash": "dff7cbfe67f15575d82a56467d7e35d6"
+  },
+  "reference/halcyon/windows/HalcyonAgent.ps1": {
+    "mtime": 1790530412.303745,
+    "seen": 1792971378.2520761,
+    "ast_hash": "9e55a1ddc543c23172d9e4934b5d92b9",
+    "semantic_hash": "9e55a1ddc543c23172d9e4934b5d92b9"
+  },
+  "reference/halcyon/windows/Inject.ps1": {
+    "mtime": 1790114375.1405241,
+    "seen": 1792971378.2520761,
+    "ast_hash": "e2a30caca6f05ad9449e8d5a0e764826",
+    "semantic_hash": "e2a30caca6f05ad9449e8d5a0e764826"
+  },
+  "reference/halcyon/windows/Start-Server.ps1": {
+    "mtime": 1790114375.1415322,
+    "seen": 1792971378.2520761,
+    "ast_hash": "7ae2eedccc556cb6bb92009b18559979",
+    "semantic_hash": "7ae2eedccc556cb6bb92009b18559979"
+  },
+  "reference/halcyon/windows/server.config.psd1": {
+    "mtime": 1790531567.7658982,
+    "seen": 1792971378.2520761,
+    "ast_hash": "b0f9d3518c8198a19cdb70995d5a4033",
+    "semantic_hash": "b0f9d3518c8198a19cdb70995d5a4033"
+  },
+  "reference/halcyon/windows/server.vps.psd1": {
+    "mtime": 1790533165.8487103,
+    "seen": 1792971378.2520761,
+    "ast_hash": "b14b0d2823f963a89b010af30c066591",
+    "semantic_hash": "b14b0d2823f963a89b010af30c066591"
+  }
+}

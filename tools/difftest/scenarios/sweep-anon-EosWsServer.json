@@ -1,0 +1,3 @@
+{"name":"sweep-anon-EosWsServer","steps":[
+ {"server":"EosWsServer","method":"GET","path":"/","headers":{}}
+]}

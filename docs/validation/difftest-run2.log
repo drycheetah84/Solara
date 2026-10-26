@@ -1,0 +1,52 @@
+scenario flow-gameserver
+  step 5: body (first difference at byte 73)
+      original: ...{"deployment_id":"dep-2","station_id":"<id16>","deployment_name":"Server_ed65ee","region":"NAE","ip":"5.6.7.8:7777","version":"22284","created":"<timestamp>","online":true,"last_event":"<timestamp>","player_count":0,"config":{"StationAnnouncement":"Welcome to Halcyon Ring","BoardTextureUrl1":"http://209.126.2.136:78/board/_default.png","BoardTextureUrl2":"ht
+      solara:   ...{"deployment_id":"dep-2","station_id":"<id16>","deployment_name":"Server_37a383","region":"NAE","ip":"5.6.7.8:7777","version":"22284","created":"<timestamp>","online":true,"last_event":"<timestamp>","player_count":0,"config":{"BoardTextureUrl1":"http://209.126.2.136:78/board/_default.png","BoardTextureUrl2":"http://209.126.2.136:78/board/_default.png","Board
+  step 7: body (first difference at byte 2979)
+      original: ...riendsOnly":false,"buildUniqueId":22284,"started":true,"lastUpdated":"<timestamp>","attributes":{"SERVERNAME_s":"Server_ed65ee","BUSESSTATS_b":false,"NUMPRIVATECONNECTIONS_l":0,"USESPRESENCE_b":false,"ADDRESS_s":"5.6.7.8","PRESENCESEARCH_b":true,"NUMPUBLICCONNECTIONS_l":10,"PUBLICPORT_s":"7777","BUILDUNIQUEID_l":22284,"BANTICHEATPROTECTED_b":true,"BISDEDICAT
+      solara:   ...riendsOnly":false,"buildUniqueId":22284,"started":true,"lastUpdated":"<timestamp>","attributes":{"SERVERNAME_s":"Server_37a383","BUSESSTATS_b":false,"NUMPRIVATECONNECTIONS_l":0,"USESPRESENCE_b":false,"ADDRESS_s":"5.6.7.8","PRESENCESEARCH_b":true,"NUMPUBLICCONNECTIONS_l":10,"PUBLICPORT_s":"7777","BUILDUNIQUEID_l":22284,"BANTICHEATPROTECTED_b":true,"BISDEDICAT
+  step 8: body (first difference at byte 216)
+      original: ...t_online":"<timestamp>","deployments":1,"online_deps":1,"player_count":3},{"station_id":"<id16>","station_name":"Server_ed65ee","created_at":"<timestamp>","online":true,"last_online":"<timestamp>","deployments":1,"online_deps":1,"player_count":0}]
+      solara:   ...t_online":"<timestamp>","deployments":1,"online_deps":1,"player_count":3},{"station_id":"<id16>","station_name":"Server_37a383","created_at":"<timestamp>","online":true,"last_online":"<timestamp>","deployments":1,"online_deps":1,"player_count":0}]
+  step 9: body (first difference at byte 298)
+      original: ...ent":"<timestamp>","created_at":"<timestamp>"},{"deployment_id":"dep-2","station_id":"<id16>","deployment_name":"Server_ed65ee","ip_address":"5.6.7.8:7777","region":"NAE","version":"22284","online":true,"player_count":0,"last_event":null,"created_at":"<timestamp>"}]
+      solara:   ...ent":"<timestamp>","created_at":"<timestamp>"},{"deployment_id":"dep-2","station_id":"<id16>","deployment_name":"Server_37a383","ip_address":"5.6.7.8:7777","region":"NAE","version":"22284","online":true,"player_count":0,"last_event":null,"created_at":"<timestamp>"}]
+  step 10: body (first difference at byte 439)
+      original: ..."imgui_port":"","station_id":"<id16>","deployment_id":"dep-1","public_players":[]},{"id":"<guid>","server_name":"Server_ed65ee","ip_address":"5.6.7.8","port":"7777","max_players":10,"bucket":"22284","build_id":22284,"imgui_port":"","station_id":"<id16>","deployment_id":"dep-2","public_players":[]}]
+      solara:   ..."imgui_port":"","station_id":"<id16>","deployment_id":"dep-1","public_players":[]},{"id":"<guid>","server_name":"Server_37a383","ip_address":"5.6.7.8","port":"7777","max_players":10,"bucket":"22284","build_id":22284,"imgui_port":"","station_id":"<id16>","deployment_id":"dep-2","public_players":[]}]
+  15 steps compared, 5 differing, 1 equal modulo JSON key order
+scenario flow-mothership
+  step 0: body (first difference at byte 21)
+      original: ...{"AttestationNonce":"pnrN1I3vxmMXKxsa9ASgkAWVibLDnuODmOGTPzEWGrR6lA4CusFBvA"}
+      solara:   ...{"AttestationNonce":"orjRVVbP0lOurSQfAfAMfu-RsWy2xTAtqr1rVeAg6vY9FSKE1W1rag"}
+  11 steps compared, 1 differing, 0 equal modulo JSON key order
+scenario smoke
+  7 steps compared, 0 differing, 1 equal modulo JSON key order
+scenario sweep-anon-A2StationDbServer
+  86 steps compared, 0 differing, 4 equal modulo JSON key order
+scenario sweep-anon-AresDashboardServer
+  53 steps compared, 0 differing, 0 equal modulo JSON key order
+scenario sweep-anon-EosGatewayServer
+  23 steps compared, 0 differing, 0 equal modulo JSON key order
+scenario sweep-anon-EosWsServer
+  1 steps compared, 0 differing, 0 equal modulo JSON key order
+scenario sweep-anon-HalcyonSocketServer
+  5 steps compared, 0 differing, 0 equal modulo JSON key order
+scenario sweep-anon-MothershipServer
+  114 steps compared, 0 differing, 0 equal modulo JSON key order
+scenario sweep-authed-A2StationDbServer
+  86 steps compared, 0 differing, 3 equal modulo JSON key order
+scenario sweep-authed-AresDashboardServer
+  53 steps compared, 0 differing, 0 equal modulo JSON key order
+scenario sweep-authed-EosGatewayServer
+  step 3: body (first difference at byte 40)
+      original: ...{"username":"<epoch>:<hex>","password":"3yhjZwh/CV9IUXWRBJa2VcrCMnk=","ttl":3600000,"uris":["stun:94.72.120.104:3478","turn:94.72.120.104:3478?transport=udp","turn:94.72.120.104:3478?transport=tcp"]}
+      solara:   ...{"username":"<epoch>:<hex>","password":"Plx01g8DjnvxhSZbtO9GXuZb22k=","ttl":3600000,"uris":["stun:94.72.120.104:3478","turn:94.72.120.104:3478?transport=udp","turn:94.72.120.104:3478?transport=tcp"]}
+  23 steps compared, 1 differing, 0 equal modulo JSON key order
+scenario sweep-authed-EosWsServer
+  1 steps compared, 0 differing, 0 equal modulo JSON key order
+scenario sweep-authed-HalcyonSocketServer
+  5 steps compared, 0 differing, 0 equal modulo JSON key order
+scenario sweep-authed-MothershipServer
+  114 steps compared, 0 differing, 0 equal modulo JSON key order
+results in C:\Users\drych\AppData\Local\Temp\solara-difftest-3987554881; 3 scenario(s) with differences

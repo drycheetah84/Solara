@@ -1,0 +1,159 @@
+scenario smoke
+  7 steps compared, 0 differing, 1 equal modulo JSON key order
+scenario sweep-anon-A2StationDbServer
+  step 3: body
+      original: {"api_key":"<jwt>","deployment_id":"7849d3203fcd438a"}
+      solara:   {"api_key":"<jwt>","deployment_id":"c8e428fe228a42cd"}
+  step 31: body
+      original: <!doctypehtml><html lang=en><meta charset=UTF-8><meta content="width=device-width,initial-scale=1"name=viewport><title>500 Error - Astra.Hosting</title><style>body{font-family:Arial,sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;background:#f0f0f0}.container{text-align:center;background:#fff;padding:2rem;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,.1
+      solara:   <!doctypehtml><html lang=en><meta charset=UTF-8><meta content="width=device-width,initial-scale=1"name=viewport><title>500 Error - Astra.Hosting</title><style>body{font-family:Arial,sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;background:#f0f0f0}.container{text-align:center;background:#fff;padding:2rem;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,.1
+  step 61: body
+      original: {"roles":[{"permissions":["admin","station:create","station:delete","station:write","station:read","station_config:write","station_config:read","role:read","role:write","global:fleet:create","global:fleet:delete","fleet:read","fleet:join","fleet:write","fleet_config:read","fleet_config:write","config_netvars:write","custom_config:write","record_entry:write","server_login","server_event:read","serv
+      solara:   {"roles":[{"permissions":["admin","station:create","station:delete","station:write","station:read","station_config:write","station_config:read","role:read","role:write","global:fleet:create","global:fleet:delete","fleet:read","fleet:join","fleet:write","fleet_config:read","fleet_config:write","config_netvars:write","custom_config:write","record_entry:write","server_login","server_event:read","serv
+  step 72: body
+      original: {"event_id":"9707310e3fe0463c","title":"","description":"","start_time":"<timestamp>","duration":0,"public":true,"signups_open":true,"station_id":"x1","deployment_id":""}
+      solara:   {"event_id":"b2fab71870b844d0","title":"","description":"","start_time":"<timestamp>","duration":0,"public":true,"signups_open":true,"station_id":"x1","deployment_id":""}
+  step 85: body
+      original: {"fleet_id":"","items":[{"station_id":"7849d3203fcd438a","fleet_id":"x1","session_id":"7849d3203fcd438a","station_name":null,"region":null,"ip":null,"version":null,"deployment_cl":null,"created":"<timestamp>","online":false,"last_event":null,"player_count":0,"disabled":false,"config":null,"district_populations":null}]}
+      solara:   {"fleet_id":"","items":[{"station_id":"c8e428fe228a42cd","fleet_id":"x1","session_id":"c8e428fe228a42cd","station_name":null,"region":null,"ip":null,"version":null,"deployment_cl":null,"created":"<timestamp>","online":false,"last_event":null,"player_count":0,"disabled":false,"config":null,"district_populations":null}]}
+  86 steps compared, 5 differing, 3 equal modulo JSON key order
+scenario sweep-anon-AresDashboardServer
+  53 steps compared, 0 differing, 0 equal modulo JSON key order
+scenario sweep-anon-EosGatewayServer
+  step 0: body
+      original: <!doctypehtml><html lang=en><meta charset=UTF-8><meta content="width=device-width,initial-scale=1"name=viewport><title>500 Error - Astra.Hosting</title><style>body{font-family:Arial,sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;background:#f0f0f0}.container{text-align:center;background:#fff;padding:2rem;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,.1
+      solara:   <!doctypehtml><html lang=en><meta charset=UTF-8><meta content="width=device-width,initial-scale=1"name=viewport><title>500 Error - Astra.Hosting</title><style>body{font-family:Arial,sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;background:#f0f0f0}.container{text-align:center;background:#fff;padding:2rem;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,.1
+  step 1: body
+      original: <!doctypehtml><html lang=en><meta charset=UTF-8><meta content="width=device-width,initial-scale=1"name=viewport><title>500 Error - Astra.Hosting</title><style>body{font-family:Arial,sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;background:#f0f0f0}.container{text-align:center;background:#fff;padding:2rem;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,.1
+      solara:   <!doctypehtml><html lang=en><meta charset=UTF-8><meta content="width=device-width,initial-scale=1"name=viewport><title>500 Error - Astra.Hosting</title><style>body{font-family:Arial,sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;background:#f0f0f0}.container{text-align:center;background:#fff;padding:2rem;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,.1
+  23 steps compared, 2 differing, 0 equal modulo JSON key order
+scenario sweep-anon-EosWsServer
+  1 steps compared, 0 differing, 0 equal modulo JSON key order
+scenario sweep-anon-HalcyonSocketServer
+  5 steps compared, 0 differing, 0 equal modulo JSON key order
+scenario sweep-anon-MothershipServer
+  step 75: body
+      original: {"Nonce":"lJ3Hgjn5D6kootYjD0j_gg"}
+      solara:   {"Nonce":"NtSXcVkd0Pc5dHKYuAe93A"}
+  114 steps compared, 1 differing, 0 equal modulo JSON key order
+scenario sweep-authed-A2StationDbServer
+  step 3: body
+      original: {"api_key":"<jwt>","deployment_id":"0ef25fb9b06e4750"}
+      solara:   {"api_key":"<jwt>","deployment_id":"699e73a94127489b"}
+  step 25: body
+      original: {"success":true,"station_id":"c595fa9f02e44521","deployment_id":"<hex>"}
+      solara:   {"success":true,"station_id":"75a5d5958bdf4b3a","deployment_id":"<hex>"}
+  step 61: body
+      original: {"roles":[{"permissions":["admin","station:create","station:delete","station:write","station:read","station_config:write","station_config:read","role:read","role:write","global:fleet:create","global:fleet:delete","fleet:read","fleet:join","fleet:write","fleet_config:read","fleet_config:write","config_netvars:write","custom_config:write","record_entry:write","server_login","server_event:read","serv
+      solara:   {"roles":[{"permissions":["admin","station:create","station:delete","station:write","station:read","station_config:write","station_config:read","role:read","role:write","global:fleet:create","global:fleet:delete","fleet:read","fleet:join","fleet:write","fleet_config:read","fleet_config:write","config_netvars:write","custom_config:write","record_entry:write","server_login","server_event:read","serv
+  step 72: body
+      original: {"event_id":"f6a22ed7f2f3489c","title":"","description":"","start_time":"<timestamp>","duration":0,"public":true,"signups_open":true,"station_id":"x1","deployment_id":""}
+      solara:   {"event_id":"785c264e2f6c472e","title":"","description":"","start_time":"<timestamp>","duration":0,"public":true,"signups_open":true,"station_id":"x1","deployment_id":""}
+  86 steps compared, 4 differing, 3 equal modulo JSON key order
+scenario sweep-authed-AresDashboardServer
+  53 steps compared, 0 differing, 0 equal modulo JSON key order
+scenario sweep-authed-EosGatewayServer
+  step 0: body
+      original: <!doctypehtml><html lang=en><meta charset=UTF-8><meta content="width=device-width,initial-scale=1"name=viewport><title>500 Error - Astra.Hosting</title><style>body{font-family:Arial,sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;background:#f0f0f0}.container{text-align:center;background:#fff;padding:2rem;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,.1
+      solara:   <!doctypehtml><html lang=en><meta charset=UTF-8><meta content="width=device-width,initial-scale=1"name=viewport><title>500 Error - Astra.Hosting</title><style>body{font-family:Arial,sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;background:#f0f0f0}.container{text-align:center;background:#fff;padding:2rem;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,.1
+  step 1: body
+      original: <!doctypehtml><html lang=en><meta charset=UTF-8><meta content="width=device-width,initial-scale=1"name=viewport><title>500 Error - Astra.Hosting</title><style>body{font-family:Arial,sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;background:#f0f0f0}.container{text-align:center;background:#fff;padding:2rem;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,.1
+      solara:   <!doctypehtml><html lang=en><meta charset=UTF-8><meta content="width=device-width,initial-scale=1"name=viewport><title>500 Error - Astra.Hosting</title><style>body{font-family:Arial,sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;background:#f0f0f0}.container{text-align:center;background:#fff;padding:2rem;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,.1
+  23 steps compared, 2 differing, 0 equal modulo JSON key order
+scenario sweep-authed-EosWsServer
+  1 steps compared, 0 differing, 0 equal modulo JSON key order
+scenario sweep-authed-HalcyonSocketServer
+  5 steps compared, 0 differing, 0 equal modulo JSON key order
+scenario sweep-authed-MothershipServer
+  step 4: body
+      original: {"Results":[{"metadata_id":"<guid>","title_id":null,"env_id":null,"key_name":null,"key_permissions":null,"privacy_notes":null}]}
+      solara:   {"Results":[{"metadata_id":"<guid>","title_id":"","env_id":"","key_name":"","key_permissions":"","privacy_notes":""}]}
+  step 6: body
+      original: {"Results":[{"key":null,"value":null,"updated_at":"<timestamp>"}]}
+      solara:   {"Results":[{"key":"","value":"","updated_at":"<timestamp>"}]}
+  step 7: status 404 != 200; body
+      original: {"error":"Title data not found"}
+      solara:   {"status":"deleted"}
+  step 8: body
+      original: {"Results":[{"key":null,"value":null,"updated_at":"<timestamp>"}]}
+      solara:   {"Results":[]}
+  step 10: body
+      original: {"Results":[{"key":null,"value":null,"updated_at":"<timestamp>"},{"key":null,"value":null,"updated_at":"<timestamp>"}]}
+      solara:   {"Results":[{"key":"","value":"","updated_at":"<timestamp>"}]}
+  step 11: status 404 != 200; body
+      original: {"error":"Title data not found"}
+      solara:   {"status":"deleted"}
+  step 13: body
+      original: {"Results":[{"offer_id":"<guid>","name":null,"titleId":null,"envId":null,"transaction_id":null,"bundle_pricing":"{}","discount_percent":0}]}
+      solara:   {"Results":[{"offer_id":"<guid>","name":"","titleId":"","envId":"","transaction_id":"","bundle_pricing":"{}","discount_percent":0}]}
+  step 15: body
+      original: {"Results":[{"offer_binding_id":"<guid>","title_id":null,"env_id":null,"deployment_id":null,"offer_display_id":null,"offer_id":null,"committed":false,"display_index":0}]}
+      solara:   {"Results":[{"offer_binding_id":"<guid>","title_id":"","env_id":"","deployment_id":"","offer_display_id":"","offer_id":"","committed":false,"display_index":0}]}
+  step 18: body
+      original: {"Results":[{"offer_display_id":"<guid>","name":null,"description":null}]}
+      solara:   {"Results":[{"offer_display_id":"<guid>","name":"","description":""}]}
+  step 23: body
+      original: {"Results":[{"entitlement_id":"<guid>","name":null,"type":"DURABLE","item_class":null}]}
+      solara:   {"Results":[{"entitlement_id":"<guid>","name":"","type":"DURABLE","item_class":""}]}
+  step 26: body
+      original: {"Results":[{"transaction_id":"<guid>","name":null,"operations":"[]"}]}
+      solara:   {"Results":[{"transaction_id":"<guid>","name":"","operations":"[]"}]}
+  step 30: body
+      original: {"Results":[]}
+      solara:   {"Results":[{"player_id":"","item_id":"<guid>","item_data":"{}"}]}
+  step 31: body
+      original: {"Results":{"offers":[{"offer_id":"<guid>","name":null,"titleId":null,"envId":null,"transaction_id":null,"bundle_pricing":"{}","discount_percent":0}],"featured":[],"displays":[{"offer_display_id":"<guid>","name":null,"description":null}]}}
+      solara:   {"Results":{"offers":[{"offer_id":"<guid>","name":"","titleId":"","envId":"","transaction_id":"","bundle_pricing":"{}","discount_percent":0}],"featured":[],"displays":[{"offer_display_id":"<guid>","name":"","description":""}]}}
+  step 33: body
+      original: {"Results":[{"track_id":"<guid>","name":null,"levels":"[]","triggers":"[]"}]}
+      solara:   {"Results":[{"track_id":"<guid>","name":"","levels":"[]","triggers":"[]"}]}
+  step 36: body
+      original: {"Results":[{"track_id":"<guid>","name":null,"levels":"[]","triggers":"[]"},{"track_id":"<guid>","name":null,"levels":"[]","triggers":"[]"}]}
+      solara:   {"Results":[{"track_id":"<guid>","name":"","levels":"[]","triggers":"[]"},{"track_id":"<guid>","name":"","levels":"[]","triggers":"[]"}]}
+  step 39: body
+      original: {"Results":[{"binding_id":"<guid>","track_id":null,"deployment_id":null}]}
+      solara:   {"Results":[{"binding_id":"<guid>","track_id":"","deployment_id":""}]}
+  step 42: body
+      original: {"Results":[{"tree_id":"<guid>","name":null,"nodes":"[]"}]}
+      solara:   {"Results":[{"tree_id":"<guid>","name":"","nodes":"[]"}]}
+  step 45: body
+      original: {"Results":[{"tree_id":"<guid>","name":null,"nodes":"[]"},{"tree_id":"<guid>","name":null,"nodes":"[]"}]}
+      solara:   {"Results":[{"tree_id":"<guid>","name":"","nodes":"[]"},{"tree_id":"<guid>","name":"","nodes":"[]"}]}
+  step 48: body
+      original: {"Results":[{"binding_id":"<guid>","tree_id":null,"deployment_id":null}]}
+      solara:   {"Results":[{"binding_id":"<guid>","tree_id":"","deployment_id":""}]}
+  step 54: body
+      original: {"Results":[{"key_id":"<guid>","api_key":"<guid>","name":null,"created_at":"<timestamp>"}]}
+      solara:   {"Results":[{"key_id":"<guid>","api_key":"<guid>","name":"","created_at":"<timestamp>"}]}
+  step 58: body
+      original: {"players":0,"sessions":0,"bans":0,"mutes":0,"reports":0,"shared_groups":0,"titles":0,"environments":0,"deployments":0,"user_data":0,"title_data":2,"offers":1,"offer_bindings":1,"offer_displays":1,"entitlements":1,"transactions":1,"inventory":1,"progression_tracks":2,"progression_trees":2,"api_keys":1,"notifications":1,"analytics_events":0}
+      solara:   {"players":0,"sessions":0,"bans":0,"mutes":0,"reports":0,"shared_groups":0,"titles":0,"environments":0,"deployments":0,"user_data":0,"title_data":0,"offers":1,"offer_bindings":1,"offer_displays":1,"entitlements":1,"transactions":1,"inventory":1,"progression_tracks":2,"progression_trees":2,"api_keys":1,"notifications":1,"analytics_events":0}
+  step 75: body
+      original: {"Nonce":"M8edcLGkMj_ilfETHaD1Lw"}
+      solara:   {"Nonce":"goo0H6n0kKvG-uzLprl35Q"}
+  step 86: body
+      original: {"Identities":[]}
+      solara:   {"Identities":[{"link_id":"<guid>","platform":"","target_player":"","other_token":"","is_primary":false,"created_at":"<timestamp>"}]}
+  step 88: body
+      original: {"Results":[]}
+      solara:   {"Results":[{"association_id":"<guid>","player_id":"","platform":"","created_at":"<timestamp>"}]}
+  step 95: body
+      original: {"bans":[{"ban_id":"<guid>","title_id":null,"env_id":null,"player_id":null,"category":0,"reason":null,"duration_minutes":0,"org_wide":false,"metadata":null,"created_at":"<timestamp>","expires_at":"<timestamp>"}],"reports":[{"report_id":"<guid>","reported_user_id":null,"reporter_user_id":null,"category":0,"reason":null,"platform":null,"modded_client":false,"metadata":null,"created_at":"<timestamp>"
+      solara:   {"bans":[{"ban_id":"<guid>","title_id":"","env_id":"","player_id":"","category":0,"reason":"","duration_minutes":0,"org_wide":false,"metadata":"","created_at":"<timestamp>","expires_at":"<timestamp>"}],"reports":[{"report_id":"<guid>","reported_user_id":"","reporter_user_id":"","category":0,"reason":"","platform":"","modded_client":false,"metadata":"","created_at":"<timestamp>"}]}
+  step 96: body
+      original: {"bans":[{"ban_id":"<guid>","title_id":null,"env_id":null,"player_id":null,"category":0,"reason":null,"duration_minutes":0,"org_wide":false,"metadata":null,"created_at":"<timestamp>","expires_at":"<timestamp>"}],"mutes":[],"reports":[{"report_id":"<guid>","reported_user_id":null,"reporter_user_id":null,"category":0,"reason":null,"platform":null,"modded_client":false,"metadata":null,"created_at":"<
+      solara:   {"bans":[{"ban_id":"<guid>","title_id":"","env_id":"","player_id":"","category":0,"reason":"","duration_minutes":0,"org_wide":false,"metadata":"","created_at":"<timestamp>","expires_at":"<timestamp>"}],"mutes":[],"reports":[{"report_id":"<guid>","reported_user_id":"","reporter_user_id":"","category":0,"reason":"","platform":"","modded_client":false,"metadata":"","created_at":"<timestamp>"}]}
+  step 107: body
+      original: {"Results":[{"link_id":"<guid>","platform":null,"target_player":null,"other_token":null,"is_primary":false,"created_at":"<timestamp>"},{"link_id":"<guid>","platform":"x1","target_player":null,"other_token":null,"is_primary":false,"created_at":"<timestamp>"}]}
+      solara:   {"Results":[{"link_id":"<guid>","platform":"","target_player":"","other_token":"","is_primary":false,"created_at":"<timestamp>"},{"link_id":"<guid>","platform":"x1","target_player":"","other_token":"","is_primary":false,"created_at":"<timestamp>"}]}
+  step 109: body
+      original: {"Results":[{"title_id":"<guid>","title_name":null}]}
+      solara:   {"Results":[{"title_id":"<guid>","title_name":""}]}
+  step 111: body
+      original: {"Results":[{"envId":"<guid>","titleId":null,"envName":null,"requiredTags":[]}]}
+      solara:   {"Results":[{"envId":"<guid>","titleId":"","envName":"","requiredTags":[]}]}
+  step 113: body
+      original: {"Results":[{"deployment_id":"<guid>","title_id":null,"env_id":null,"name":null,"requiredTags":[]}]}
+      solara:   {"Results":[{"deployment_id":"<guid>","title_id":"","env_id":"","name":"","requiredTags":[]}]}
+  114 steps compared, 30 differing, 0 equal modulo JSON key order
+results in C:\Users\drych\AppData\Local\Temp\solara-difftest-431131011; 6 scenario(s) with differences

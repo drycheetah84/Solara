@@ -1,0 +1,9 @@
+imagebase 0x140000000
+building name2ea...
+named funcs: 5791 total: 415237
+building string index...
+resolved strings: 12
+collecting distinctive callees...
+callee reverse-index entries: 11
+ufunc thunks dumped: 16
+DONE sites: 69

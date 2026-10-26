@@ -1,0 +1,492 @@
+{
+ "UpdGameState_RVA": {
+  "new": "0x55a06c0",
+  "impl_size": 174,
+  "old_impl_size": 179,
+  "method": "tail/size(2 cands)",
+  "conf": "high",
+  "thunk": "0x54a2220",
+  "old_func": "UGameStateManagerComponent::UpdateGameState_Implementation"
+ },
+ "StartTimerCd_RVA": {
+  "new": "0x559abd0",
+  "impl_size": 700,
+  "old_impl_size": 682,
+  "method": "tail/size(2 cands)",
+  "conf": "high",
+  "thunk": "0x54a6810",
+  "old_func": "UGameTimeComponent::StartTimerWithCountdown_Implementation"
+ },
+ "ReqLogin_RVA": {
+  "new": "0x150e900",
+  "impl_size": 164,
+  "old_impl_size": 61,
+  "method": "single-nonhelper-call",
+  "conf": "med",
+  "thunk": "0x53dabb0",
+  "old_func": "UA2OnlineCommunicationsComponent::RequestVivoxLoginToken_Implementation"
+ },
+ "SendPhysImpl_RVA": {
+  "new": "0x541a1c0",
+  "impl_size": 757,
+  "old_impl_size": 252,
+  "method": "single-nonhelper-call",
+  "conf": "med",
+  "thunk": "0x54f8b00",
+  "old_func": "AVRPawn::Server_SendPhysicsPropData_Implementation"
+ },
+ "NotifyLeftArena_RVA": {
+  "new": "0x150e900",
+  "impl_size": 164,
+  "old_impl_size": 56,
+  "method": "single-nonhelper-call",
+  "conf": "med",
+  "thunk": "0x54f82b0",
+  "old_func": "AVRPawn::Server_NotifyPlayerLeftArena_Implementation"
+ },
+ "GolfBallInCup_RVA": {
+  "new": "0x55b3900",
+  "impl_size": 24,
+  "old_impl_size": 21,
+  "method": "single-nonhelper-call",
+  "conf": "high",
+  "thunk": "0x54a9200",
+  "old_func": "AGolfCup::BallInCup_Implementation"
+ },
+ "GolfOverlap_RVA": {
+  "new": "0x54a9890",
+  "impl_size": 603,
+  "old_impl_size": 88,
+  "method": "inlined-in-thunk",
+  "conf": "med",
+  "thunk": "0x54a9890",
+  "old_func": "AGolfCup::OnGoalBeginOverlap_Implementation"
+ },
+ "GiveCheck_RVA": {
+  "new": "0x4ac1190",
+  "impl_size": 1043,
+  "old_impl_size": 1100,
+  "method": "tail/size(2 cands)",
+  "conf": "high",
+  "thunk": "0x49e79c0",
+  "old_func": "ATicketManager::GiveAndCheckTicket_Implementation"
+ },
+ "IsRunningSimulate_RVA": {
+  "conf": "none",
+  "inner": 86,
+  "old_rva": "0x531EF96"
+ },
+ "A2GetNetMode_RVA": {
+  "new": "0x14db9c0",
+  "impl_size": 212,
+  "old_impl_size": 188,
+  "method": "tail/size(4 cands)",
+  "conf": "high",
+  "thunk": "0x22ac640",
+  "old_func": "UA2NetworkUtilityBPFL::GetNetMode_Implementation"
+ },
+ "GetLocalInst_RVA": {
+  "new": "0x5810b30",
+  "impl_size": 272,
+  "old_impl_size": 255,
+  "method": "single-nonhelper-call",
+  "conf": "high",
+  "thunk": "0x54f2b70",
+  "old_func": "AVRPawn::GetLocalInstanceWithWorld_Implementation"
+ },
+ "GetPlayerPawn_RVA": {
+  "new": "0x3ec7c90",
+  "impl_size": 20,
+  "old_impl_size": 20,
+  "method": "tail/size(2 cands)",
+  "conf": "high",
+  "thunk": "0x3ae0310",
+  "old_func": "UGameplayStatics::GetPlayerPawn_Implementation"
+ },
+ "inline_14200_054e4470": {
+  "new": "0x12a9010",
+  "impl_size": 203,
+  "old_impl_size": 1613,
+  "method": "tail/size(2 cands)",
+  "conf": "med",
+  "thunk": "0x542d3f0",
+  "old_func": "AVRPawn::Client_TicketCheckSuccess_Implementation"
+ },
+ "inline_14202_054e17e0": {
+  "new": "0x5502140",
+  "impl_size": 287,
+  "old_impl_size": 207,
+  "method": "single-nonhelper-call",
+  "conf": "high",
+  "thunk": "0x542ce00",
+  "old_func": "AVRPawn::ClearTeam"
+ },
+ "inline_15200_05502070": {
+  "new": "0x54f7430",
+  "impl_size": 137,
+  "old_impl_size": 577,
+  "method": "inlined-in-thunk",
+  "conf": "med",
+  "thunk": "0x54f7430",
+  "old_func": "AVRPawn::Server_AttemptTakeOwnershipOfLevelEditor_Implementation"
+ },
+ "inline_15230_046902f0": {
+  "new": "0x49972a0",
+  "impl_size": 95,
+  "old_impl_size": 151,
+  "method": "tail/size(5 cands)",
+  "conf": "high",
+  "thunk": "0x49b3000",
+  "old_func": "UA2PlayerQuestComponent::Server_SetQuests_Implementation"
+ },
+ "GIsClient_RVA": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x96D8672"
+ },
+ "GIsServer_RVA": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x96D8673"
+ },
+ "StationStr_Data_RVA": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x95DF980"
+ },
+ "StationStr_Num_RVA": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x95DF988"
+ },
+ "StationStr_Max_RVA": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x95DF98C"
+ },
+ "CosmeticCmp_RVA": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x53DA880"
+ },
+ "FNamePoolTbl_RVA": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x9710B80"
+ },
+ "GetBoolCfg_RVA": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x46DA020"
+ },
+ "GetNumCfg_RVA": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x46DDB20"
+ },
+ "GetStrCfg_RVA": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x46DE7B0"
+ },
+ "GtcTick_RVA": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x53C8AF0"
+ },
+ "GtcVft_RVA": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x84E6D20"
+ },
+ "JoinBuild_RVA": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x5432A40"
+ },
+ "SendJoin_RVA": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x52EE2E0"
+ },
+ "ReplayPostStep_RVA": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x5487560"
+ },
+ "ReplayVtable_RVA": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x84A2B38"
+ },
+ "ReplaySnapshot_RVA": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x5482110"
+ },
+ "Reconcile_RVA": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x545BD80"
+ },
+ "SimIntegrate_RVA": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x547F7A0"
+ },
+ "IngestInput_RVA": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x54599B0"
+ },
+ "SendResults_RVA": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x534A7F0"
+ },
+ "StepSim_RVA": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x54863C0"
+ },
+ "BallAdvance_RVA": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x5464630"
+ },
+ "BallReconcile_RVA": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x548FC40"
+ },
+ "FNameResolve_RVA": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x114D690"
+ },
+ "TextLayoutLeaf_RVA": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x1EC07A0"
+ },
+ "EvtDispatch_RVA": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x466A240"
+ },
+ "GolfBall_LastHitLocation_Off": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x658"
+ },
+ "Panel_IsActive_Off": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x2C0"
+ },
+ "Panel_Mesh_Off": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x2E0"
+ },
+ "Spawner_Disc_Off": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x580"
+ },
+ "RolesFetched_RVA": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x5510C40"
+ },
+ "WorldGetNetMode_RVA": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x4040990"
+ },
+ "BallSimGetWorld_RVA": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x3509AB0"
+ },
+ "BallNetPersp_RVA": {
+  "conf": "none",
+  "inner": 64,
+  "old_rva": "0x60A0990"
+ },
+ "PrintString_RVA": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x3A29B20"
+ },
+ "inline_259_01326b07": {
+  "conf": "none",
+  "inner": 55,
+  "old_rva": "0x1326b07"
+ },
+ "inline_276_0a5bb000": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0xa5bb000"
+ },
+ "inline_473_010153a0": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x10153a0"
+ },
+ "inline_476_00fcc220": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0xfcc220"
+ },
+ "inline_943_01254f50": {
+  "conf": "none",
+  "inner": 528,
+  "old_rva": "0x1254f50"
+ },
+ "inline_1182_054277ad": {
+  "conf": "none",
+  "inner": 333,
+  "old_rva": "0x54277ad"
+ },
+ "inline_3171_012494d0": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x12494d0"
+ },
+ "inline_3172_0125f7b0": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x125f7b0"
+ },
+ "inline_3303_053dc76a": {
+  "new_func": "0x5567c30",
+  "method": "string:BallSimManager",
+  "conf": "med",
+  "inner": 58,
+  "old_rva": "0x53dc76a",
+  "old_size": 335,
+  "is_func": true,
+  "note": "inner offset 58 NOT auto-applied; verify instruction in func"
+ },
+ "inline_7949_00fbcd70": {
+  "conf": "none",
+  "inner": 32,
+  "old_rva": "0xfbcd70"
+ },
+ "inline_8016_09c5d0a0": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x9c5d0a0"
+ },
+ "inline_13226_05450000": {
+  "conf": "none",
+  "inner": 624,
+  "old_rva": "0x5450000"
+ },
+ "inline_14201_054e4e10": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x54e4e10"
+ },
+ "inline_14252_05429424": {
+  "conf": "none",
+  "inner": 84,
+  "old_rva": "0x5429424"
+ },
+ "inline_14257_05429427": {
+  "conf": "none",
+  "inner": 87,
+  "old_rva": "0x5429427"
+ },
+ "inline_14273_053b3bc3": {
+  "conf": "none",
+  "inner": 179,
+  "old_rva": "0x53b3bc3"
+ },
+ "inline_14281_053b3bcd": {
+  "conf": "none",
+  "inner": 189,
+  "old_rva": "0x53b3bcd"
+ },
+ "inline_14282_053b3be2": {
+  "conf": "none",
+  "inner": 210,
+  "old_rva": "0x53b3be2"
+ },
+ "inline_14425_0550f130": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x550f130"
+ },
+ "inline_14446_01245000": {
+  "conf": "none",
+  "inner": 304,
+  "old_rva": "0x1245000"
+ },
+ "inline_14446_01269000": {
+  "conf": "none",
+  "inner": 1088,
+  "old_rva": "0x1269000"
+ },
+ "inline_14447_0124db00": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x124db00"
+ },
+ "inline_14448_0124ece0": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x124ece0"
+ },
+ "inline_14493_054b1421": {
+  "new_func": "0x567e320",
+  "method": "string:https://api.oriondrift.net",
+  "conf": "med",
+  "inner": 81,
+  "old_rva": "0x54b1421",
+  "old_size": 3074,
+  "is_func": true,
+  "note": "inner offset 81 NOT auto-applied; verify instruction in func"
+ },
+ "inline_14726_012f0cb0": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x12f0cb0"
+ },
+ "inline_15151_0545ccb0": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x545ccb0"
+ },
+ "inline_15157_0124f4c0": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x124f4c0"
+ },
+ "inline_15193_014363a0": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x14363a0"
+ },
+ "inline_15213_046bc830": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x46bc830"
+ },
+ "inline_15214_047138d0": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x47138d0"
+ },
+ "inline_15233_04692f30": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x4692f30"
+ },
+ "inline_15234_04689030": {
+  "conf": "none",
+  "inner": 0,
+  "old_rva": "0x4689030"
+ }
+}

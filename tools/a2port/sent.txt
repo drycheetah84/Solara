@@ -1,0 +1,5 @@
+start ib 0x7ff672060000
+functions 373576
+strings iter ok sample 6
+old-ida.json exists True
+DONE

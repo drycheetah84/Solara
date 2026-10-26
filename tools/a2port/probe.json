@@ -1,0 +1,11 @@
+{
+ "imagebase": 140696451678208,
+ "input": "A2-Win64-Shipping.exe",
+ "func_count": 373576,
+ "hexrays": true,
+ "sample_JwtBuild": {
+  "name": "sub_7FF6774AD9B0",
+  "start_rva": "0x544d9b0",
+  "size": 2223
+ }
+}

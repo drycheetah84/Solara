@@ -1,0 +1,299 @@
+scenario flow-gameserver
+  step 8: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 9: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 10: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 11: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  15 steps compared, 4 differing, 2 equal modulo JSON key order
+scenario flow-mothership
+  11 steps compared, 0 differing, 0 equal modulo JSON key order
+scenario smoke
+  step 5: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  7 steps compared, 1 differing, 1 equal modulo JSON key order
+scenario sweep-anon-A2StationDbServer
+  step 3: status 200 != 401; body (first difference at byte 2)
+      original: ...{"api_key":"<jwt>","deployment_id":"<id16>"}
+      solara:   ...{"error":"unauthorized"}
+  step 4: body (first difference at byte 34)
+      original: ...{"station_id":"x1","deployments":[{"created":"<timestamp>","online":false,"last_event":"<timestamp>","player_count":0,"config":{},"ip":null,"deployment_name":null,"region":null,"version":null,"station_id":"x1"}]}
+      solara:   ...{"station_id":"x1","deployments":[]}
+  step 6: status 200 != 401; body (first difference at byte 2)
+      original: ...{"api_key":""}
+      solara:   ...{"error":"unauthorized"}
+  step 7: status 200 != 401; body (first difference at byte 2)
+      original: ...{"success":false}
+      solara:   ...{"error":"unauthorized"}
+  step 8: status 200 != 401; body (first difference at byte 2)
+      original: ...{"success":false}
+      solara:   ...{"error":"unauthorized"}
+  step 9: status 200 != 401; body (first difference at byte 2)
+      original: ...{"success":false}
+      solara:   ...{"error":"unauthorized"}
+  step 21: status 200 != 401; body (first difference at byte 1)
+      original: ...{}
+      solara:   ...{"error":"unauthorized"}
+  step 22: status 200 != 401; body (first difference at byte 1)
+      original: ...{}
+      solara:   ...{"error":"unauthorized"}
+  step 31: status 500 != 401; content-type "text/html" != "application/json"; body (first difference at byte 0)
+      original: ...<!doctypehtml><html lang=en><meta charset=UTF-8><meta content="width=device-width,initial-scale=1"name=viewport><title>500 Error - Astra.Hosting</title><style>body{font-family:Arial,sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;background:#f0f0f0}.container{text-align:center;background:#fff;padding:2rem;border-radius
+      solara:   ...{"error":"unauthorized"}
+  step 33: status 200 != 401; body (first difference at byte 2)
+      original: ...{"success":false}
+      solara:   ...{"error":"unauthorized"}
+  step 39: status 200 != 401; body (first difference at byte 2)
+      original: ...{"api_key":""}
+      solara:   ...{"error":"unauthorized"}
+  step 40: status 200 != 401; body (first difference at byte 2)
+      original: ...{"station_id":""}
+      solara:   ...{"error":"unauthorized"}
+  step 45: status 200 != 401; body (first difference at byte 2)
+      original: ...{"success":false}
+      solara:   ...{"error":"unauthorized"}
+  step 46: status 200 != 401; body (first difference at byte 2)
+      original: ...{"success":false}
+      solara:   ...{"error":"unauthorized"}
+  step 51: status 200 != 401; body (first difference at byte 1)
+      original: ...{}
+      solara:   ...{"error":"unauthorized"}
+  step 52: status 200 != 401; body (first difference at byte 1)
+      original: ...{}
+      solara:   ...{"error":"unauthorized"}
+  step 57: status 200 != 401; body (first difference at byte 2)
+      original: ...{"success":false}
+      solara:   ...{"error":"unauthorized"}
+  step 58: status 200 != 401; body (first difference at byte 2)
+      original: ...{"success":false}
+      solara:   ...{"error":"unauthorized"}
+  step 59: status 200 != 401; body (first difference at byte 2)
+      original: ...{"success":false}
+      solara:   ...{"error":"unauthorized"}
+  step 60: status 200 != 401; body (first difference at byte 2)
+      original: ...{"success":false,"user_exists":false}
+      solara:   ...{"error":"unauthorized"}
+  step 62: status 200 != 401; content-type "text/plain" != "application/json"; body (first difference at byte 0)
+      original: ...
+      solara:   ...{"error":"unauthorized"}
+  step 63: status 200 != 401; body (first difference at byte 2)
+      original: ...{"success":false}
+      solara:   ...{"error":"unauthorized"}
+  step 64: status 200 != 401; body (first difference at byte 2)
+      original: ...{"success":false}
+      solara:   ...{"error":"unauthorized"}
+  step 65: status 200 != 401; body (first difference at byte 2)
+      original: ...{"success":false}
+      solara:   ...{"error":"unauthorized"}
+  step 69: status 200 != 401; body (first difference at byte 2)
+      original: ...{"success":false}
+      solara:   ...{"error":"unauthorized"}
+  step 70: status 200 != 401; body (first difference at byte 2)
+      original: ...{"success":false}
+      solara:   ...{"error":"unauthorized"}
+  step 72: status 200 != 401; body (first difference at byte 3)
+      original: ...{"event_id":"<id16>","title":"","description":"","start_time":"<timestamp>","duration":0,"public":true,"signups_open":true,"station_id":"x1","deployment_id":""}
+      solara:   ...{"error":"unauthorized"}
+  step 75: status 200 != 401; body (first difference at byte 2)
+      original: ...{"success":false}
+      solara:   ...{"error":"unauthorized"}
+  step 76: status 200 != 401; body (first difference at byte 2)
+      original: ...{"success":false}
+      solara:   ...{"error":"unauthorized"}
+  step 77: status 200 != 401; body (first difference at byte 2)
+      original: ...{"user_signed_up":false,"signup_id":""}
+      solara:   ...{"error":"unauthorized"}
+  step 79: status 200 != 401; body (first difference at byte 2)
+      original: ...{"success":false}
+      solara:   ...{"error":"unauthorized"}
+  step 81: status 200 != 401; body (first difference at byte 1)
+      original: ...{}
+      solara:   ...{"error":"unauthorized"}
+  step 82: status 200 != 401; body (first difference at byte 1)
+      original: ...{}
+      solara:   ...{"error":"unauthorized"}
+  step 85: body (first difference at byte 24)
+      original: ...{"fleet_id":"","items":[{"station_id":"<id16>","fleet_id":"x1","session_id":"<id16>","station_name":null,"region":null,"ip":null,"version":null,"deployment_cl":null,"created":"<timestamp>","online":false,"last_event":null,"player_count":0,"disabled":false,"config":null,"district_populations":null}]}
+      solara:   ...{"fleet_id":"","items":[]}
+  86 steps compared, 34 differing, 3 equal modulo JSON key order
+scenario sweep-anon-AresDashboardServer
+  step 0: body (first difference at byte 15)
+      original: ...<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ares Dashboard</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0d1117; color: #e6edf3; min-height: 100vh; }
+  header 
+      solara:   ...<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ares Dashboard</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0d1117; color: #e6edf3; min-height: 100vh; }
+  header { backgro; headers differ: Content-Security-Policy,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 1: headers differ: Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 2: headers differ: Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 3: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 4: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 5: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 6: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 7: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 8: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 9: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 10: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 11: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 12: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 13: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 14: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 15: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 16: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 17: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 18: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 19: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 20: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 21: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 22: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 23: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 24: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 25: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 26: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 27: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 28: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 29: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 30: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 31: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 32: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 33: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 34: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 35: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 36: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 37: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 38: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 39: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 40: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 41: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 42: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 43: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 44: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 45: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 46: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 47: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 48: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 49: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 50: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 51: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 52: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  53 steps compared, 53 differing, 0 equal modulo JSON key order
+scenario sweep-anon-EosGatewayServer
+  23 steps compared, 0 differing, 0 equal modulo JSON key order
+scenario sweep-anon-EosWsServer
+  1 steps compared, 0 differing, 0 equal modulo JSON key order
+scenario sweep-anon-HalcyonSocketServer
+  step 0: status 200 != 401; body (first difference at byte 2)
+      original: ...{"agents":[]}
+      solara:   ...{"error":"unauthorized"}
+  step 1: status 200 != 401; body (first difference at byte 2)
+      original: ...{"success":false,"request_id":"","agent":"","error":"no agent with free capacity"}
+      solara:   ...{"error":"unauthorized"}
+  step 2: status 200 != 401; body (first difference at byte 2)
+      original: ...{"servers":[]}
+      solara:   ...{"error":"unauthorized"}
+  step 3: status 200 != 401; body (first difference at byte 2)
+      original: ...{"success":false}
+      solara:   ...{"error":"unauthorized"}
+  step 4: status 200 != 401; body (first difference at byte 2)
+      original: ...{"success":false}
+      solara:   ...{"error":"unauthorized"}
+  5 steps compared, 5 differing, 0 equal modulo JSON key order
+scenario sweep-anon-MothershipServer
+  114 steps compared, 0 differing, 0 equal modulo JSON key order
+scenario sweep-authed-A2StationDbServer
+  86 steps compared, 0 differing, 3 equal modulo JSON key order
+scenario sweep-authed-AresDashboardServer
+  step 0: body (first difference at byte 15)
+      original: ...<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ares Dashboard</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0d1117; color: #e6edf3; min-height: 100vh; }
+  header 
+      solara:   ...<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ares Dashboard</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0d1117; color: #e6edf3; min-height: 100vh; }
+  header { backgro; headers differ: Content-Security-Policy,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 1: headers differ: Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 2: headers differ: Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 3: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 4: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 5: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 6: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 7: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 8: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 9: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 10: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 11: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 12: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 13: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 14: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 15: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 16: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 17: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 18: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 19: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 20: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 21: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 22: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 23: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 24: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 25: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 26: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 27: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 28: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 29: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 30: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 31: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 32: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 33: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 34: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 35: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 36: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 37: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 38: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 39: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 40: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 41: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 42: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 43: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 44: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 45: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 46: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 47: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 48: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 49: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 50: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 51: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  step 52: headers differ: Cache-Control,Referrer-Policy,X-Content-Type-Options,X-Frame-Options
+  53 steps compared, 53 differing, 0 equal modulo JSON key order
+scenario sweep-authed-EosGatewayServer
+  23 steps compared, 0 differing, 0 equal modulo JSON key order
+scenario sweep-authed-EosWsServer
+  1 steps compared, 0 differing, 0 equal modulo JSON key order
+scenario sweep-authed-HalcyonSocketServer
+  5 steps compared, 0 differing, 0 equal modulo JSON key order
+scenario sweep-authed-MothershipServer
+  114 steps compared, 0 differing, 0 equal modulo JSON key order
+results in C:\Users\drych\AppData\Local\Temp\solara-difftest-1119295333; 6 scenario(s) with differences

@@ -1,0 +1,14 @@
+{ "name": "flow-mothership",
+  "steps": [
+    {"server":"MothershipServer","method":"POST","path":"/v2/player/client/auth/begin/QUEST","headers":{"Content-Type":"application/json"},"body":"{\"UserId\":\"q1234567890\"}"},
+    {"server":"MothershipServer","method":"POST","path":"/v2/player/client/auth/complete/QUEST","headers":{"Content-Type":"application/json","x-server-api-key":"${secret:SERVER_API_KEY}"},"body":"{\"UserId\":\"q1234567890\",\"AttestationToken\":\"x\",\"MetaNonce\":\"n\"}","capture":{"tok":"Token","pid":"PlayerId"}},
+    {"server":"MothershipServer","method":"GET","path":"/v1/userdata/client","headers":{"x-mothership-token":"${var:tok}"}},
+    {"server":"MothershipServer","method":"POST","path":"/v1/userdata/client","headers":{"x-mothership-token":"${var:tok}","Content-Type":"application/json"},"body":"{\"key_name\":\"k1\",\"value\":\"  v1  \"}"},
+    {"server":"MothershipServer","method":"GET","path":"/v1/userdata/client","headers":{"x-mothership-token":"${var:tok}"}},
+    {"server":"MothershipServer","method":"GET","path":"/v1/inventory/client","headers":{"x-mothership-token":"${var:tok}"}},
+    {"server":"MothershipServer","method":"GET","path":"/v1/server/authorized?id=q1234567890","headers":{"x-server-api-key":"${secret:SERVER_API_KEY}"}},
+    {"server":"MothershipServer","method":"GET","path":"/v1/title-data/client","headers":{"x-mothership-token":"${var:tok}"}},
+    {"server":"MothershipServer","method":"POST","path":"/v1/title-data/automation","headers":{"x-automation-key":"${secret:AUTOMATION_KEY}","Content-Type":"application/json"},"body":"{\"key\":\"motd\",\"value\":\"\"}"},
+    {"server":"MothershipServer","method":"GET","path":"/v1/title-data/client","headers":{"x-mothership-token":"${var:tok}"}},
+    {"server":"MothershipServer","method":"GET","path":"/v1/userdata/client","headers":{"x-mothership-token":"not-a-token"}}
+  ] }

@@ -1,0 +1,12 @@
+imagebase 0x140000000
+funcinfo entries 14565
+applied 2000
+applied 4000
+applied 6000
+applied 8000
+applied 10000
+applied 12000
+applied 14000
+done names applied=14565 already=0 skipped=0
+saving database...
+SAVED

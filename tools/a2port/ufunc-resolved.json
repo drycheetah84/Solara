@@ -1,0 +1,162 @@
+{
+ "UpdGameState_RVA": {
+  "new": "0x55a06c0",
+  "via": "sub",
+  "callee_ov": 1,
+  "str_ov": 1,
+  "new_size": 174,
+  "old_size": 179,
+  "conf": "high",
+  "sizeclose": true
+ },
+ "StartTimerCd_RVA": {
+  "new": "0x559abd0",
+  "via": "sub",
+  "callee_ov": 1,
+  "str_ov": 5,
+  "new_size": 700,
+  "old_size": 682,
+  "conf": "high",
+  "sizeclose": true
+ },
+ "ReqLogin_RVA": {
+  "new": "0x1177030",
+  "via": "sub",
+  "callee_ov": 0,
+  "str_ov": 0,
+  "new_size": 52,
+  "old_size": 61,
+  "conf": "med",
+  "sizeclose": true
+ },
+ "SendPhysImpl_RVA": {
+  "new": "0x14d3ba0",
+  "via": "sub",
+  "callee_ov": 0,
+  "str_ov": 0,
+  "new_size": 164,
+  "old_size": 252,
+  "conf": "low",
+  "sizeclose": false
+ },
+ "NotifyLeftArena_RVA": {
+  "new": "0x1177030",
+  "via": "sub",
+  "callee_ov": 0,
+  "str_ov": 0,
+  "new_size": 52,
+  "old_size": 56,
+  "conf": "med",
+  "sizeclose": true
+ },
+ "GolfBallInCup_RVA": {
+  "new": "0x55b3900",
+  "via": "sub",
+  "callee_ov": 0,
+  "str_ov": 0,
+  "new_size": 24,
+  "old_size": 21,
+  "conf": "med",
+  "sizeclose": true
+ },
+ "GolfOverlap_RVA": {
+  "new": "0x14de5f0",
+  "via": "sub",
+  "callee_ov": 0,
+  "str_ov": 0,
+  "new_size": 90,
+  "old_size": 88,
+  "conf": "med",
+  "sizeclose": true
+ },
+ "GiveCheck_RVA": {
+  "new": "0x49e79c0",
+  "via": "funcinfo",
+  "callee_ov": 0,
+  "str_ov": 0,
+  "new_size": 442,
+  "old_size": 1100,
+  "conf": "low",
+  "sizeclose": false
+ },
+ "IsRunningSimulate_RVA": {
+  "new": "0x54a1930",
+  "via": "funcinfo",
+  "callee_ov": 1,
+  "str_ov": 0,
+  "new_size": 132,
+  "old_size": 132,
+  "conf": "high",
+  "sizeclose": true
+ },
+ "A2GetNetMode_RVA": {
+  "new": "0x14db9c0",
+  "via": "sub",
+  "callee_ov": 0,
+  "str_ov": 0,
+  "new_size": 212,
+  "old_size": 188,
+  "conf": "med",
+  "sizeclose": true
+ },
+ "GetLocalInst_RVA": {
+  "new": "0x5810b30",
+  "via": "sub",
+  "callee_ov": 0,
+  "str_ov": 0,
+  "new_size": 272,
+  "old_size": 255,
+  "conf": "med",
+  "sizeclose": true
+ },
+ "GetPlayerPawn_RVA": {
+  "new": "0x3ec7c90",
+  "via": "sub",
+  "callee_ov": 0,
+  "str_ov": 0,
+  "new_size": 20,
+  "old_size": 20,
+  "conf": "med",
+  "sizeclose": true
+ },
+ "inline_14200_054e4470": {
+  "new": "0x542d3f0",
+  "via": "funcinfo",
+  "callee_ov": 0,
+  "str_ov": 0,
+  "new_size": 498,
+  "old_size": 1613,
+  "conf": "low",
+  "sizeclose": false
+ },
+ "inline_14202_054e17e0": {
+  "new": "0x5502140",
+  "via": "sub",
+  "callee_ov": 0,
+  "str_ov": 1,
+  "new_size": 287,
+  "old_size": 207,
+  "conf": "med",
+  "sizeclose": false
+ },
+ "inline_15200_05502070": {
+  "new": "0x14922f0",
+  "via": "sub",
+  "callee_ov": 0,
+  "str_ov": 0,
+  "new_size": 164,
+  "old_size": 577,
+  "conf": "low",
+  "sizeclose": false
+ },
+ "inline_15230_046902f0": {
+  "new": "0x14d3ba0",
+  "via": "sub",
+  "callee_ov": 0,
+  "str_ov": 0,
+  "new_size": 164,
+  "old_size": 151,
+  "conf": "med",
+  "sizeclose": true
+ }
+}

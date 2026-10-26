@@ -1,0 +1,908 @@
+{
+ "rows": [
+  {
+   "name": "BallNetPersp_RVA",
+   "old": "0x60A0990",
+   "new": 112881936,
+   "status": "CANDIDATE",
+   "kind": "func",
+   "line": 13183,
+   "note": ""
+  },
+  {
+   "name": "BallSimGetWorld_RVA",
+   "old": "0x3509AB0",
+   "new": 57211840,
+   "status": "CANDIDATE",
+   "kind": "func",
+   "line": 13126,
+   "note": ""
+  },
+  {
+   "name": "FNameResolve_RVA",
+   "old": "0x114D690",
+   "new": 19631856,
+   "status": "CANDIDATE",
+   "kind": "func",
+   "line": 5816,
+   "note": "[PORT-AUDIT] 22284 (align 1.00 to 20996 0x114E210)"
+  },
+  {
+   "name": "GetBoolCfg_RVA",
+   "old": "0x46DA020",
+   "new": 77672128,
+   "status": "CANDIDATE",
+   "kind": "func",
+   "line": 400,
+   "note": "sub_7FF67673A020 (UModuleStateLuaAPI::GetBoolConfigVariable impl)"
+  },
+  {
+   "name": "GetNumCfg_RVA",
+   "old": "0x46DDB20",
+   "new": 77687248,
+   "status": "CANDIDATE",
+   "kind": "func",
+   "line": 437,
+   "note": ""
+  },
+  {
+   "name": "GetStrCfg_RVA",
+   "old": "0x46DE7B0",
+   "new": 77691920,
+   "status": "CANDIDATE",
+   "kind": "func",
+   "line": 457,
+   "note": ""
+  },
+  {
+   "name": "IsRunningSimulate_RVA",
+   "old": "0x531EF96",
+   "new": 88954102,
+   "status": "CANDIDATE",
+   "kind": "func",
+   "line": 13076,
+   "note": "[22284] was 0x52DC906"
+  },
+  {
+   "name": "JoinBuild_RVA",
+   "old": "0x5432A40",
+   "new": 53815280,
+   "status": "CANDIDATE",
+   "kind": "func",
+   "line": 2051,
+   "note": ""
+  },
+  {
+   "name": "JwtBuild_RVA",
+   "old": "0x544D9B0",
+   "new": 87928976,
+   "status": "CANDIDATE",
+   "kind": "func",
+   "line": 1850,
+   "note": ""
+  },
+  {
+   "name": "PrintString_RVA",
+   "old": "0x3A29B20",
+   "new": 62709488,
+   "status": "CANDIDATE",
+   "kind": "func",
+   "line": 13201,
+   "note": ""
+  },
+  {
+   "name": "SendJoin_RVA",
+   "old": "0x52EE2E0",
+   "new": 87903152,
+   "status": "CANDIDATE",
+   "kind": "func",
+   "line": 2094,
+   "note": ""
+  },
+  {
+   "name": "SendPhysImpl_RVA",
+   "old": "0x5503050",
+   "new": 92431632,
+   "status": "CANDIDATE",
+   "kind": "func",
+   "line": 4822,
+   "note": ""
+  },
+  {
+   "name": "StartTimerCd_RVA",
+   "old": "0x53C4060",
+   "new": 89762768,
+   "status": "CANDIDATE",
+   "kind": "func",
+   "line": 693,
+   "note": "UGameTimeComponent::StartTimerWithCountdown_Implementation"
+  },
+  {
+   "name": "TextLayoutLeaf_RVA",
+   "old": "0x1EC07A0",
+   "new": 59022496,
+   "status": "CANDIDATE",
+   "kind": "func",
+   "line": 5834,
+   "note": "[PORT-AUDIT] 22284 (align 1.00 to 20996 0x1EC13E0)"
+  },
+  {
+   "name": "UpdGameState_RVA",
+   "old": "0x53CB6D0",
+   "new": 89786048,
+   "status": "CANDIDATE",
+   "kind": "func",
+   "line": 497,
+   "note": "UGameStateManagerComponent::UpdateGameState_Implementation"
+  },
+  {
+   "name": "WorldGetNetMode_RVA",
+   "old": "0x4040990",
+   "new": 69163616,
+   "status": "CANDIDATE",
+   "kind": "func",
+   "line": 13098,
+   "note": "[22284] was 0x4040990"
+  },
+  {
+   "name": "inline_14200_054e4470",
+   "old": "0x54e4470",
+   "new": 75403840,
+   "status": "CANDIDATE",
+   "kind": "func",
+   "line": 14200,
+   "note": "const int a = (int)MH_CreateHook(reinterpret_cast<void*>(base + 0x54E4"
+  },
+  {
+   "name": "inline_14252_05429424",
+   "old": "0x5429424",
+   "new": 87883156,
+   "status": "CANDIDATE",
+   "kind": "func",
+   "line": 14252,
+   "note": "const uint8_t* ep = reinterpret_cast<const uint8_t*>(base + 0x5429424)"
+  },
+  {
+   "name": "inline_14257_05429427",
+   "old": "0x5429427",
+   "new": 87883159,
+   "status": "CANDIDATE",
+   "kind": "func",
+   "line": 14257,
+   "note": "WriteByte(base + 0x5429427, 0xEB);"
+  },
+  {
+   "name": "inline_14726_012f0cb0",
+   "old": "0x12f0cb0",
+   "new": 21512608,
+   "status": "CANDIDATE",
+   "kind": "func",
+   "line": 14726,
+   "note": "void* drvAddr = reinterpret_cast<void*>(base + 0x12F0CB0);   // sub_7F"
+  },
+  {
+   "name": "inline_15200_05502070",
+   "old": "0x5502070",
+   "new": 92420992,
+   "status": "CANDIDATE",
+   "kind": "func",
+   "line": 15200,
+   "note": "void* tleAddr = reinterpret_cast<void*>(base + 0x5502070);   // AVRPaw"
+  },
+  {
+   "name": "inline_15230_046902f0",
+   "old": "0x46902f0",
+   "new": 77245376,
+   "status": "CANDIDATE",
+   "kind": "func",
+   "line": 15230,
+   "note": "MH_STATUS qb = MH_CreateHook(reinterpret_cast<void*>(base + 0x46902F0)"
+  },
+  {
+   "name": "inline_3171_012494d0",
+   "old": "0x12494d0",
+   "new": 20841520,
+   "status": "CANDIDATE",
+   "kind": "func",
+   "line": 3171,
+   "note": "WriteByte(gcbase + 0x12494D0 + 0, 0x31); WriteByte(gcbase + 0x12494D0 "
+  },
+  {
+   "name": "inline_3171_012494d0",
+   "old": "0x12494d0",
+   "new": 20841520,
+   "status": "CANDIDATE",
+   "kind": "func",
+   "line": 3171,
+   "note": "WriteByte(gcbase + 0x12494D0 + 0, 0x31); WriteByte(gcbase + 0x12494D0 "
+  },
+  {
+   "name": "inline_3171_012494d0",
+   "old": "0x12494d0",
+   "new": 20841520,
+   "status": "CANDIDATE",
+   "kind": "func",
+   "line": 3171,
+   "note": "WriteByte(gcbase + 0x12494D0 + 0, 0x31); WriteByte(gcbase + 0x12494D0 "
+  },
+  {
+   "name": "inline_473_010153a0",
+   "old": "0x10153a0",
+   "new": 18313264,
+   "status": "CANDIDATE",
+   "kind": "func",
+   "line": 473,
+   "note": "if (*data) reinterpret_cast<FreeFn>(base + 0x10153A0)(*data);"
+  },
+  {
+   "name": "inline_476_00fcc220",
+   "old": "0xfcc220",
+   "new": 17990304,
+   "status": "CANDIDATE",
+   "kind": "func",
+   "line": 476,
+   "note": "reinterpret_cast<ReserveFn>(base + 0xFCC220)(outFStr, n, 0);"
+  },
+  {
+   "name": "NotifyLeftArena_RVA",
+   "old": "0x5502B00",
+   "new": "0x5825200,0x5825240",
+   "status": "AMBIGUOUS",
+   "kind": "func",
+   "line": 5748,
+   "note": ""
+  },
+  {
+   "name": "SimIntegrate_RVA",
+   "old": "0x547F7A0",
+   "new": "0x15caf80,0x1a1cd70,0x1a7b4f0,0x1a7c0b0",
+   "status": "AMBIGUOUS",
+   "kind": "func",
+   "line": 4966,
+   "note": ""
+  },
+  {
+   "name": "inline_14281_053b3bcd",
+   "old": "0x53b3bcd",
+   "new": "0x1000,0x1001,0x1002,0x1003",
+   "status": "AMBIGUOUS",
+   "kind": "func",
+   "line": 14281,
+   "note": "WriteByte(base + 0x53B3BCD, 0x7A);   // jb  +0x53B3BFD -> +0x53B3C48 ("
+  },
+  {
+   "name": "inline_14446_01269000",
+   "old": "0x1269000",
+   "new": "0x1000,0x1001,0x1002,0x1003",
+   "status": "AMBIGUOUS",
+   "kind": "func",
+   "line": 14446,
+   "note": "g_gcRanges[0] = base + 0x1245000; g_gcRanges[1] = base + 0x1269000;   "
+  },
+  {
+   "name": "inline_14447_0124db00",
+   "old": "0x124db00",
+   "new": "0x13e4f40,0x13e5830",
+   "status": "AMBIGUOUS",
+   "kind": "func",
+   "line": 14447,
+   "note": "g_gcRanges[2] = base + 0x124DB00; g_gcRanges[3] = base + 0x124DB00 + 0"
+  },
+  {
+   "name": "inline_14447_0124db00",
+   "old": "0x124db00",
+   "new": "0x13e4f40,0x13e5830",
+   "status": "AMBIGUOUS",
+   "kind": "func",
+   "line": 14447,
+   "note": "g_gcRanges[2] = base + 0x124DB00; g_gcRanges[3] = base + 0x124DB00 + 0"
+  },
+  {
+   "name": "inline_14448_0124ece0",
+   "old": "0x124ece0",
+   "new": "0x13e6120,0x13e6900",
+   "status": "AMBIGUOUS",
+   "kind": "func",
+   "line": 14448,
+   "note": "g_gcRanges[4] = base + 0x124ECE0; g_gcRanges[5] = base + 0x124ECE0 + 0"
+  },
+  {
+   "name": "inline_14448_0124ece0",
+   "old": "0x124ece0",
+   "new": "0x13e6120,0x13e6900",
+   "status": "AMBIGUOUS",
+   "kind": "func",
+   "line": 14448,
+   "note": "g_gcRanges[4] = base + 0x124ECE0; g_gcRanges[5] = base + 0x124ECE0 + 0"
+  },
+  {
+   "name": "inline_15157_0124f4c0",
+   "old": "0x124f4c0",
+   "new": "0x13e6120,0x13e6900",
+   "status": "AMBIGUOUS",
+   "kind": "func",
+   "line": 15157,
+   "note": "void* gcbAddr = reinterpret_cast<void*>(base + 0x124F4C0);"
+  },
+  {
+   "name": "inline_15213_046bc830",
+   "old": "0x46bc830",
+   "new": "0x49db950,0x4a61380",
+   "status": "AMBIGUOUS",
+   "kind": "func",
+   "line": 15213,
+   "note": "MH_STATUS sNV1 = MH_CreateHook(reinterpret_cast<void*>(base + 0x46BC83"
+  },
+  {
+   "name": "inline_15214_047138d0",
+   "old": "0x47138d0",
+   "new": "0x49db950,0x4a61380",
+   "status": "AMBIGUOUS",
+   "kind": "func",
+   "line": 15214,
+   "note": "MH_STATUS sNV2 = MH_CreateHook(reinterpret_cast<void*>(base + 0x47138D"
+  },
+  {
+   "name": "inline_7949_00fbcd70",
+   "old": "0xfbcd70",
+   "new": "0xc7c6ed,0xc7d65d,0x1137c8c,0x11877b8",
+   "status": "AMBIGUOUS",
+   "kind": "func",
+   "line": 7949,
+   "note": "// crash reporter caught it: base+0xFBCD70 (the intended FString-copy)"
+  },
+  {
+   "name": "FNamePoolTbl_RVA",
+   "old": "0x9710B80",
+   "new": "",
+   "status": "IDA-DATA",
+   "kind": "data",
+   "line": 356,
+   "note": "stru_7FF67B770B80 (name-pool block table)"
+  },
+  {
+   "name": "GIsClient_RVA",
+   "old": "0x96D8672",
+   "new": "",
+   "status": "IDA-DATA",
+   "kind": "data",
+   "line": 36,
+   "note": "[22284] was 0x9650702"
+  },
+  {
+   "name": "GIsServer_RVA",
+   "old": "0x96D8673",
+   "new": "",
+   "status": "IDA-DATA",
+   "kind": "data",
+   "line": 37,
+   "note": "[22284] was 0x9650703"
+  },
+  {
+   "name": "ReqLogin_RVA",
+   "old": "0x543C7B0",
+   "new": "",
+   "status": "IDA-DATA",
+   "kind": "data",
+   "line": 1867,
+   "note": ""
+  },
+  {
+   "name": "StationStr_Data_RVA",
+   "old": "0x95DF980",
+   "new": "",
+   "status": "IDA-DATA",
+   "kind": "data",
+   "line": 50,
+   "note": ""
+  },
+  {
+   "name": "StationStr_Max_RVA",
+   "old": "0x95DF98C",
+   "new": "",
+   "status": "IDA-DATA",
+   "kind": "data",
+   "line": 52,
+   "note": ""
+  },
+  {
+   "name": "StationStr_Num_RVA",
+   "old": "0x95DF988",
+   "new": "",
+   "status": "IDA-DATA",
+   "kind": "data",
+   "line": 51,
+   "note": ""
+  },
+  {
+   "name": "inline_1182_054277ad",
+   "old": "0x54277ad",
+   "new": "",
+   "status": "IDA-DATA",
+   "kind": "data",
+   "line": 1182,
+   "note": "const uintptr_t site = base + 0x54277AD;   // cmp [rax+1D54h], ecx  (3"
+  },
+  {
+   "name": "inline_13226_05450000",
+   "old": "0x5450000",
+   "new": "",
+   "status": "IDA-DATA",
+   "kind": "data",
+   "line": 13226,
+   "note": "const uintptr_t lo = base + 0x5450000;"
+  },
+  {
+   "name": "inline_13227_054b4000",
+   "old": "0x54b4000",
+   "new": "",
+   "status": "IDA-DATA",
+   "kind": "data",
+   "line": 13227,
+   "note": "const uintptr_t hi = base + 0x54B4000;"
+  },
+  {
+   "name": "inline_13228_04040990",
+   "old": "0x4040990",
+   "new": "",
+   "status": "IDA-DATA",
+   "kind": "data",
+   "line": 13228,
+   "note": "const uintptr_t gnmA = base + 0x4040990;   // UWorld::GetNetMode"
+  },
+  {
+   "name": "inline_13229_054af360",
+   "old": "0x54af360",
+   "new": "",
+   "status": "IDA-DATA",
+   "kind": "data",
+   "line": 13229,
+   "note": "const uintptr_t gnmB = base + 0x54AF360;   // UA2NetworkUtilityBPFL::G"
+  },
+  {
+   "name": "inline_259_01326b07",
+   "old": "0x1326b07",
+   "new": "",
+   "status": "IDA-DATA",
+   "kind": "data",
+   "line": 259,
+   "note": "static uintptr_t g_pawnSpawnCrashRip = 0;  // set at boot = base + 0x1"
+  },
+  {
+   "name": "inline_276_0a5bb000",
+   "old": "0xa5bb000",
+   "new": "",
+   "status": "IDA-DATA",
+   "kind": "data",
+   "line": 276,
+   "note": "const uintptr_t imgEnd = base + 0x0A5BB000;"
+  },
+  {
+   "name": "inline_8016_09c5d0a0",
+   "old": "0x9c5d0a0",
+   "new": "",
+   "status": "IDA-DATA",
+   "kind": "data",
+   "line": 8016,
+   "note": "void* client = *reinterpret_cast<void**>(base + 0x9C5D0A0);   // qword"
+  },
+  {
+   "name": "inline_8026_054b13d0",
+   "old": "0x54b13d0",
+   "new": "",
+   "status": "IDA-DATA",
+   "kind": "data",
+   "line": 8026,
+   "note": "reinterpret_cast<DashboardInitFn>(base + 0x54B13D0)(client);"
+  },
+  {
+   "name": "inline_943_01254f50",
+   "old": "0x1254f50",
+   "new": "",
+   "status": "IDA-DATA",
+   "kind": "data",
+   "line": 943,
+   "note": "const uintptr_t site2 = base + 0x1254F50;   // cmp dword ptr [r14+8], "
+  },
+  {
+   "name": "A2GetNetMode_RVA",
+   "old": "0x54AF360",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 13088,
+   "note": "[22284] was 0x54AF360"
+  },
+  {
+   "name": "BallAdvance_RVA",
+   "old": "0x5464630",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 5618,
+   "note": ""
+  },
+  {
+   "name": "BallReconcile_RVA",
+   "old": "0x548FC40",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 5644,
+   "note": ""
+  },
+  {
+   "name": "CosmeticCmp_RVA",
+   "old": "0x53DA880",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 355,
+   "note": "sub_7FF67743A880 (mesh-entry comparator)"
+  },
+  {
+   "name": "EvtDispatch_RVA",
+   "old": "0x466A240",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 5849,
+   "note": "[PORT-AUDIT] 22284 (align 1.00 to 20996 0x465F820); hook still not ins"
+  },
+  {
+   "name": "FetchRoles_RVA",
+   "old": "0x54B04E0",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 10601,
+   "note": ""
+  },
+  {
+   "name": "GetLocalInst_RVA",
+   "old": "0x54EAC60",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 13153,
+   "note": ""
+  },
+  {
+   "name": "GetPlayerPawn_RVA",
+   "old": "0x3D24C40",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 13169,
+   "note": ""
+  },
+  {
+   "name": "GiveCheck_RVA",
+   "old": "0x4723AA0",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 5904,
+   "note": ""
+  },
+  {
+   "name": "GolfBallInCup_RVA",
+   "old": "0x53DC320",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 5793,
+   "note": "[PORT-AUDIT] was 0x53DC340 (3-arg inner fn, hooked with a 2-arg thunk)"
+  },
+  {
+   "name": "GolfOverlap_RVA",
+   "old": "0x53F03B0",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 5802,
+   "note": "[PORT-AUDIT] was 0x53F0410 (unrelated 10-byte fn); 0x53F03B0 = 20996 0"
+  },
+  {
+   "name": "GtcTick_RVA",
+   "old": "0x53C8AF0",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 694,
+   "note": "UGameTimeComponent::TickComponent (vtable slot 121)"
+  },
+  {
+   "name": "GtcVft_RVA",
+   "old": "0x84E6D20",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 695,
+   "note": "UGameTimeComponent_VFT (liveness validation)"
+  },
+  {
+   "name": "IngestInput_RVA",
+   "old": "0x54599B0",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 5109,
+   "note": ""
+  },
+  {
+   "name": "Reconcile_RVA",
+   "old": "0x545BD80",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 4664,
+   "note": ""
+  },
+  {
+   "name": "ReplayPostStep_RVA",
+   "old": "0x5487560",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 2189,
+   "note": "sub_145487560"
+  },
+  {
+   "name": "ReplaySnapshot_RVA",
+   "old": "0x5482110",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 2248,
+   "note": "sub_145482110"
+  },
+  {
+   "name": "ReplayVtable_RVA",
+   "old": "0x84A2B38",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 2190,
+   "note": "off_1484A2B38 (UA2ReplaySystem)"
+  },
+  {
+   "name": "RolesFetched_RVA",
+   "old": "0x5510C40",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 10612,
+   "note": ""
+  },
+  {
+   "name": "SendResults_RVA",
+   "old": "0x534A7F0",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 5306,
+   "note": "[PORT-AUDIT] was 0x54E35B0 (= the pawn-side results RECEIVER); 0x534A7"
+  },
+  {
+   "name": "StepSim_RVA",
+   "old": "0x54863C0",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 5437,
+   "note": ""
+  },
+  {
+   "name": "inline_14201_054e4e10",
+   "old": "0x54e4e10",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 14201,
+   "note": "const int b = (int)MH_CreateHook(reinterpret_cast<void*>(base + 0x54E4"
+  },
+  {
+   "name": "inline_14202_054e17e0",
+   "old": "0x54e17e0",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 14202,
+   "note": "const int c = (int)MH_CreateHook(reinterpret_cast<void*>(base + 0x54E1"
+  },
+  {
+   "name": "inline_14273_053b3bc3",
+   "old": "0x53b3bc3",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 14273,
+   "note": "uint8_t* p = reinterpret_cast<uint8_t*>(base + 0x53B3BC3);"
+  },
+  {
+   "name": "inline_14282_053b3be2",
+   "old": "0x53b3be2",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 14282,
+   "note": "WriteByte(base + 0x53B3BE2, 0x65);   // jmp +0x53B3BFD -> +0x53B3C48 ("
+  },
+  {
+   "name": "inline_14425_0550f130",
+   "old": "0x550f130",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 14425,
+   "note": "WriteByte(base + 0x550F130, 0xC3);"
+  },
+  {
+   "name": "inline_14432_054863c0",
+   "old": "0x54863c0",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 14432,
+   "note": "WriteByte(base + 0x54863C0, 0xC3);"
+  },
+  {
+   "name": "inline_14446_01245000",
+   "old": "0x1245000",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 14446,
+   "note": "g_gcRanges[0] = base + 0x1245000; g_gcRanges[1] = base + 0x1269000;   "
+  },
+  {
+   "name": "inline_14465_01326b07",
+   "old": "0x1326b07",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 14465,
+   "note": "g_pawnSpawnCrashRip = base + 0x1326B07;   // `mov rdi,[r14+rbx]` in su"
+  },
+  {
+   "name": "inline_14493_054b1421",
+   "old": "0x54b1421",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 14493,
+   "note": "WriteByte(base + 0x54B1421, 0x01);"
+  },
+  {
+   "name": "inline_14512_053dc76a",
+   "old": "0x53dc76a",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 14512,
+   "note": "WriteByte(base + 0x53DC76A, 0x01);"
+  },
+  {
+   "name": "inline_15151_0545ccb0",
+   "old": "0x545ccb0",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 15151,
+   "note": "void* bsAddr = reinterpret_cast<void*>(base + 0x545CCB0);"
+  },
+  {
+   "name": "inline_15193_014363a0",
+   "old": "0x14363a0",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 15193,
+   "note": "void* shtAddr = reinterpret_cast<void*>(base + 0x14363A0);   // sub_7F"
+  },
+  {
+   "name": "inline_15229_04690260",
+   "old": "0x4690260",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 15229,
+   "note": "MH_STATUS qa = MH_CreateHook(reinterpret_cast<void*>(base + 0x4690260)"
+  },
+  {
+   "name": "inline_15233_04692f30",
+   "old": "0x4692f30",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 15233,
+   "note": "MH_STATUS qc = MH_CreateHook(reinterpret_cast<void*>(base + 0x4692F30)"
+  },
+  {
+   "name": "inline_15234_04689030",
+   "old": "0x4689030",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 15234,
+   "note": "MH_STATUS qd = MH_CreateHook(reinterpret_cast<void*>(base + 0x4689030)"
+  },
+  {
+   "name": "inline_3172_0125f7b0",
+   "old": "0x125f7b0",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 3172,
+   "note": "WriteByte(gcbase + 0x125F7B0 + 0, 0x31); WriteByte(gcbase + 0x125F7B0 "
+  },
+  {
+   "name": "inline_3172_0125f7b0",
+   "old": "0x125f7b0",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 3172,
+   "note": "WriteByte(gcbase + 0x125F7B0 + 0, 0x31); WriteByte(gcbase + 0x125F7B0 "
+  },
+  {
+   "name": "inline_3172_0125f7b0",
+   "old": "0x125f7b0",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 3172,
+   "note": "WriteByte(gcbase + 0x125F7B0 + 0, 0x31); WriteByte(gcbase + 0x125F7B0 "
+  },
+  {
+   "name": "inline_3303_053dc76a",
+   "old": "0x53dc76a",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 3303,
+   "note": "WriteByte(base + 0x53DC76A, 0x01);   // open the spawn gate (cmp eax,2"
+  },
+  {
+   "name": "inline_3304_053dc730",
+   "old": "0x53dc730",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 3304,
+   "note": "reinterpret_cast<__int64(__fastcall*)(void*)>(base + 0x53DC730)(subIns"
+  },
+  {
+   "name": "inline_8022_04040990",
+   "old": "0x4040990",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 8022,
+   "note": "int    nm = ctx ? reinterpret_cast<GetNetModeFn>(base + 0x4040990)(ctx"
+  },
+  {
+   "name": "inline_8156_00fbcd70",
+   "old": "0xfbcd70",
+   "new": "",
+   "status": "IDA-FIND",
+   "kind": "func",
+   "line": 8156,
+   "note": "// [2026-09-03 \u2605 CRASH FIX] base+0xFBCD70 is a STALE RVA (now mid-way "
+  }
+ ],
+ "summary": {
+  "CANDIDATE": 27,
+  "AMBIGUOUS": 12,
+  "IDA-DATA": 17,
+  "IDA-FIND": 43
+ },
+ "sdk_globals": {
+  "GObjects": "0xa7c3a00",
+  "GNames": "0xa6dfbc0",
+  "GWorld": "0xa9e0968",
+  "AppendString": "0x12ad4e0",
+  "ProcessEvent": "0x14dc400"
+ }
+}

@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ares Dashboard</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0d1117; color: #e6edf3; min-height: 100vh; }
+  header { background: #161b22; border-bottom: 1px solid #30363d; padding: 16px 24px; display: flex; align-items: center; gap: 12px; }
+  header h1 { font-size: 18px; font-weight: 600; color: #e6edf3; }
+  .badge { font-size: 11px; padding: 2px 8px; border-radius: 999px; background: #238636; color: #fff; }
+  .refresh { margin-left: auto; font-size: 12px; color: #7d8590; }
+  main { padding: 24px; max-width: 1400px; margin: 0 auto; }
+
+  /* Stats */
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 28px; }
+  .stat { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 20px; }
+  .stat-value { font-size: 32px; font-weight: 700; color: #58a6ff; line-height: 1; }
+  .stat-label { font-size: 12px; color: #7d8590; margin-top: 6px; text-transform: uppercase; letter-spacing: .5px; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 4px; border-bottom: 1px solid #30363d; margin-bottom: 20px; }
+  .tab { padding: 8px 16px; font-size: 14px; cursor: pointer; border-bottom: 2px solid transparent; color: #7d8590; background: none; border-top: none; border-left: none; border-right: none; }
+  .tab:hover { color: #e6edf3; }
+  .tab.active { color: #58a6ff; border-bottom-color: #58a6ff; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* Table */
+  .table-wrap { overflow-x: auto; border: 1px solid #30363d; border-radius: 8px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th { background: #161b22; padding: 10px 14px; text-align: left; color: #7d8590; font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; border-bottom: 1px solid #30363d; white-space: nowrap; }
+  tbody tr { border-bottom: 1px solid #21262d; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #161b22; }
+  td { padding: 10px 14px; vertical-align: middle; }
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 500; }
+  .pill-green  { background: #1a3a2a; color: #3fb950; }
+  .pill-red    { background: #3d1a1a; color: #f85149; }
+  .pill-grey   { background: #21262d; color: #7d8590; }
+  .pill-blue   { background: #1a2a3a; color: #58a6ff; }
+  .pill-orange { background: #3a2a1a; color: #f0883e; }
+  .mono { font-family: 'Consolas', monospace; font-size: 12px; color: #8b949e; }
+  .empty { text-align: center; color: #7d8590; padding: 40px; }
+  .btn-sm { font-size: 11px; padding: 3px 10px; border-radius: 4px; border: 1px solid; cursor: pointer; background: none; font-weight: 500; }
+  .btn-grant  { border-color: #238636; color: #3fb950; }
+  .btn-grant:hover  { background: #1a3a2a; }
+  .btn-revoke { border-color: #b62324; color: #f85149; }
+  .btn-revoke:hover { background: #3d1a1a; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Ares Dashboard</h1>
+  <span class="badge" id="status">LIVE</span>
+  <span class="refresh" id="refresh-ts">Refreshing...</span>
+  <button onclick="clearDashKey()" title="Forget the dashboard key on this browser"
+          style="margin-left:10px;font-size:11px;padding:3px 9px;border-radius:5px;border:1px solid #333;background:#141414;color:inherit;cursor:pointer">Lock</button>
+</header>
+<main>
+  <div class="stats" id="stats">
+    <div class="stat"><div class="stat-value" id="s-users">—</div><div class="stat-label">Users</div></div>
+    <div class="stat"><div class="stat-value" id="s-stations">—</div><div class="stat-label">Stations</div></div>
+    <div class="stat"><div class="stat-value" id="s-deps">—</div><div class="stat-label">Deployments</div></div>
+    <div class="stat"><div class="stat-value" id="s-online">—</div><div class="stat-label">Online</div></div>
+    <div class="stat"><div class="stat-value" id="s-players">—</div><div class="stat-label">Players</div></div>
+    <div class="stat"><div class="stat-value" id="s-events">—</div><div class="stat-label">Events</div></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('users')">Users</button>
+    <button class="tab" onclick="switchTab('stations')">Stations</button>
+    <button class="tab" onclick="switchTab('deployments')">Deployments</button>
+    <button class="tab" onclick="switchTab('events')">Events</button>
+    <button class="tab" onclick="switchTab('boards')">Boards</button>
+  </div>
+
+  <!-- Users -->
+  <div class="panel active" id="panel-users">
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>User ID</th><th>Username</th><th>Platform</th>
+          <th>Roles</th><th>Status</th><th>Last Login</th><th>Created</th><th>Actions</th>
+        </tr></thead>
+        <tbody id="tbl-users"><tr><td colspan="8" class="empty">Loading...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Stations -->
+  <div class="panel" id="panel-stations">
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Station ID</th><th>Name</th><th>Status</th>
+          <th>Deployments</th><th>Online Deps</th><th>Players</th><th>Created</th>
+        </tr></thead>
+        <tbody id="tbl-stations"><tr><td colspan="7" class="empty">Loading...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Deployments -->
+  <div class="panel" id="panel-deployments">
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Deployment ID</th><th>Name</th><th>Station</th><th>Region</th>
+          <th>IP</th><th>Version</th><th>Status</th><th>Players</th><th>Last Event</th>
+        </tr></thead>
+        <tbody id="tbl-deployments"><tr><td colspan="9" class="empty">Loading...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Events -->
+  <div class="panel" id="panel-events">
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Event ID</th><th>Deployment</th><th>Event</th><th>Time</th>
+        </tr></thead>
+        <tbody id="tbl-events"><tr><td colspan="4" class="empty">Loading...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Boards: upload the district info-board / sign images. Replaces the old hardcoded
+       third-party image URL - images are stored and served by this backend itself. -->
+  <div class="panel" id="panel-boards">
+    <div style="margin:0 0 14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <label for="board-station" style="font-size:13px;opacity:.75">Station</label>
+      <select id="board-station" onchange="loadBoards()"
+              style="padding:7px 10px;border-radius:6px;border:1px solid #333;background:#141414;color:inherit;min-width:230px"></select>
+      <span id="board-msg" style="font-size:13px;opacity:.8"></span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th style="width:220px">Board</th><th style="width:90px">Preview</th><th>Current image</th><th style="width:230px">Replace</th>
+        </tr></thead>
+        <tbody id="tbl-boards"><tr><td colspan="4" class="empty">Pick a station...</td></tr></tbody>
+      </table>
+    </div>
+    <p style="font-size:12px;opacity:.6;margin-top:12px;line-height:1.6">
+      PNG / JPG / GIF / WebP, up to 8&nbsp;MB. The image is stored on this server and served from the
+      public station URL, so there is no external image host that can expire or go down.
+      The board updates on the game server's next config fetch &mdash; a blank slot leaves that board empty.
+    </p>
+  </div>
+</main>
+
+<script>
+// --- DASHBOARD KEY GATE -------------------------------------------------------------
+// /api/* on :8080 is enforced by DashboardAuthPreprocessor and needs the admin key. The key
+// is held in sessionStorage (this tab session only) and sent as x-dashboard-key on every /api
+// call, by wrapping fetch once rather than touching each call site. It is never put in a
+// URL, so it cannot leak through logs, history or a Referer header.
+const DASH_KEY_STORAGE = 'halcyon_dashboard_key';
+
+// Security hardening (Solara): sessionStorage instead of localStorage; a key that an older
+// version left in localStorage is removed.
+try { localStorage.removeItem(DASH_KEY_STORAGE); } catch (e) {}
+function dashKey() { try { return sessionStorage.getItem(DASH_KEY_STORAGE) || ''; } catch (e) { return ''; } }
+function setDashKey(k) { try { sessionStorage.setItem(DASH_KEY_STORAGE, k); } catch (e) {} }
+function clearDashKey() { try { sessionStorage.removeItem(DASH_KEY_STORAGE); } catch (e) {} location.reload(); }
+
+// Output encoding for every server-supplied value placed into HTML (security hardening:
+// station and user names are attacker-controllable).
+function esc(v) {
+  return String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+// a JS string literal that is safe inside a double-quoted HTML attribute: onclick="f(${jsArg(x)})"
+function jsArg(v) { return esc(JSON.stringify(String(v ?? ''))); }
+// only http(s) and same-origin relative URLs may become src/href
+function safeUrl(u) {
+  const s = String(u ?? '');
+  return /^(https?:\/\/|\/(?!\/))/i.test(s) ? esc(s) : '';
+}
+// one URL path segment
+function seg(v) { return encodeURIComponent(String(v ?? '')); }
+
+(function () {
+  const realFetch = window.fetch.bind(window);
+  window.fetch = (url, opts) => {
+    opts = opts || {};
+    if (typeof url === 'string' && url.startsWith('/api/')) {
+      opts.headers = Object.assign({}, opts.headers || {}, { 'x-dashboard-key': dashKey() });
+    }
+    return realFetch(url, opts).then(res => {
+      if (res.status === 401 && typeof url === 'string' && url.startsWith('/api/')) showKeyPrompt(true);
+      return res;
+    });
+  };
+})();
+
+function showKeyPrompt(wasRejected) {
+  if (document.getElementById('key-overlay')) {
+    if (wasRejected) document.getElementById('key-err').textContent = 'That key was rejected.';
+    return;
+  }
+  const d = document.createElement('div');
+  d.id = 'key-overlay';
+  d.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.86);display:flex;align-items:center;' +
+                    'justify-content:center;z-index:9999';
+  d.innerHTML =
+    '<div style="background:#141414;border:1px solid #333;border-radius:10px;padding:26px 28px;width:440px;max-width:92vw">' +
+      '<h2 style="margin:0 0 6px;font-size:17px">Dashboard key</h2>' +
+      '<p style="margin:0 0 16px;font-size:13px;opacity:.65;line-height:1.5">' +
+        'This dashboard controls the live fleet. Paste the admin key to continue &mdash; it is stored ' +
+        'in this browser only.</p>' +
+      '<input id="key-input" type="password" placeholder="dashboard admin key" autocomplete="off" ' +
+        'style="width:100%;padding:10px;border-radius:6px;border:1px solid #333;background:#0d0d0d;' +
+        'color:inherit;font-family:monospace;font-size:13px">' +
+      '<div id="key-err" style="color:#f66;font-size:12px;min-height:17px;margin-top:8px">' +
+        (wasRejected ? 'That key was rejected.' : '') + '</div>' +
+      '<button id="key-go" style="margin-top:6px;width:100%;padding:10px;border-radius:6px;border:0;' +
+        'background:#2d6cdf;color:#fff;font-size:14px;cursor:pointer">Unlock</button>' +
+    '</div>';
+  document.body.appendChild(d);
+  const go = () => {
+    const v = document.getElementById('key-input').value.trim();
+    if (!v) return;
+    setDashKey(v);
+    d.remove();
+    refresh();
+  };
+  document.getElementById('key-go').onclick = go;
+  const inp = document.getElementById('key-input');
+  inp.onkeydown = e => { if (e.key === 'Enter') go(); };
+  inp.focus();
+}
+
+let activeTab = 'users';
+
+function switchTab(name) {
+  activeTab = name;
+  if (name === 'boards') { loadBoardStations().then(loadBoards); }
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    const tabs = ['users','stations','deployments','events'];
+    t.classList.toggle('active', tabs[i] === name);
+  });
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+}
+
+function fmt(dt) {
+  if (!dt) return '—';
+  const d = new Date(dt);
+  if (isNaN(d)) return '—';
+  return d.toLocaleString();
+}
+
+function pill(online, yes='Online', no='Offline') {
+  return `<span class="pill ${online ? 'pill-green' : 'pill-red'}">${online ? yes : no}</span>`;
+}
+
+async function refresh() {
+  if (!dashKey()) { showKeyPrompt(false); return; }   // no key yet -> gate before any /api call
+
+  try {
+    const [stats, users, stations, deps, events] = await Promise.all([
+      fetch('/api/stats').then(r => r.json()),
+      fetch('/api/users').then(r => r.json()),
+      fetch('/api/stations').then(r => r.json()),
+      fetch('/api/deployments').then(r => r.json()),
+      fetch('/api/events').then(r => r.json()),
+    ]);
+
+    document.getElementById('s-users').textContent    = stats.total_users;
+    document.getElementById('s-stations').textContent = stats.total_stations;
+    document.getElementById('s-deps').textContent     = stats.total_deployments;
+    document.getElementById('s-online').textContent   = stats.online_deployments;
+    document.getElementById('s-players').textContent  = stats.total_players;
+    document.getElementById('s-events').textContent   = stats.total_events;
+
+    // Users
+    document.getElementById('tbl-users').innerHTML = users.length === 0
+      ? '<tr><td colspan="8" class="empty">No users</td></tr>'
+      : users.map(u => `<tr>
+          <td class="mono">${esc(u.user_id)}</td>
+          <td><strong>${esc(u.username)}</strong>${u.is_admin ? ' <span class="pill pill-orange">Admin</span>' : ''}</td>
+          <td>${u.platform ? `<span class="pill pill-blue">${esc(u.platform)}</span>` : '—'}</td>
+          <td>${esc(u.role_count)}</td>
+          <td>${u.banned ? '<span class="pill pill-red">Banned</span>' : '<span class="pill pill-grey">Active</span>'}</td>
+          <td class="mono">${fmt(u.last_login)}</td>
+          <td class="mono">${fmt(u.created_at)}</td>
+          <td>${u.is_admin
+            ? `<button class="btn-sm btn-revoke" onclick="setAdmin(${jsArg(u.user_id)}, false)">Revoke Admin</button>`
+            : `<button class="btn-sm btn-grant"  onclick="setAdmin(${jsArg(u.user_id)}, true)">Grant Admin</button>`
+          }</td>
+        </tr>`).join('');
+
+    // Stations
+    document.getElementById('tbl-stations').innerHTML = stations.length === 0
+      ? '<tr><td colspan="7" class="empty">No stations</td></tr>'
+      : stations.map(s => `<tr>
+          <td class="mono">${esc(s.station_id)}</td>
+          <td><strong>${esc(s.station_name)}</strong></td>
+          <td>${pill(s.online)}</td>
+          <td>${esc(s.deployments)}</td>
+          <td>${esc(s.online_deps)}</td>
+          <td>${esc(s.player_count)}</td>
+          <td class="mono">${fmt(s.created_at)}</td>
+        </tr>`).join('');
+
+    // Deployments
+    document.getElementById('tbl-deployments').innerHTML = deps.length === 0
+      ? '<tr><td colspan="9" class="empty">No deployments</td></tr>'
+      : deps.map(d => `<tr>
+          <td class="mono">${esc(d.deployment_id)}</td>
+          <td>${esc(d.deployment_name ?? '—')}</td>
+          <td class="mono">${esc(d.station_id)}</td>
+          <td>${d.region ? `<span class="pill pill-blue">${esc(d.region)}</span>` : '—'}</td>
+          <td class="mono">${esc(d.ip_address ?? '—')}</td>
+          <td>${esc(d.version ?? '—')}</td>
+          <td>${pill(d.online)}</td>
+          <td>${esc(d.player_count)}</td>
+          <td class="mono">${fmt(d.last_event)}</td>
+        </tr>`).join('');
+
+    // Events
+    document.getElementById('tbl-events').innerHTML = events.length === 0
+      ? '<tr><td colspan="4" class="empty">No events</td></tr>'
+      : events.map(e => `<tr>
+          <td class="mono">${esc(e.event_id)}</td>
+          <td class="mono">${esc(e.deployment_id)}</td>
+          <td>${esc(e.event_name)}</td>
+          <td class="mono">${fmt(e.created_at)}</td>
+        </tr>`).join('');
+
+    document.getElementById('refresh-ts').textContent = 'Updated ' + new Date().toLocaleTimeString();
+    document.getElementById('status').textContent = 'LIVE';
+    document.getElementById('status').style.background = '#238636';
+  } catch (e) {
+    document.getElementById('status').textContent = 'ERROR';
+    document.getElementById('status').style.background = '#da3633';
+  }
+}
+
+let boardKeys = [];
+
+async function loadBoardStations() {
+  const sel = document.getElementById('board-station');
+  if (sel.options.length) return;
+  const stations = await fetch('/api/stations').then(r => r.json()).catch(() => []);
+  // the API wraps the array as {"value":[...]} -- accept that, a bare array, or {stations:[]}
+  const list = Array.isArray(stations) ? stations : (stations.value || stations.stations || []);
+  sel.innerHTML = list.map(s => {
+    const id = s.station_id || s.StationId || s.id;
+    const nm = s.station_name || s.name || s.Name || id;
+    return `<option value="${esc(id)}">${esc(nm)} (${esc(id)})</option>`;
+  }).join('') || '<option value="">no stations</option>';
+}
+
+async function loadBoards() {
+  const sel = document.getElementById('board-station');
+  const stationId = sel.value;
+  const body = document.getElementById('tbl-boards');
+  if (!stationId) { body.innerHTML = '<tr><td colspan="4" class="empty">No station selected</td></tr>'; return; }
+
+  if (!boardKeys.length)
+    boardKeys = await fetch('/api/board/keys').then(r => r.json()).catch(() => []);
+  const cur = await fetch(`/api/stations/${seg(stationId)}/board`).then(r => r.json()).catch(() => ({}));
+
+  body.innerHTML = boardKeys.map(k => {
+    const url = cur[k] || '';
+    const href = safeUrl(url);
+    // cache-bust the preview so a just-uploaded image is not masked by the browser cache
+    const prev = href ? `<img src="${href}?t=${Date.now()}" style="height:34px;border-radius:4px;border:1px solid #333">` : '<span class="empty">-</span>';
+    const shown = href ? `<a href="${href}" target="_blank" rel="noopener noreferrer" style="color:#6cf;word-break:break-all;font-size:12px">${esc(url)}</a>` : (url ? esc(url) : '<span class="empty">not set</span>');
+    return `<tr>
+      <td style="font-family:monospace;font-size:12px">${esc(k)}</td>
+      <td>${prev}</td>
+      <td>${shown}</td>
+      <td>
+        <input type="file" accept="image/*" style="width:150px;font-size:11px"
+               onchange="uploadBoard(${jsArg(stationId)},${jsArg(k)},this)">
+        ${url ? `<button onclick="clearBoard(${jsArg(stationId)},${jsArg(k)})" style="margin-left:4px;font-size:11px;cursor:pointer">clear</button>` : ''}
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+async function uploadBoard(stationId, key, input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  const msg = document.getElementById('board-msg');
+  msg.textContent = `Uploading ${key}...`;
+  try {
+    // raw bytes, not multipart - the endpoint sniffs the format from the magic bytes
+    const res = await fetch(`/api/stations/${seg(stationId)}/board?key=${encodeURIComponent(key)}`,
+                            { method: 'POST', body: file });
+    const j = await res.json();
+    msg.textContent = res.ok && j.success ? `${key} updated` : `Failed: ${j.error || res.status}`;
+  } catch (e) {
+    msg.textContent = 'Upload failed: ' + e;
+  }
+  loadBoards();
+}
+
+async function clearBoard(stationId, key) {
+  await fetch(`/api/stations/${seg(stationId)}/board?key=${encodeURIComponent(key)}`, { method: 'DELETE' });
+  document.getElementById('board-msg').textContent = `${key} cleared`;
+  loadBoards();
+}
+
+async function setAdmin(userId, grant) {
+  try {
+    await fetch(`/api/users/${seg(userId)}/grant_admin`, { method: grant ? 'POST' : 'DELETE' });
+    await refresh();
+  } catch (e) {
+    alert('Failed to update admin status');
+  }
+}
+
+refresh();
+setInterval(refresh, 5000);
+</script>
+</body>
+</html>
