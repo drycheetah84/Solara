@@ -1,0 +1,143 @@
+{
+ "imagebase": "0x140000000",
+ "frames": [
+  {
+   "rva": "0x4a9c940",
+   "fn": "sub_144A9C0D0",
+   "fn_rva": "0x4a9c0d0",
+   "strings": [
+    "2",
+    "Scripts",
+    "@SH"
+   ],
+   "named_callees": [
+    "memcpy",
+    "__security_check_cookie"
+   ],
+   "decomp": "__int64 __fastcall sub_144A9C0D0(__int64 a1, __int64 *a2, __int64 a3, __int64 a4)\n{\n  bool v4; // zf\n  __int128 v7; // xmm6\n  __int64 v8; // rax\n  __int64 v9; // rdi\n  volatile signed __int32 *v10; // rsi\n  __int64 v11; // rax\n  volatile signed __int32 *v12; // rbx\n  _QWORD *v13; // r14\n  __int64 v14; // rax\n  volatile signed __int32 *v15; // rcx\n  __int64 v16; // rbx\n  __int64 v17; // r14\n  __int64 v18; // rdx\n  __int64 v19; // r8\n  int v20; // eax\n  __int64 v21; // rsi\n  __int64 v22; // rcx\n  __int64 v23; // rbx\n  __int64 v24; // rdx\n  __int64 v25; // rsi\n  __int64 v26; // rax\n  __int64 v27; // rax\n  __int64 v28; // rdx\n  __int64 v29; // rdx\n  __int64 v30; // rbx\n  __int64 *v31; // rbx\n  int v32; // eax\n  __int64 v33; // rdx\n  double v34; // xmm1_8\n  __int128 v35; // xmm0\n  __int128 v36; // xmm2\n  __int64 v37; // rax\n  double v38; // xmm1_8\n  __int64 v39; // rax\n  __int64 v40; // rdx\n  __int64 v41; // rax\n  __int64 v42; // rdx\n  _BYTE *v43; // r12\n  int v44; // ecx\n  __int128 *v45; // rax\n  __int128 v46; // xmm0\n  __int128 v47; // xmm2\n  __int128 v48; // xmm1\n  __int64 v49; // rax\n  __int64 v50; // rsi\n  __int64 v51; // rax\n  __int64 v52; // rbx\n  __int64 v53; // rsi\n  __int64 v54; // rcx\n  __int64 v55; // rax\n  __int64 v56; // rbx\n  __int64 v57; // r15\n  __int64 v58; // rax\n  __int64 v59; // rdx\n  __int64 (__fastcall *v60)(_BYTE *, __int64 *); // r14\n  __int64 v61; // rax\n  __int64 v62; // r14\n  __int64 v63; // r15\n  __int128 v64; // xmm0\n  int v65; // edx\n  __int64 v66; // r12\n  unsigned __int64 v67; // r13\n  __int64 v68; // r15\n  __int64 v69; // rax\n  __int64 v70; // rdx\n  __int64 v71; // r8\n  __int64 v72; // rax\n  __int64 v73; // r14\n  __int64 v74; // r13\n  __int64 v75; // r12\n  __int64 v76; // rax\n  __int64 v77; // rbx\n  __int64 v78; // rbx\n  int v79; // eax\n  __int64 v80; // rdx\n  __int64 v81; // rbx\n  __int64 v82; // rdx\n  __int64 v83; // rbx\n  __int64 v84; // rcx\n  __int64 (__fastcall **v85)(); // rdx\n  __int64 (__fastcall *v86)(); // rax\n  __int64 v87; // rcx\n  __int128 v88; // xmm0\n  __int128 v89; // xmm1\n  _QWORD *v90; // rax\n  __int64 v91; // r15\n  __int64 v92; // rcx\n  __int64 v93; // rcx\n  __int64 v94; // rax\n  _QWORD *v95; // r14\n  __int64 v96; "
+  },
+  {
+   "rva": "0x4a3b68f",
+   "fn": "sub_144A3B4C0",
+   "fn_rva": "0x4a3b4c0",
+   "strings": [
+    "2",
+    "U",
+    "@USVWH",
+    "H",
+    "objects",
+    "L",
+    "@USWATAVH",
+    "templateInstances"
+   ],
+   "named_callees": [
+    "__security_check_cookie"
+   ],
+   "decomp": "__int64 __fastcall sub_144A3B4C0(unsigned int *a1)\n{\n  volatile signed __int32 *v1; // rbx\n  __int64 v2; // rdi\n  unsigned int *v3; // r14\n  __int64 v4; // r13\n  volatile signed __int32 *v5; // r15\n  unsigned int v6; // r12d\n  unsigned int v7; // edx\n  unsigned int *v8; // r12\n  unsigned int v9; // eax\n  __int64 v10; // rdx\n  unsigned __int64 v11; // rcx\n  __int64 v12; // rcx\n  __int64 *v13; // rsi\n  __int64 v14; // rax\n  __int64 v15; // rbx\n  __int64 v16; // rdi\n  int v17; // eax\n  __int64 v18; // rax\n  __int64 v19; // rbx\n  __int64 v20; // rax\n  __int64 v21; // rax\n  __int64 v22; // rax\n  __int64 *v23; // rdi\n  __int64 *v24; // rax\n  unsigned int *v25; // rbx\n  __int64 *v26; // r14\n  unsigned int v27; // edx\n  int v28; // r8d\n  bool v29; // zf\n  int v30; // r8d\n  int v31; // eax\n  __int64 v32; // rcx\n  unsigned int v33; // edx\n  unsigned int v34; // edx\n  __int64 v35; // rax\n  int v36; // r8d\n  __int64 v37; // rcx\n  __int64 v38; // rcx\n  __int64 v39; // rbx\n  int v40; // ecx\n  __int64 v41; // rbx\n  int v42; // r10d\n  int *v43; // r9\n  int v44; // edx\n  unsigned __int64 v45; // rcx\n  int v46; // eax\n  int v47; // eax\n  __int64 v48; // rdx\n  __int64 v49; // r9\n  __int64 v50; // r8\n  unsigned __int64 v51; // rdi\n  __int64 v52; // rcx\n  unsigned int *v53; // r14\n  int v54; // eax\n  unsigned int v55; // edx\n  __int64 v56; // rcx\n  unsigned int v57; // ecx\n  __int64 v58; // rdx\n  unsigned int v59; // eax\n  __int128 v60; // xmm6\n  __int64 v61; // rax\n  volatile signed __int32 *v62; // rdi\n  __int64 v63; // rax\n  volatile signed __int32 *v64; // rsi\n  __int64 v65; // rdx\n  __int64 v66; // rcx\n  volatile signed __int32 *v67; // rbx\n  __int64 v68; // r8\n  __int64 v69; // rsi\n  __int64 v70; // r10\n  volatile signed __int32 *v71; // r11\n  __int64 v72; // rax\n  __int64 v73; // rsi\n  __int64 v74; // rbx\n  __int64 v75; // rdi\n  __int64 v76; // rax\n  volatile signed __int32 *v77; // rbx\n  volatile signed __int32 *v78; // rcx\n  unsigned int v79; // r8d\n  __int64 v80; // rdx\n  unsigned int v81; // edx\n  __int64 v82; // rbx\n  unsigned int v83; // edx\n  __int64 v84; // rbx\n  __int64 v85; // rax\n  __int64 v86; // rdi\n  __int64 v87; // rcx\n  unsigned __int64 v88; // rdx\n  __int64 v"
+  },
+  {
+   "rva": "0x47b5104",
+   "fn": "sub_1447B4FE0",
+   "fn_rva": "0x47b4fe0",
+   "strings": [],
+   "named_callees": [],
+   "decomp": "int __fastcall sub_1447B4FE0(__int64 a1)\n{\n  unsigned __int64 *v1; // rdx\n  unsigned __int64 v2; // rdi\n  unsigned __int64 v3; // rax\n  __int16 v5; // r8\n  unsigned __int64 *i; // r9\n  __int16 v7; // cx\n  LARGE_INTEGER v8; // rbx\n  char v9; // bp\n  LARGE_INTEGER v10; // rsi\n  double v11; // xmm0_8\n  __int64 v12; // rsi\n  double v13; // xmm1_8\n  unsigned __int64 *v14; // rdx\n  __int16 v15; // r8\n  unsigned __int64 *j; // r9\n  __int16 v17; // cx\n  unsigned __int64 v19; // [rsp+70h] [rbp+8h] BYREF\n  LARGE_INTEGER PerformanceCount; // [rsp+80h] [rbp+18h] BYREF\n\n  v1 = *(unsigned __int64 **)(a1 + 48);\n  v2 = 0;\n  v3 = *(int *)(a1 + 56);\n  v5 = 0x8000;\n  for ( i = &v1[v3]; v1 != i; v5 = v7 )\n  {\n    v3 = *v1;\n    v7 = *(_WORD *)(*v1 + 16);\n    if ( v7 > v5 )\n      v2 = *v1;\n    ++v1;\n    if ( v7 <= v5 )\n      v7 = v5;\n  }\n  v19 = v2;\n  if ( v2 != 0 )\n  {\n    LODWORD(v3) = QueryPerformanceCounter(&PerformanceCount);\n    v8 = PerformanceCount;\n    v9 = 0;\n    do\n    {\n      if ( v9 != 0 )\n        break;\n      QueryPerformanceCounter(&PerformanceCount);\n      v10 = PerformanceCount;\n      LODWORD(v3) = sub_1411406D0();\n      v12 = v10.QuadPart - v8.QuadPart;\n      if ( v12 < 0 )\n      {\n        v3 = v12 & 1 | ((unsigned __int64)v12 >> 1);\n        v13 = (double)(int)v3 + (double)(int)v3;\n      }\n      else\n      {\n        v13 = (double)(int)v12;\n      }\n      if ( v11 * v13 * 1000.0 >= 20.0 )\n        break;\n      LODWORD(v3) = (*(__int64 (__fastcall **)(unsigned __int64))(*(_QWORD *)v2 + 8LL))(v2) - 1;\n      if ( (_DWORD)v3 != 0 )\n      {\n        if ( (_DWORD)v3 == 1 )\n        {\n          sub_1447B4E50(a1 - 48, &v19, 1);\n          v14 = *(unsigned __int64 **)(a1 + 48);\n          v2 = 0;\n          v3 = *(int *)(a1 + 56);\n          v15 = 0x8000;\n          for ( j = &v14[v3]; v14 != j; v15 = v17 )\n          {\n            v3 = *v14;\n            v17 = *(_WORD *)(*v14 + 16);\n            if ( v17 > v15 )\n              v2 = *v14;\n            ++v14;\n            if ( v17 <= v15 )\n              v17 = v15;\n          }\n          v19 = v2;\n        }\n      }\n      else\n      {\n        v9 = 1;\n      }\n    }\n    while ( v2 != 0 );\n  }\n  return v3;\n}\n"
+  },
+  {
+   "rva": "0x418d0f3",
+   "fn": "sub_14418CFF0",
+   "fn_rva": "0x418cff0",
+   "strings": [],
+   "named_callees": [],
+   "decomp": "void __fastcall sub_14418CFF0(__int64 a1, int a2, char a3)\n{\n  struct _RTL_CRITICAL_SECTION *v6; // r15\n  PRTL_CRITICAL_SECTION_DEBUG DebugInfo; // rdi\n  struct _RTL_CRITICAL_SECTION_DEBUG *v8; // r14\n  __int64 v9; // rbx\n  char v10[16]; // [rsp+20h] [rbp-38h] BYREF\n\n  v6 = (struct _RTL_CRITICAL_SECTION *)sub_144168B10();\n  EnterCriticalSection(v6);\n  sub_14418B350(v6);\n  DebugInfo = v6[1].DebugInfo;\n  v8 = (PRTL_CRITICAL_SECTION_DEBUG)((char *)DebugInfo + 16 * v6[1].LockCount);\n  if ( DebugInfo != v8 )\n  {\n    while ( 1 )\n    {\n      v9 = *(_QWORD *)&DebugInfo->Type;\n      if ( *(_QWORD *)&DebugInfo->Type != 0 )\n      {\n        (*(void (__fastcall **)(_QWORD, char *))(*(_QWORD *)v9 + 32LL))(*(_QWORD *)&DebugInfo->Type, v10);\n        if ( (*(unsigned __int8 (__fastcall **)(__int64))(*(_QWORD *)v9 + 24LL))(v9) != 0\n          && (LOBYTE(DebugInfo->CriticalSection) == 1\n           || (*(unsigned __int8 (__fastcall **)(__int64))(*(_QWORD *)v9 + 16LL))(v9) != 0) )\n        {\n          if ( (*(__int64 (__fastcall **)(__int64))(*(_QWORD *)v9 + 64LL))(v9) != a1\n            || a2 != 2 && (a1 == 0 || (unsigned __int8)sub_1441F5D50(a1) == 0) )\n          {\n            goto LABEL_15;\n          }\n          if ( a3 == 0 )\n            break;\n          if ( (*(unsigned __int8 (__fastcall **)(__int64))(*(_QWORD *)v9 + 48LL))(v9) != 0 )\n            goto LABEL_14;\n        }\n      }\nLABEL_15:\n      DebugInfo = (PRTL_CRITICAL_SECTION_DEBUG)((char *)DebugInfo + 16);\n      if ( DebugInfo == v8 )\n        goto LABEL_16;\n    }\n    if ( a2 == 0 )\n      goto LABEL_15;\nLABEL_14:\n    (**(void (__fastcall ***)(__int64))v9)(v9);\n    goto LABEL_15;\n  }\nLABEL_16:\n  sub_144165DC0(v6);\n  if ( v6 != nullptr )\n    LeaveCriticalSection(v6);\n}\n"
+  },
+  {
+   "rva": "0x3c87bc3",
+   "fn": "sub_143C86D60",
+   "fn_rva": "0x3c86d60",
+   "strings": [
+    "2",
+    "@SH",
+    "C",
+    "E",
+    "Y",
+    "o",
+    "H",
+    "T",
+    "G",
+    "M"
+   ],
+   "named_callees": [
+    "memcpy",
+    "?StartProfileThreadUsage@MemoryMgr@AK@@YAXXZ",
+    "__tlregdtor",
+    "__security_check_cookie",
+    "_Init_thread_header",
+    "_Init_thread_footer"
+   ],
+   "decomp": "__int64 __fastcall sub_143C86D60(__int64 a1, unsigned int a2, float a3)\n{\n  __int64 v4; // rdi\n  __int64 v6; // rax\n  __int64 v7; // rsi\n  void (__fastcall *v8)(__int64, __int64); // rbx\n  __int64 v9; // rax\n  __int64 v10; // rax\n  __int64 v11; // rbx\n  const void *v12; // rsi\n  __int64 v13; // rax\n  __int64 v14; // r8\n  __int64 v15; // rbx\n  const void *v16; // rsi\n  _BYTE *v17; // rbx\n  _QWORD *v18; // rax\n  char v19; // r13\n  __int64 v20; // r15\n  unsigned __int64 v21; // r14\n  __int64 v22; // rcx\n  __int64 v23; // rax\n  __int64 v24; // rax\n  __int64 v25; // rsi\n  __int64 v26; // rdx\n  double v27; // xmm0_8\n  double v28; // xmm0_8\n  unsigned int v29; // esi\n  char v30; // al\n  int v31; // eax\n  __int64 v32; // rcx\n  __int64 v33; // rax\n  char v34; // r15\n  __int64 v35; // r14\n  __int64 *v36; // r12\n  char v37; // cl\n  int v38; // eax\n  __int64 v39; // rsi\n  __int64 v40; // rbx\n  __int64 v41; // rcx\n  __int64 v42; // rax\n  unsigned int v43; // r12d\n  __int64 v44; // rcx\n  __int64 v45; // rbx\n  __int64 v46; // rax\n  __int64 v47; // rax\n  __int64 v48; // rcx\n  __int64 v49; // rax\n  __int64 v50; // rdx\n  bool v51; // cc\n  char *v52; // r8\n  __int64 v53; // rax\n  __int64 v54; // r10\n  int v55; // esi\n  unsigned int v56; // r12d\n  char *v57; // r9\n  int v58; // r8d\n  int v59; // ecx\n  int v60; // r11d\n  int v61; // edx\n  unsigned __int64 v62; // rcx\n  int v63; // eax\n  __int64 v64; // r11\n  unsigned int v65; // ebx\n  LARGE_INTEGER v66; // r13\n  __int64 v67; // r9\n  __int128 v68; // xmm1\n  unsigned __int64 v69; // rdx\n  __int64 v70; // r8\n  char v71; // dl\n  __int64 v72; // rbx\n  _QWORD *v73; // rcx\n  _QWORD *v74; // r9\n  __int64 v76; // rcx\n  __int64 v77; // rbx\n  unsigned __int64 v78; // rsi\n  __int64 v79; // rax\n  float v80; // xmm2_4\n  __int64 v81; // rbx\n  unsigned __int64 v82; // rsi\n  __int64 v83; // rax\n  __int64 v84; // r8\n  float v85; // xmm2_4\n  __int64 v86; // rbx\n  unsigned __int64 v87; // rsi\n  __int64 v88; // rax\n  __int64 v89; // r8\n  float v90; // xmm2_4\n  __int64 v91; // rbx\n  unsigned __int64 v92; // rsi\n  __int64 v93; // rax\n  float v94; // xmm2_4\n  __int64 v95; // rbx\n  unsigned __int64 v96; // rsi\n  __int64 v97; // rax\n  __int64 v98; // r8\n  fl"
+  },
+  {
+   "rva": "0x3ad2a2f",
+   "fn": "sub_143AD24D0",
+   "fn_rva": "0x3ad24d0",
+   "strings": [
+    "2",
+    "U",
+    "o",
+    "c",
+    "CAUSEEVENT ",
+    "H",
+    "S",
+    "G",
+    "T",
+    "@SH",
+    "M",
+    "n"
+   ],
+   "named_callees": [
+    "?StartProfileThreadUsage@MemoryMgr@AK@@YAXXZ",
+    "__tlregdtor",
+    "__security_check_cookie",
+    "_Init_thread_header",
+    "_Init_thread_footer"
+   ],
+   "decomp": "int __fastcall sub_143AD24D0(_QWORD *a1, float a2, __int64 a3, __int64 a4)\n{\n  int v4; // r15d\n  __int64 v6; // rdi\n  unsigned __int8 v7; // r13\n  __int64 v9; // r14\n  int result; // eax\n  __int64 v11; // rcx\n  __int64 v12; // rbx\n  __int64 v13; // rax\n  __int64 v14; // rdx\n  __int64 v15; // rcx\n  LARGE_INTEGER v16; // rsi\n  int v17; // ebx\n  __int64 v18; // rcx\n  AK::MemoryMgr *v19; // rcx\n  int v20; // r9d\n  __int64 v21; // rdi\n  int v22; // edx\n  __int64 v23; // rbx\n  __int64 v24; // r8\n  __int64 v25; // rbx\n  int v26; // ecx\n  unsigned __int8 v27; // bl\n  __int64 v28; // r13\n  __int64 v29; // rax\n  __int64 v30; // rcx\n  char v31; // al\n  __int64 v32; // rax\n  __int64 v33; // rcx\n  __int64 v34; // rdi\n  __int64 v35; // r15\n  void (__fastcall *v36)(__int64, __int64, const wchar_t *, __int64); // r14\n  __int64 v37; // rsi\n  __int64 v38; // rax\n  const wchar_t *v39; // rdi\n  __int64 v40; // rax\n  __int64 v41; // rdx\n  __int64 v42; // rbx\n  __int64 v43; // rcx\n  __int64 v44; // rax\n  volatile signed __int32 *v45; // rbx\n  signed __int32 v46; // eax\n  signed __int32 v47; // ett\n  __int64 v48; // rcx\n  __int64 v49; // rax\n  unsigned __int8 v50; // bl\n  __int64 v51; // rdx\n  __int64 v52; // rax\n  _UNKNOWN ***v53; // rcx\n  __int64 v54; // r9\n  __int64 v55; // rcx\n  unsigned __int64 v56; // rbx\n  __int64 v57; // rcx\n  int v58; // edx\n  __int64 v59; // rcx\n  __int64 v60; // rbx\n  int v61; // eax\n  __int64 v62; // rax\n  signed __int32 v63; // eax\n  __int64 v64; // rax\n  __int64 v65; // rdx\n  __int64 v66; // rax\n  char v67; // bl\n  __int64 v68; // rdi\n  __int64 v69; // rax\n  __int64 v70; // rax\n  __int64 v71; // rcx\n  __int64 v72; // rcx\n  __int64 v73; // rax\n  __int64 v74; // rax\n  _UNKNOWN ***v75; // rcx\n  __int64 v76; // r9\n  __int64 v77; // rcx\n  unsigned __int64 v78; // rbx\n  __int64 v79; // rcx\n  int v80; // edx\n  __int64 v81; // rcx\n  __int64 v82; // rbx\n  int v83; // eax\n  __int64 v84; // rax\n  __int64 v85; // rax\n  double v86; // xmm6_8\n  __int64 v87; // rax\n  __int64 v88; // rax\n  unsigned __int8 v89; // [rsp+38h] [rbp-D0h] BYREF\n  unsigned __int8 v90; // [rsp+39h] [rbp-CFh]\n  char v91; // [rsp+3Ah] [rbp-CEh] BYREF\n  unsigned __int8 v92; // [rsp+3Bh] [rbp-CDh] "
+  },
+  {
+   "rva": "0x42cd05c",
+   "fn": "sub_1442CC410",
+   "fn_rva": "0x42cc410",
+   "strings": [
+    "2",
+    "F",
+    "B",
+    "G",
+    "H",
+    "R",
+    "@SH",
+    "E",
+    "M",
+    "t"
+   ],
+   "named_callees": [
+    "?StartProfileThreadUsage@MemoryMgr@AK@@YAXXZ",
+    "__tlregdtor",
+    "__security_check_cookie",
+    "_Init_thread_header",
+    "_Init_thread_footer"
+   ],
+   "decomp": "__int64 __fastcall sub_1442CC410(__int64 a1)\n{\n  __int64 v2; // rsi\n  __int64 v3; // rax\n  __int64 v4; // rdx\n  AK::MemoryMgr *v5; // rax\n  AK::MemoryMgr *v6; // rcx\n  __int64 v7; // rax\n  __int64 v8; // rax\n  __int64 v9; // rcx\n  __int64 v10; // rax\n  unsigned __int64 v11; // rax\n  double v12; // xmm1_8\n  char v13; // al\n  __int64 v14; // rdx\n  __int64 v15; // rcx\n  __int64 v16; // r8\n  __int64 v17; // r12\n  char v18; // r13\n  __int64 v19; // r9\n  __int64 v20; // rax\n  _QWORD *v21; // rcx\n  __int64 v22; // rcx\n  unsigned __int64 v23; // rbx\n  __int64 v24; // rcx\n  __int64 v25; // rcx\n  __int64 v26; // rsi\n  int v27; // eax\n  __int64 v28; // rax\n  __int64 v29; // rax\n  __int64 v30; // rbx\n  int v31; // edx\n  __int128 v32; // xmm0\n  __int128 v33; // xmm1\n  unsigned __int8 v34; // di\n  double v35; // xmm2_8\n  __int64 v36; // rbx\n  __int64 v37; // rdx\n  __int64 v38; // rcx\n  __int64 v39; // r8\n  __int64 v40; // r9\n  _QWORD *v41; // rcx\n  __int64 v42; // rax\n  unsigned __int64 v43; // rsi\n  __int64 v44; // rcx\n  int v45; // edx\n  __int64 v46; // rcx\n  __int64 v47; // rdx\n  __int64 v48; // rsi\n  int v49; // eax\n  __int64 v50; // rax\n  signed __int32 v51; // eax\n  __int64 v52; // rcx\n  __int64 v53; // rax\n  __int64 v54; // rdx\n  __int64 v55; // rcx\n  __int64 v56; // r8\n  __int64 v57; // r9\n  __int64 v58; // r8\n  _QWORD *v59; // rcx\n  __int64 v60; // rcx\n  unsigned __int64 v61; // rbx\n  __int64 v62; // rcx\n  int v63; // edx\n  __int64 v64; // rcx\n  __int64 v65; // rdx\n  __int64 v66; // rbx\n  int v67; // eax\n  __int64 v68; // rax\n  __int64 v69; // rcx\n  unsigned __int8 v70; // si\n  __int64 v71; // rbx\n  __int64 v72; // rdi\n  __int64 v73; // rbx\n  __int64 v74; // rax\n  __int64 v75; // r8\n  int v76; // xmm6_4\n  __int64 v77; // rax\n  __int64 v78; // rdx\n  __int64 v79; // rbx\n  __int64 v80; // rax\n  __int64 v81; // rdx\n  __int64 v82; // rax\n  __int64 v83; // rdx\n  __int64 v84; // rax\n  AK::MemoryMgr *v85; // rbx\n  __int64 v86; // rax\n  __int64 v87; // r14\n  __int64 v88; // rdi\n  void (__fastcall *v89)(__int64, __int64, __int64); // rbx\n  __int64 v90; // rax\n  __int64 v91; // rax\n  __int64 v92; // rax\n  __int64 v93; // rdx\n  __int64 v94; // rax\n  __int64 v95; // rdx\n  __int64"
+  },
+  {
+   "rva": "0x42db424",
+   "fn": "WinMain",
+   "fn_rva": "0x42db3f0",
+   "strings": [],
+   "named_callees": [
+    "?StartProfileThreadUsage@MemoryMgr@AK@@YAXXZ"
+   ],
+   "decomp": "int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)\n{\n  int v4; // ebx\n  __int64 v5; // r8\n  __int64 v6; // rax\n  AK::MemoryMgr *v7; // rcx\n\n  v4 = sub_1442D31F0((_DWORD)hInstance, (_DWORD)hPrevInstance, (_DWORD)lpCmdLine, nShowCmd, 0);\n  if ( byte_14A9E3A6E == 0 )\n  {\n    byte_14A9E3A6E = 1;\n    if ( (unsigned __int8)byte_14A6D3C88 >= 5u )\n      sub_1411E1B10(&byte_14A6D3C88, &off_148BFF968, v5);\n    sub_14158D600();\n    sub_1412CE070();\n    if ( qword_14A6C9828 != 0 )\n    {\n      sub_141220090();\n      if ( qword_14A6C9828 != 0 )\n        (**(void (__fastcall ***)(__int64, __int64))qword_14A6C9828)(qword_14A6C9828, 1);\n      qword_14A6C9828 = 0;\n    }\n    if ( sub_141277770() != 0 )\n    {\n      v6 = sub_141277770();\n      sub_141286980(v6);\n    }\n    sub_1411D1160();\n    sub_14118D700();\n    AK::MemoryMgr::StartProfileThreadUsage(v7);\n  }\n  if ( byte_14A9E38D0 != 0 )\n    Sleep(0xFFFFFFFF);\n  return v4;\n}\n"
+  }
+ ]
+}

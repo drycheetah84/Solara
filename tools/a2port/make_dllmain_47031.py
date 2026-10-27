@@ -155,13 +155,13 @@ _OPEN_OLD = ('''    SDK::UKismetSystemLibrary::ExecuteConsoleCommand(
         SDK::FString(L"open /Game/A2/Maps/Station_Prime/Station_Prime_P.umap"),
         nullptr);
     printf("[HalcyonA2] issued: open Station_Prime_P\\n");''')
-_OPEN_NEW = ('''    bool doOpen = false;
+_OPEN_NEW = ('''    bool doOpen = true;
     {
-        wchar_t sp[MAX_PATH]{}; GetTempPathW(MAX_PATH, sp); wcscat_s(sp, L"halcyon_open");
-        doOpen = (GetFileAttributesW(sp) != INVALID_FILE_ATTRIBUTES);
+        wchar_t sp[MAX_PATH]{}; GetTempPathW(MAX_PATH, sp); wcscat_s(sp, L"halcyon_noopen");
+        if (GetFileAttributesW(sp) != INVALID_FILE_ATTRIBUTES) doOpen = false;
     }
     if (!doOpen) {
-        printf("[HalcyonA2] BRINGUP: SKIPPING auto-open of Station_Prime_P (create %%TEMP%%\\\\halcyon_open to enable)\\n");
+        printf("[HalcyonA2] -noopen sentinel present: SKIPPING auto-open of Station_Prime_P\\n");
     } else {
         SDK::UKismetSystemLibrary::ExecuteConsoleCommand(
             world,

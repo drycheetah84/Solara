@@ -1,0 +1,2 @@
+writers 0 readers 6
+DONE

@@ -1,0 +1,95 @@
+{
+ "imagebase": "0x140000000",
+ "GetNetMode": {
+  "thunk_rva": "0x22ad400",
+  "thunk_decomp": "char __fastcall UA2NetworkUtilityBPFL::LogNetModeRoleAndLocallyControlled(__int64 a1, _QWORD *a2)\n{\n  __int64 v3; // rdx\n  __int64 v4; // rax\n  __int64 v5; // rsi\n  int v6; // eax\n  int v7; // eax\n  int v8; // eax\n  __int64 v9; // r8\n  const char *v10; // rdx\n  __int64 v11; // r8\n  const char *v12; // rdx\n  __int64 v13; // rax\n  __int64 v14; // r8\n  __int64 v15; // rcx\n  __int64 v16; // r8\n  const char *v17; // rdx\n  const wchar_t *v18; // r14\n  const wchar_t *v19; // r8\n  _QWORD v21[2]; // [rsp+30h] [rbp-30h] BYREF\n  const wchar_t *v22; // [rsp+40h] [rbp-20h] BYREF\n  __int64 v23; // [rsp+48h] [rbp-18h]\n  const wchar_t *v24; // [rsp+50h] [rbp-10h] BYREF\n  int v25; // [rsp+58h] [rbp-8h]\n  __int64 v26; // [rsp+88h] [rbp+28h] BYREF\n  __int64 v27; // [rsp+98h] [rbp+38h] BYREF\n\n  v26 = 0;\n  sub_1414922F0();\n  if ( a2[4] != 0 )\n  {\n    sub_1414DE5C0(a2, a2[3], &v26);\n  }\n  else\n  {\n    a2[17] = *(_QWORD *)(a2[17] + 24LL);\n    sub_1414DE5F0(a2, &v26);\n  }\n  v22 = nullptr;\n  v23 = 0;\n  sub_14150E900();\n  if ( a2[4] != 0 )\n  {\n    sub_1414DE5C0(a2, a2[3], &v22);\n  }\n  else\n  {\n    a2[17] = *(_QWORD *)(a2[17] + 24LL);\n    sub_1414DE5F0(a2, &v22);\n  }\n  v4 = a2[4];\n  v5 = v26;\n  a2[4] = v4 + ",
+  "candidates": [
+   [
+    "0x14922f0",
+    3815
+   ],
+   [
+    "0x14de5c0",
+    21657
+   ],
+   [
+    "0x14de5f0",
+    21655
+   ],
+   [
+    "0x150e900",
+    1203
+   ],
+   [
+    "0x3691750",
+    172
+   ],
+   [
+    "0x111b050",
+    101
+   ],
+   [
+    "0x3e39d40",
+    143
+   ],
+   [
+    "0x12b8ef0",
+    10648
+   ],
+   [
+    "0x11e1b10",
+    21121
+   ],
+   [
+    "0x1177030",
+    164128
+   ]
+  ],
+  "impl_rva": null,
+  "impl_decomp": null
+ },
+ "IsDedicatedServer": {
+  "thunk_rva": "0x22adb10",
+  "thunk_decomp": "_BOOL8 __fastcall sub_1422AD640(__int64 a1, unsigned __int64 a2)\n{\n  _BYTE *v2; // r9\n  int *v3; // rdi\n  int v5; // r15d\n  __int64 v6; // r12\n  int v7; // ebx\n  __int64 v8; // rcx\n  double v9; // xmm14_8\n  double v10; // xmm15_8\n  double v11; // xmm2_8\n  double v12; // xmm3_8\n  float *v13; // rcx\n  float v14; // xmm2_4\n  float v15; // esi\n  __m128 v16; // xmm7\n  float v17; // xmm3_4\n  float v18; // xmm14_4\n  float v19; // xmm15_4\n  float v20; // xmm8_4\n  float v21; // xmm10_4\n  float v22; // xmm12_4\n  float v23; // xmm6_4\n  __int64 v24; // rcx\n  int v25; // r10d\n  int v26; // esi\n  int *v27; // r8\n  __int64 v28; // rax\n  __int64 v29; // xmm13_8\n  float v30; // r14d\n  float v31; // xmm9_4\n  float v32; // xmm5_4\n  float v33; // xmm11_4\n  float v34; // xmm6_4\n  float v35; // xmm7_4\n  float v36; // xmm8_4\n  float v37; // xmm6_4\n  __int64 v38; // rcx\n  __int64 v39; // rcx\n  int v40; // r8d\n  _BYTE *v41; // rsi\n  int *v42; // rcx\n  bool v43; // bl\n  float v45; // [rsp+28h] [rbp-E0h]\n  float v46; // [rsp+2Ch] [rbp-DCh]\n  _BYTE Src[192]; // [rsp+58h] [rbp-B0h] BYREF\n  _BYTE *v48; // [rsp+118h] [rbp+10h]\n  int v49; // [rsp+120h] [rbp+18h]\n  unsigned int v50; // [rsp+124h] [rbp+1Ch]\n\n  v2 =",
+  "candidates": [
+   [
+    "0x22b2670",
+    4
+   ],
+   [
+    "0x22b2020",
+    15
+   ],
+   [
+    "0x22b1da0",
+    4
+   ],
+   [
+    "0x7dc7adb",
+    15338
+   ],
+   [
+    "0x1177030",
+    164128
+   ],
+   [
+    "0x7dbaa90",
+    31078
+   ]
+  ],
+  "impl_rva": null,
+  "impl_decomp": null
+ },
+ "IsServer": {
+  "thunk_rva": "0x22adeb0",
+  "thunk_decomp": "__int64 __fastcall sub_1422ADE80(__int64 a1, __int64 a2)\n{\n  int v2; // edi\n  _QWORD *v3; // rbx\n  __int64 result; // rax\n\n  if ( (_DWORD)a2 != 0 )\n  {\n    v2 = a2;\n    v3 = (_QWORD *)(a1 + 192);\n    do\n    {\n      if ( *v3 != 0 )\n        result = sub_141177030(*v3, a2);\n      v3 += 26;\n      --v2;\n    }\n    while ( v2 != 0 );\n  }\n  return result;\n}\n",
+  "candidates": [
+   [
+    "0x1177030",
+    164128
+   ]
+  ],
+  "impl_rva": null,
+  "impl_decomp": null
+ }
+}

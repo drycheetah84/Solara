@@ -1,0 +1,43 @@
+{
+ "imagebase": "0x140000000",
+ "flag_rva": "0xabf9ae2",
+ "writers": [],
+ "readers": [
+  {
+   "at": "0x5810cee",
+   "insn": "cmp     cs:byte_14ABF9AE2, dil",
+   "fn_rva": "0x5810c40",
+   "fn_name": "sub_145810C40"
+  },
+  {
+   "at": "0x5823c20",
+   "insn": "cmp     cs:byte_14ABF9AE2, 0",
+   "fn_rva": "0x5823b80",
+   "fn_name": "sub_145823B80"
+  },
+  {
+   "at": "0x5846e4f",
+   "insn": "cmp     cs:byte_14ABF9AE2, 0",
+   "fn_rva": "0x5846e40",
+   "fn_name": "sub_145846E40"
+  },
+  {
+   "at": "0x5847e36",
+   "insn": "cmp     cs:byte_14ABF9AE2, 0",
+   "fn_rva": "0x5847e30",
+   "fn_name": "sub_145847E30"
+  },
+  {
+   "at": "0x584d1af",
+   "insn": "cmp     cs:byte_14ABF9AE2, sil",
+   "fn_rva": "0x584d030",
+   "fn_name": "sub_14584D030"
+  },
+  {
+   "at": "0x584f866",
+   "insn": "cmp     cs:byte_14ABF9AE2, 0",
+   "fn_rva": "0x584f120",
+   "fn_name": "sub_14584F120"
+  }
+ ]
+}

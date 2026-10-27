@@ -1,0 +1,11 @@
+{
+ "imagebase": "0x7ff672060000",
+ "fn_start": "0x54af360",
+ "decomp": "char __fastcall UA2NetworkUtilityBPFL::GetNetMode_Implementation(__int64 a1, __int64 a2)\n{\n  __int64 v4; // rax\n  const wchar_t *v5; // rbx\n  const wchar_t *v6; // r8\n  __int64 v7; // rdx\n  const wchar_t *v8; // [rsp+20h] [rbp-28h] BYREF\n  int v9; // [rsp+28h] [rbp-20h]\n  const wchar_t *v10; // [rsp+30h] [rbp-18h] BYREF\n  int v11; // [rsp+38h] [rbp-10h]\n\n  if ( a1 != 0 )\n  {\n    v4 = (*(__int64 (__fastcall **)(__int64))(*(_QWORD *)a1 + 392LL))(a1);\n    if ( v4 != 0 )\n    {\n      return sub_7FF6760A0990(v4);\n    }\n    else\n    {\n      sub_7FF6733DA850(a1, &v10, 0);\n      v5 = &Data;\n      v6 = &Data;\n      if ( v11 != 0 )\n        v6 = v10;\n      sub_7FF673028F30(&v8, L\"A2::GetWorldFromContextObject(): No world was found for context object (%s).\", v6);\n      LOBYTE(v7) = 3;\n      if ( v9 != 0 )\n        v5 = v8;\n      sub_7FF6733B6C60(v5, v7, 0);\n      if ( v8 != nullptr )\n        sub_7FF6730753A0(v8);\n      if ( v10 != nullptr )\n        sub_7FF6730753A0(v10);\n      return 0;\n    }\n  }\n  else\n  {\n    LOBYTE(a2) = 2;\n    sub_7FF6733B6C60(L\"A2::GetWorldFromContextObject(): A null object was passed in.\", a2, 0);\n    return 0;\n  }\n}\n",
+ "callers": [
+  [
+   "0x5330680",
+   "UA2NetworkUtilityBPFL::execGetNetMode"
+  ]
+ ]
+}
