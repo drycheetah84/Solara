@@ -1,0 +1,10 @@
+{
+ "imagebase": "0x140000000",
+ "hits": [
+  {
+   "string": "%p: request (easy handle:%p) has been added to threaded queue for processing",
+   "str_ea": "0x80b51d0",
+   "xref_funcs": []
+  }
+ ]
+}

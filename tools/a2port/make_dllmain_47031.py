@@ -131,6 +131,20 @@ _EARLY_ADD = _EARLY_ANCHOR + (
     '        void* pc = reinterpret_cast<void*>(b0 + 0xA4810D4);   // gc.CreateGCClusters\n'
     '        if (HxPageWritable(pa)) *reinterpret_cast<int*>(pa) = 0;\n'
     '        if (HxPageWritable(pc)) *reinterpret_cast<int*>(pc) = 0;\n'
+    '    }\n'
+    '\n    // [47031 SOLARA REDIRECT] DashboardApiUrl default ascii @ RVA 0x924A700\n'
+    '    // "https://api.oriondrift.net" -> local Solara A2StationDb (http://127.0.0.1:78).\n'
+    '    {\n'
+    '        char* url = reinterpret_cast<char*>(GetBase() + 0x924A700);\n'
+    '        static const char repl[] = "http://127.0.0.1:78";\n'
+    '        DWORD op = 0;\n'
+    '        if (VirtualProtect(url, 32, PAGE_READWRITE, &op)) {\n'
+    '            SecureZeroMemory(url, 27);\n'
+    '            memcpy(url, repl, sizeof(repl));\n'
+    '            VirtualProtect(url, 32, op, &op);\n'
+    '            printf("[HalcyonA2][REDIRECT] DashboardApiUrl default -> %s\\n", url);\n'
+    '            HxLog("[HalcyonA2][REDIRECT] DashboardApiUrl default -> %s\\n", url);\n'
+    '        }\n'
     '    }\n')
 if _EARLY_ANCHOR in new and '0xA480348) ' not in new.split(_EARLY_ANCHOR)[0][-400:]:
     new = new.replace(_EARLY_ANCHOR, _EARLY_ADD, 1)
