@@ -1,0 +1,23 @@
+{
+ "imagebase": "0x140000000",
+ "hits": [
+  {
+   "ea": "0x91e3a08",
+   "txt": "Server_ExitSpectator"
+  },
+  {
+   "ea": "0x91e3ac8",
+   "txt": "Server_ExitSpectator"
+  },
+  {
+   "ea": "0x91e4820",
+   "txt": "inputExitSpectator"
+  }
+ ],
+ "funcs": {
+  "0xf282a0": {
+   "refs": "Server_ExitSpectator",
+   "decomp": "__int64 sub_140F282A0()\n{\n  return sub_1412A9170(&unk_14AC07A78, L\"Server_ExitSpectator\", 1);\n}\n"
+  }
+ }
+}
