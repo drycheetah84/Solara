@@ -1,0 +1,35 @@
+{
+ "imagebase": "0x140000000",
+ "string_hits": {
+  "Error initializing server": [
+   {
+    "ea": "0x922d938",
+    "txt": "Error initializing server"
+   }
+  ],
+  "Processed login": [
+   {
+    "ea": "0x922d9e0",
+    "txt": "LOGIN: Processed login, result: %s"
+   }
+  ],
+  "PreLogin connect request": [
+   {
+    "ea": "0x922d870",
+    "txt": "LOGIN: PreLogin connect request received from: %s with options %s"
+   }
+  ],
+  "initializing server": [
+   {
+    "ea": "0x922d938",
+    "txt": "Error initializing server"
+   }
+  ]
+ },
+ "funcs": {
+  "0x558c600": {
+   "refs_string": "Error initializing server",
+   "decomp": "__int64 __fastcall sub_14558C600(_QWORD *a1, __int64 a2, __int64 a3, __int64 a4, __int64 *a5)\n{\n  __int64 v7; // rbp\n  __int64 v8; // rax\n  __int64 v9; // rdi\n  __int64 v10; // rbx\n  __int64 v11; // rax\n  __int64 v12; // rdx\n  __int64 v13; // rax\n  __int64 v14; // rax\n  int v15; // r14d\n  unsigned int v16; // ebp\n  const wchar_t *v17; // rdx\n  __int64 v18; // rax\n  __int64 v20; // [rsp+20h] [rbp-28h] BYREF\n  __int64 v21; // [rsp+28h] [rbp-20h]\n\n  if ( (unsigned __int8)byte_14A6D3C18 >= 4u )\n    sub_1411E1B10(&byte_14A6D3C18, &off_14922D848);\n  v7 = sub_14368D4D0(a1) + 256;\n  v8 = sub_14545A070();\n  v9 = 0;\n  v10 = v8;\n  if ( byte_14A7A94B1 == 0 )\n  {\n    if ( v8 != 0 )\n      goto LABEL_7;\nLABEL_10:\n    v10 = 0;\n    goto LABEL_11;\n  }\n  if ( v8 == 0 )\n    goto LABEL_10;\n  sub_1413F5990(v8);\nLABEL_7:\n  v11 = sub_14545A070();\n  if ( v11 == 0 )\n    goto LABEL_10;\n  v12 = v11 + 48;\n  v13 = *(int *)(v11 + 56);\n  if ( (int)v13 > *(_DWORD *)(v10 + 56) || *(_QWORD *)(*(_QWORD *)(v10 + 48) + 8 * v13) != v12 )\n    goto LABEL_10;\nLABEL_11:\n  v14 = sub_1441309D0(v7, v10);\n  if ( a1[99] == 0 || v14 == 0 || *(_QWORD *)(v14 + 240) == 0 )\n  {\n    v17 = L\"Error initializing server\";\n    goto LABEL_28;\n  }\n  v15 = (*(__int64 (__fastcall **)(_QWORD *))(*a1 + 1952LL))(a1);\n  v16 = *(_DWORD *)(a1[98] + 700LL);\n  if ( (unsigned int)sub_143691750(a1) == 0 )\n  {\n    v17 = L\"Standalone\";\nLABEL_28:\n    sub_141118750(a5, v17);\n    return sub_145576F70(a1, a4, a5);\n  }\n  if ( v15 < (int)v16 )\n  {\n    if ( (unsigned __int8)sub_143AC2840(a4) != 0 )\n    {\n      v18 = sub_143D5E130();\n      if ( (*(unsigned __int8 (__fastcall **)(__int64, __int64))(*(_QWORD *)v18 + 760LL))(v18, a4) == 0 )\n      {\n        v17 = L\"incompatible_unique_net_id\";\n        goto LABEL_28;\n      }\n    }\n  }\n  else\n  {\n    sub_1411246D0(&v20, L\"Server is full. Maximum players: %d\", v16);\n    if ( a5 == &v20 )\n    {\n      v9 = v20;\n    }\n    else\n    {\n      if ( *a5 != 0 )\n        sub_141177030(*a5);\n      *a5 = v20;\n      a5[1] = v21;\n      v21 = 0;\n      v20 = 0;\n    }\n    if ( v9 != 0 )\n      sub_141177030(v9);\n  }\n  return sub_145576F70(a1, a4, a5);\n}\n"
+  }
+ }
+}

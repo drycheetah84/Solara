@@ -22,3 +22,13 @@ server_api_key.txt
 /tools/a2port/.venv/
 /tools/a2port/old-strings.json
 /tools/a2port/*.exe
+
+# IDA unpacked DB sidecars (huge) + scratch dumps
+*.id0
+*.id1
+*.id2
+*.nam
+*.til
+/tools/a2port/work47031/
+/tools/a2port/deep-dump.json
+/tools/a2port/old-ida.json

@@ -1,0 +1,42 @@
+{
+ "imagebase": "0x140000000",
+ "callers": {
+  "sub_5656C10": [
+   {
+    "start": "0x5656bd0",
+    "size": 53,
+    "sig": "void __fastcall sub_145656BD0(__int64 a1, unsigned int **a2)",
+    "double": false,
+    "calls_physics": true,
+    "walks_obj": false,
+    "nlines": 6,
+    "head": "void __fastcall sub_145656BD0(__int64 a1, unsigned int **a2)\n{\n  sub_14207F880();\n  sub_145656C10(a1, a2);\n  sub_145657120(a1, a2);\n}\n"
+   }
+  ],
+  "sub_564A8A0": [
+   {
+    "start": "0x5656c10",
+    "size": 1296,
+    "sig": "void __fastcall sub_145656C10(__int64 a1, unsigned int **a2)",
+    "double": false,
+    "calls_physics": true,
+    "walks_obj": false,
+    "nlines": 228,
+    "head": "void __fastcall sub_145656C10(__int64 a1, unsigned int **a2)\n{\n  __int64 v4; // rbp\n  int v5; // ebx\n  __int64 v6; // r13\n  float v7; // xmm6_4\n  __int64 v8; // r8\n  __int64 i; // rcx\n  __int64 v10; // rdx\n  __int64 v11; // rax\n  __int128 v12; // xmm0\n  __m128d *v13; // rax\n  double v14; // xmm0_8\n  __m128d v15; // xmm3\n  __int64 v16; // rax\n  __int128 v17; // xmm0\n  __m128d *v18; // rax\n  double v19; // xmm2_8\n  double v20; // xmm3_8\n  double v21; // xmm0_8\n  float v22; // xmm1_4\n  __int64 v23;"
+   }
+  ],
+  "sub_5789730": [
+   {
+    "start": "0x5784d20",
+    "size": 222,
+    "sig": "void __fastcall sub_145784D20(__int64 a1, __int64 a2)",
+    "double": false,
+    "calls_physics": false,
+    "walks_obj": false,
+    "nlines": 69,
+    "head": "void __fastcall sub_145784D20(__int64 a1, __int64 a2)\n{\n  __int64 v4; // rax\n  __int64 v5; // rcx\n  __int64 v6; // rcx\n  __int128 v7; // xmm0\n  __int128 *v8; // rcx\n  __int128 v9; // xmm0\n  __int64 v10; // r8\n  __int64 v11; // xmm1_8\n  __int64 v12; // rdx\n  __int64 v13; // rcx\n  __int128 v14; // [rsp+20h] [rbp-68h] BYREF\n  __int64 v15; // [rsp+30h] [rbp-58h]\n  __int128 v16; // [rsp+38h] [rbp-50h] BYREF\n  __int64 v17; // [rsp+48h] [rbp-40h]\n  __int64 v18; // [rsp+50h] [rbp-38h] BYREF\n  __int128 v"
+   }
+  ],
+  "sub_5657120": []
+ }
+}

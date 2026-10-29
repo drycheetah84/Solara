@@ -1,0 +1,265 @@
+{
+ "imagebase": "0x140000000",
+ "code": {
+  "ballsim_reconcile": {
+   "rva": "0x545bd80",
+   "seg": ".text",
+   "is_code": true,
+   "func_start": false,
+   "in_func_at": "0x545bd50",
+   "name": "sub_14545BD50"
+  },
+  "ballsim_getworld": {
+   "rva": "0x3509ab0",
+   "seg": ".text",
+   "is_code": true,
+   "func_start": true,
+   "in_func_at": "0x3509ab0",
+   "name": "sub_143509AB0",
+   "strrefs": []
+  },
+  "ballsim_getplayerbyid": {
+   "rva": "0x54eb5e0",
+   "seg": ".text",
+   "is_code": false,
+   "func_start": false,
+   "in_func_at": "0x54eb5d0",
+   "name": "sub_1454EB5D0"
+  },
+  "ballsim_stepsim": {
+   "rva": "0x54863c0",
+   "seg": ".text",
+   "is_code": false,
+   "func_start": false,
+   "in_func_at": "0x5486360",
+   "name": "sub_145486360"
+  },
+  "ballsim_ingest": {
+   "rva": "0x54599b0",
+   "seg": ".text",
+   "is_code": true,
+   "func_start": false,
+   "in_func_at": "0x54599a0",
+   "name": "sub_1454599A0"
+  },
+  "ballsim_buildworker": {
+   "rva": "0x545ccb0",
+   "seg": ".text",
+   "is_code": false,
+   "func_start": false,
+   "in_func_at": "0x545cc00",
+   "name": "sub_14545CC00"
+  },
+  "overlaps": {
+   "rva": "0x37b02c0",
+   "seg": ".text",
+   "is_code": false,
+   "func_start": false,
+   "in_func_at": "0x37b00f0",
+   "name": "sub_1437B00F0"
+  },
+  "goal_scorer": {
+   "rva": "0x53af7c0",
+   "seg": ".text",
+   "is_code": true,
+   "func_start": false,
+   "in_func_at": "0x53aeeb0",
+   "name": "sub_1453AEEB0"
+  },
+  "allocator": {
+   "rva": "0x5361530",
+   "seg": ".text",
+   "is_code": true,
+   "func_start": false,
+   "in_func_at": "0x5361410",
+   "name": "sub_145361410"
+  },
+  "quest_register": {
+   "rva": "0x468be60",
+   "seg": ".text",
+   "is_code": false,
+   "func_start": false,
+   "in_func_at": "0x468bdd0",
+   "name": "sub_14468BDD0"
+  },
+  "comp_fn_14147": {
+   "rva": "0x46849a0",
+   "seg": ".text",
+   "is_code": false,
+   "func_start": false,
+   "in_func_at": "0x4684730",
+   "name": "sub_144684730"
+  },
+  "dash_sessionlogin": {
+   "rva": "0x54b5660",
+   "seg": ".text",
+   "is_code": false,
+   "func_start": false,
+   "in_func_at": "0x54b5640",
+   "name": "sub_1454B5640"
+  },
+  "dash_init_reader": {
+   "rva": "0x5413cc0",
+   "seg": ".text",
+   "is_code": true,
+   "func_start": true,
+   "in_func_at": "0x5413cc0",
+   "name": "sub_145413CC0",
+   "strrefs": []
+  },
+  "GOOD_fstrcopy": {
+   "rva": "0x111b4a0",
+   "seg": ".text",
+   "is_code": true,
+   "func_start": true,
+   "in_func_at": "0x111b4a0",
+   "name": "sub_14111B4A0",
+   "strrefs": []
+  },
+  "GOOD_srvdispatch": {
+   "rva": "0x5846e40",
+   "seg": ".text",
+   "is_code": true,
+   "func_start": true,
+   "in_func_at": "0x5846e40",
+   "name": "sub_145846E40",
+   "strrefs": []
+  },
+  "GOOD_prelogin": {
+   "rva": "0x558c600",
+   "seg": ".text",
+   "is_code": true,
+   "func_start": true,
+   "in_func_at": "0x558c600",
+   "name": "sub_14558C600",
+   "strrefs": [
+    "S",
+    "S",
+    "i",
+    "E"
+   ]
+  },
+  "GOOD_getnetmode": {
+   "rva": "0x41f5a60",
+   "seg": ".text",
+   "is_code": true,
+   "func_start": true,
+   "in_func_at": "0x41f5a60",
+   "name": "sub_1441F5A60",
+   "strrefs": [
+    "l",
+    "l"
+   ]
+  },
+  "GOOD_mgrspawner": {
+   "rva": "0x5567c30",
+   "seg": ".text",
+   "is_code": true,
+   "func_start": true,
+   "in_func_at": "0x5567c30",
+   "name": "sub_145567C30",
+   "strrefs": [
+    "BallSimManager",
+    "A2RollbackManager",
+    "StationDashboardManager",
+    "DriftballMatchmaker"
+   ]
+  },
+  "GOOD_deserstruct": {
+   "rva": "0x4ab4dd0",
+   "seg": ".text",
+   "is_code": true,
+   "func_start": true,
+   "in_func_at": "0x4ab4dd0",
+   "name": "sub_144AB4DD0",
+   "strrefs": []
+  }
+ },
+ "data": {
+  "ballsim_worldglobal": {
+   "rva": "0xac0a1a0",
+   "seg": ".data",
+   "is_code": false,
+   "name": "qword_14AC0A1A0"
+  },
+  "dash_apikey_global": {
+   "rva": "0x9bd4460",
+   "seg": ".rdata",
+   "is_code": false,
+   "name": ""
+  },
+  "rawdata_vtable": {
+   "rva": "0x804bda0",
+   "seg": ".rdata",
+   "is_code": false,
+   "name": ""
+  }
+ },
+ "anchors": {
+  "DashboardApiKey": [
+   {
+    "ea": "0x922da50",
+    "txt": "Failed to find StationDashboardApiKey in options",
+    "xref_funcs": []
+   },
+   {
+    "ea": "0x922dca0",
+    "txt": "StationDashboardApiKey",
+    "xref_funcs": [
+     "0x558c7f0"
+    ]
+   },
+   {
+    "ea": "0x9243ef8",
+    "txt": "StationDashboardApiKey=%s",
+    "xref_funcs": [
+     "0x5636d00"
+    ]
+   },
+   {
+    "ea": "0x924a6b0",
+    "txt": "DashboardApiKey=",
+    "xref_funcs": [
+     "0x567e320",
+     "0x56890c0"
+    ]
+   }
+  ],
+  "log_in_with_key": [
+   {
+    "ea": "0x924a7a0",
+    "txt": "/v1/users/log_in_with_key",
+    "xref_funcs": [
+     "0x56890c0"
+    ]
+   },
+   {
+    "ea": "0x924a7a0",
+    "txt": "/v1/users/log_in_with_key",
+    "xref_funcs": [
+     "0x56890c0"
+    ]
+   }
+  ],
+  "x-api-key": [
+   {
+    "ea": "0x924a7c0",
+    "txt": "x-api-key",
+    "xref_funcs": [
+     "0x567e320",
+     "0x5681c10",
+     "0x56823e0",
+     "0x56833b0",
+     "0x56890c0"
+    ]
+   }
+  ],
+  "No dashboard api key": [
+   {
+    "ea": "0x92770d0",
+    "txt": "No dashboard api key. Will not be authenticated on the game server.",
+    "xref_funcs": []
+   }
+  ]
+ }
+}

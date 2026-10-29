@@ -1,0 +1,87 @@
+{
+ "imagebase": "0x140000000",
+ "worldglobal_xrefs": [
+  {
+   "start": "0x5567c30",
+   "size": 572,
+   "sig": "__int64 __fastcall sub_145567C30(__int64 a1)",
+   "has_double": false,
+   "nlines": 70,
+   "xref_at": "0x5567e48",
+   "xref_type": 2
+  },
+  {
+   "start": "0x564a8a0",
+   "size": 455,
+   "sig": "__int64 __fastcall sub_14564A8A0(__int64 a1, int a2)",
+   "has_double": false,
+   "nlines": 116,
+   "xref_at": "0x564a95d",
+   "xref_type": 3
+  },
+  {
+   "start": "0x5656c10",
+   "size": 1296,
+   "sig": "void __fastcall sub_145656C10(__int64 a1, unsigned int **a2)",
+   "has_double": false,
+   "nlines": 228,
+   "xref_at": "0x5656c1b",
+   "xref_type": 3
+  },
+  {
+   "start": "0x5657120",
+   "size": 327,
+   "sig": "void __fastcall sub_145657120(__int64 a1, unsigned int **a2)",
+   "has_double": false,
+   "nlines": 89,
+   "xref_at": "0x5657130",
+   "xref_type": 3
+  },
+  {
+   "start": "0x5784d20",
+   "size": 222,
+   "sig": "void __fastcall sub_145784D20(__int64 a1, __int64 a2)",
+   "has_double": false,
+   "nlines": 69,
+   "xref_at": "0x5784d2d",
+   "xref_type": 3
+  },
+  {
+   "start": "0x5789730",
+   "size": 436,
+   "sig": "__int64 __fastcall sub_145789730(__int64 a1, int a2)",
+   "has_double": false,
+   "nlines": 115,
+   "xref_at": "0x57897e1",
+   "xref_type": 3
+  }
+ ],
+ "notes": [],
+ "spawner_callees": [
+  "0x367f1a0",
+  "0x368fbc0",
+  "0x41f5a60",
+  "0x368fbc0",
+  "0x41f5a60",
+  "0x41ded30",
+  "0x12a9010",
+  "0x368fbc0",
+  "0x54808c0",
+  "0x3c5e290",
+  "0x12a9010",
+  "0x368fbc0",
+  "0x543bbc0",
+  "0x3c5e290",
+  "0x12a9010",
+  "0x368fbc0",
+  "0x54d1e40",
+  "0x3c5e290",
+  "0x12a9010",
+  "0x368fbc0",
+  "0x5497ac0",
+  "0x3c5e290",
+  "0x369ac90",
+  "0x368fbc0",
+  "0x7dbaa90"
+ ]
+}
