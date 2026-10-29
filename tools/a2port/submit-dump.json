@@ -1,0 +1,99 @@
+{
+ "imagebase": "0x140000000",
+ "string_hits": {
+  "SubmitInput": [
+   {
+    "ea": "0x90ad488",
+    "txt": "Server_NewSubmitInputs",
+    "xref_funcs": [
+     "0xf1b9f0"
+    ]
+   },
+   {
+    "ea": "0x90ad5c8",
+    "txt": "Server_NewSubmitInputs",
+    "xref_funcs": []
+   },
+   {
+    "ea": "0x90ad638",
+    "txt": "Server_SubmitInputs",
+    "xref_funcs": [
+     "0xf1ba10"
+    ]
+   },
+   {
+    "ea": "0x90ad720",
+    "txt": "Server_SubmitInputs",
+    "xref_funcs": []
+   }
+  ],
+  "SubmitInputs": [
+   {
+    "ea": "0x90ad488",
+    "txt": "Server_NewSubmitInputs",
+    "xref_funcs": [
+     "0xf1b9f0"
+    ]
+   },
+   {
+    "ea": "0x90ad5c8",
+    "txt": "Server_NewSubmitInputs",
+    "xref_funcs": []
+   },
+   {
+    "ea": "0x90ad638",
+    "txt": "Server_SubmitInputs",
+    "xref_funcs": [
+     "0xf1ba10"
+    ]
+   },
+   {
+    "ea": "0x90ad720",
+    "txt": "Server_SubmitInputs",
+    "xref_funcs": []
+   }
+  ],
+  "Server_SubmitInputs": [
+   {
+    "ea": "0x90ad638",
+    "txt": "Server_SubmitInputs",
+    "xref_funcs": [
+     "0xf1ba10"
+    ]
+   },
+   {
+    "ea": "0x90ad720",
+    "txt": "Server_SubmitInputs",
+    "xref_funcs": []
+   }
+  ],
+  "SimInput": [
+   {
+    "ea": "0x91cc070",
+    "txt": "RollbackSimInputsBox",
+    "xref_funcs": [
+     "0x54c3180"
+    ]
+   },
+   {
+    "ea": "0x91cc270",
+    "txt": "RollbackSimInputsBox",
+    "xref_funcs": []
+   }
+  ]
+ },
+ "funcs": {
+  "0xf1b9f0": {
+   "refs": "Server_NewSubmitInputs",
+   "decomp": "__int64 sub_140F1B9F0()\n{\n  return sub_1412A9170(&qword_14ABFDB10, L\"Server_NewSubmitInputs\", 1);\n}\n"
+  },
+  "0xf1ba10": {
+   "refs": "Server_SubmitInputs",
+   "decomp": "__int64 sub_140F1BA10()\n{\n  return sub_1412A9170(&unk_14ABFDB18, L\"Server_SubmitInputs\", 1);\n}\n"
+  },
+  "0x54c3180": {
+   "refs": "RollbackSimInputsBox",
+   "decomp": "__int64 sub_1454C3180()\n{\n  __int64 result; // rax\n  __int64 v1; // rax\n\n  result = qword_14AC06B90;\n  if ( qword_14AC06B90 == 0 )\n  {\n    v1 = sub_1453FA160();\n    result = sub_1414FF870(sub_1454C66D0, v1, L\"RollbackSimInputsBox\");\n    qword_14AC06B90 = result;\n  }\n  return result;\n}\n"
+  }
+ }
+}
