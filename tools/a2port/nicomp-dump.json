@@ -1,0 +1,118 @@
+{
+ "imagebase": "0x140000000",
+ "funcs": {
+  "s64": {
+   "rva": "0x56b3490",
+   "size": 86,
+   "fp": [],
+   "sig": "__int64 __fastcall sub_1456B3490(__int64 a1, __int64 a2)",
+   "decomp": "__int64 __fastcall sub_1456B3490(__int64 a1, __int64 a2)\n{\n  const wchar_t *v4; // [rsp+20h] [rbp-38h] BYREF\n  int v5; // [rsp+28h] [rbp-30h]\n  int v6; // [rsp+2Ch] [rbp-2Ch]\n  __int128 v7; // [rsp+30h] [rbp-28h] BYREF\n  __int64 v8; // [rsp+40h] [rbp-18h]\n\n  sub_1438DB840();\n  v5 = 2;\n  v8 = 0;\n  v6 = 1;\n  v7 = 0;\n  v4 = L\"LatestInput\";\n  BYTE8(v7) = 1;\n  return sub_1441C8BF0(&v4, a2, &v7);\n}\n"
+  },
+  "s86": {
+   "rva": "0x54268e0",
+   "size": 104,
+   "fp": [],
+   "sig": "__int64 sub_1454268E0()",
+   "decomp": "__int64 sub_1454268E0()\n{\n  __int64 result; // rax\n\n  result = *(unsigned int *)(*((_QWORD *)NtCurrentTeb()->ThreadLocalStoragePointer + (unsigned int)TlsIndex) + 4684LL);\n  if ( dword_14ABFDC58 > (int)result )\n  {\n    result = Init_thread_header(&dword_14ABFDC58);\n    if ( dword_14ABFDC58 == -1 )\n    {\n      sub_1412A9170(&unk_14ABFDC50, L\"LatestInput\", 1);\n      return Init_thread_footer(&dword_14ABFDC58);\n    }\n  }\n  return result;\n}\n"
+  },
+  "s151": {
+   "rva": "0x56ac960",
+   "size": 167,
+   "fp": [],
+   "sig": "__int64 __fastcall sub_1456AC960(__int64 a1, unsigned __int8 a2, __int64 a3)",
+   "decomp": "__int64 __fastcall sub_1456AC960(__int64 a1, unsigned __int8 a2, __int64 a3)\n{\n  unsigned int v4; // edi\n  __int64 result; // rax\n  __int64 v7; // rax\n  __int64 v8; // rbx\n  _BYTE v9[464]; // [rsp+20h] [rbp-1F8h] BYREF\n  __int64 v10; // [rsp+1F0h] [rbp-28h]\n  char v11; // [rsp+238h] [rbp+20h] BYREF\n\n  v4 = a2;\n  result = sub_1456B1370();\n  if ( (_BYTE)result != 0 )\n  {\n    v7 = *(_QWORD *)(a1 + 160);\n    if ( v7 == 0 )\n      v7 = sub_1438DE0F0(a1);\n    result = sub_145811270(v7, v4);\n    v8 = result;\n    if ( result != 0 && (*(_DWORD *)(result + 8) & 0x40000000) == 0 )\n    {\n      sub_1456D9CE0(a3, v9);\n      result = sub_1456BAB40(*(_QWORD *)(v8 + 5472), v9, 0, &v11);\n      if ( v10 != 0 )\n        return sub_141177030(v10);\n    }\n  }\n  return result;\n}\n"
+  },
+  "s152": {
+   "rva": "0x56acc50",
+   "size": 298,
+   "fp": [],
+   "sig": "__int64 __fastcall sub_1456ACC50(__int64 a1, unsigned __int8 a2, __int128 *a3)",
+   "decomp": "__int64 __fastcall sub_1456ACC50(__int64 a1, unsigned __int8 a2, __int128 *a3)\n{\n  unsigned int v4; // esi\n  __int64 result; // rax\n  __int64 v7; // rax\n  __int64 v8; // r10\n  _BYTE *v9; // rax\n  __int64 i; // rcx\n  __int128 v11; // xmm0\n  __int128 v12; // xmm1\n  __int128 v13; // xmm0\n  __int128 v14; // xmm1\n  __int128 v15; // xmm0\n  __int128 v16; // xmm1\n  __int128 v17; // xmm0\n  __int128 v18; // xmm1\n  __int64 v19; // rcx\n  __int128 v20; // xmm1\n  __int128 v21; // xmm0\n  __int128 v22; // xmm1\n  __int128 v23; // xmm0\n  __int128 v24; // xmm1\n  _BYTE v25[368]; // [rsp+20h] [rbp-178h] BYREF\n  char v26; // [rsp+1B8h] [rbp+20h] BYREF\n\n  v4 = a2;\n  result = sub_1456B1370();\n  if ( (_BYTE)result != 0 )\n  {\n    v7 = *(_QWORD *)(a1 + 160);\n    if ( v7 == 0 )\n      v7 = sub_1438DE0F0(a1);\n    result = sub_145811270(v7, v4);\n    v8 = result;\n    if ( result != 0 && (*(_DWORD *)(result + 8) & 0x40000000) == 0 )\n    {\n      v9 = v25;\n      for ( i = 2; i != 0; --i )\n      {\n        v9 += 128;\n        v11 = *a3;\n        v12 = a3[1];\n        a3 += 8;\n        *((_OWORD *)v9 - 8) = v11;\n        v13 = *(a3 - 6);\n        *((_OWORD *)v9 - 7) = v12;\n        v14 = *(a3 - 5);\n        *((_OWORD *)v9 - 6) = v13;\n        v15 = *(a3 - 4);\n        *((_OWORD *)v9 - 5) = v14;\n        v16 = *(a3 - 3);\n        *((_OWORD *)v9 - 4) = v15;\n        v17 = *(a3 - 2);\n        *((_OWORD *)v9 - 3) = v16;\n        v18 = *(a3 - 1);\n        *((_OWORD *)v9 - 2) = v17;\n        *((_OWORD *)v9 - 1) = v18;\n      }\n      v19 = *((_QWORD *)a3 + 12);\n      v20 = a3[1];\n      *(_OWORD *)v9 = *a3;\n      v21 = a3[2];\n      *((_OWORD *)v9 + 1) = v20;\n      v22 = a3[3];\n      *((_OWORD *)v9 + 2) = v21;\n      v23 = a3[4];\n      *((_OWORD *)v9 + 3) = v22;\n      v24 = a3[5];\n      *((_OWORD *)v9 + 4) = v23;\n      *((_OWORD *)v9 + 5) = v24;\n      *((_QWORD *)v9 + 12) = v19;\n      return sub_1456A9770(*(_QWORD *)(v8 + 5472), v25, 0, &v26);\n    }\n  }\n  return result;\n}\n"
+  },
+  "s153": {
+   "rva": "0x56acae0",
+   "size": 364,
+   "fp": [
+    "float-arg"
+   ],
+   "sig": "__int64 __fastcall sub_1456ACAE0(__int64 a1, float a2, float a3)",
+   "decomp": "__int64 __fastcall sub_1456ACAE0(__int64 a1, float a2, float a3)\n{\n  __int64 result; // rax\n  float v4; // xmm0_4\n  __int64 v5; // rdx\n  double v6; // xmm0_8\n  double v7; // xmm1_8\n  double v8; // xmm3_8\n\n  if ( *(_BYTE *)(a1 + 296) != 0 )\n  {\n    *(float *)(a1 + 192) = a3;\n    v4 = fabs(a2);\n    if ( v4 > 0.0000000099999999 )\n    {\n      if ( v4 >= 0.059999999 )\n      {\n        if ( v4 >= 0.5 )\n        {\n          v5 = *(_QWORD *)(a1 + 176);\n          v6 = (float)-a2;\n          v7 = v6 + *(double *)(v5 + 784);\n          *(double *)(v5 + 784) = v7;\n          if ( fabs(v6) > 0.5 )\n          {\n            v8 = (double)*(int *)(v5 + 792) * 0.011112 + v7;\n            result = (unsigned int)((int)(v8 * 89.99280057595392 + v8 * 89.99280057595392 - 0.5) >> 1);\n            *(_DWORD *)(v5 + 792) = result;\n            *(double *)(v5 + 784) = v8 - (double)(int)result * 0.011112;\n            if ( (unsigned __int8)byte_14A6D3C18 >= 2u )\n              return sub_1411E1B10(&byte_14A6D3C18, &off_149252488);\n          }\n        }\n        else\n        {\n          result = *(_QWORD *)(a1 + 176);\n          if ( a2 <= 0.0 )\n            *(_DWORD *)(result + 796) = 1065462268;\n          else\n            *(_DWORD *)(result + 796) = 1065135112;\n        }\n      }\n      else\n      {\n        result = *(_QWORD *)(a1 + 176);\n        if ( a2 <= 0.0 )\n          *(_DWORD *)(result + 796) = 1065361605;\n        else\n          *(_DWORD *)(result + 796) = 1065336439;\n      }\n    }\n    else\n    {\n      result = *(_QWORD *)(a1 + 176);\n      *(_DWORD *)(result + 796) = 1065353216;\n    }\n  }\n  return result;\n}\n"
+  },
+  "s154": {
+   "rva": "0x56aca10",
+   "size": 196,
+   "fp": [],
+   "sig": "unsigned __int64 __fastcall sub_1456ACA10(__int64 a1, __int64 a2, __int64 a3, un",
+   "decomp": "unsigned __int64 __fastcall sub_1456ACA10(__int64 a1, __int64 a2, __int64 a3, unsigned __int64 a4, unsigned __int64 a5)\n{\n  unsigned __int64 v5; // r8\n  unsigned __int64 v6; // rdx\n  unsigned __int64 result; // rax\n\n  if ( *(_BYTE *)(a1 + 296) != 0 )\n  {\n    v5 = ((a4 - ((a4 >> 1) & 0x5555555555555555LL)) & 0x3333333333333333LL)\n       + (((a4 - ((a4 >> 1) & 0x5555555555555555LL)) >> 2) & 0x3333333333333333LL);\n    v6 = ((a5 - ((a5 >> 1) & 0x5555555555555555LL)) & 0x3333333333333333LL)\n       + (((a5 - ((a5 >> 1) & 0x5555555555555555LL)) >> 2) & 0x3333333333333333LL);\n    *(_DWORD *)(a1 + 188) = *(_DWORD *)(*(_QWORD *)(a1 + 176) + 792LL);\n    *(_WORD *)(a1 + 184) = (0x101010101010101LL * ((v5 + (v5 >> 4)) & 0xF0F0F0F0F0F0F0FLL)) >> 56;\n    result = (0x101010101010101LL * ((v6 + (v6 >> 4)) & 0xF0F0F0F0F0F0F0FLL)) >> 56;\n    *(_WORD *)(a1 + 186) = result;\n  }\n  return result;\n}\n"
+  },
+  "s155": {
+   "rva": "0x56d38e0",
+   "size": 1546,
+   "fp": [],
+   "sig": "char __fastcall sub_1456D38E0(__int64 a1, __int64 a2)",
+   "decomp": "char __fastcall sub_1456D38E0(__int64 a1, __int64 a2)\n{\n  __int64 v2; // rax\n  int v4; // r8d\n  int v5; // r14d\n  int v6; // r15d\n  __int64 v7; // r13\n  __int64 v8; // r12\n  __int64 v9; // r14\n  _BYTE *v10; // rcx\n  __int128 *v11; // rax\n  __int64 i; // rdx\n  __int128 v13; // xmm0\n  __int128 v14; // xmm1\n  __int128 v15; // xmm0\n  __int128 v16; // xmm1\n  __int128 v17; // xmm0\n  __int128 v18; // xmm1\n  __int128 v19; // xmm0\n  __int128 v20; // xmm1\n  __int128 v21; // xmm1\n  __int128 v22; // xmm0\n  __int128 v23; // xmm1\n  __int128 v24; // xmm0\n  __int128 v25; // xmm1\n  __int64 v26; // rax\n  __int64 v27; // rsi\n  int v28; // ecx\n  float v29; // xmm6_4\n  __int64 v30; // rdx\n  __int64 v31; // rcx\n  __int128 v32; // xmm0\n  __int64 v33; // r13\n  int v34; // r8d\n  int v35; // ecx\n  int v36; // ebx\n  int *v37; // r9\n  int j; // edx\n  unsigned __int64 v39; // rcx\n  int v40; // esi\n  int v41; // r8d\n  unsigned int v42; // r9d\n  int v43; // r11d\n  __int64 v44; // r10\n  int v45; // ebx\n  int k; // edx\n  unsigned __int64 v47; // rax\n  int v48; // eax\n  __int64 v49; // rbx\n  _BYTE *v50; // rcx\n  _BYTE *v51; // rdx\n  __int64 v52; // rsi\n  __int64 v53; // rax\n  __int64 v54; // rcx\n  bool v55; // zf\n  __int64 v56; // rax\n  __int128 v58; // [rsp+28h] [rbp-E0h]\n  __int128 v59; // [rsp+38h] [rbp-D0h]\n  _QWORD v60[5]; // [rsp+48h] [rbp-C0h] BYREF\n  _BYTE v61[40]; // [rsp+70h] [rbp-98h]\n  _BYTE v62[4]; // [rsp+98h] [rbp-70h] BYREF\n  int v63; // [rsp+9Ch] [rbp-6Ch]\n  _BYTE v64[32]; // [rsp+A0h] [rbp-68h] BYREF\n  _BYTE v65[24]; // [rsp+C0h] [rbp-48h] BYREF\n  _BYTE v66[24]; // [rsp+D8h] [rbp-30h] BYREF\n  _BYTE v67[32]; // [rsp+F0h] [rbp-18h] BYREF\n  _BYTE v68[24]; // [rsp+110h] [rbp+8h] BYREF\n  _BYTE v69[24]; // [rsp+128h] [rbp+20h] BYREF\n  _BYTE v70[32]; // [rsp+140h] [rbp+38h] BYREF\n  _BYTE v71[24]; // [rsp+160h] [rbp+58h] BYREF\n  _BYTE v72[24]; // [rsp+178h] [rbp+70h] BYREF\n  _BYTE v73[32]; // [rsp+190h] [rbp+88h] BYREF\n  _BYTE v74[24]; // [rsp+1B0h] [rbp+A8h] BYREF\n  _BYTE v75[24]; // [rsp+1C8h] [rbp+C0h] BYREF\n  _BYTE v76[32]; // [rsp+1E0h] [rbp+D8h] BYREF\n  char v77; // [rsp+268h] [rbp+160h] BYREF\n  __int64 v78; // [rsp+270h] [rbp+168h]\n\n  v78 = a2;\n  v2 = *(_QWORD *)(a1 + 728);\n  if ( v2 == 0 )\n    return v2;\n  LOBYTE(v2) = ~(*(_DWORD *)(v2 + 8) >> 30);\n  if ( (v2 & 1) == 0 )\n    return v2;\n  v4 = *(_DWORD *)(a2 + 8);\n  v5 = 0;\n  v6 = 0;\n  v7 = 2;\n  if ( v4 > 0 )\n  {\n    v8 = 0;\n    v9 = v78;\n    do\n    {\n      v10 = v62;\n      v11 = (__int128 *)(v8 + *(_QWORD *)v9);\n      for ( i = 2; i != 0; --i )\n      {\n        v10 += 128;\n        v13 = *v11;\n        v14 = v11[1];\n        v11 += 8;\n        *((_OWORD *)v10 - 8) = v13;\n        v15 = *(v11 - 6);\n        *((_OWORD *)v10 - 7) = v14;\n        v16 = *(v11 - 5);\n        *((_OWORD *)v10 - 6) = v15;\n        v17 = *(v11 - 4);\n        *((_OWORD *)v10 - 5) = v16;\n        v18 = *(v11 - 3);\n        *((_OWORD *)v10 - 4) = v17;\n        v19 = *(v11 - 2);\n        *((_OWORD *)v10 - 3) = v18;\n        v20 = *(v11 - 1);\n        *((_OWORD *)v10 - 2) = v19;\n        *((_OWORD *)v10 - 1) = v20;\n      }\n      v21 = v11[1];\n      *(_OWORD *)v10 = *v11;\n      v22 = v11[2];\n      *((_OWORD *)v10 + 1) = v21;\n      v23 = v11[3];\n      *((_OWORD *)v10 + 2) = v22;\n      v24 = v11[4];\n      *((_OWORD *)v10 + 3) = v23;\n      v25 = v11[5];\n      v26 = *((_QWORD *)v11 + 12);\n      *((_OWORD *)v10 + 4) = v24;\n      *((_OWORD *)v10 + 5) = v25;\n      *((_QWORD *)v10 + 12) = v26;\n      if ( v6 != v4 - 1 )\n      {\n        v62[0] = 1;\n        sub_1"
+  },
+  "s156": {
+   "rva": "0x56d2860",
+   "size": 1514,
+   "fp": [
+    "NewInputBuffer?"
+   ],
+   "sig": "char __fastcall sub_1456D2860(__int64 a1, __int64 a2)",
+   "decomp": "char __fastcall sub_1456D2860(__int64 a1, __int64 a2)\n{\n  __int64 v2; // rax\n  int v5; // r14d\n  __m128 si128; // xmm9\n  __m128d v7; // xmm8\n  char v8; // cl\n  __m128 v9; // xmm1\n  __m128d v10; // xmm4\n  __m128d v11; // xmm5\n  __m128d v13; // xmm1\n  __m128d v14; // xmm0\n  __m128d v15; // xmm4\n  __m128 v16; // xmm6\n  char v17; // r12\n  __int64 v18; // rsi\n  int v19; // edx\n  float v20; // xmm6_4\n  __int64 v21; // rax\n  __int64 v22; // r14\n  __int64 v23; // rax\n  __int64 v24; // rsi\n  __int64 v25; // rax\n  __int64 v26; // rdx\n  __int64 v27; // rax\n  __int64 v28; // rsi\n  __int64 v29; // xmm1_8\n  __int128 v30; // xmm0\n  char v31; // al\n  int v32; // eax\n  __int128 v33; // xmm0\n  __int64 v34; // xmm1_8\n  __int128 v35; // xmm0\n  int v36; // eax\n  __int64 v37; // xmm1_8\n  __int128 v38; // xmm0\n  __int64 v39; // xmm1_8\n  int v40; // eax\n  __int128 v41; // xmm0\n  __int64 v42; // xmm1_8\n  int v43; // eax\n  __int64 v44; // rdx\n  _QWORD v46[26]; // [rsp+28h] [rbp-E0h] BYREF\n  _BYTE v47[32]; // [rsp+100h] [rbp-8h] BYREF\n  _BYTE v48[24]; // [rsp+120h] [rbp+18h] BYREF\n  _BYTE v49[24]; // [rsp+138h] [rbp+30h] BYREF\n  _BYTE v50[40]; // [rsp+150h] [rbp+48h] BYREF\n  __m128d v51; // [rsp+178h] [rbp+70h]\n  __m128d v52; // [rsp+188h] [rbp+80h]\n  unsigned int v53; // [rsp+198h] [rbp+90h]\n  _BYTE v54[32]; // [rsp+1D8h] [rbp+D0h] BYREF\n  __int64 v55; // [rsp+1F8h] [rbp+F0h]\n  __m128d v56; // [rsp+218h] [rbp+110h] BYREF\n  __m128d v57; // [rsp+228h] [rbp+120h]\n  char v58; // [rsp+2C8h] [rbp+1C0h] BYREF\n\n  v2 = *(_QWORD *)(a1 + 728);\n  if ( v2 != 0 )\n  {\n    LOBYTE(v2) = ~(*(_DWORD *)(v2 + 8) >> 30);\n    if ( (v2 & 1) != 0 )\n    {\n      v5 = 0;\n      if ( *(int *)(a2 + 8) > 0 )\n      {\n        si128 = (__m128)_mm_load_si128((const __m128i *)&xmmword_147F6FCF0);\n        v7 = _mm_shuffle_pd((__m128d)0x3F1A36E2E0000000uLL, (__m128d)0x3F1A36E2E0000000uLL, 0);\n        do\n        {\n          sub_1456A3570(v46, *(_QWORD *)a2 + 496LL * v5);\n          v8 = BYTE4(v46[0]);\n          v9 = (__m128)_mm_sub_pd(v52, (__m128d)xmmword_14A474810);\n          if ( v5 != *(_DWORD *)(a2 + 8) - 1 )\n            v8 = 1;\n          BYTE4(v46[0]) = v8;\n          v10 = (__m128d)_mm_and_ps((__m128)_mm_add_pd(v51, (__m128d)xmmword_14A474800), si128);\n          v11 = (__m128d)_mm_and_ps((__m128)_mm_add_pd(v52, (__m128d)xmmword_14A474810), si128);\n          if ( (_mm_movemask_pd(_mm_cmplt_pd(v7, (__m128d)_mm_and_ps(\n                                                            (__m128)_mm_sub_pd(v51, (__m128d)xmmword_14A474800),\n                                                            si128)))\n              | (4 * _mm_movemask_pd(_mm_cmplt_pd(v7, (__m128d)_mm_and_ps(v9, si128))))) == 0\n            || (_mm_movemask_pd(_mm_cmplt_pd(v7, v10)) | (4 * _mm_movemask_pd(_mm_cmplt_pd(v7, v11)))) == 0 )\n          {\n            sub_14549F460(&v56, v53);\n            v13 = _mm_add_pd(_mm_mul_pd(v57, v57), _mm_mul_pd(v56, v56));\n            v14 = _mm_add_pd(_mm_shuffle_pd(v13, v13, 1), v13);\n            v15 = _mm_sqrt_pd(v14);\n            v16 = (__m128)_mm_cmple_pd(\n                            _mm_shuffle_pd((__m128d)0x3E45798EE0000000uLL, (__m128d)0x3E45798EE0000000uLL, 0),\n                            v14);\n            v51 = (__m128d)_mm_or_ps(\n                             _mm_and_ps((__m128)_mm_mul_pd(_mm_div_pd((__m128d)xmmword_147F997F0, v15), v56), v16),\n                             _mm_andnot_ps(v16, (__m128)_mm_cvtps_pd((__m128)xmmword_147F99770)));\n            v52 = (__m128d)_mm_or_ps(\n               "
+  },
+  "s157": {
+   "rva": "0x5425820",
+   "size": 9,
+   "fp": [],
+   "sig": "__int64 __fastcall sub_145425820(__int64 a1)",
+   "decomp": "__int64 __fastcall sub_145425820(__int64 a1)\n{\n  return sub_145425A90((AK::MemoryMgr *)(a1 - 40));\n}\n"
+  },
+  "s166": {
+   "rva": "0x5426d90",
+   "size": 338,
+   "fp": [],
+   "sig": "__int64 __fastcall sub_145426D90(__int64 a1, _QWORD *a2)",
+   "decomp": "__int64 __fastcall sub_145426D90(__int64 a1, _QWORD *a2)\n{\n  __int64 v4; // rdi\n  __int64 v5; // rcx\n  __int64 v6; // rax\n  __int64 v7; // rdx\n  __int64 result; // rax\n  _DWORD v9[8]; // [rsp+20h] [rbp-C8h] BYREF\n  _BYTE v10[56]; // [rsp+40h] [rbp-A8h] BYREF\n  _BYTE v11[32]; // [rsp+78h] [rbp-70h] BYREF\n  _BYTE v12[4]; // [rsp+98h] [rbp-50h] BYREF\n  __int16 v13; // [rsp+9Ch] [rbp-4Ch]\n  char v14; // [rsp+9Eh] [rbp-4Ah]\n  _BYTE v15[32]; // [rsp+A0h] [rbp-48h] BYREF\n  _BYTE v16[8]; // [rsp+C0h] [rbp-28h] BYREF\n  __int64 v17; // [rsp+C8h] [rbp-20h]\n  __int128 v18; // [rsp+D0h] [rbp-18h]\n  unsigned __int8 v19; // [rsp+F0h] [rbp+8h] BYREF\n\n  v19 = 0;\n  sub_1414D2C80();\n  if ( a2[4] != 0 )\n  {\n    sub_1414DE5C0(a2, a2[3], &v19);\n  }\n  else\n  {\n    a2[17] = *(_QWORD *)(a2[17] + 24LL);\n    sub_1414DE5F0(a2, &v19);\n  }\n  v4 = 0;\n  v9[0] = 0;\n  sub_14541A6C0(v10);\n  sub_14541A6C0(v11);\n  sub_14541A6C0(v12);\n  v13 = 0;\n  v14 = 0;\n  sub_14541A6C0(v15);\n  sub_14541A6C0(v16);\n  v17 = 0;\n  v18 = 0;\n  sub_1414D3BA0(v5);\n  if ( a2[4] != 0 )\n  {\n    sub_1414DE5C0(a2, a2[3], v9);\n  }\n  else\n  {\n    a2[17] = *(_QWORD *)(a2[17] + 24LL);\n    sub_1414DE5F0(a2, v9);\n  }\n  v6 = a2[4];\n  v7 = v19;\n  LOBYTE(v4) = v6 != 0;\n  a2[4] = v6 + v4;\n  result = (*(__int64 (__fastcall **)(__int64, __int64, _DWORD *))(*(_QWORD *)a1 + 1208LL))(a1, v7, v9);\n  if ( v17 != 0 )\n    return sub_141177030(v17);\n  return result;\n}\n"
+  },
+  "s168": {
+   "rva": "0x5426ef0",
+   "size": 329,
+   "fp": [],
+   "sig": "__int64 __fastcall sub_145426EF0(__int64 a1, _QWORD *a2)",
+   "decomp": "__int64 __fastcall sub_145426EF0(__int64 a1, _QWORD *a2)\n{\n  __int64 v2; // rdi\n  __int64 v5; // rax\n  __int64 v6; // r9\n  __int64 v7; // r8\n  __int64 v8; // rdx\n  __int64 v9; // rdi\n  __int64 v10; // rax\n  _QWORD v12[5]; // [rsp+30h] [rbp-28h] BYREF\n  unsigned int v13; // [rsp+60h] [rbp+8h] BYREF\n  unsigned int v14; // [rsp+68h] [rbp+10h] BYREF\n  __int64 v15; // [rsp+78h] [rbp+20h] BYREF\n\n  v2 = 0;\n  v14 = 0;\n  sub_1414D3D00();\n  if ( a2[4] != 0 )\n  {\n    sub_1414DE5C0(a2, a2[3], &v14);\n  }\n  else\n  {\n    a2[17] = *(_QWORD *)(a2[17] + 24LL);\n    sub_1414DE5F0(a2, &v14);\n  }\n  v13 = 0;\n  sub_1414D3D00();\n  if ( a2[4] != 0 )\n  {\n    sub_1414DE5C0(a2, a2[3], &v13);\n  }\n  else\n  {\n    a2[17] = *(_QWORD *)(a2[17] + 24LL);\n    sub_1414DE5F0(a2, &v13);\n  }\n  v12[0] = 0;\n  sub_1414D3DB0();\n  if ( a2[4] != 0 )\n  {\n    sub_1414DE5C0(a2, a2[3], v12);\n  }\n  else\n  {\n    a2[17] = *(_QWORD *)(a2[17] + 24LL);\n    sub_1414DE5F0(a2, v12);\n  }\n  v15 = 0;\n  sub_1414D3DB0();\n  if ( a2[4] != 0 )\n  {\n    sub_1414DE5C0(a2, a2[3], &v15);\n  }\n  else\n  {\n    a2[17] = *(_QWORD *)(a2[17] + 24LL);\n    sub_1414DE5F0(a2, &v15);\n  }\n  v5 = a2[4];\n  v6 = v12[0];\n  v7 = v13;\n  v8 = v14;\n  LOBYTE(v2) = v5 != 0;\n  v9 = v5 + v2;\n  v10 = v15;\n  a2[4] = v9;\n  return (*(__int64 (__fastcall **)(__int64, __int64, __int64, __int64, __int64))(*(_QWORD *)a1 + 1232LL))(\n           a1,\n           v8,\n           v7,\n           v6,\n           v10);\n}\n"
+  },
+  "s170": {
+   "rva": "0x5427040",
+   "size": 204,
+   "fp": [],
+   "sig": "__int64 __fastcall sub_145427040(__int64 a1, _QWORD *a2)",
+   "decomp": "__int64 __fastcall sub_145427040(__int64 a1, _QWORD *a2)\n{\n  int v5; // [rsp+30h] [rbp+8h] BYREF\n  int v6; // [rsp+38h] [rbp+10h] BYREF\n\n  v6 = 0;\n  sub_1414D2F40();\n  if ( a2[4] != 0 )\n  {\n    sub_1414DE5C0(a2, a2[3], &v6);\n  }\n  else\n  {\n    a2[17] = *(_QWORD *)(a2[17] + 24LL);\n    sub_1414DE5F0(a2, &v6);\n  }\n  v5 = 0;\n  sub_1414D2F40();\n  if ( a2[4] != 0 )\n  {\n    sub_1414DE5C0(a2, a2[3], &v5);\n  }\n  else\n  {\n    a2[17] = *(_QWORD *)(a2[17] + 24LL);\n    sub_1414DE5F0(a2, &v5);\n  }\n  a2[4] += a2[4] != 0;\n  return (*(__int64 (__fastcall **)(__int64))(*(_QWORD *)a1 + 1224LL))(a1);\n}\n"
+  },
+  "s172": {
+   "rva": "0x5427110",
+   "size": 352,
+   "fp": [],
+   "sig": "__int64 __fastcall sub_145427110(__int64 a1, _QWORD *a2)",
+   "decomp": "__int64 __fastcall sub_145427110(__int64 a1, _QWORD *a2)\n{\n  __int64 v4; // rdi\n  __int64 v5; // rcx\n  __int64 v6; // rax\n  __int64 v7; // rdx\n  _WORD v9[2]; // [rsp+20h] [rbp-178h] BYREF\n  int v10; // [rsp+24h] [rbp-174h]\n  __int128 v11; // [rsp+28h] [rbp-170h]\n  __int64 v12; // [rsp+38h] [rbp-160h]\n  int v13; // [rsp+40h] [rbp-158h]\n  __int128 v14; // [rsp+60h] [rbp-138h]\n  __int64 v15; // [rsp+70h] [rbp-128h]\n  _BYTE v16[80]; // [rsp+90h] [rbp-108h] BYREF\n  _BYTE v17[80]; // [rsp+E0h] [rbp-B8h] BYREF\n  _BYTE v18[80]; // [rsp+130h] [rbp-68h] BYREF\n  _BYTE v19[16]; // [rsp+180h] [rbp-18h] BYREF\n  unsigned __int8 v20; // [rsp+1A0h] [rbp+8h] BYREF\n\n  v20 = 0;\n  sub_1414D2C80();\n  if ( a2[4] != 0 )\n  {\n    sub_1414DE5C0(a2, a2[3], &v20);\n  }\n  else\n  {\n    a2[17] = *(_QWORD *)(a2[17] + 24LL);\n    sub_1414DE5F0(a2, &v20);\n  }\n  v4 = 0;\n  v9[0] = 0;\n  v10 = 0;\n  v11 = *(_OWORD *)&byte_14A4745F8;\n  v12 = *((_QWORD *)&byte_14A4745F8 + 2);\n  v13 = sub_14541A1C0(&xmmword_14A474800);\n  v14 = *(_OWORD *)&byte_14A4745F8;\n  v15 = *((_QWORD *)&byte_14A4745F8 + 2);\n  sub_14541A6C0(v16);\n  sub_14541A6C0(v17);\n  sub_14541A6C0(v18);\n  sub_14541A6C0(v19);\n  sub_1414D3BA0(v5);\n  if ( a2[4] != 0 )\n  {\n    sub_1414DE5C0(a2, a2[3], v9);\n  }\n  else\n  {\n    a2[17] = *(_QWORD *)(a2[17] + 24LL);\n    sub_1414DE5F0(a2, v9);\n  }\n  v6 = a2[4];\n  v7 = v20;\n  LOBYTE(v4) = v6 != 0;\n  a2[4] = v6 + v4;\n  return (*(__int64 (__fastcall **)(__int64, __int64, _WORD *))(*(_QWORD *)a1 + 1216LL))(a1, v7, v9);\n}\n"
+  },
+  "s174": {
+   "rva": "0x5427f70",
+   "err": "nofunc"
+  },
+  "s176": {
+   "rva": "0x5428220",
+   "size": 171,
+   "fp": [],
+   "sig": "__int64 __fastcall sub_145428220(__int64 a1, _QWORD *a2)",
+   "decomp": "__int64 __fastcall sub_145428220(__int64 a1, _QWORD *a2)\n{\n  __int64 v2; // rdi\n  __int64 v5; // rax\n  __int64 result; // rax\n  __int64 v7; // [rsp+20h] [rbp-18h] BYREF\n  __int64 v8; // [rsp+28h] [rbp-10h]\n\n  v2 = 0;\n  v7 = 0;\n  v8 = 0;\n  sub_141492190();\n  if ( a2[4] != 0 )\n  {\n    sub_1414DE5C0(a2, a2[3], &v7);\n  }\n  else\n  {\n    a2[17] = *(_QWORD *)(a2[17] + 24LL);\n    sub_1414DE5F0(a2, &v7);\n  }\n  v5 = a2[4];\n  LOBYTE(v2) = v5 != 0;\n  a2[4] = v5 + v2;\n  (*(void (__fastcall **)(__int64, __int64 *))(*(_QWORD *)a1 + 1248LL))(a1, &v7);\n  result = sub_1454247E0(v7, (unsigned int)v8);\n  if ( v7 != 0 )\n    return sub_141177030(v7);\n  return result;\n}\n"
+  },
+  "s178": {
+   "rva": "0x54286f0",
+   "size": 157,
+   "fp": [],
+   "sig": "__int64 __fastcall sub_1454286F0(__int64 a1, _QWORD *a2)",
+   "decomp": "__int64 __fastcall sub_1454286F0(__int64 a1, _QWORD *a2)\n{\n  __int64 v2; // rdi\n  __int64 v5; // rax\n  __int64 result; // rax\n  _QWORD v7[3]; // [rsp+20h] [rbp-18h] BYREF\n\n  v2 = 0;\n  v7[0] = 0;\n  v7[1] = 0;\n  sub_141492190();\n  if ( a2[4] != 0 )\n  {\n    sub_1414DE5C0(a2, a2[3], v7);\n  }\n  else\n  {\n    a2[17] = *(_QWORD *)(a2[17] + 24LL);\n    sub_1414DE5F0(a2, v7);\n  }\n  v5 = a2[4];\n  LOBYTE(v2) = v5 != 0;\n  a2[4] = v5 + v2;\n  result = (*(__int64 (__fastcall **)(__int64, _QWORD *))(*(_QWORD *)a1 + 1240LL))(a1, v7);\n  if ( v7[0] != 0 )\n    return sub_141177030(v7[0]);\n  return result;\n}\n"
+  }
+ }
+}
