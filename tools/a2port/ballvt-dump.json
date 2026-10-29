@@ -1,0 +1,145 @@
+{
+ "imagebase": "0x140000000",
+ "funcs": {
+  "MGR64": {
+   "rva": "0x56ef200",
+   "start": "0x56ef200",
+   "size": 132,
+   "decomp": "__int64 __fastcall sub_1456EF200(__int64 a1, __int64 a2)\n{\n  const wchar_t *v4; // [rsp+20h] [rbp-38h] BYREF\n  int v5; // [rsp+28h] [rbp-30h]\n  int v6; // [rsp+2Ch] [rbp-2Ch]\n  __int128 v7; // [rsp+30h] [rbp-28h] BYREF\n  __int64 v8; // [rsp+40h] [rbp-18h]\n\n  sub_14368D8C0();\n  v5 = 10;\n  v8 = 0;\n  v6 = 1;\n  v7 = 0;\n  v4 = L\"SimulationsOutline\";\n  BYTE8(v7) = 1;\n  sub_1441C8BF0(&v4, a2, &v7);\n  v5 = 11;\n  v4 = L\"Stats\";\n  v6 = 1;\n  return sub_1441C8BF0(&v4, a2, &v7);\n}\n",
+   "calls": [
+    "0x368D8C0",
+    "0x41C8BF0",
+    "0x56EF200"
+   ],
+   "sig": "__int64 __fastcall sub_1456EF200(__int64 a1, __int64 a2)"
+  },
+  "MGR86": {
+   "rva": "0x5483700",
+   "start": "0x5483700",
+   "size": 179,
+   "decomp": "__int64 sub_145483700()\n{\n  _DWORD *v0; // rbx\n  __int64 result; // rax\n\n  v0 = (_DWORD *)(*((_QWORD *)NtCurrentTeb()->ThreadLocalStoragePointer + (unsigned int)TlsIndex) + 4684LL);\n  if ( dword_14AC02D38 > *v0 )\n  {\n    Init_thread_header(&dword_14AC02D38);\n    if ( dword_14AC02D38 == -1 )\n    {\n      sub_1412A9170(&unk_14AC02D30, L\"SimulationsOutline\", 1);\n      Init_thread_footer(&dword_14AC02D38);\n    }\n  }\n  result = (unsigned int)*v0;\n  if ( dword_14AC02D48 > (int)result )\n  {\n    result = Init_thread_header(&dword_14AC02D48);\n    if ( dword_14AC02D48 == -1 )\n    {\n      sub_1412A9170(&unk_14AC02D40, L\"Stats\", 1);\n      return Init_thread_footer(&dword_14AC02D48);\n    }\n  }\n  return result;\n}\n",
+   "calls": [
+    "0x12A9170",
+    "0x5483700"
+   ],
+   "sig": "__int64 sub_145483700()"
+  },
+  "MGR116": {
+   "rva": "0x56e7c30",
+   "start": "0x56e7c30",
+   "size": 108,
+   "decomp": "__int64 __fastcall sub_1456E7C30(__int64 a1)\n{\n  __int64 v2; // rax\n  __int64 result; // rax\n  __int64 v4; // rdi\n\n  sub_14367F1A0();\n  if ( qword_14AC0C198 == 0 )\n    qword_14AC0C198 = *(_QWORD *)(a1 + 856);\n  sub_14368FBC0(a1);\n  v2 = sub_14368FBC0(a1);\n  result = sub_1455E6740(v2);\n  *(_QWORD *)(a1 + 792) = result;\n  v4 = result;\n  if ( result != 0 )\n  {\n    result = sub_141515B80(result + 76, a1);\n    *(_BYTE *)(v4 + 64) = 1;\n  }\n  return result;\n}\n",
+   "calls": [
+    "0x1515B80",
+    "0x367F1A0",
+    "0x368FBC0",
+    "0x55E6740",
+    "0x56E7C30"
+   ],
+   "sig": "__int64 __fastcall sub_1456E7C30(__int64 a1)"
+  },
+  "MGR160": {
+   "rva": "0x57114c0",
+   "start": "0x57114c0",
+   "size": 4228,
+   "decomp": "__int64 __fastcall sub_1457114C0(__int64 a1, float a2)\n{\n  __int64 v4; // rax\n  __int64 i; // rdx\n  __int64 v6; // rax\n  int v7; // r15d\n  __int64 v8; // rdi\n  __int64 v9; // rsi\n  __int64 v10; // rax\n  __int64 v11; // rax\n  _BYTE *v12; // rcx\n  char v13; // al\n  unsigned int v14; // r8d\n  int v15; // eax\n  __int64 v16; // rcx\n  int v17; // r9d\n  __int64 v18; // r10\n  __int64 v19; // rcx\n  __int64 v20; // r11\n  int v21; // eax\n  __int64 v22; // r8\n  __int64 v23; // rcx\n  int v24; // eax\n  __int64 v25; // rax\n  __int64 v26; // rax\n  __int64 v27; // rax\n  int v28; // r11d\n  int v29; // ecx\n  int v30; // r8d\n  unsigned int *v31; // r9\n  unsigned __int64 v32; // rax\n  int v33; // eax\n  __int64 v34; // r8\n  __int64 v35; // r9\n  unsigned __int64 v36; // rsi\n  __int64 v37; // rcx\n  unsigned int *v38; // rdx\n  _DWORD *v39; // rdi\n  unsigned int v40; // esi\n  double v41; // xmm2_8\n  double v42; // xmm1_8\n  _BYTE *v43; // rdi\n  int v44; // r11d\n  int v45; // ecx\n  int v46; // r8d\n  int *v47; // r9\n  int v48; // edx\n  unsigned __int64 v49; // rax\n  int v50; // eax\n  double v51; // xmm2_8\n  int v52; // r11d\n  int v53; // ecx\n  int v54; // r8d\n  unsigned int *v55; // r9\n  unsigned __int64 v56; // rax\n  int v57; // eax\n  unsigned __int64 v58; // rdi\n  _DWORD *v59; // rdx\n  double v60; // xmm2_8\n  int v61; // r10d\n  int v62; // ecx\n  int v63; // r8d\n  unsigned int *v64; // r9\n  unsigned __int64 v65; // rcx\n  int v66; // eax\n  int v67; // r14d\n  int v68; // edi\n  __int64 v69; // r10\n  unsigned __int64 v70; // rcx\n  unsigned __int64 v71; // rdi\n  _DWORD *v72; // rdx\n  double v73; // xmm0_8\n  double v74; // xmm0_8\n  __int64 result; // rax\n  __int64 v76; // rsi\n  int v77; // r11d\n  int v78; // ecx\n  int v79; // r8d\n  int *v80; // r9\n  int v81; // edx\n  unsigned __int64 v82; // rcx\n  int v83; // eax\n  __int64 v84; // r11\n  __int64 v85; // r8\n  __int64 v86; // r9\n  unsigned __int64 v87; // rdx\n  __int64 v88; // rcx\n  __int64 v89; // r15\n  __int64 v90; // rdi\n  __int64 v91; // rax\n  __int64 v92; // rcx\n  __int64 v93; // rbx\n  unsigned int v94; // esi\n  __int64 v95; // r14\n  unsigned int v96; // esi\n  __int64 v97; // rbx\n  int v98; // r13d\n  __int64 v99; // r12\n  __int64 v100; // r15\n  int v101; // edi\n  __int64 v102; // rsi\n  __int64 v103; // r14\n  __int64 v104; // rax\n  __int64 v105; // rbx\n  _QWORD *v106; // rbx\n  __int64 v107; // rcx\n  _BYTE *v108; // rsi\n  _BYTE *v109; // r15\n  _DWORD *v110; // rbx\n  __int64 v111; // rdi\n  const void *v112; // r14\n  unsigned int v113; // edi\n  __int64 v114; // r14\n  __int64 v115; // rax\n  __int128 v116; // [rsp+48h] [rbp-C0h] BYREF\n  __int128 v117; // [rsp+58h] [rbp-B0h] BYREF\n  __int64 v118; // [rsp+68h] [rbp-A0h]\n  __m256i j; // [rsp+70h] [rbp-98h] BYREF\n  double v120; // [rsp+90h] [rbp-78h]\n  _BYTE v121[40]; // [rsp+98h] [rbp-70h] BYREF\n  unsigned int v122; // [rsp+C0h] [rbp-48h]\n  int v123; // [rsp+C4h] [rbp-44h]\n  int v124; // [rsp+C8h] [rbp-40h]\n  int v125; // [rsp+CCh] [rbp-3Ch]\n  __int128 v126; // [rsp+D0h] [rbp-38h]\n  __int64 v127; // [rsp+158h] [rbp+50h]\n  bool v128; // [rsp+160h] [rbp+58h]\n  __int64 v129; // [rsp+168h] [rbp+60h]\n  __int64 v130; // [rsp+170h] [rbp+68h]\n\n  sub_14369F2E0();\n  v4 = sub_14368FBC0(a1);\n  if ( v4 != 0 && (unsigned int)sub_1441F5A60(v4) == 3 )\n  {\n    v6 = sub_14368FBC0(a1);\n    if ( sub_145810B30(v6) != 0 )\n    {\n      v7 = 0;\n      if ( *(int *)(a1 + 816) > 0 )\n      {\n        v8 = 0;\n        while ( 1 )\n        {\n          v9 = *(_QWORD *)(a1 + 808);\n          v10 = sub_14368FBC0(a1);\n          v11 = sub_145810B30(v10);\n          v12 = *(_BYTE **)(v8 + v9 + 16);\n          i = (__int64)&v12[*(int *)(v8 + v9 + 24)];\n          if ( v12 == (_BYTE *)i )\n            break;\n          v13 = *(_BYTE *)(v11 + 5623);\n          while ( *v12 != v13 )\n          {\n            if ( ++v12 == (_BYTE *)i )\n              goto LABEL_10;\n          }\n          v17 = *(_DWORD *)(v8 + v9);\n          if ( *(_DWORD *)(a1 + 1128) != *(_DWORD *)(a1 + 1172) )\n          {\n            i = a1 + 1176;\n            v18 = *(_QWORD *)(a1 + 1184);\n            v19 = a1 + 1176;\n            if ( v18 != 0 )\n              v19 = *(_QWORD *)(a1 + 1184);\n            v20 = v17 & (unsigned int)(*(_DWORD *)(a1 + 1192) - 1);\n            v21 = *(_DWORD *)(v19 + 4 * v20);\n            if ( v21 != -1 )\n            {\n              v22 = *(_QWORD *)(a1 + 1120);\n              while ( 1 )\n              {\n                v23 = 288LL * v21;\n                if ( *(_DWORD *)(v23 + v22) == v17 )\n                  break;\n                v21 = *(_DWORD *)(v23 + v22 + 280);\n                if ( v21 == -1 )\n                  goto LABEL_33;\n              }\n              if ( v18 != 0 )\n                i = *(_QWORD *)(a1 + 1184);\n              v24 = *(_DWORD *)(i + 4 * v20);\n              if ( v24 == -1 )\n              {\nLABEL_31:\n                i = 0;\n              }\n              else\n              {\n                while ( 1 )\n                {\n                  i = v22 + 288LL * v24;\n                  if ( *(_DWORD ",
+   "calls": [
+    "0x111F870",
+    "0x112D430",
+    "0x114ACE0",
+    "0x1177030",
+    "0x122EE40",
+    "0x1519A80",
+    "0x151BB90",
+    "0x228C470",
+    "0x22ADE80",
+    "0x294F2C0",
+    "0x2F43BB0",
+    "0x368FBC0",
+    "0x369F2E0",
+    "0x36D81D0",
+    "0x3835500",
+    "0x41F5A60",
+    "0x543DA00",
+    "0x543DBA0",
+    "0x543DE00",
+    "0x543E1D0",
+    "0x54ECC60",
+    "0x56DD450",
+    "0x56E8100",
+    "0x56ED2D0",
+    "0x5708CF0",
+    "0x57114C0",
+    "0x5712580",
+    "0x57180E0",
+    "0x5810B30"
+   ],
+   "sig": "__int64 __fastcall sub_1457114C0(__int64 a1, float a2)"
+  },
+  "SUB97": {
+   "rva": "0x5712550",
+   "start": "0x5712550",
+   "size": 44,
+   "decomp": "void __fastcall sub_145712550(AK::MemoryMgr *a1)\n{\n  AK::MemoryMgr::StartProfileThreadUsage(a1);\n  if ( *((_BYTE *)a1 + 16) != 0 )\n  {\n    *((_BYTE *)a1 + 16) = 0;\n    sub_145703CD0((char *)a1 - 48);\n  }\n}\n",
+   "calls": [
+    "0x5703CD0",
+    "0x5712550"
+   ],
+   "sig": "void __fastcall sub_145712550(AK::MemoryMgr *a1)"
+  },
+  "SUB102": {
+   "rva": "0x54b6368",
+   "start": "0x54b6368",
+   "size": 9,
+   "decomp": "__int64 __fastcall sub_1454B6368(__int64 a1)\n{\n  return sub_1454B6A20((AK::MemoryMgr *)(a1 - 48));\n}\n",
+   "calls": [
+    "0x54B6368",
+    "0x54B6A20"
+   ],
+   "sig": "__int64 __fastcall sub_1454B6368(__int64 a1)"
+  },
+  "SUB106": {
+   "rva": "0x54b64e0",
+   "start": "0x54b64e0",
+   "size": 159,
+   "decomp": "AK::MemoryMgr *__fastcall sub_1454B64E0(AK::MemoryMgr *this, char a2)\n{\n  __int64 v4; // rcx\n  __int64 v5; // rcx\n  __int64 v6; // rcx\n  __int64 v7; // rcx\n\n  *(_QWORD *)this = &off_1491B0FB0;\n  v4 = *((_QWORD *)this + 117);\n  if ( v4 != 0 )\n    sub_141177030(v4);\n  v5 = *((_QWORD *)this + 115);\n  if ( v5 != 0 )\n    sub_141177030(v5);\n  v6 = *((_QWORD *)this + 113);\n  if ( v6 != 0 )\n    sub_141177030(v6);\n  v7 = *((_QWORD *)this + 110);\n  if ( v7 != 0 )\n    sub_141177030(v7);\n  sub_143679A50(this);\n  if ( (a2 & 1) != 0 )\n  {\n    if ( (a2 & 4) == 0 )\n    {\n      sub_1411232D0(this);\n      return this;\n    }\n    AK::MemoryMgr::StartProfileThreadUsage(this);\n  }\n  return this;\n}\n",
+   "calls": [
+    "0x11232D0",
+    "0x1177030",
+    "0x3679A50",
+    "0x54B64E0"
+   ],
+   "sig": "AK::MemoryMgr *__fastcall sub_1454B64E0(AK::MemoryMgr *this, char a2)"
+  },
+  "MGR0_dtor": {
+   "rva": "0x54826f0",
+   "start": "0x54826f0",
+   "size": 324,
+   "decomp": "AK::MemoryMgr *__fastcall sub_1454826F0(AK::MemoryMgr *this, char a2)\n{\n  __int64 v4; // rcx\n  __int64 v5; // rcx\n  __int64 v6; // rcx\n  __int64 v7; // rcx\n  __int64 v8; // rdi\n  __int64 v9; // rcx\n  __int64 v10; // rcx\n\n  *(_QWORD *)this = &off_149151EC0;\n  *((_DWORD *)this + 298) = 0;\n  *((_QWORD *)this + 87) = off_1491525E8;\n  v4 = *((_QWORD *)this + 148);\n  if ( v4 != 0 )\n    sub_141177030(v4);\n  sub_145482F30((char *)this + 1120, 0);\n  v5 = *((_QWORD *)this + 144);\n  if ( v5 != 0 )\n    sub_141177030(v5);\n  v6 = *((_QWORD *)this + 140);\n  if ( v6 != 0 )\n    sub_141177030(v6);\n  sub_145482050((char *)this + 880);\n  sub_1413D1E40(*((_QWORD *)this + 101), *((unsigned int *)this + 204));\n  v7 = *((_QWORD *)this + 101);\n  if ( v7 != 0 )\n    sub_141177030(v7);\n  *((_QWORD *)this + 87) = &off_148C71B40;\n  v8 = *((_QWORD *)this + 90);\n  if ( v8 != 0 )\n  {\n    v9 = *(_QWORD *)(v8 + 128);\n    if ( v9 != 0 )\n      sub_141177030(v9);\n    sub_1411232D0(v8);\n  }\n  v10 = *((_QWORD *)this + 89);\n  *((_QWORD *)this + 88) = off_148C71B38;\n  sub_1447A5FB0(v10);\n  sub_143679A50(this);\n  if ( (a2 & 1) != 0 )\n  {\n    if ( (a2 & 4) == 0 )\n    {\n      sub_1411232D0(this);\n      return this;\n    }\n    AK::MemoryMgr::StartProfileThreadUsage(this);\n  }\n  return this;\n}\n",
+   "calls": [
+    "0x11232D0",
+    "0x1177030",
+    "0x13D1E40",
+    "0x3679A50",
+    "0x47A5FB0",
+    "0x5482050",
+    "0x54826F0",
+    "0x5482F30"
+   ],
+   "sig": "AK::MemoryMgr *__fastcall sub_1454826F0(AK::MemoryMgr *this, char a2)"
+  },
+  "SUB0_dtor": {
+   "rva": "0x54b6a20",
+   "start": "0x54b6a20",
+   "size": 116,
+   "decomp": "AK::MemoryMgr *__fastcall sub_1454B6A20(AK::MemoryMgr *this, char a2)\n{\n  __int64 v4; // rcx\n\n  *(_QWORD *)this = &off_1491B0C60;\n  *((_QWORD *)this + 6) = off_1491B0F68;\n  v4 = *((_QWORD *)this + 12);\n  if ( v4 != 0 )\n    sub_141177030(v4);\n  sub_14411EF50(this);\n  if ( (a2 & 1) != 0 )\n  {\n    if ( (a2 & 4) == 0 )\n    {\n      sub_1411232D0(this);\n      return this;\n    }\n    AK::MemoryMgr::StartProfileThreadUsage(this);\n  }\n  return this;\n}\n",
+   "calls": [
+    "0x11232D0",
+    "0x1177030",
+    "0x411EF50",
+    "0x54B6A20"
+   ],
+   "sig": "AK::MemoryMgr *__fastcall sub_1454B6A20(AK::MemoryMgr *this, char a2)"
+  }
+ }
+}
