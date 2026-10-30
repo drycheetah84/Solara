@@ -6,7 +6,7 @@ credentials-file: C:/Users/drych/.cloudflared/95306d5c-bfed-4553-bc71-9b9966f4cf
 # carry arbitrary UDP, so those still need a public IP:port.
 ingress:
   # Mothership - login / auth  (game: *.aa-mothership.com)
-  - hostname: mothership.halcy0n.net
+  - hostname: mothership-prod.halcy0n.net
     service: http://127.0.0.1:90
 
   # A2StationDb - stations / roles / quests / deployments  (game: api.oriondrift.net)
@@ -16,11 +16,11 @@ ingress:
     service: http://127.0.0.1:78
 
   # EOS gateway - server list  (game: EOS / *.epicgames.com)
-  - hostname: eos.halcy0n.net
+  - hostname: epicgames.halcy0n.net
     service: http://127.0.0.1:50
 
   # EOS websocket
-  - hostname: eosws.halcy0n.net
+  - hostname: epicgames-ws.halcy0n.net
     service: http://127.0.0.1:80
 
   # Ares web dashboard (admin). Protect with Cloudflare Access if exposed.

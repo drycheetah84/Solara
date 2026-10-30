@@ -12,10 +12,10 @@ one hostname per service, with Cloudflare edge TLS (no origin certs needed).
 
 | Hostname | Solara service | Local port | Game domain it fronts |
 |---|---|---|---|
-| `mothership.halcy0n.net` | Mothership (login/auth) | 90 | `*.aa-mothership.com` |
+| `mothership-prod.halcy0n.net` | Mothership (login/auth) | 90 | `*.aa-mothership.com` |
 | `station.halcy0n.net` | A2StationDb (stations/roles/quests/deployments) | 78 | `api.oriondrift.net` |
-| `eos.halcy0n.net` | EOS gateway (server list) | 50 | EOS / `*.epicgames.com` |
-| `eosws.halcy0n.net` | EOS websocket | 80 | EOS WS |
+| `epicgames.halcy0n.net` | EOS gateway (server list) | 50 | EOS / `*.epicgames.com` |
+| `epicgames-ws.halcy0n.net` | EOS websocket | 80 | EOS WS |
 | `dash.halcy0n.net` | Ares web dashboard (admin) | 8080 | — (protect w/ CF Access) |
 
 Private, **not** tunneled: HalcyonSocket orchestrator `:9095`/`:9100`.
@@ -48,7 +48,7 @@ cloudflared --config ~/.cloudflared/halcyon.yml service install   # Windows serv
 
 ## Verify
 ```bash
-curl -s -o /dev/null -w "%{http_code}\n" https://mothership.halcy0n.net/   # 200 = origin reached
+curl -s -o /dev/null -w "%{http_code}\n" https://mothership-prod.halcy0n.net/   # 200 = origin reached
 ```
 A `404`/`500` from these hosts is the **origin** (Solara) answering — still proves routing.
 A Cloudflare `1033`/`530` error page means the tunnel/origin is down.
