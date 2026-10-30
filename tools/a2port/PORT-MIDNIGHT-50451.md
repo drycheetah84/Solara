@@ -63,6 +63,10 @@ Tooling: NDK `llvm-objdump` / `llvm-readelf` / `llvm-nm`
 ## Status
 - [x] Build identity confirmed (50451, arm64-v8a) and HTTP stack identified (libcurl 8.4.0).
 - [x] Both `curl_easy_setopt` offsets located, disassembly-verified, and applied to `hooks.cpp`.
-- [ ] Rebuild `libmidnight.so` with NDK (requires ndk-build availability).
+- [x] Rebuilt `libmidnight.so` with the Unity NDK (`ndk-build`, APP_ABI arm64-v8a). Clean compile +
+      link; disassembly of the output confirms both offsets are baked in
+      (`mov w20,#0x84bc; movk #0xa2b,lsl16` = 0x0a2b84bc; `mov w20,#0x4f04; movk #0xa32,lsl16`
+      = 0x0a324f04). Output: `libs/arm64-v8a/libmidnight.so` (git-ignored build artifact).
+      NDK path has spaces → build via `build.bat` (it 8.3-short-paths the NDK) or pass the short path.
 - [ ] Runtime verification (inject into the 50451 APK on-device; confirm `[Midnight] Redirected`
       log lines) — needs an on-device/emulator run; external blocker, cannot be driven headless.
