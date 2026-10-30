@@ -55,10 +55,40 @@ Scanner: `tools/midnight-android/port/scan_callers.py` (+ `scan5.py`, `readstr.p
 Tooling: NDK `llvm-objdump` / `llvm-readelf` / `llvm-nm`
 (`...Unity\Hub\Editor\6000.5.10f1\...\AndroidPlayer\NDK\toolchains\llvm\...`).
 
-## Build & inject (unchanged from upstream)
-`build.bat` (Windows) → `libs/arm64-v8a/libmidnight.so`; inject per upstream README
-(load `midnight` in `GameActivity.smali onCreate`). Redirect backends in `includes/opts.h`
+## Build & inject
+`build.bat` (Windows) → `libs/arm64-v8a/libmidnight.so`. Redirect backends in `includes/opts.h`
 (`209.126.2.136:50/:78/:90`).
+
+**One-shot patched+signed APK:** `tools/midnight-android/build_apk.ps1` does the whole pipeline
+headlessly (build lib → copy into `lib/arm64-v8a` → inject loader → `apktool b` → `zipalign` →
+`apksigner`), non-destructively (backs up the one edited smali to `*.orig`). Verified 2026-10-30.
+
+**Injection point (UE `GameActivity`):** the game loads `libUnreal.so` via
+`System.loadLibrary("Unreal")` in `smali/com/epicgames/unreal/GameActivity.smali`. We load
+`midnight` on the very next instruction, so Dobby hooks `curl_easy_setopt` *after* `libUnreal.so`
+is mapped (its offsets are only valid then) and *before* the game issues any HTTP:
+```smali
+    const-string v0, "Unreal"
+    invoke-static {v0}, Ljava/lang/System;->loadLibrary(Ljava/lang/String;)V
+    const-string v0, "midnight"                         # <-- injected
+    invoke-static {v0}, Ljava/lang/System;->loadLibrary(Ljava/lang/String;)V
+```
+`v0` is free there (next reused at the `OVRPlugin` load). libmidnight.so's only `NEEDED` libs are
+`liblog/libdl/libc/libm` (all system), so `loadLibrary` cannot throw `UnsatisfiedLinkError`.
+
+**Signing:** APK `minSdkVersion=29` (Android 10), so a v3 signature is sufficient and installable
+(`apksigner verify` → *Verifies* via v3). Debug keystore `midnight.keystore` (pass `midnight123`,
+alias `midnight`) lives beside the output APK and is **not** committed.
+
+## Build the patched APK (reproducible)
+Target APK.Easy.Tool decompiled tree (apktool 2.6.1): `.../1-Decompiled APKs/A2-Android-Shipping-arm64 (2)`.
+```powershell
+pwsh -File tools/midnight-android/build_apk.ps1
+# -> .../2-Recompiled APKs/A2-midnight-50451.apk  (83 MB, v3-signed, verifies)
+```
+Install (device/emulator): uninstall the stock app first (different signer) then
+`adb install A2-midnight-50451.apk`. The lib loads at Unreal-load time; look for `[Midnight]`
+logcat lines to confirm the redirect.
 
 ## Status
 - [x] Build identity confirmed (50451, arm64-v8a) and HTTP stack identified (libcurl 8.4.0).
@@ -68,5 +98,9 @@ Tooling: NDK `llvm-objdump` / `llvm-readelf` / `llvm-nm`
       (`mov w20,#0x84bc; movk #0xa2b,lsl16` = 0x0a2b84bc; `mov w20,#0x4f04; movk #0xa32,lsl16`
       = 0x0a324f04). Output: `libs/arm64-v8a/libmidnight.so` (git-ignored build artifact).
       NDK path has spaces → build via `build.bat` (it 8.3-short-paths the NDK) or pass the short path.
-- [ ] Runtime verification (inject into the 50451 APK on-device; confirm `[Midnight] Redirected`
+- [x] Patched + signed APK built via `build_apk.ps1` (2026-10-30): loader injected into
+      `GameActivity.smali` after the Unreal load, `apktool b` + `zipalign` + `apksigner`
+      (v3), `apksigner verify` → *Verifies*. Output `A2-midnight-50451.apk` (83 MB) contains
+      `lib/arm64-v8a/libmidnight.so` (364832 B) alongside `libUnreal.so` (193 MB).
+- [ ] Runtime verification (install on-device; confirm `[Midnight] Redirected`
       log lines) — needs an on-device/emulator run; external blocker, cannot be driven headless.
