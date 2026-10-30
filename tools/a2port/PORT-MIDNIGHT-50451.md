@@ -57,7 +57,11 @@ Tooling: NDK `llvm-objdump` / `llvm-readelf` / `llvm-nm`
 
 ## Build & inject
 `build.bat` (Windows) → `libs/arm64-v8a/libmidnight.so`. Redirect backends in `includes/opts.h`
-(`209.126.2.136:50/:78/:90`).
+now point at the **Solara Cloudflare Tunnel** (HTTPS:443, valid `*.halcy0n.net` cert so no SSL
+bypass needed): `*epicgames*`→`https://epicgames.halcy0n.net` (:50 EOS),
+`*aa-mothership*`→`https://mothership-prod.halcy0n.net` (:90),
+`*oriondrift*`→`https://station.halcy0n.net` (:78). Raw-VPS fallback (`209.126.2.136:50/:90/:78`)
+noted in opts.h if the tunnel is down. See `deploy/cloudflare/README.md`.
 
 **One-shot patched+signed APK:** `tools/midnight-android/build_apk.ps1` does the whole pipeline
 headlessly (build lib → copy into `lib/arm64-v8a` → inject loader → `apktool b` → `zipalign` →

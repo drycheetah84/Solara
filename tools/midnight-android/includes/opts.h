@@ -6,10 +6,14 @@
 // aa-mothership.com = mothership backend (these are separate ports on your box, like the
 // Windows redirector's :78 / :90). Set to whatever the Android device can actually reach
 // (public host:port). If one backend serves both, set them to the same value.
-// Mirrors the Windows Fiddler rules exactly (Contains match -> VPS 209.126.2.136):
-constexpr const char* EPIC_BACKEND       = "http://209.126.2.136:50"; // *epicgames*     -> :50 (EOS)
-constexpr const char* MOTHERSHIP_BACKEND = "http://209.126.2.136:90"; // *aa-mothership* -> :90
-constexpr const char* ORION_BACKEND      = "http://209.126.2.136:78"; // *oriondrift*    -> :78
+// Redirect to the Solara backend via its Cloudflare Tunnel hostnames (one per service,
+// HTTPS:443 at the Cloudflare edge; the tunnel forwards to the local Solara ports). Cloudflare
+// presents a valid *.halcy0n.net cert, so TLS verifies -> BYPASS_SSL can stay false.
+// Contains() suffix-match on the game's original host decides which backend:
+constexpr const char* EPIC_BACKEND       = "https://epicgames.halcy0n.net";       // *epicgames*     -> :50 (EOS)
+constexpr const char* MOTHERSHIP_BACKEND = "https://mothership-prod.halcy0n.net";  // *aa-mothership* -> :90
+constexpr const char* ORION_BACKEND      = "https://station.halcy0n.net";          // *oriondrift*    -> :78 (A2StationDb)
+// (Raw VPS fallback, if the tunnel is down: http://209.126.2.136:50 / :90 / :78 respectively.)
 constexpr const char* BACKEND_URL = ORION_BACKEND; // legacy single-target (unused by the per-domain path)
 
 constexpr bool BYPASS_SSL = false; // only works with curl versions (aka if it doesnt use processrequest i cba bypassing ssl for this)
