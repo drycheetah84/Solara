@@ -1851,17 +1851,30 @@ void PublishCamera()
     if (have) State().ApplyCamera(pos, rot, fov);
 }
 
+// POD-only (SEH): one actor's world transform (quat, translation, scale). False if the actor/root is gone or the
+// read faults -- a disconnect tears the world down under this loop, and a stale root once crashed the client here.
+static bool ReadActorXform(const void* a, double q[4], double t[3], double s[3])
+{
+    __try
+    {
+        if (*(reinterpret_cast<const uint8_t*>(a) + 0x69) & 0x01) return false;   // bActorIsBeingDestroyed
+        const uintptr_t root = *reinterpret_cast<const uintptr_t*>(reinterpret_cast<uintptr_t>(a) + 0x1C8);
+        if (!root) return false;
+        const double* x = reinterpret_cast<const double*>(root + 0x1E0);          // ComponentToWorld (50451)
+        for (int i = 0; i < 4; ++i) q[i] = x[i];
+        for (int i = 0; i < 3; ++i) { t[i] = x[4 + i]; s[i] = x[8 + i]; }
+        return true;
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER) { return false; }
+}
+
 void RefreshTransforms()
 {
     for (SceneObject& o : g_lastObjects)
     {
         auto* a = static_cast<SDK::UObject*>(o.ptr);
-        if (!Alive(a) || (*(reinterpret_cast<const uint8_t*>(a) + 0x69) & 0x01)) continue;
-        void* root = *reinterpret_cast<void**>(reinterpret_cast<uintptr_t>(a) + 0x1C8);
-        if (!root) continue;
-        const double* q = reinterpret_cast<const double*>(reinterpret_cast<uintptr_t>(root) + 0x1E0 + 0x00);
-        const double* t = reinterpret_cast<const double*>(reinterpret_cast<uintptr_t>(root) + 0x1E0 + 0x20);
-        const double* s = reinterpret_cast<const double*>(reinterpret_cast<uintptr_t>(root) + 0x1E0 + 0x40);
+        double q[4], t[3], s[3];
+        if (!Alive(a) || !ReadActorXform(a, q, t, s)) continue;
         o.location = { t[0], t[1], t[2] };
         o.scale    = { s[0], s[1], s[2] };
         o.rotation = QuatToRot(q[0], q[1], q[2], q[3]);
