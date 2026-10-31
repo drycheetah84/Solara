@@ -1,0 +1,11 @@
+{
+ "input": "C:\\Users\\drych\\ProjectDrift\\Solara\\tools\\a2port\\work50451\\A2-50451.exe",
+ "imagebase": "0x140000000",
+ "func_count": 417648,
+ "ProcessEvent": {
+  "rva": "0x14e1b10",
+  "ea": "0x1414e1b10",
+  "isfunc": true,
+  "start": "0x1414e1b10"
+ }
+}

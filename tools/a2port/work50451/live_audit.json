@@ -1,0 +1,552 @@
+{
+"A6D3882": {
+"state": "data-global",
+"file": "dllmain_50451.cpp",
+"line": 54
+},
+"A6D3883": {
+"state": "data-global",
+"file": "dllmain_50451.cpp",
+"line": 55
+},
+"95DF980": {
+"state": "data-global",
+"file": "dllmain_50451.cpp",
+"line": 68
+},
+"95DF988": {
+"state": "data-global",
+"file": "dllmain_50451.cpp",
+"line": 69
+},
+"95DF98C": {
+"state": "data-global",
+"file": "dllmain_50451.cpp",
+"line": 70
+},
+"C000000": {
+"state": "bound",
+"file": "dllmain_50451.cpp",
+"line": 191
+},
+"A5BB000": {
+"state": "bound",
+"file": "dllmain_50451.cpp",
+"line": 354
+},
+"53DA880": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 433
+},
+"9710B80": {
+"state": "data-global",
+"file": "dllmain_50451.cpp",
+"line": 434
+},
+"4A12EC0": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 478
+},
+"4A169D0": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 515
+},
+"4A17C10": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 535
+},
+"10153A0": {
+"state": "bodymatch",
+"file": "dllmain_50451.cpp",
+"line": 551
+},
+"FCC220": {
+"state": "not-in-targets",
+"file": "dllmain_50451.cpp",
+"line": 554
+},
+"55A06C0": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 575
+},
+"559ABD0": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 771
+},
+"53C8AF0": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 772
+},
+"84E6D20": {
+"state": "data-global",
+"file": "dllmain_50451.cpp",
+"line": 773
+},
+"1254F50": {
+"state": "bodymatch",
+"file": "dllmain_50451.cpp",
+"line": 1021
+},
+"54277AD": {
+"state": "data-global",
+"file": "dllmain_50451.cpp",
+"line": 1260
+},
+"53DB090": {
+"state": "confirmed",
+"file": "dllmain_50451.cpp",
+"line": 1938
+},
+"543C7B0": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 1955
+},
+"5432A40": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 2139
+},
+"52EE2E0": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 2182
+},
+"5487560": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 2277
+},
+"84A2B38": {
+"state": "data-global",
+"file": "dllmain_50451.cpp",
+"line": 2278
+},
+"5482110": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 2336
+},
+"20000000": {
+"state": "bound",
+"file": "dllmain_50451.cpp",
+"line": 2564
+},
+"AC0A1A0": {
+"state": "data-global",
+"file": "dllmain_50451.cpp",
+"line": 3359
+},
+"53DC76A": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 3689
+},
+"53DC730": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 3690
+},
+"545BD80": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 3707
+},
+"54863C0": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 3718
+},
+"3509AB0": {
+"state": "confirmed",
+"file": "dllmain_50451.cpp",
+"line": 3891
+},
+"54EB5E0": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 3892
+},
+"5503050": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 5331
+},
+"547F7A0": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 5475
+},
+"54599B0": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 5618
+},
+"534A7F0": {
+"state": "confirmed",
+"file": "dllmain_50451.cpp",
+"line": 5820
+},
+"5464630": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 6132
+},
+"548FC40": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 6158
+},
+"5502B00": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 6262
+},
+"55B3900": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 6307
+},
+"54A9890": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 6316
+},
+"114D690": {
+"state": "searched-nomatch",
+"file": "dllmain_50451.cpp",
+"line": 6330
+},
+"1EC07A0": {
+"state": "bodymatch",
+"file": "dllmain_50451.cpp",
+"line": 6348
+},
+"466A240": {
+"state": "confirmed",
+"file": "dllmain_50451.cpp",
+"line": 6363
+},
+"4723AA0": {
+"state": "confirmed",
+"file": "dllmain_50451.cpp",
+"line": 6418
+},
+"37B02C0": {
+"state": "searched-nomatch",
+"file": "dllmain_50451.cpp",
+"line": 6527
+},
+"53AF7C0": {
+"state": "confirmed",
+"file": "dllmain_50451.cpp",
+"line": 7771
+},
+"54B5660": {
+"state": "confirmed",
+"file": "dllmain_50451.cpp",
+"line": 8501
+},
+"9C5D0A0": {
+"state": "data-global",
+"file": "dllmain_50451.cpp",
+"line": 8531
+},
+"4040990": {
+"state": "confirmed",
+"file": "dllmain_50451.cpp",
+"line": 8537
+},
+"54B13D0": {
+"state": "data-global",
+"file": "dllmain_50451.cpp",
+"line": 8541
+},
+"804BDA0": {
+"state": "data-global",
+"file": "dllmain_50451.cpp",
+"line": 9559
+},
+"5361530": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 9569
+},
+"468BE60": {
+"state": "searched-nomatch",
+"file": "dllmain_50451.cpp",
+"line": 9836
+},
+"54B04E0": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 11116
+},
+"5510C40": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 11127
+},
+"54A1930": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 13684
+},
+"54AF360": {
+"state": "confirmed",
+"file": "dllmain_50451.cpp",
+"line": 13696
+},
+"41F5A60": {
+"state": "confirmed",
+"file": "dllmain_50451.cpp",
+"line": 13717
+},
+"5810B30": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 13850
+},
+"3EC7C90": {
+"state": "bodymatch",
+"file": "dllmain_50451.cpp",
+"line": 13866
+},
+"60A0990": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 13880
+},
+"3A29B20": {
+"state": "confirmed",
+"file": "dllmain_50451.cpp",
+"line": 13898
+},
+"5450000": {
+"state": "not-in-targets",
+"file": "dllmain_50451.cpp",
+"line": 13923
+},
+"54B4000": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 13924
+},
+"46849A0": {
+"state": "searched-nomatch",
+"file": "dllmain_50451.cpp",
+"line": 14793
+},
+"54E4470": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 14897
+},
+"54E4E10": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 14898
+},
+"54E17E0": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 14899
+},
+"5429424": {
+"state": "confirmed",
+"file": "dllmain_50451.cpp",
+"line": 14949
+},
+"5429427": {
+"state": "confirmed",
+"file": "dllmain_50451.cpp",
+"line": 14954
+},
+"53B3BC3": {
+"state": "confirmed",
+"file": "dllmain_50451.cpp",
+"line": 14970
+},
+"53B3BCD": {
+"state": "confirmed",
+"file": "dllmain_50451.cpp",
+"line": 14978
+},
+"53B3BE2": {
+"state": "confirmed",
+"file": "dllmain_50451.cpp",
+"line": 14979
+},
+"A480348": {
+"state": "data-global",
+"file": "dllmain_50451.cpp",
+"line": 15209
+},
+"A4810D4": {
+"state": "data-global",
+"file": "dllmain_50451.cpp",
+"line": 15210
+},
+"924A700": {
+"state": "data-global",
+"file": "dllmain_50451.cpp",
+"line": 15223
+},
+"550F130": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 15366
+},
+"1245000": {
+"state": "confirmed",
+"file": "dllmain_50451.cpp",
+"line": 15387
+},
+"1269000": {
+"state": "confirmed",
+"file": "dllmain_50451.cpp",
+"line": 15387
+},
+"124DB00": {
+"state": "bodymatch",
+"file": "dllmain_50451.cpp",
+"line": 15388
+},
+"124ECE0": {
+"state": "bodymatch",
+"file": "dllmain_50451.cpp",
+"line": 15389
+},
+"12B8EF0": {
+"state": "searched-nomatch",
+"file": "dllmain_50451.cpp",
+"line": 15400
+},
+"12B9074": {
+"state": "data-global",
+"file": "dllmain_50451.cpp",
+"line": 15401
+},
+"1326B07": {
+"state": "bodymatch",
+"file": "dllmain_50451.cpp",
+"line": 15416
+},
+"54B1421": {
+"state": "data-global",
+"file": "dllmain_50451.cpp",
+"line": 15444
+},
+"111B4A0": {
+"state": "bodymatch",
+"file": "dllmain_50451.cpp",
+"line": 15680
+},
+"5846E40": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 15689
+},
+"558C600": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 15698
+},
+"4AB4DD0": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 15713
+},
+"4AB2880": {
+"state": "confirmed",
+"file": "dllmain_50451.cpp",
+"line": 15716
+},
+"12F0CB0": {
+"state": "confirmed",
+"file": "dllmain_50451.cpp",
+"line": 15728
+},
+"56E7A90": {
+"state": "confirmed",
+"file": "dllmain_50451.cpp",
+"line": 15813
+},
+"545CCB0": {
+"state": "pending-search",
+"file": "dllmain_50451.cpp",
+"line": 16184
+},
+"124F4C0": {
+"state": "bodymatch",
+"file": "dllmain_50451.cpp",
+"line": 16190
+},
+"14363A0": {
+"state": "confirmed",
+"file": "dllmain_50451.cpp",
+"line": 16226
+},
+"5502070": {
+"state": "confirmed",
+"file": "dllmain_50451.cpp",
+"line": 16233
+},
+"46BC830": {
+"state": "confirmed",
+"file": "dllmain_50451.cpp",
+"line": 16246
+},
+"47138D0": {
+"state": "confirmed",
+"file": "dllmain_50451.cpp",
+"line": 16247
+},
+"4690260": {
+"state": "searched-nomatch",
+"file": "dllmain_50451.cpp",
+"line": 16262
+},
+"46902F0": {
+"state": "searched-nomatch",
+"file": "dllmain_50451.cpp",
+"line": 16263
+},
+"4692F30": {
+"state": "searched-nomatch",
+"file": "dllmain_50451.cpp",
+"line": 16266
+},
+"4689030": {
+"state": "searched-nomatch",
+"file": "dllmain_50451.cpp",
+"line": 16267
+},
+"8D0A1F8": {
+"state": "data-global",
+"file": "specedit.h",
+"line": 4774
+},
+"4A09560": {
+"state": "pending-search",
+"file": "specedit.h",
+"line": 6185
+},
+"46B2E20": {
+"state": "bodymatch",
+"file": "specedit.h",
+"line": 7947
+},
+"53C9EE0": {
+"state": "confirmed",
+"file": "specedit.h",
+"line": 7959
+}
+}

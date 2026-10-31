@@ -1,0 +1,86 @@
+IDAMCPPlugin instance created
+
+  bytes   pages size description
+--------- ----- ---- --------------------------------------------
+134217728 16384 8192 allocating memory for b-tree...
+268435456 32768 8192 allocating memory for virtual array...
+   262144    32 8192 allocating memory for name pointers...
+-----------------------------------------------------------------
+402915328            total memory allocated
+
+Loading processor module C:\Program Files\IDA Professional 9.4\procs\pc.dll for metapc...OK
+Loading type libraries...
+Autoanalysis subsystem has been initialized.
+Database for file 'A2-Win64-Shipping.exe' has been loaded.
+Hex-Rays Decompiler plugin has been loaded (v9.4.0.260714)
+  License: 14-0000-FFFF-88  (1 user)
+  The hotkeys are F5: decompile, Ctrl-F5: decompile all.
+
+  Please check the Edit/Plugins menu for more information.
+Hex-rays version 9.4.0.260714 has been detected, gooMBA plugin ready to use
+IDAMCPPlugin instance created
+IDA MCP Server v1.0 by IDA MCP
+Initializing plugin...
+Menu items created successfully
+Menu items added
+Plugin initialized successfully
+[IDAMappingsImporter] Loaded 11887 persisted exec signatures from IDB.
+Using type parser: clang version 21.1.5
+C:/Users/drych/ProjectDrift/Solara/tools/a2port/work50451/datax.py:53: DeprecationWarning: get_func() is deprecated, use get_func_start or get_func_entry_info()
+  f = ida_funcs.get_func(ea)
+7FF6732A4ED0: restored microcode from idb
+7FF6732A4ED0: restored pseudocode from idb
+7FF6732B4D40: restored microcode from idb
+7FF6732B4D40: restored pseudocode from idb
+7FF6732C8BC0: restored microcode from idb
+7FF6732C8BC0: restored pseudocode from idb
+[autohidden] The decompiler assumes that the segment '.rdata' is read-only because of its NAME.
+All data references to the segment will be replaced by constant values.
+This may lead to drastic changes in the decompiler output.
+If the segment is not read-only, please change the segment NAME.
+
+In general, the decompiler checks the segment permissions, class, and name
+to determine if it is read-only.
+ -> OK
+7FF673350CB0: restored microcode from idb
+7FF673350CB0: restored pseudocode from idb
+7FF673386AD0: restored microcode from idb
+7FF673386AD0: restored pseudocode from idb
+7FF677413B10: restored microcode from idb
+7FF677413B10: restored pseudocode from idb
+7FF67743C730: restored microcode from idb
+7FF67743C730: restored pseudocode from idb
+7FF677487660: restored microcode from idb
+7FF677487660: restored pseudocode from idb
+7FF6774893D0: restored microcode from idb
+7FF6774893D0: restored pseudocode from idb
+7FF6774AFD90: restored microcode from idb
+7FF6774AFD90: restored pseudocode from idb
+7FF6775113D0: restored microcode from idb
+7FF6775113D0: restored pseudocode from idb
+7FF677514000: restored microcode from idb
+7FF677514000: restored pseudocode from idb
+7FF6775417E0: restored microcode from idb
+7FF6775417E0: restored pseudocode from idb
+7FF677544E10: restored microcode from idb
+7FF677544E10: restored pseudocode from idb
+7FF676779CF0: restored microcode from idb
+7FF676779CF0: restored pseudocode from idb
+[autohidden] The decompiler assumes that the segment '.idata' is read-only because of its NAME.
+All data references to the segment will be replaced by constant values.
+This may lead to drastic changes in the decompiler output.
+If the segment is not read-only, please change the segment NAME.
+
+In general, the decompiler checks the segment permissions, class, and name
+to determine if it is read-only.
+ -> OK
+7FF6775104E0: restored microcode from idb
+7FF6775104E0: restored pseudocode from idb
+7FF6775108C0: restored microcode from idb
+7FF6775108C0: restored pseudocode from idb
+7FF67302C220: restored microcode from idb
+7FF67302C220: restored pseudocode from idb
+datax 22284 35
+Flushing buffers, please wait...ok
+IDA MCP Server terminated
+Unloading IDP module C:\Program Files\IDA Professional 9.4\procs\pc.dll...

@@ -1,0 +1,1070 @@
+{
+"12B9074": {
+"seg": ".text",
+"in_func": null,
+"bytes": [
+204,
+204,
+204,
+204,
+204,
+204,
+204,
+204
+],
+"refs": [],
+"nrefs": 0
+},
+"54277AD": {
+"seg": ".text",
+"in_func": null,
+"bytes": [
+204,
+204,
+204,
+64,
+83,
+72,
+131,
+236
+],
+"refs": [],
+"nrefs": 0
+},
+"54B13D0": {
+"seg": ".text",
+"in_func": null,
+"bytes": [
+72,
+139,
+9,
+72,
+133,
+201,
+15,
+133
+],
+"refs": [
+{
+"func": 88799264,
+"site": 88799367,
+"mnem": "lea",
+"ndrefs": 12,
+"ordinal": 9
+}
+],
+"nrefs": 1
+},
+"54B141A": {
+"seg": ".text",
+"in_func": null,
+"bytes": [
+209,
+72,
+139,
+200,
+233,
+109,
+7,
+39
+],
+"refs": [],
+"nrefs": 0
+},
+"54B141F": {
+"seg": ".text",
+"in_func": null,
+"bytes": [
+109,
+7,
+39,
+0,
+195,
+204,
+204,
+204
+],
+"refs": [],
+"nrefs": 0
+},
+"54B1421": {
+"seg": ".text",
+"in_func": null,
+"bytes": [
+39,
+0,
+195,
+204,
+204,
+204,
+204,
+204
+],
+"refs": [],
+"nrefs": 0
+},
+"54E3740": {
+"seg": ".text",
+"in_func": null,
+"bytes": [
+72,
+139,
+9,
+72,
+133,
+201,
+15,
+133
+],
+"refs": [
+{
+"func": 89009808,
+"site": 89009911,
+"mnem": "lea",
+"ndrefs": 12,
+"ordinal": 9
+}
+],
+"nrefs": 1
+},
+"7FE6540": {
+"seg": ".rdata",
+"in_func": null,
+"bytes": [
+78,
+0,
+111,
+0,
+100,
+0,
+101,
+0
+],
+"refs": [],
+"nrefs": 0
+},
+"804BDA0": {
+"seg": ".rdata",
+"in_func": null,
+"bytes": [
+116,
+0,
+105,
+0,
+99,
+0,
+107,
+0
+],
+"refs": [],
+"nrefs": 0
+},
+"8421CB0": {
+"seg": ".rdata",
+"in_func": null,
+"bytes": [
+80,
+66,
+15,
+65,
+1,
+0,
+0,
+0
+],
+"refs": [],
+"nrefs": 0
+},
+"84A2B38": {
+"seg": ".rdata",
+"in_func": null,
+"bytes": [
+108,
+0,
+101,
+0,
+115,
+0,
+115,
+0
+],
+"refs": [],
+"nrefs": 0
+},
+"84E6D20": {
+"seg": ".rdata",
+"in_func": null,
+"bytes": [
+117,
+0,
+102,
+0,
+102,
+0,
+101,
+0
+],
+"refs": [],
+"nrefs": 0
+},
+"8D0A1F8": {
+"seg": ".rdata",
+"in_func": null,
+"bytes": [
+208,
+236,
+149,
+68,
+1,
+0,
+0,
+0
+],
+"refs": [
+{
+"func": 76870144,
+"site": 76870212,
+"mnem": "lea",
+"ndrefs": 3,
+"ordinal": 0
+},
+{
+"func": 76874304,
+"site": 76874740,
+"mnem": "lea",
+"ndrefs": 3,
+"ordinal": 0
+},
+{
+"func": 76993296,
+"site": 76994456,
+"mnem": "lea",
+"ndrefs": 47,
+"ordinal": 29
+},
+{
+"func": 77136464,
+"site": 77136798,
+"mnem": "lea",
+"ndrefs": 5,
+"ordinal": 0
+},
+{
+"func": 77455760,
+"site": 77457300,
+"mnem": "lea",
+"ndrefs": 40,
+"ordinal": 11
+},
+{
+"func": 77455760,
+"site": 77458535,
+"mnem": "lea",
+"ndrefs": 40,
+"ordinal": 26
+},
+{
+"func": 77455760,
+"site": 77458623,
+"mnem": "lea",
+"ndrefs": 40,
+"ordinal": 27
+},
+{
+"func": 77558304,
+"site": 77558493,
+"mnem": "lea",
+"ndrefs": 13,
+"ordinal": 1
+},
+{
+"func": 77560016,
+"site": 77560205,
+"mnem": "lea",
+"ndrefs": 13,
+"ordinal": 1
+},
+{
+"func": 77666896,
+"site": 77667392,
+"mnem": "lea",
+"ndrefs": 1,
+"ordinal": 0
+},
+{
+"func": 77745760,
+"site": 77746531,
+"mnem": "lea",
+"ndrefs": 11,
+"ordinal": 8
+},
+{
+"func": 77746944,
+"site": 77747100,
+"mnem": "lea",
+"ndrefs": 4,
+"ordinal": 1
+}
+],
+"nrefs": 43
+},
+"8D34C80": {
+"seg": ".rdata",
+"in_func": null,
+"bytes": [
+216,
+20,
+253,
+71,
+1,
+0,
+0,
+0
+],
+"refs": [],
+"nrefs": 0
+},
+"924A700": {
+"seg": ".rdata",
+"in_func": null,
+"bytes": [
+104,
+116,
+116,
+112,
+115,
+58,
+47,
+47
+],
+"refs": [
+{
+"func": 90694432,
+"site": 90694732,
+"mnem": "lea",
+"ndrefs": 15,
+"ordinal": 1
+}
+],
+"nrefs": 1
+},
+"94C76B8": {
+"seg": ".rdata",
+"in_func": null,
+"bytes": [
+0,
+0,
+0,
+0,
+0,
+0,
+0,
+0
+],
+"refs": [],
+"nrefs": 0
+},
+"94C8444": {
+"seg": ".rdata",
+"in_func": null,
+"bytes": [
+0,
+0,
+0,
+0,
+168,
+139,
+76,
+73
+],
+"refs": [],
+"nrefs": 0
+},
+"95DF980": {
+"seg": ".rdata",
+"in_func": null,
+"bytes": [
+0,
+0,
+0,
+0,
+0,
+0,
+0,
+0
+],
+"refs": [],
+"nrefs": 0
+},
+"95DF988": {
+"seg": ".rdata",
+"in_func": null,
+"bytes": [
+96,
+34,
+20,
+70,
+1,
+0,
+0,
+0
+],
+"refs": [
+{
+"func": 16148128,
+"site": 16148146,
+"mnem": "lea",
+"ndrefs": 3,
+"ordinal": 1
+}
+],
+"nrefs": 1
+},
+"95DF98C": {
+"seg": ".rdata",
+"in_func": null,
+"bytes": [
+1,
+0,
+0,
+0,
+96,
+36,
+20,
+70
+],
+"refs": [],
+"nrefs": 0
+},
+"9650702": {
+"seg": ".rdata",
+"in_func": null,
+"bytes": [
+34,
+65,
+1,
+0,
+0,
+0,
+128,
+114
+],
+"refs": [],
+"nrefs": 0
+},
+"9650703": {
+"seg": ".rdata",
+"in_func": null,
+"bytes": [
+65,
+1,
+0,
+0,
+0,
+128,
+114,
+70
+],
+"refs": [],
+"nrefs": 0
+},
+"96D8672": {
+"seg": ".rdata",
+"in_func": null,
+"bytes": [
+0,
+0,
+0,
+0,
+0,
+0,
+0,
+0
+],
+"refs": [],
+"nrefs": 0
+},
+"96D8673": {
+"seg": ".rdata",
+"in_func": null,
+"bytes": [
+0,
+0,
+0,
+0,
+0,
+0,
+0,
+0
+],
+"refs": [],
+"nrefs": 0
+},
+"9710B80": {
+"seg": ".rdata",
+"in_func": null,
+"bytes": [
+0,
+0,
+0,
+0,
+0,
+0,
+16,
+0
+],
+"refs": [],
+"nrefs": 0
+},
+"97C7EA0": {
+"seg": ".rdata",
+"in_func": null,
+"bytes": [
+116,
+101,
+85,
+86,
+115,
+80,
+114,
+111
+],
+"refs": [],
+"nrefs": 0
+},
+"9BD4170": {
+"seg": ".rdata",
+"in_func": null,
+"bytes": [
+188,
+19,
+0,
+0,
+195,
+19,
+0,
+0
+],
+"refs": [],
+"nrefs": 0
+},
+"9BD4450": {
+"seg": ".rdata",
+"in_func": null,
+"bytes": [
+32,
+23,
+0,
+0,
+36,
+23,
+0,
+0
+],
+"refs": [],
+"nrefs": 0
+},
+"9BD4460": {
+"seg": ".rdata",
+"in_func": null,
+"bytes": [
+52,
+23,
+0,
+0,
+57,
+23,
+0,
+0
+],
+"refs": [],
+"nrefs": 0
+},
+"9BD4468": {
+"seg": ".rdata",
+"in_func": null,
+"bytes": [
+63,
+23,
+0,
+0,
+69,
+23,
+0,
+0
+],
+"refs": [],
+"nrefs": 0
+},
+"9BD446C": {
+"seg": ".rdata",
+"in_func": null,
+"bytes": [
+69,
+23,
+0,
+0,
+76,
+23,
+0,
+0
+],
+"refs": [],
+"nrefs": 0
+},
+"9C5C880": {
+"seg": ".rdata",
+"in_func": null,
+"bytes": [
+51,
+0,
+0,
+0,
+87,
+0,
+0,
+0
+],
+"refs": [],
+"nrefs": 0
+},
+"9C5D0A0": {
+"seg": ".rdata",
+"in_func": null,
+"bytes": [
+1,
+0,
+0,
+0,
+1,
+0,
+0,
+0
+],
+"refs": [],
+"nrefs": 0
+},
+"A480348": {
+"seg": ".data",
+"in_func": null,
+"bytes": [
+1,
+0,
+0,
+0,
+1,
+0,
+0,
+0
+],
+"refs": [
+{
+"func": 13535168,
+"site": 13535211,
+"mnem": "lea",
+"ndrefs": 14,
+"ordinal": 3
+},
+{
+"func": 20776752,
+"site": 20776821,
+"mnem": "cmp",
+"ndrefs": 11,
+"ordinal": 1
+},
+{
+"func": 20777104,
+"site": 20777193,
+"mnem": "cmp",
+"ndrefs": 12,
+"ordinal": 2
+},
+{
+"func": 20793744,
+"site": 20794059,
+"mnem": "cmp",
+"ndrefs": 56,
+"ordinal": 21
+},
+{
+"func": 20794576,
+"site": 20794891,
+"mnem": "cmp",
+"ndrefs": 45,
+"ordinal": 21
+},
+{
+"func": 20929840,
+"site": 20929982,
+"mnem": "cmp",
+"ndrefs": 15,
+"ordinal": 14
+},
+{
+"func": 21213104,
+"site": 21213196,
+"mnem": "cmp",
+"ndrefs": 48,
+"ordinal": 2
+}
+],
+"nrefs": 7
+},
+"A4810D4": {
+"seg": ".data",
+"in_func": null,
+"bytes": [
+1,
+0,
+0,
+0,
+1,
+0,
+0,
+0
+],
+"refs": [
+{
+"func": 13585120,
+"site": 13585163,
+"mnem": "lea",
+"ndrefs": 14,
+"ordinal": 3
+},
+{
+"func": 20795232,
+"site": 20795693,
+"mnem": "cmp",
+"ndrefs": 47,
+"ordinal": 39
+},
+{
+"func": 20795792,
+"site": 20796267,
+"mnem": "cmp",
+"ndrefs": 47,
+"ordinal": 39
+},
+{
+"func": 21984704,
+"site": 21984713,
+"mnem": "cmp",
+"ndrefs": 4,
+"ordinal": 1
+},
+{
+"func": 21995552,
+"site": 21995574,
+"mnem": "cmp",
+"ndrefs": 4,
+"ordinal": 1
+},
+{
+"func": 22002208,
+"site": 22002934,
+"mnem": "cmp",
+"ndrefs": 11,
+"ordinal": 5
+},
+{
+"func": 22096640,
+"site": 22096706,
+"mnem": "mov",
+"ndrefs": 36,
+"ordinal": 2
+},
+{
+"func": 63220112,
+"site": 63220143,
+"mnem": "cmp",
+"ndrefs": 8,
+"ordinal": 1
+}
+],
+"nrefs": 8
+},
+"A5BB000": {
+"seg": ".data",
+"in_func": null,
+"bytes": [
+0,
+0,
+0,
+0,
+0,
+0,
+0,
+0
+],
+"refs": [],
+"nrefs": 0
+},
+"A6D3882": {
+"seg": ".data",
+"in_func": null,
+"bytes": [
+255,
+255,
+255,
+255,
+255,
+255,
+255,
+255
+],
+"refs": [
+{
+"func": 18210688,
+"site": 18210713,
+"mnem": "cmp",
+"ndrefs": 17,
+"ordinal": 1
+},
+{
+"func": 20458800,
+"site": 20461404,
+"mnem": "cmp",
+"ndrefs": 48,
+"ordinal": 40
+},
+{
+"func": 20458800,
+"site": 20461476,
+"mnem": "cmp",
+"ndrefs": 48,
+"ordinal": 46
+},
+{
+"func": 20907424,
+"site": 20907706,
+"mnem": "cmp",
+"ndrefs": 3,
+"ordinal": 1
+},
+{
+"func": 21248672,
+"site": 21248883,
+"mnem": "cmp",
+"ndrefs": 5,
+"ordinal": 1
+},
+{
+"func": 21248672,
+"site": 21248908,
+"mnem": "cmp",
+"ndrefs": 5,
+"ordinal": 3
+},
+{
+"func": 22151824,
+"site": 22151868,
+"mnem": "cmp",
+"ndrefs": 3,
+"ordinal": 0
+},
+{
+"func": 43634080,
+"site": 43634100,
+"mnem": "cmp",
+"ndrefs": 14,
+"ordinal": 0
+},
+{
+"func": 49697056,
+"site": 49697442,
+"mnem": "cmp",
+"ndrefs": 51,
+"ordinal": 11
+},
+{
+"func": 61604832,
+"site": 61605627,
+"mnem": "cmp",
+"ndrefs": 27,
+"ordinal": 10
+},
+{
+"func": 61678800,
+"site": 61679555,
+"mnem": "cmp",
+"ndrefs": 159,
+"ordinal": 70
+},
+{
+"func": 61678800,
+"site": 61681859,
+"mnem": "cmp",
+"ndrefs": 159,
+"ordinal": 119
+}
+],
+"nrefs": 25
+},
+"A6D3883": {
+"seg": ".data",
+"in_func": null,
+"bytes": [
+255,
+255,
+255,
+255,
+255,
+255,
+255,
+255
+],
+"refs": [
+{
+"func": 20458800,
+"site": 20461413,
+"mnem": "cmp",
+"ndrefs": 48,
+"ordinal": 41
+},
+{
+"func": 20458800,
+"site": 20461485,
+"mnem": "cmp",
+"ndrefs": 48,
+"ordinal": 47
+},
+{
+"func": 20907424,
+"site": 20907719,
+"mnem": "cmp",
+"ndrefs": 3,
+"ordinal": 2
+},
+{
+"func": 21248672,
+"site": 21248892,
+"mnem": "cmp",
+"ndrefs": 5,
+"ordinal": 2
+},
+{
+"func": 21248672,
+"site": 21248917,
+"mnem": "cmp",
+"ndrefs": 5,
+"ordinal": 4
+},
+{
+"func": 61678800,
+"site": 61680583,
+"mnem": "cmp",
+"ndrefs": 159,
+"ordinal": 96
+},
+{
+"func": 70053824,
+"site": 70053885,
+"mnem": "mov",
+"ndrefs": 8,
+"ordinal": 1
+},
+{
+"func": 70075008,
+"site": 70080269,
+"mnem": "mov",
+"ndrefs": 238,
+"ordinal": 84
+},
+{
+"func": 70083920,
+"site": 70091995,
+"mnem": "movzx",
+"ndrefs": 275,
+"ordinal": 185
+},
+{
+"func": 70083920,
+"site": 70092024,
+"mnem": "mov",
+"ndrefs": 275,
+"ordinal": 188
+},
+{
+"func": 70083920,
+"site": 70092265,
+"mnem": "mov",
+"ndrefs": 275,
+"ordinal": 195
+},
+{
+"func": 70083920,
+"site": 70092468,
+"mnem": "mov",
+"ndrefs": 275,
+"ordinal": 198
+}
+],
+"nrefs": 16
+},
+"AC0A1A0": {
+"seg": ".data",
+"in_func": null,
+"bytes": [
+255,
+255,
+255,
+255,
+255,
+255,
+255,
+255
+],
+"refs": [
+{
+"func": 89553968,
+"site": 89554504,
+"mnem": "mov",
+"ndrefs": 15,
+"ordinal": 14
+},
+{
+"func": 90482848,
+"site": 90483037,
+"mnem": "mov",
+"ndrefs": 1,
+"ordinal": 0
+},
+{
+"func": 90532880,
+"site": 90532891,
+"mnem": "cmp",
+"ndrefs": 10,
+"ordinal": 0
+},
+{
+"func": 90532880,
+"site": 90532939,
+"mnem": "mov",
+"ndrefs": 10,
+"ordinal": 1
+},
+{
+"func": 90534176,
+"site": 90534192,
+"mnem": "mov",
+"ndrefs": 2,
+"ordinal": 0
+},
+{
+"func": 91770144,
+"site": 91770157,
+"mnem": "cmp",
+"ndrefs": 3,
+"ordinal": 0
+},
+{
+"func": 91789104,
+"site": 91789281,
+"mnem": "mov",
+"ndrefs": 1,
+"ordinal": 0
+}
+],
+"nrefs": 7
+}
+}

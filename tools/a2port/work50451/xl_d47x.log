@@ -1,0 +1,196 @@
+IDAMCPPlugin instance created
+
+  bytes   pages size description
+--------- ----- ---- --------------------------------------------
+134217728 16384 8192 allocating memory for b-tree...
+268435456 32768 8192 allocating memory for virtual array...
+   262144    32 8192 allocating memory for name pointers...
+-----------------------------------------------------------------
+402915328            total memory allocated
+
+Loading processor module C:\Program Files\IDA Professional 9.4\procs\pc.dll for metapc...OK
+Loading type libraries...
+Autoanalysis subsystem has been initialized.
+Database for file 'A2-50451.exe' has been loaded.
+Hex-Rays Decompiler plugin has been loaded (v9.4.0.260714)
+  License: 14-0000-FFFF-88  (1 user)
+  The hotkeys are F5: decompile, Ctrl-F5: decompile all.
+
+  Please check the Edit/Plugins menu for more information.
+Hex-rays version 9.4.0.260714 has been detected, gooMBA plugin ready to use
+IDAMCPPlugin instance created
+IDA MCP Server v1.0 by IDA MCP
+Initializing plugin...
+Menu items created successfully
+Menu items added
+Plugin initialized successfully
+Using type parser: legacy
+C:/Users/drych/ProjectDrift/Solara/tools/a2port/work50451/xlocate.py:47: DeprecationWarning: get_func() is deprecated, use get_func_start or get_func_entry_info()
+  f = ida_funcs.get_func(ib + fs); out = []
+[autohidden] The decompiler assumes that the segment '.rdata' is read-only because of its NAME.
+All data references to the segment will be replaced by constant values.
+This may lead to drastic changes in the decompiler output.
+If the segment is not read-only, please change the segment NAME.
+
+In general, the decompiler checks the segment permissions, class, and name
+to determine if it is read-only.
+ -> OK
+[autohidden] The decompiler assumes that the segment '.idata' is read-only because of its NAME.
+All data references to the segment will be replaced by constant values.
+This may lead to drastic changes in the decompiler output.
+If the segment is not read-only, please change the segment NAME.
+
+In general, the decompiler checks the segment permissions, class, and name
+to determine if it is read-only.
+ -> OK
+1438F3630: restored microcode from idb
+1438F3630: restored pseudocode from idb
+1411E7200: restored microcode from idb
+1411E7200: restored pseudocode from idb
+14220B2C0: restored microcode from idb
+14220B2C0: restored pseudocode from idb
+141112670: restored microcode from idb
+141112670: restored pseudocode from idb
+141129DC0: restored microcode from idb
+141129DC0: restored pseudocode from idb
+1412981D0: restored microcode from idb
+1412981D0: restored pseudocode from idb
+147E62290: restored microcode from idb
+147E62290: restored pseudocode from idb
+14117C720: restored microcode from idb
+14117C720: restored pseudocode from idb
+147E6EFF6: restored microcode from idb
+147E6EFF6: restored pseudocode from idb
+147E6EFFC: restored microcode from idb
+147E6EFFC: restored pseudocode from idb
+144A2E010: restored microcode from idb
+144A2E010: restored pseudocode from idb
+1455B4A10: restored microcode from idb
+1455B4A10: restored pseudocode from idb
+144951810: restored microcode from idb
+144951810: restored pseudocode from idb
+144A00820: restored microcode from idb
+144A00820: restored pseudocode from idb
+144A64830: restored microcode from idb
+144A64830: restored pseudocode from idb
+144951650: restored microcode from idb
+144951650: restored pseudocode from idb
+144998C50: restored microcode from idb
+144998C50: restored pseudocode from idb
+144704280: restored microcode from idb
+144704280: restored pseudocode from idb
+1441FB690: restored microcode from idb
+1441FB690: restored pseudocode from idb
+1449FFCA0: restored microcode from idb
+1449FFCA0: restored pseudocode from idb
+1449520C0: restored microcode from idb
+1449520C0: restored pseudocode from idb
+1412AE4D0: restored microcode from idb
+1412AE4D0: restored pseudocode from idb
+1455B42D0: restored microcode from idb
+1455B42D0: restored pseudocode from idb
+1449514D0: restored microcode from idb
+1449514D0: restored pseudocode from idb
+1449FB100: restored microcode from idb
+1449FB100: restored pseudocode from idb
+1447AFD20: restored microcode from idb
+1447AFD20: restored pseudocode from idb
+144A3F320: restored microcode from idb
+144A3F320: restored pseudocode from idb
+14556B340: restored microcode from idb
+14556B340: restored pseudocode from idb
+1455B4D40: restored microcode from idb
+1455B4D40: restored pseudocode from idb
+1455C9F40: restored microcode from idb
+1455C9F40: restored pseudocode from idb
+144958F50: restored microcode from idb
+144958F50: restored pseudocode from idb
+144959350: restored microcode from idb
+144959350: restored pseudocode from idb
+14558DD50: restored microcode from idb
+14558DD50: restored pseudocode from idb
+1454C5150: restored microcode from idb
+1454C5150: restored pseudocode from idb
+144A00350: restored microcode from idb
+144A00350: restored pseudocode from idb
+144998F60: restored microcode from idb
+144998F60: restored pseudocode from idb
+144A3DB60: restored microcode from idb
+144A3DB60: restored pseudocode from idb
+144A00170: restored microcode from idb
+144A00170: restored pseudocode from idb
+144999180: restored microcode from idb
+144999180: restored pseudocode from idb
+144951B80: restored microcode from idb
+144951B80: restored pseudocode from idb
+144958DA0: restored microcode from idb
+144958DA0: restored pseudocode from idb
+1449519A0: restored microcode from idb
+1449519A0: restored pseudocode from idb
+1449591B0: restored microcode from idb
+1449591B0: restored pseudocode from idb
+144998DD0: restored microcode from idb
+144998DD0: restored pseudocode from idb
+14111CFE0: restored microcode from idb
+14111CFE0: restored pseudocode from idb
+1449FE520: restored microcode from idb
+1449FE520: restored pseudocode from idb
+1449FE2B0: restored microcode from idb
+1449FE2B0: restored pseudocode from idb
+1449FDFF0: restored microcode from idb
+1449FDFF0: restored pseudocode from idb
+1449FDD30: restored microcode from idb
+1449FDD30: restored pseudocode from idb
+143ECAC20: restored microcode from idb
+143ECAC20: restored pseudocode from idb
+143B2AF70: restored microcode from idb
+143B2AF70: restored pseudocode from idb
+143B2B0E0: restored microcode from idb
+143B2B0E0: restored pseudocode from idb
+1456A7610: restored microcode from idb
+1456A7610: restored pseudocode from idb
+1456A6E40: restored microcode from idb
+1456A6E40: restored pseudocode from idb
+1456A6850: restored microcode from idb
+1456A6850: restored pseudocode from idb
+1456B2060: restored microcode from idb
+1456B2060: restored pseudocode from idb
+1456B3E40: restored microcode from idb
+1456B3E40: restored pseudocode from idb
+1456A0C90: restored microcode from idb
+1456A0C90: restored pseudocode from idb
+1456A0420: restored microcode from idb
+1456A0420: restored pseudocode from idb
+1456B9EA0: restored microcode from idb
+1456B9EA0: restored pseudocode from idb
+1456BA9B0: restored microcode from idb
+1456BA9B0: restored pseudocode from idb
+145681650: restored microcode from idb
+145681650: restored pseudocode from idb
+14567E3E0: restored microcode from idb
+14567E3E0: restored pseudocode from idb
+1458638D0: restored microcode from idb
+1458638D0: restored pseudocode from idb
+145687310: restored microcode from idb
+145687310: restored pseudocode from idb
+14568C130: restored microcode from idb
+14568C130: restored pseudocode from idb
+14568C720: restored microcode from idb
+14568C720: restored pseudocode from idb
+145682D80: restored microcode from idb
+145682D80: restored pseudocode from idb
+145680E40: restored microcode from idb
+145680E40: restored pseudocode from idb
+1457C8AF0: restored microcode from idb
+1457C8AF0: restored pseudocode from idb
+1457C9680: restored microcode from idb
+1457C9680: restored pseudocode from idb
+1457CA9B0: restored microcode from idb
+1457CA9B0: restored pseudocode from idb
+1457CC2C0: restored microcode from idb
+1457CC2C0: restored pseudocode from idb
+1457C80E0: restored microcode from idb
+1457C80E0: restored pseudocode from idb
+Flushing buffers, please wait...ok
+IDA MCP Server terminated
+Unloading IDP module C:\Program Files\IDA Professional 9.4\procs\pc.dll...

@@ -1,0 +1,9 @@
+{
+ "imagebase": "0x140000000",
+ "getnetmode": "0x41f5a20",
+ "num_callers": 3,
+ "thin_wrappers": [],
+ "num_gates": 0,
+ "gates_by_module": {},
+ "gates": []
+}

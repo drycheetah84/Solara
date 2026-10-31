@@ -1,0 +1,90 @@
+11:43:55 shard 0 / 3 targets 65 (already done 0 )
+11:43:56 1 / 65 10153A0 body-match 0x101aa70 0.999 0.7 s
+11:43:58 2 / 65 114E210 no-body-match  0.871 2.2 s
+11:44:00 3 / 65 124ECE0 body-match 0x12543d0 0.943 2.1 s
+11:44:00 4 / 65 124F5F1 no-body-match  1.0 0.0 s
+11:44:00 5 / 65 1261F1A body-match 0x126760a 1.0 0.1 s
+11:44:01 6 / 65 1265D26 body-match 0x126b416 0.963 0.8 s
+11:44:01 7 / 65 1268073 no-body-match  0.77 0.1 s
+11:44:01 8 / 65 12F0F01 body-match 0x12f6611 0.966 0.4 s
+11:44:01 9 / 65 1EC13E0 body-match 0x1ec6af0 1.0 0.3 s
+11:44:02 10 / 65 22AD1DE body-match 0x22b2aae 0.966 0.3 s
+11:44:02 11 / 65 3E8D769 body-match 0x3e93399 0.998 0.4 s
+11:44:02 12 / 65 3EC7C90 body-match 0x3ecd8c0 1.0 0.0 s
+11:44:02 13 / 65 46849A0 no-body-match  1.0 0.2 s
+11:44:02 14 / 65 468B470 no-body-match  1.0 0.1 s
+11:44:03 15 / 65 46902F0 no-body-match  1.0 0.4 s
+11:44:03 16 / 65 4695EC0 no-body-match  1.0 0.3 s
+11:44:03 17 / 65 46B2280 body-match 0x46b7f90 1.0 0.0 s
+11:44:03 18 / 65 46C9580 body-match 0x46cf290 1.0 0.1 s
+11:44:03 19 / 65 46F755D body-match 0x46fd26d 1.0 0.2 s
+11:44:10 20 / 65 47C791B body-match 0x47cd9fb 0.993 6.9 s
+11:44:10 21 / 65 4954370 no-body-match  0.996 0.1 s
+11:44:11 22 / 65 4959030 body-match 0x4961d40 0.96 0.2 s
+11:44:11 23 / 65 49E0870 body-match 0x49e9590 1.0 0.3 s
+11:53:54 mode 47 basis pairs 36222
+11:53:54 shard 0 / 2 targets 63 (already done 33 )
+11:53:54 1 / 63 124F5F1 body-twin 0x1254ce1 1.0 0.0 s
+11:53:54 2 / 63 126361F body-twin 0x1268d0f 1.0 0.1 s
+11:53:54 3 / 63 1267DB3 no-body-match  0.864 0.0 s
+11:53:55 4 / 63 1EC1C5C no-body-match  0.856 1.2 s
+11:53:56 5 / 63 4680E50 body-twin 0x4686b60 1.0 1.0 s
+11:53:57 6 / 63 468B470 body-twin 0x4691180 1.0 0.5 s
+11:53:57 7 / 63 4695EC0 body-twin 0x469b860 1.0 0.0 s
+11:53:57 8 / 63 46B2360 no-body-match  0.822 0.4 s
+11:54:05 9 / 63 4948C90 body-match 0x49519a0 0.991 0.7 s
+11:54:05 10 / 63 4954370 no-body-match  0.965 0.2 s
+11:54:05 11 / 63 4958A00 body-twin 0x4961ce0 0.977 0.1 s
+11:54:06 12 / 63 495A350 no-body-match  0.768 0.3 s
+11:54:06 13 / 63 4A09560 body-match 0x4a12200 0.921 0.4 s
+11:54:06 14 / 63 4A169D0 no-body-match  0.908 0.1 s
+11:54:06 15 / 63 4A4AF80 body-match 0x4a53e70 0.939 0.3 s
+11:54:09 16 / 63 4A88D90 body-match 0x4a91d10 0.959 2.8 s
+11:54:10 17 / 63 4A89100 body-match 0x4a92080 0.959 1.0 s
+11:54:15 18 / 63 4AB4DFA body-match 0x4abddca 0.997 4.6 s
+11:54:15 19 / 63 53A2B10 body-twin 0x53ac8b0 1.0 0.1 s
+11:54:18 20 / 63 53C4060 body-match 0x53cde00 0.929 3.5 s
+11:54:19 21 / 63 53C48B0 body-match 0x53ce650 0.929 0.9 s
+11:54:20 22 / 63 53DC320 body-match 0x53e6650 1.0 0.2 s
+11:54:20 23 / 63 53DC768 no-body-match  0.891 0.2 s
+11:54:20 24 / 63 53DFCC7 body-match 0x541b067 1.0 0.5 s
+11:54:20 25 / 63 53F0410 no-body-match  0.0 0.1 s
+11:54:20 26 / 63 542DAC0 body-twin 0x5462930 1.0 0.1 s
+11:54:20 27 / 63 5436BC0 no-body-match  0.0 0.0 s
+11:54:21 28 / 63 54380E0 no-body-match  0.863 0.2 s
+11:54:21 29 / 63 544D9B0 body-twin 0x547f970 1.0 0.7 s
+11:54:22 30 / 63 545CD31 body-twin 0x5490b41 1.0 0.4 s
+11:54:22 31 / 63 547380A body-twin 0x54a760a 1.0 0.7 s
+11:54:23 32 / 63 548FCF3 body-match 0x54c3023 0.996 0.6 s
+11:54:24 33 / 63 54A9890 body-twin 0x54de5b0 1.0 0.7 s
+11:54:24 34 / 63 54B3351 body-twin 0x54e3281 1.0 0.4 s
+11:54:24 35 / 63 54B6C90 no-body-match  0.959 0.1 s
+11:54:24 36 / 63 54C4630 body-match 0x54fa590 0.972 0.2 s
+11:54:25 37 / 63 54E4E10 body-twin 0x5519d60 1.0 0.1 s
+11:54:25 38 / 63 54F8210 no-body-match  0.951 0.3 s
+11:54:26 39 / 63 55027F0 body-match 0x553a3b0 0.99 1.1 s
+11:54:33 40 / 63 5509E0B body-match 0x5541cbb 1.0 1.0 s
+11:54:45 41 / 63 5522A06 body-match 0x555a886 0.978 11.6 s
+11:54:47 42 / 63 5533CE7 no-body-match  0.314 1.7 s
+11:54:47 43 / 63 5537829 no-body-match  0.358 0.2 s
+11:54:47 44 / 63 5537979 no-body-match  0.775 0.2 s
+11:54:47 45 / 63 5539930 body-match 0x5571020 0.986 0.4 s
+11:54:48 46 / 63 553BC65 body-match 0x55733b5 1.0 0.3 s
+11:54:48 47 / 63 553D177 body-match 0x55747b7 1.0 0.6 s
+11:54:50 48 / 63 554105A body-match 0x557829a 0.978 1.9 s
+11:54:51 49 / 63 558C600 no-body-match  0.0 0.5 s
+11:54:51 50 / 63 5596130 no-body-match  0.88 0.1 s
+11:54:52 51 / 63 559ABD0 body-match 0x55ce750 1.0 0.8 s
+11:54:52 52 / 63 55B3900 body-match 0x55e6400 1.0 0.0 s
+11:54:52 53 / 63 55CA658 body-match 0x55fd788 0.993 0.8 s
+11:54:53 54 / 63 55D66F3 body-match 0x56083f3 1.0 0.1 s
+11:54:53 55 / 63 564F76B body-match 0x5680e7b 0.972 0.5 s
+11:54:57 56 / 63 565C2BD body-match 0x568cfdd 0.963 4.0 s
+11:54:57 57 / 63 568BB00 body-match 0x56c5100 0.995 0.4 s
+11:54:58 58 / 63 568BF6B body-match 0x56c550b 0.919 0.2 s
+11:55:03 59 / 63 56F52D7 body-match 0x5733aa7 0.968 5.2 s
+11:55:05 60 / 63 57A6561 body-match 0x57e7d91 0.99 1.6 s
+11:55:07 61 / 63 580DE55 body-match 0x5853915 0.962 2.2 s
+11:55:07 62 / 63 5825200 no-body-match  0.962 0.1 s
+11:55:07 63 / 63 5846ECC body-match 0x5890fdc 1.0 0.2 s
+11:55:07 DONE shard 0

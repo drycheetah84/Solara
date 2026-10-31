@@ -1,0 +1,55 @@
+11:53:53 mode 22 basis pairs 27443
+11:53:53 shard 0 / 1 targets 52 (already done 0 )
+11:53:53 1 / 52 10153A0 body-match 0x117c720 1.0 0.1 s
+11:53:53 2 / 52 114D690 body-match 0x12be600 1.0 0.4 s
+11:53:56 3 / 52 124DB00 body-twin 0x13ea650 1.0 2.3 s
+11:53:56 4 / 52 124ECE0 body-twin 0x13eb830 1.0 1.0 s
+11:53:57 5 / 52 124F4C0 body-twin 0x13ec010 1.0 0.2 s
+11:54:05 6 / 52 14363A0 no-body-match  0.866 1.2 s
+11:54:06 7 / 52 1EC07A0 no-body-match  0.0 0.6 s
+11:54:06 8 / 52 3509AB0 no-body-match  0.0 0.2 s
+11:54:08 9 / 52 37B02C0 no-body-match  0.895 2.4 s
+11:54:10 10 / 52 3A29B20 body-match 0x3bd3a80 0.913 1.5 s
+11:54:10 11 / 52 4040990 body-match 0x41fb690 0.989 0.8 s
+11:54:11 12 / 52 466A240 no-body-match  0.0 0.5 s
+11:54:11 13 / 52 46849A0 no-body-match  0.817 0.2 s
+11:54:12 14 / 52 4689030 no-body-match  0.365 1.1 s
+11:54:13 15 / 52 468BE60 no-body-match  0.458 1.2 s
+11:54:14 16 / 52 4690260 no-body-match  0.0 0.1 s
+11:54:14 17 / 52 46902F0 no-body-match  0.916 0.2 s
+11:54:16 18 / 52 4692F30 no-body-match  0.695 2.4 s
+11:54:16 19 / 52 46B2E20 no-body-match  0.817 0.1 s
+11:54:17 20 / 52 46BC830 body-match 0x49e4670 0.996 0.1 s
+11:54:17 21 / 52 47138D0 no-body-match  0.0 0.0 s
+11:54:18 22 / 52 4723AA0 no-body-match  0.245 1.7 s
+11:54:19 23 / 52 52EE2E0 no-body-match  0.0 0.3 s
+11:54:19 24 / 52 534A7F0 no-body-match  0.0 0.5 s
+11:54:19 25 / 52 5361530 body-match 0x55371a0 1.0 0.1 s
+11:54:20 26 / 52 53AF7C0 no-body-match  0.399 0.6 s
+11:54:22 27 / 52 53C8AF0 no-body-match  0.886 1.9 s
+11:54:22 28 / 52 53C9EE0 no-body-match  0.407 0.7 s
+11:54:22 29 / 52 53DA880 no-body-match  0.0 0.2 s
+11:54:23 30 / 52 53DC730 no-body-match  0.351 0.4 s
+11:54:24 31 / 52 5432A40 no-body-match  0.0 1.6 s
+11:54:25 32 / 52 543C7B0 no-body-match  0.0 0.1 s
+11:54:26 33 / 52 54599B0 no-body-match  0.222 1.9 s
+11:54:42 34 / 52 545BD80 no-body-match  0.0 7.7 s
+11:54:46 35 / 52 545CCB0 no-body-match  0.272 4.3 s
+11:54:47 36 / 52 5464630 no-body-match  0.398 0.7 s
+11:54:47 37 / 52 547F7A0 no-body-match  0.0 0.0 s
+11:54:49 38 / 52 5482110 no-body-match  0.25 1.9 s
+11:54:50 39 / 52 54863C0 no-body-match  0.0 0.5 s
+11:54:51 40 / 52 5487560 no-body-match  0.281 0.9 s
+11:54:54 41 / 52 548FC40 no-body-match  0.288 3.3 s
+11:54:54 42 / 52 54AF360 no-body-match  0.0 0.2 s
+11:54:55 43 / 52 54B04E0 no-body-match  0.398 1.1 s
+11:54:56 44 / 52 54B5660 no-body-match  0.367 0.9 s
+11:54:58 45 / 52 54E4470 no-body-match  0.248 1.7 s
+11:54:58 46 / 52 54EB5E0 no-body-match  0.0 0.0 s
+11:54:58 47 / 52 5502070 no-body-match  0.0 0.7 s
+11:54:59 48 / 52 5502B00 no-body-match  0.0 0.1 s
+11:54:59 49 / 52 5503050 no-body-match  0.236 0.3 s
+11:54:59 50 / 52 550F130 no-body-match  0.0 0.0 s
+11:54:59 51 / 52 5510C40 no-body-match  0.399 0.3 s
+11:54:59 52 / 52 FCC220 body-twin 0x112d990 1.0 0.2 s
+11:54:59 DONE shard 0

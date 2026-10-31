@@ -1,0 +1,59 @@
+{"rva47": "114E210", "mode": "47", "status": "no-body-match", "best": 0.871, "bestfunc": "0x1152220", "est": "0x1152220", "ncands": 1, "secs": 1.2}
+{"rva47": "1268073", "mode": "47", "status": "no-body-match", "best": 0.77, "bestfunc": "0x126d6f0", "est": "0x126d600", "ncands": 285, "secs": 0.1}
+{"rva47": "12B8EF0", "mode": "47", "status": "body-match", "func50": "0x12be600", "off": 0, "rva50": "0x12be600", "ratio": 1.0, "second": 0.445, "secs": 0.5}
+{"rva47": "4685C30", "mode": "47", "status": "body-twin", "func50": "0x468afb0", "off": 800, "rva50": "0x468b2d0", "ratio": 1.0, "twins": ["0x468b620", "0x468afb0", "0x4689200", "0x4688b90"], "est": "0x468afc2", "secs": 1.0}
+{"rva47": "4695D00", "mode": "47", "status": "body-twin", "func50": "0x469b740", "off": 720, "rva50": "0x469ba10", "ratio": 1.0, "twins": ["0x469be30", "0x469bab0", "0x469b740", "0x46933f0", "0x4690f50", "0x468ebc0"], "est": "0x469b3ca", "secs": 0.5}
+{"rva47": "46A0DF0", "mode": "47", "status": "body-twin", "func50": "0x46a6a10", "off": 240, "rva50": "0x46a6b00", "ratio": 1.0, "twins": ["0x46a6a10", "0x46a6350", "0x46a5c90", "0x46a0dd0", "0x46a0330", "0x469f890"], "est": "0x46a689f", "secs": 1.0}
+{"rva47": "47BB3A7", "mode": "47", "status": "body-twin", "func50": "0x47c1410", "off": 119, "rva50": "0x47c1487", "ratio": 1.0, "twins": ["0x47c1620", "0x47c1410", "0x47c1220"], "est": "0x47c1410", "secs": 2.2}
+{"rva47": "4954550", "mode": "47", "status": "body-twin", "func50": "0x495d260", "off": 0, "rva50": "0x495d260", "ratio": 0.997, "twins": ["0x495d260", "0x495d1a0"], "est": "0x495d260", "secs": 0.2}
+{"rva47": "49F8F90", "mode": "47", "status": "body-match", "func50": "0x4a01c20", "off": 0, "rva50": "0x4a01c20", "ratio": 0.997, "second": 0.0, "secs": 0.2}
+{"rva47": "4A12EC0", "mode": "47", "status": "no-body-match", "best": 0.902, "bestfunc": "0x4a1bbf0", "est": "0x4a1bbd0", "ncands": 214, "secs": 0.1}
+{"rva47": "4A17C10", "mode": "47", "status": "no-body-match", "best": 0.888, "bestfunc": "0x4a20940", "est": "0x4a20945", "ncands": 213, "secs": 0.1}
+{"rva47": "4A66770", "mode": "47", "status": "body-match", "func50": "0x4a6f6f0", "off": 0, "rva50": "0x4a6f6f0", "ratio": 0.939, "second": 0.297, "secs": 2.3}
+{"rva47": "4A88FCD", "mode": "47", "status": "body-match", "func50": "0x4a91d10", "off": 573, "rva50": "0x4a91f4d", "ratio": 0.951, "second": 0.359, "secs": 2.8}
+{"rva47": "4AB4DD0", "mode": "47", "status": "body-match", "func50": "0x4abdda0", "off": 0, "rva50": "0x4abdda0", "ratio": 0.995, "second": 0.262, "secs": 4.4}
+{"rva47": "53536C0", "mode": "47", "status": "body-match", "func50": "0x535cf80", "off": 1248, "rva50": "0x535d460", "ratio": 0.955, "second": 0.249, "secs": 5.9}
+{"rva47": "53BE1F0", "mode": "47", "status": "no-body-match", "best": 0.0, "bestfunc": null, "est": "0x53c7f90", "ncands": 841, "secs": 0.1}
+{"rva47": "53C4770", "mode": "47", "status": "body-match", "func50": "0x53cd9e0", "off": 2864, "rva50": "0x53ce510", "ratio": 0.947, "second": 0.266, "secs": 3.7}
+{"rva47": "53CB6D0", "mode": "47", "status": "body-match", "func50": "0x53d51d0", "off": 720, "rva50": "0x53d54a0", "ratio": 0.958, "second": 0.606, "secs": 1.4}
+{"rva47": "53DC340", "mode": "47", "status": "body-match", "func50": "0x53e6660", "off": 16, "rva50": "0x53e6670", "ratio": 0.97, "second": 0.335, "secs": 0.3}
+{"rva47": "53DC76A", "mode": "47", "status": "no-body-match", "best": 0.891, "bestfunc": "0x54178e0", "est": "0x5406c5a", "ncands": 261, "secs": 0.2}
+{"rva47": "53F03B0", "mode": "47", "status": "no-body-match", "best": 0.24, "bestfunc": "0x5410fe0", "est": "0x54251b0", "ncands": 4, "secs": 2.8}
+{"rva47": "541D8EF", "mode": "47", "status": "no-body-match", "best": 0.959, "bestfunc": "0x54527c0", "est": "0x5452311", "ncands": 1906, "secs": 0.0}
+{"rva47": "5436A00", "mode": "47", "status": "body-match", "func50": "0x5470ce0", "off": 176, "rva50": "0x5470d90", "ratio": 1.0, "second": 0.236, "secs": 0.4}
+{"rva47": "54379E0", "mode": "47", "status": "no-body-match", "best": 0.713, "bestfunc": "0x5471a90", "est": "0x546dc24", "ncands": 98, "secs": 0.1}
+{"rva47": "5440E40", "mode": "47", "status": "body-match", "func50": "0x5477d80", "off": 464, "rva50": "0x5477f50", "ratio": 0.988, "second": 0.591, "secs": 0.2}
+{"rva47": "545B446", "mode": "47", "status": "no-body-match", "best": 0.711, "bestfunc": "0x548f060", "est": "0x548f055", "ncands": 26, "secs": 0.8}
+{"rva47": "5461A1B", "mode": "47", "status": "body-twin", "func50": "0x5492c20", "off": 59, "rva50": "0x5492c5b", "ratio": 1.0, "twins": ["0x5492c20"], "est": "0x5492c52", "secs": 0.1}
+{"rva47": "547AE4B", "mode": "47", "status": "no-body-match", "best": 0.883, "bestfunc": "0x54ae4c0", "est": "0x54aea7e", "ncands": 1784, "secs": 0.1}
+{"rva47": "54A1930", "mode": "47", "status": "body-match", "func50": "0x54d64a0", "off": 0, "rva50": "0x54d64a0", "ratio": 1.0, "second": 0.886, "secs": 0.2}
+{"rva47": "54ABCC0", "mode": "47", "status": "body-match", "func50": "0x54e0410", "off": 336, "rva50": "0x54e0560", "ratio": 0.992, "second": 0.476, "secs": 0.5}
+{"rva47": "54B4000", "mode": "47", "status": "body-match", "func50": "0x54e8a20", "off": 0, "rva50": "0x54e8a20", "ratio": 0.976, "second": 0.464, "secs": 0.8}
+{"rva47": "54BA8C0", "mode": "47", "status": "body-twin", "func50": "0x54f0600", "off": 80, "rva50": "0x54f0650", "ratio": 1.0, "twins": ["0x54f0a70", "0x54f0600"], "est": "0x54f0304", "secs": 0.3}
+{"rva47": "54E17E0", "mode": "47", "status": "body-twin", "func50": "0x5517870", "off": 0, "rva50": "0x5517870", "ratio": 1.0, "twins": ["0x5517870"], "est": "0x551b032", "secs": 0.1}
+{"rva47": "54EAC60", "mode": "47", "status": "no-body-match", "best": 0.959, "bestfunc": "0x551ce20", "est": "0x551cbed", "ncands": 1452, "secs": 0.0}
+{"rva47": "54FF5E0", "mode": "47", "status": "body-match", "func50": "0x55371a0", "off": 0, "rva50": "0x55371a0", "ratio": 1.0, "second": 0.0, "secs": 0.1}
+{"rva47": "5508363", "mode": "47", "status": "body-match", "func50": "0x55401f0", "off": 51, "rva50": "0x5540223", "ratio": 0.96, "second": 0.369, "secs": 1.0}
+{"rva47": "55227F3", "mode": "47", "status": "body-match", "func50": "0x555a640", "off": 51, "rva50": "0x555a673", "ratio": 1.0, "second": 0.753, "secs": 0.5}
+{"rva47": "5533BE3", "mode": "47", "status": "body-match", "func50": "0x556ba80", "off": 115, "rva50": "0x556baf3", "ratio": 1.0, "second": 0.451, "secs": 0.3}
+{"rva47": "5533D32", "mode": "47", "status": "no-body-match", "best": 0.314, "bestfunc": "0x556e490", "est": "0x556bc7d", "ncands": 64, "secs": 1.5}
+{"rva47": "55378E1", "mode": "47", "status": "no-body-match", "best": 0.481, "bestfunc": "0x5571950", "est": "0x556f05c", "ncands": 208, "secs": 0.2}
+{"rva47": "5537A41", "mode": "47", "status": "no-body-match", "best": 0.478, "bestfunc": "0x5579f40", "est": "0x556f17e", "ncands": 187, "secs": 0.2}
+{"rva47": "553A71B", "mode": "47", "status": "body-match", "func50": "0x5571de0", "off": 43, "rva50": "0x5571e0b", "ratio": 1.0, "second": 0.0, "secs": 0.1}
+{"rva47": "553BE66", "mode": "47", "status": "body-match", "func50": "0x5573570", "off": 70, "rva50": "0x55735b6", "ratio": 0.998, "second": 0.827, "secs": 0.1}
+{"rva47": "5540336", "mode": "47", "status": "body-match", "func50": "0x5577480", "off": 70, "rva50": "0x55774c6", "ratio": 0.967, "second": 0.838, "secs": 1.6}
+{"rva47": "556F190", "mode": "47", "status": "no-body-match", "best": 0.88, "bestfunc": "0x55a4bd0", "est": "0x55a4c28", "ncands": 183, "secs": 0.1}
+{"rva47": "5595AC0", "mode": "47", "status": "body-match", "func50": "0x55c9f40", "off": 0, "rva50": "0x55c9f40", "ratio": 0.937, "second": 0.38, "secs": 0.6}
+{"rva47": "5598B60", "mode": "47", "status": "no-body-match", "best": 0.929, "bestfunc": "0x55ccfe0", "est": "0x55ccd04", "ncands": 134, "secs": 0.0}
+{"rva47": "55A06C0", "mode": "47", "status": "body-match", "func50": "0x55d4260", "off": 0, "rva50": "0x55d4260", "ratio": 1.0, "second": 0.959, "secs": 0.2}
+{"rva47": "55C19B7", "mode": "47", "status": "body-match", "func50": "0x55f4130", "off": 167, "rva50": "0x55f41d7", "ratio": 1.0, "second": 0.0, "secs": 0.2}
+{"rva47": "55CC389", "mode": "47", "status": "body-match", "func50": "0x55ff0d0", "off": 41, "rva50": "0x55ff0f9", "ratio": 0.998, "second": 0.443, "secs": 0.6}
+{"rva47": "5616771", "mode": "47", "status": "body-match", "func50": "0x5644770", "off": 65, "rva50": "0x56447b1", "ratio": 0.987, "second": 0.325, "secs": 1.5}
+{"rva47": "565690B", "mode": "47", "status": "body-match", "func50": "0x5687870", "off": 27, "rva50": "0x568788b", "ratio": 1.0, "second": 0.0, "secs": 0.0}
+{"rva47": "56869F8", "mode": "47", "status": "body-match", "func50": "0x56beac0", "off": 56, "rva50": "0x56beaf8", "ratio": 0.997, "second": 0.0, "secs": 0.4}
+{"rva47": "568BC51", "mode": "47", "status": "body-match", "func50": "0x56c51e0", "off": 113, "rva50": "0x56c5251", "ratio": 0.995, "second": 0.42, "secs": 0.5}
+{"rva47": "568E43E", "mode": "47", "status": "body-match", "func50": "0x56c8010", "off": 78, "rva50": "0x56c805e", "ratio": 0.961, "second": 0.0, "secs": 0.3}
+{"rva47": "57114C0", "mode": "47", "status": "body-match", "func50": "0x5750f30", "off": 0, "rva50": "0x5750f30", "ratio": 0.993, "second": 0.191, "secs": 3.5}
+{"rva47": "57D7925", "mode": "47", "status": "body-match", "func50": "0x58190b0", "off": 37, "rva50": "0x58190d5", "ratio": 1.0, "second": 0.218, "secs": 1.0}
+{"rva47": "5810B30", "mode": "47", "status": "body-match", "func50": "0x58569c0", "off": 0, "rva50": "0x58569c0", "ratio": 0.971, "second": 0.0, "secs": 0.3}
+{"rva47": "5846E40", "mode": "47", "status": "body-match", "func50": "0x5890f50", "off": 0, "rva50": "0x5890f50", "ratio": 1.0, "second": 0.0, "secs": 0.2}

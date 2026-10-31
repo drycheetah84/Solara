@@ -1,0 +1,2715 @@
+{
+ "A6D3882": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    54
+   ]
+  ],
+  "prov": "47",
+  "kind": "data",
+  "rva50": "0xa7c0082",
+  "how": "xrefs 8/8 agree"
+ },
+ "A6D3883": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    55
+   ]
+  ],
+  "prov": "47",
+  "kind": "data",
+  "rva50": "0xa7c0083",
+  "how": "xrefs 8/8 agree"
+ },
+ "95DF980": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    68
+   ]
+  ],
+  "prov": "22",
+  "kind": "data",
+  "rva50": null,
+  "how": "xrefs-unlocated(3)"
+ },
+ "95DF988": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    69
+   ]
+  ],
+  "prov": "22",
+  "kind": "data",
+  "rva50": null,
+  "how": "xrefs-unlocated(2)"
+ },
+ "95DF98C": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    70
+   ]
+  ],
+  "prov": "22",
+  "kind": "data",
+  "rva50": null,
+  "how": "no-xrefs"
+ },
+ "A5BB000": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    354
+   ]
+  ],
+  "kind": "bound",
+  "rva50": null,
+  "how": "not-an-rva/coarse-bound"
+ },
+ "53DA880": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    433
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:no-candidate | 47:no-candidate]"
+ },
+ "9710B80": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    434
+   ]
+  ],
+  "prov": "22",
+  "kind": "data",
+  "rva50": "0xa7cc3c0",
+  "how": "xrefs 6/8 agree"
+ },
+ "4A12EC0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    478
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x4a1bbf0",
+  "how": "final_live sim=1.000"
+ },
+ "4A169D0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    515
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x4a1f700",
+  "how": "final_live sim=1.000"
+ },
+ "4A17C10": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    535
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x4a20940",
+  "how": "final_live sim=1.000"
+ },
+ "10153A0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    551
+   ],
+   [
+    "dllmain_50451.cpp",
+    10344
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": "0x117c720",
+  "how": "agree[final_live sim=1.000 | via47 1177030 map sim=1.000]"
+ },
+ "55A06C0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    575
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x55d4260",
+  "how": "final_live sim=1.000"
+ },
+ "559ABD0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    771
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x55ce750",
+  "how": "final_live sim=1.000"
+ },
+ "53C8AF0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    772
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:best final_live sim=0.000 | 47:best map sim=0.000]"
+ },
+ "84E6D20": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    773
+   ]
+  ],
+  "prov": "22",
+  "kind": "data",
+  "rva50": null,
+  "how": "xref-votes {'0x924c478': 1}"
+ },
+ "1261F1A": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    950
+   ]
+  ],
+  "prov": "22",
+  "kind": "site",
+  "rva50": "0x13ff58a",
+  "how": "agree[window(24/24) | via47 13F9E7A window(24/24)]"
+ },
+ "126361F": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    951
+   ]
+  ],
+  "prov": "22",
+  "kind": "site",
+  "rva50": "0x1400c6f",
+  "how": "agree[window(24/24) | via47 13FB55F window(24/24)]"
+ },
+ "1265139": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    952
+   ]
+  ],
+  "prov": "22",
+  "kind": "site",
+  "rva50": "0x1402769",
+  "how": "agree[window(24/24) | via47 13FD059 window(24/24)]"
+ },
+ "1265D26": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    953
+   ]
+  ],
+  "prov": "22",
+  "kind": "site",
+  "rva50": "0x1403346",
+  "how": "agree[window(24/24) | via47 13FDC36 window(24/24)]"
+ },
+ "1268F6E": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    954
+   ]
+  ],
+  "prov": "22",
+  "kind": "site",
+  "rva50": null,
+  "how": "none[direct:None | 47:None]"
+ },
+ "1267DB3": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    955
+   ]
+  ],
+  "prov": "22",
+  "kind": "site",
+  "rva50": null,
+  "how": "none[direct:None | 47:None]"
+ },
+ "1254DB5": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    958
+   ]
+  ],
+  "prov": "22",
+  "kind": "site",
+  "rva50": null,
+  "how": "none[direct:None | 47:None]"
+ },
+ "12621D6": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    960
+   ]
+  ],
+  "prov": "22",
+  "kind": "site",
+  "rva50": "0x13ff846",
+  "how": "agree[window(24/24) | via47 13FA136 window(24/24)]"
+ },
+ "12639B8": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    961
+   ]
+  ],
+  "prov": "22",
+  "kind": "site",
+  "rva50": "0x1401008",
+  "how": "agree[window(24/24) | via47 13FB8F8 window(24/24)]"
+ },
+ "12654C5": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    962
+   ]
+  ],
+  "prov": "22",
+  "kind": "site",
+  "rva50": "0x1402af5",
+  "how": "agree[window(24/24) | via47 13FD3E5 window(24/24)]"
+ },
+ "1265FE9": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    963
+   ]
+  ],
+  "prov": "22",
+  "kind": "site",
+  "rva50": "0x1403609",
+  "how": "agree[window(24/24) | via47 13FDEF9 window(24/24)]"
+ },
+ "1268073": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    964
+   ]
+  ],
+  "prov": "22",
+  "kind": "site",
+  "rva50": null,
+  "how": "none[direct:None | 47:None]"
+ },
+ "1269351": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    965
+   ]
+  ],
+  "prov": "22",
+  "kind": "site",
+  "rva50": null,
+  "how": "none[direct:None | 47:None]"
+ },
+ "1254F50": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    1021
+   ]
+  ],
+  "prov": "22",
+  "kind": "site",
+  "rva50": null,
+  "how": "none[direct:None | 47:None]"
+ },
+ "54277AD": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    1260
+   ]
+  ],
+  "prov": "22",
+  "kind": "site",
+  "rva50": null,
+  "how": "none[direct:None | 47:None]"
+ },
+ "53DB090": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    1938
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x53e51d0",
+  "how": "final_live sim=0.999"
+ },
+ "543C7B0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    1955
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:no-candidate | 47:no-candidate]"
+ },
+ "5432A40": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    2139
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": "0x53dcb10",
+  "how": "agree[final_live sim=0.944 | via47 53D2AC0 map sim=1.000]"
+ },
+ "52EE2E0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    2182
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:no-candidate | 47:no-candidate]"
+ },
+ "5487560": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    2277
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:no-candidate | 47:no-candidate]"
+ },
+ "84A2B38": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    2278
+   ]
+  ],
+  "prov": "22",
+  "kind": "data",
+  "rva50": null,
+  "how": "xrefs-unlocated(2)"
+ },
+ "5482110": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    2336
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:no-candidate | 47:no-candidate]"
+ },
+ "12494D0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    3259
+   ],
+   [
+    "dllmain_50451.cpp",
+    3259
+   ],
+   [
+    "dllmain_50451.cpp",
+    3259
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": "0x13e5b40",
+  "how": "agree[prologue-window64 sim=1.000 | via47 13E0430 prologue-window64 sim=1.000]"
+ },
+ "125F7B0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    3260
+   ],
+   [
+    "dllmain_50451.cpp",
+    3260
+   ],
+   [
+    "dllmain_50451.cpp",
+    3260
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:no-candidate | 47:no-candidate]"
+ },
+ "AC0A1A0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    3359
+   ]
+  ],
+  "prov": "47",
+  "kind": "data",
+  "rva50": "0xacf7cd8",
+  "how": "xrefs 6/7 agree"
+ },
+ "53DC76A": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    3689
+   ],
+   [
+    "dllmain_50451.cpp",
+    15470
+   ]
+  ],
+  "prov": "22",
+  "kind": "site",
+  "rva50": "0x55e7a0f",
+  "how": "direct[window(24/24)]"
+ },
+ "53DC730": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    3690
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:best final_live sim=0.000 | 47:best map sim=0.000]"
+ },
+ "545BD80": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    3707
+   ],
+   [
+    "dllmain_50451.cpp",
+    5173
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:no-candidate | 47:no-candidate]"
+ },
+ "54863C0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    3718
+   ],
+   [
+    "dllmain_50451.cpp",
+    5951
+   ],
+   [
+    "dllmain_50451.cpp",
+    15373
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:no-candidate | 47:no-candidate]"
+ },
+ "3509AB0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    3891
+   ],
+   [
+    "dllmain_50451.cpp",
+    3967
+   ],
+   [
+    "dllmain_50451.cpp",
+    13823
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": "0x3695740",
+  "how": "agree[final_live sim=0.937 | via47 368FBC0 map sim=1.000]"
+ },
+ "54EB5E0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    3892
+   ],
+   [
+    "dllmain_50451.cpp",
+    3968
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": "0x5857100",
+  "how": "agree[final_live sim=0.953 | via47 5811270 prologue-window64 sim=1.000]"
+ },
+ "5000000": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    5067
+   ],
+   [
+    "dllmain_50451.cpp",
+    5157
+   ]
+  ],
+  "kind": "bound",
+  "rva50": null,
+  "how": "not-an-rva/coarse-bound"
+ },
+ "5A00000": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    5067
+   ],
+   [
+    "dllmain_50451.cpp",
+    5157
+   ]
+  ],
+  "kind": "bound",
+  "rva50": null,
+  "how": "not-an-rva/coarse-bound"
+ },
+ "5503050": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    5331
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": "0x586e850",
+  "how": "hop[47 5826510 prologue-window32 sim=1.000; prologue-window64 sim=1.000]"
+ },
+ "547F7A0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    5475
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:no-candidate | 47:no-candidate]"
+ },
+ "54599B0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    5618
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:no-candidate | 47:no-candidate]"
+ },
+ "534A7F0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    5820
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:no-candidate | 47:no-candidate]"
+ },
+ "5464630": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    6132
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:no-candidate | 47:no-candidate]"
+ },
+ "548FC40": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    6158
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:no-candidate | 47:no-candidate]"
+ },
+ "5502B00": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    6262
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:no-candidate | 47:no-candidate]"
+ },
+ "55B3900": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    6307
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x55e6400",
+  "how": "final_live sim=1.000"
+ },
+ "54A9890": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    6316
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x54de5b0",
+  "how": "final_live sim=1.000"
+ },
+ "114D690": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    6330
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": "0x12be600",
+  "how": "agree[final_live sim=1.000 | via47 12B8EF0 map sim=1.000]"
+ },
+ "1EC07A0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    6348
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:no-candidate | 47:no-candidate]"
+ },
+ "466A240": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    6363
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:no-candidate | 47:no-candidate]"
+ },
+ "4723AA0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    6418
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:no-candidate | 47:no-candidate]"
+ },
+ "37B02C0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    6527
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": "0x3950f60",
+  "how": "agree[final_live sim=0.898 | via47 394B3E0 map sim=1.000]"
+ },
+ "53AF7C0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    7771
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:best final_live sim=0.000 | 47:best map sim=0.000]"
+ },
+ "54B5660": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    8501
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:no-candidate | 47:no-candidate]"
+ },
+ "9C5D0A0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    8531
+   ]
+  ],
+  "prov": "47",
+  "kind": "data",
+  "rva50": null,
+  "how": "no-xrefs"
+ },
+ "4040990": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    8537
+   ],
+   [
+    "dllmain_50451.cpp",
+    13925
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": "0x41fb690",
+  "how": "agree[final_live sim=0.980 | via47 41F5A60 map sim=1.000]"
+ },
+ "54B13D0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    8541
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:no-candidate | 47:no-candidate]"
+ },
+ "804BDA0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    9559
+   ],
+   [
+    "dllmain_50451.cpp",
+    9589
+   ],
+   [
+    "specedit.h",
+    1597
+   ]
+  ],
+  "prov": "22",
+  "kind": "data",
+  "rva50": "0x8df9880",
+  "how": "xrefs 3/8 agree"
+ },
+ "5361530": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    9569
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:best final_live sim=0.731 | 47:best map sim=0.731]"
+ },
+ "468BE60": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    9836
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:no-candidate | 47:no-candidate]"
+ },
+ "463FE20": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    10342
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:no-candidate | 47:no-candidate]"
+ },
+ "46B2280": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    10342
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": "0x49f8910",
+  "how": "agree[prologue-window32 sim=0.957 | via47 49EFBF0 prologue-window64 sim=1.000]"
+ },
+ "4640580": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    10342
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": "0x4956140",
+  "how": "agree[prologue-window32 sim=0.957 | via47 494D430 prologue-window64 sim=1.000]"
+ },
+ "46B2360": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    10342
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": "0x49f89f0",
+  "how": "agree[prologue-window48 sim=0.960 | via47 49EFCD0 prologue-window64 sim=1.000]"
+ },
+ "4643F30": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    10343
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:best map sim=0.000 | 47:best map sim=0.000]"
+ },
+ "46443B0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    10343
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:best map sim=0.000 | 47:best map sim=0.000]"
+ },
+ "4644120": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    10343
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:no-candidate | 47:no-candidate]"
+ },
+ "4675A60": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    10343
+   ]
+  ],
+  "kind": "?",
+  "rva50": null,
+  "how": "no-provenance"
+ },
+ "54B04E0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    11116
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:no-candidate | 47:no-candidate]"
+ },
+ "5510C40": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    11127
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:no-candidate | 47:no-candidate]"
+ },
+ "1000000": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    11209
+   ],
+   [
+    "dllmain_50451.cpp",
+    11212
+   ]
+  ],
+  "kind": "bound",
+  "rva50": null,
+  "how": "not-an-rva/coarse-bound"
+ },
+ "54A1930": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13684
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x54d64a0",
+  "how": "final_live sim=1.000"
+ },
+ "54AF360": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13696
+   ],
+   [
+    "dllmain_50451.cpp",
+    13926
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:best final_live sim=0.000 | 47:best map sim=0.000]"
+ },
+ "41F5A60": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13717
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x41fb690",
+  "how": "final_live sim=1.000"
+ },
+ "5508363": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13755
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x5540223",
+  "how": "func(24/24)"
+ },
+ "5509E0B": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13755
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x5541cbb",
+  "how": "func(24/24)"
+ },
+ "55227F3": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13755
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x555a673",
+  "how": "func(24/24)"
+ },
+ "5522A06": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13755
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x555a886",
+  "how": "window(24/24)"
+ },
+ "5533BE3": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13755
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": null,
+  "how": null
+ },
+ "5533CE7": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13755
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": null,
+  "how": null
+ },
+ "5533D32": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13756
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": null,
+  "how": null
+ },
+ "5537829": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13756
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": null,
+  "how": null
+ },
+ "55378E1": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13756
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": null,
+  "how": null
+ },
+ "5537979": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13756
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": null,
+  "how": null
+ },
+ "5537A41": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13756
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": null,
+  "how": null
+ },
+ "5539930": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13756
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x5571020",
+  "how": "func(24/24)"
+ },
+ "553A71B": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13757
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x5571e0b",
+  "how": "func(24/24)"
+ },
+ "553BC65": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13757
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x55733b5",
+  "how": "window(24/24)"
+ },
+ "553BE66": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13757
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x55735b6",
+  "how": "func(24/24)"
+ },
+ "553D177": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13757
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x55747b7",
+  "how": "func(24/24)"
+ },
+ "5540336": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13757
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x55774c6",
+  "how": "func(24/24)"
+ },
+ "554105A": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13757
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x557829a",
+  "how": "func(24/24)"
+ },
+ "5567C6D": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13758
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x55e7a0d",
+  "how": "func(24/24)"
+ },
+ "55C19B7": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13758
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x55f41d7",
+  "how": "window(24/24)"
+ },
+ "55CA658": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13758
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x55fd788",
+  "how": "func(24/24)"
+ },
+ "55CC389": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13758
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x55ff0f9",
+  "how": "func(24/24)"
+ },
+ "55D66F3": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13758
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x56083f3",
+  "how": "window(24/24)"
+ },
+ "5616771": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13758
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x56447b1",
+  "how": "func(24/24)"
+ },
+ "564F76B": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13759
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x5680e7b",
+  "how": "func(24/24)"
+ },
+ "565690B": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13759
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x568788b",
+  "how": "window(16/16)"
+ },
+ "565C2BD": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13759
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x568cfdd",
+  "how": "func(24/24)"
+ },
+ "56869F8": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13759
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x56beaf8",
+  "how": "func(24/24)"
+ },
+ "568BB00": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13759
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x56c5100",
+  "how": "window(24/24)"
+ },
+ "568BC51": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13759
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x56c5251",
+  "how": "window(24/24)"
+ },
+ "568BF6B": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13760
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x56c550b",
+  "how": "func(24/24)"
+ },
+ "568E43E": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13760
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x56c805e",
+  "how": "func(24/24)"
+ },
+ "56ED310": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13760
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x572b8d0",
+  "how": "func(24/24)"
+ },
+ "56F52D7": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13760
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x5733aa7",
+  "how": "window(16/16)"
+ },
+ "57A6561": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13760
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x57e7d91",
+  "how": "func(24/24)"
+ },
+ "57D7925": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13760
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x58190d5",
+  "how": "func(24/24)"
+ },
+ "5804A58": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13761
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x58484c8",
+  "how": "window(24/24)"
+ },
+ "580DE55": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13761
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x585392e",
+  "how": "window(32/8)"
+ },
+ "22ACF5C": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13767
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x22b282c",
+  "how": "func(24/24)"
+ },
+ "22AD1DE": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13767
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x22b2aae",
+  "how": "func(24/24)"
+ },
+ "3E8BBF4": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13767
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x3e91824",
+  "how": "func(24/24)"
+ },
+ "3E8D3FB": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13767
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": null,
+  "how": null
+ },
+ "3E8D4EB": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13767
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": null,
+  "how": null
+ },
+ "3E8D769": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13767
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x3e93399",
+  "how": "window(24/24)"
+ },
+ "3E8EE6A": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13768
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x3e94a9a",
+  "how": "window(24/24)"
+ },
+ "3E98BF8": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13768
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x3e9e828",
+  "how": "window(24/24)"
+ },
+ "41E6549": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13768
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x41ec179",
+  "how": "window(24/24)"
+ },
+ "4205C5C": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13768
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x420b88c",
+  "how": "func(24/24)"
+ },
+ "4264D26": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13768
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x426a956",
+  "how": "window(24/24)"
+ },
+ "42D2523": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13768
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x42d8233",
+  "how": "func(24/24)"
+ },
+ "47BB3A7": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13769
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x47c1487",
+  "how": "func(24/24)"
+ },
+ "47BB507": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13769
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x47c15e7",
+  "how": "func(24/24)"
+ },
+ "47C791B": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13769
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x47cd9fb",
+  "how": "func(24/24)"
+ },
+ "47D5C82": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13769
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": null,
+  "how": null
+ },
+ "47D6CB2": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13769
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": null,
+  "how": null
+ },
+ "47D6F82": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13769
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": null,
+  "how": null
+ },
+ "47E9615": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13770
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x47ef6f5",
+  "how": "func(24/24)"
+ },
+ "47F670A": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13770
+   ]
+  ],
+  "prov": "47",
+  "kind": "site",
+  "rva50": "0x47fc7ea",
+  "how": "func(24/24)"
+ },
+ "5810B30": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13850
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x58569c0",
+  "how": "final_live sim=1.000"
+ },
+ "3EC7C90": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13866
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x3ecd8c0",
+  "how": "final_live sim=1.000"
+ },
+ "60A0990": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13880
+   ]
+  ],
+  "prov": "22",
+  "kind": "site",
+  "rva50": "0x6c4e760",
+  "how": "agree[func(24/24) | via47 6BA7110 func(24/24)]"
+ },
+ "3A29B20": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13898
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": "0x3bd3a80",
+  "how": "agree[final_live sim=0.992 | via47 3BCDEF0 map sim=1.000]"
+ },
+ "5450000": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13923
+   ]
+  ],
+  "prov": "22",
+  "kind": "site",
+  "rva50": "0x56dae10",
+  "how": "agree[window(24/24) | via47 569D980 window(24/24)]"
+ },
+ "54B4000": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    13924
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:no-candidate | 47:no-candidate]"
+ },
+ "46849A0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    14793
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": "0x49a2540",
+  "how": "agree[final_live sim=0.991 | via47 4999830 map sim=1.000]"
+ },
+ "54E4470": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    14897
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:best merged22 sim=0.000 | 47:best map sim=0.000]"
+ },
+ "54E4E10": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    14898
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:no-candidate | 47:no-candidate]"
+ },
+ "54E17E0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    14899
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:best merged22 sim=0.000 | 47:best map sim=0.000]"
+ },
+ "5429424": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    14949
+   ]
+  ],
+  "prov": "22",
+  "kind": "site",
+  "rva50": null,
+  "how": "none[direct:None | 47:None]"
+ },
+ "5429427": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    14954
+   ]
+  ],
+  "prov": "22",
+  "kind": "site",
+  "rva50": null,
+  "how": "none[direct:None | 47:None]"
+ },
+ "53B3BC3": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    14970
+   ]
+  ],
+  "prov": "22",
+  "kind": "site",
+  "rva50": null,
+  "how": "none[direct:None | 47:None]"
+ },
+ "53B3BCD": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    14978
+   ]
+  ],
+  "prov": "22",
+  "kind": "site",
+  "rva50": null,
+  "how": "none[direct:None | 47:None]"
+ },
+ "53B3BE2": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    14979
+   ]
+  ],
+  "prov": "22",
+  "kind": "site",
+  "rva50": null,
+  "how": "none[direct:None | 47:None]"
+ },
+ "4A88D90": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    15138
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x4a91d10",
+  "how": "map sim=1.000"
+ },
+ "4A89100": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    15138
+   ]
+  ],
+  "kind": "?",
+  "rva50": null,
+  "how": "no-provenance"
+ },
+ "A480348": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    15209
+   ],
+   [
+    "dllmain_50451.cpp",
+    15891
+   ]
+  ],
+  "prov": "47",
+  "kind": "data",
+  "rva50": "0xa569348",
+  "how": "xrefs 6/7 agree"
+ },
+ "A4810D4": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    15210
+   ],
+   [
+    "dllmain_50451.cpp",
+    15892
+   ]
+  ],
+  "prov": "47",
+  "kind": "data",
+  "rva50": "0xa56a0d4",
+  "how": "xrefs 7/8 agree"
+ },
+ "924A700": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    15223
+   ]
+  ],
+  "prov": "47",
+  "kind": "data",
+  "rva50": "0x9317dc0",
+  "how": "xrefs 1/1 agree"
+ },
+ "550F130": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    15366
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:no-candidate | 47:no-candidate]"
+ },
+ "1245000": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    15387
+   ]
+  ],
+  "prov": "22",
+  "kind": "site",
+  "rva50": null,
+  "how": "none[direct:None | 47:None]"
+ },
+ "1269000": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    15387
+   ]
+  ],
+  "prov": "22",
+  "kind": "site",
+  "rva50": null,
+  "how": "none[direct:None | 47:None]"
+ },
+ "124DB00": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    15388
+   ],
+   [
+    "dllmain_50451.cpp",
+    15388
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": "0x13ea650",
+  "how": "agree[callers 8/8 (of 24) sim=1.00 sim=1.000 | via47 13E4F40 callers 8/8 (of 24) sim=1.00 sim=1.000]"
+ },
+ "124ECE0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    15389
+   ],
+   [
+    "dllmain_50451.cpp",
+    15389
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": "0x13eb830",
+  "how": "agree[callers 5/5 (of 24) sim=1.00 sim=1.000 | via47 13E6120 callers 5/5 (of 24) sim=1.00 sim=1.000]"
+ },
+ "12B8EF0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    15400
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x12be600",
+  "how": "final_live sim=1.000"
+ },
+ "12B9074": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    15401
+   ]
+  ],
+  "kind": "?",
+  "rva50": null,
+  "how": "no-provenance"
+ },
+ "1326B07": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    15416
+   ]
+  ],
+  "prov": "22",
+  "kind": "site",
+  "rva50": "0x14b7597",
+  "how": "agree[window(24/24) | via47 14B1E87 window(24/24)]"
+ },
+ "54B1421": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    15444
+   ]
+  ],
+  "prov": "22",
+  "kind": "site",
+  "rva50": null,
+  "how": "none[direct:None | 47:None]"
+ },
+ "111B4A0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    15680
+   ],
+   [
+    "specedit.h",
+    1600
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x1120b90",
+  "how": "final_live sim=1.000"
+ },
+ "5846E40": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    15689
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x5890f50",
+  "how": "final_live sim=0.994"
+ },
+ "558C600": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    15698
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x55fca90",
+  "how": "final_live sim=1.000"
+ },
+ "4AB4DD0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    15713
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x4abdda0",
+  "how": "final_live sim=1.000"
+ },
+ "4AB2880": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    15716
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x4abb850",
+  "how": "final_live sim=1.000"
+ },
+ "12F0CB0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    15728
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": "0x14898b0",
+  "how": "agree[merged22 sim=0.995 | via47 14841A0 map sim=1.000]"
+ },
+ "56E7A90": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    15813
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x5726240",
+  "how": "final_live sim=0.993"
+ },
+ "545CCB0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    16184
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:no-candidate | 47:no-candidate]"
+ },
+ "124F4C0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    16190
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": "0x13ec010",
+  "how": "agree[callers 5/5 (of 24) sim=1.00 sim=1.000 | via47 13E6900 callers 5/5 (of 24) sim=1.00 sim=1.000]"
+ },
+ "14363A0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    16226
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": "0x15d2ba0",
+  "how": "agree[final_live sim=0.914 | via47 15CD490 map sim=1.000]"
+ },
+ "5502070": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    16233
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": "0x586be50",
+  "how": "agree[final_live sim=0.938 | via47 5823B80 map sim=1.000]"
+ },
+ "46BC830": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    16246
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": "0x49e4670",
+  "how": "agree[final_live sim=1.000 | via47 49DB950 map sim=1.000]"
+ },
+ "47138D0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    16247
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": "0x4a6a300",
+  "how": "agree[prologue-window64 sim=1.000 | via47 4A61380 map sim=1.000]"
+ },
+ "4690260": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    16262
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:no-candidate | 47:no-candidate]"
+ },
+ "46902F0": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    16263
+   ],
+   [
+    "specedit.h",
+    1001
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": "0x49b38d0",
+  "how": "agree[prologue-window64 sim=1.000 | via47 49AABC0 prologue-window64 sim=1.000]"
+ },
+ "4692F30": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    16266
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:no-candidate | 47:no-candidate]"
+ },
+ "4689030": {
+  "sites": [
+   [
+    "dllmain_50451.cpp",
+    16267
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:no-candidate | 47:no-candidate]"
+ },
+ "46BEDA0": {
+  "sites": [
+   [
+    "specedit.h",
+    1580
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": "0x4a04220",
+  "how": "agree[callers 3/3 (of 4) sim=0.71 sim=0.711 | via47 49FB580 prologue-window64 sim=1.000]"
+ },
+ "4A66770": {
+  "sites": [
+   [
+    "specedit.h",
+    1580
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x4a6f6f0",
+  "how": "map sim=1.000"
+ },
+ "49F8F90": {
+  "sites": [
+   [
+    "specedit.h",
+    1580
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x4a01c20",
+  "how": "map sim=1.000"
+ },
+ "4948C90": {
+  "sites": [
+   [
+    "specedit.h",
+    1580
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x49519a0",
+  "how": "map sim=0.998"
+ },
+ "54FF5E0": {
+  "sites": [
+   [
+    "specedit.h",
+    1581
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x55371a0",
+  "how": "map sim=1.000"
+ },
+ "4A7E030": {
+  "sites": [
+   [
+    "specedit.h",
+    1581
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x4a86fb0",
+  "how": "map sim=1.000"
+ },
+ "4A87370": {
+  "sites": [
+   [
+    "specedit.h",
+    1582
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x4a902f0",
+  "how": "map sim=1.000"
+ },
+ "46BEBC0": {
+  "sites": [
+   [
+    "specedit.h",
+    1583
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": "0x4a040d0",
+  "how": "agree[callers 6/6 (of 19) sim=0.62 sim=0.617 | via47 49FB430 prologue-window64 sim=1.000]"
+ },
+ "495A350": {
+  "sites": [
+   [
+    "specedit.h",
+    1584
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x4963060",
+  "how": "prologue-window64 sim=1.000"
+ },
+ "4A4AF80": {
+  "sites": [
+   [
+    "specedit.h",
+    1585
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x4a53e70",
+  "how": "map sim=1.000"
+ },
+ "465BE70": {
+  "sites": [
+   [
+    "specedit.h",
+    1586
+   ]
+  ],
+  "prov": "22",
+  "kind": "site",
+  "rva50": null,
+  "how": "none[direct:None | 47:None]"
+ },
+ "46B3EB0": {
+  "sites": [
+   [
+    "specedit.h",
+    1587
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:no-candidate | 47:no-candidate]"
+ },
+ "4958A00": {
+  "sites": [
+   [
+    "specedit.h",
+    1588
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x4961710",
+  "how": "prologue-window64 sim=1.000"
+ },
+ "4954550": {
+  "sites": [
+   [
+    "specedit.h",
+    1589
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x495d260",
+  "how": "callers 35/35 (of 40) sim=1.00 sim=1.000"
+ },
+ "49D5750": {
+  "sites": [
+   [
+    "specedit.h",
+    1590
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x49de3f0",
+  "how": "prologue-window64 sim=1.000"
+ },
+ "49E0870": {
+  "sites": [
+   [
+    "specedit.h",
+    1592
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x49e9590",
+  "how": "map sim=1.000"
+ },
+ "46ADE50": {
+  "sites": [
+   [
+    "specedit.h",
+    1593
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": "0x558ada0",
+  "how": "agree[callers 2/2 (of 29) sim=1.00 sim=1.000 | via47 55535A0 prologue-window64 sim=1.000]"
+ },
+ "1177030": {
+  "sites": [
+   [
+    "specedit.h",
+    1594
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x117c720",
+  "how": "map sim=1.000"
+ },
+ "4959030": {
+  "sites": [
+   [
+    "specedit.h",
+    1595
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x4961d40",
+  "how": "map sim=1.000"
+ },
+ "4A61380": {
+  "sites": [
+   [
+    "specedit.h",
+    1596
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x4a6a300",
+  "how": "map sim=1.000"
+ },
+ "4954370": {
+  "sites": [
+   [
+    "specedit.h",
+    1601
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x495d080",
+  "how": "map sim=1.000"
+ },
+ "8D0A1F8": {
+  "sites": [
+   [
+    "specedit.h",
+    4774
+   ],
+   [
+    "specedit.h",
+    4804
+   ]
+  ],
+  "prov": "47",
+  "kind": "data",
+  "rva50": "0x8db3548",
+  "how": "xrefs 7/8 agree"
+ },
+ "5595AC0": {
+  "sites": [
+   [
+    "specedit.h",
+    6152
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x55c9f40",
+  "how": "map sim=1.000"
+ },
+ "5598B60": {
+  "sites": [
+   [
+    "specedit.h",
+    6152
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x55ccfe0",
+  "how": "map sim=1.000"
+ },
+ "556F190": {
+  "sites": [
+   [
+    "specedit.h",
+    6152
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x55a4bd0",
+  "how": "prologue-window64 sim=1.000"
+ },
+ "5596130": {
+  "sites": [
+   [
+    "specedit.h",
+    6152
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x55ca5b0",
+  "how": "map sim=1.000"
+ },
+ "4A09560": {
+  "sites": [
+   [
+    "specedit.h",
+    6185
+   ]
+  ],
+  "prov": "47",
+  "kind": "func",
+  "rva50": "0x4a12200",
+  "how": "final_live sim=1.000"
+ },
+ "46B2E20": {
+  "sites": [
+   [
+    "specedit.h",
+    7947
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": "0x49f9930",
+  "how": "agree[final_live sim=0.991 | via47 49F0C10 map sim=1.000]"
+ },
+ "53C9EE0": {
+  "sites": [
+   [
+    "specedit.h",
+    7959
+   ]
+  ],
+  "prov": "22",
+  "kind": "func",
+  "rva50": null,
+  "how": "none[direct:no-candidate | 47:no-candidate]"
+ }
+}

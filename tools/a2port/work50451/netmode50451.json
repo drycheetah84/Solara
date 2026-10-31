@@ -1,0 +1,51 @@
+{
+ "imagebase": "0x140000000",
+ "direct_check": {
+  "GetNetMode_47031": {
+   "rva": "0x41f5a60",
+   "func": "0x41f5a20",
+   "size": 378,
+   "body": "char __fastcall sub_1441F5A20(_BYTE *a1, int a2)\n{\n  char result; // al\n  char v3; // cl\n\n  if ( a2 == 0 )\n  {\n    switch ( a1[52] )\n    {\n      case 0:\n        goto LABEL_3;\n      case 1:\n      case 3:\n      case 4:\n      case 5:\n        goto LABEL_18;\n      case 2:\n        if ( a1[53] == 0 )\n          return 2;\n        if ( a1[54] != 0 )\n          goto LABEL_12;\n        if ( (byte_14A5636B8 & 1) == 0 )\n          goto LABEL_6;\n        result = 5;\n        break;\n      case 6:\n        return 4;\n "
+  },
+  "WorldGetNetMode_47031": {
+   "rva": "0x4040990",
+   "func": "0x403ef40",
+   "size": 12784,
+   "body": "_DWORD *__fastcall sub_14403EF40(\n        double **a1,\n        __int64 *a2,\n        _QWORD *a3,\n        __int64 a4,\n        __int64 a5,\n        __int64 a6,\n        int a7,\n        int a8,\n        _DWORD *a9,\n        int a10,\n        __int64 a11,\n        __int64 a12,\n        float a13,\n        __m128d *a14,\n        double *a15)\n{\n  __int64 v15; // r12\n  __int64 v16; // rbx\n  const char *v18; // r14\n  int v19; // esi\n  _DWORD *result; // rax\n  int v21; // r11d\n  int v22; // ecx\n  char v23; // dl\n "
+  },
+  "A2GetNetMode_47031": {
+   "rva": "0x54af360",
+   "func": "0x54af350",
+   "size": 47,
+   "body": "__int64 sub_1454AF350()\n{\n  __int64 result; // rax\n\n  result = qword_14ACEFE60;\n  if ( qword_14ACEFE60 == 0 )\n  {\n    sub_1414FE370(&qword_14ACEFE60, &off_14A67ECD0);\n    return qword_14ACEFE60;\n  }\n  return result;\n}\n"
+  }
+ },
+ "prephysbones_strings": [
+  {
+   "ea": "0x1489cb6a0",
+   "s": "bShowPrePhysBones"
+  },
+  {
+   "ea": "0x148a68648",
+   "s": "PREPHYSBONES"
+  }
+ ],
+ "prephys_handler": {
+  "rva": "0x3b2b570",
+  "callees": [
+   "0x41fb690",
+   "0x416f130",
+   "0x1273040",
+   "0x3afef70",
+   "0x38e3090",
+   "0x38e5b20",
+   "0x117c720",
+   "0x111d1c0",
+   "0x1128d70",
+   "0x117c720",
+   "0x111d1c0",
+   "0x1112e30"
+  ],
+  "body": "char __fastcall sub_143B2B570(__int64 a1, __int64 a2, __int64 a3, __int64 a4)\n{\n  __int64 v6; // r13\n  __int64 v7; // r8\n  __int64 v8; // r8\n  __int64 v9; // r9\n  int v10; // ecx\n  __int64 v11; // r8\n  _QWORD *v12; // rdx\n  __int64 v13; // rbx\n  __int64 v14; // rax\n  __int64 v15; // r9\n  int v16; // esi\n  __int64 v17; // rsi\n  unsigned __int8 **v18; // rcx\n  const wchar_t *v19; // r14\n  const wchar_t *v20; // rcx\n  unsigned int v21; // eax\n  unsigned int v22; // r15d\n  unsigned __int8 v23; // si\n  const wchar_t *v24; // rcx\n  AK::WriteBytesCount *v25; // r13\n  const wchar_t *v26; // rdx\n  _QWORD *v27; // rax\n  bool v28; // al\n  const wchar_t *v29; // rcx\n  const wchar_t *v30; // rcx\n  __int64 v31; // rdx\n  __int64 v32; // r8\n  __int64 v33; // r9\n  void *v34; // rcx\n  __int64 v35; // rbx\n  unsigned int v36; // r10d\n  __int64 v37; // r15\n  int v38; // r12d\n  int v39; // ebx\n  int v40; // edi\n  char *v41; // r13\n  int v42; // esi\n  int v43; // r8d\n  _BYTE *v44; // r9\n  int v45; // eax\n  _BYTE *v46; // rcx\n  unsigned int v47; // r11d\n  _BYTE *v48; // r8\n  _BYTE *v49; // rcx\n  __int64 v50; // r8\n  int v51; // eax\n  _BYTE *v52; // rcx\n  __int64 v53; // rbx\n  __int64 v54; // r8\n  __int64 v55; // r8\n  __int64 i; // r9\n  char *v57; // rdx\n  __int64 v58; // rcx\n  __int64 v59; // r8\n  int *v60; // r11\n  int v61; // ecx\n  int v62; // eax\n  __int64 v63; // r9\n  int *v64; // r10\n  int v65; // edx\n  unsigned __int64 v66; // rcx\n  void **v67; // rdx\n  int v68; // edi\n  __int64 v69; // rbx\n  int v70; // eax\n  const wchar_t *v71; // rdx\n  __int64 v72; // rcx\n  int v73; // eax\n  char *v74; // rdx\n  int v75; // eax\n  __int64 v76; // r8\n  int v77; // eax\n  char *v78; // rdx\n  int v79; // ecx\n  __int64 v80; // r9\n  __int64 v81; // rdx\n  int *v82; // r10\n  int j; // edx\n  unsigned __int64 v84; // rcx\n  int v85; // ecx\n  __int64 v86; // rdx\n  __int64 v87; // rcx\n  const wchar_t *v88; // rax\n  __int64 v89; // rbx\n  const void *v90; // rdi\n  const wchar_t *v91; // r8\n  void *v93[2]; // [rsp+"
+ }
+}

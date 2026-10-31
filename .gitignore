@@ -32,3 +32,13 @@ server_api_key.txt
 /tools/a2port/work47031/
 /tools/a2port/deep-dump.json
 /tools/a2port/old-ida.json
+
+# 50451 RVA port: game binary copy + IDB shard copies are local-only (size)
+tools/a2port/work50451/*.exe
+tools/a2port/work50451/shard*/
+tools/a2port/work50451/*.id0
+tools/a2port/work50451/*.id1
+tools/a2port/work50451/*.id2
+tools/a2port/work50451/*.nam
+tools/a2port/work50451/*.til
+tools/a2port/work50451/__pycache__/

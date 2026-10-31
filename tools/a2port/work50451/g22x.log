@@ -1,0 +1,212 @@
+IDAMCPPlugin instance created
+
+  bytes   pages size description
+--------- ----- ---- --------------------------------------------
+134217728 16384 8192 allocating memory for b-tree...
+268435456 32768 8192 allocating memory for virtual array...
+   262144    32 8192 allocating memory for name pointers...
+-----------------------------------------------------------------
+402915328            total memory allocated
+
+Loading processor module C:\Program Files\IDA Professional 9.4\procs\pc.dll for metapc...OK
+Loading type libraries...
+Autoanalysis subsystem has been initialized.
+Database for file 'A2-Win64-Shipping.exe' has been loaded.
+Hex-Rays Decompiler plugin has been loaded (v9.4.0.260714)
+  License: 14-0000-FFFF-88  (1 user)
+  The hotkeys are F5: decompile, Ctrl-F5: decompile all.
+
+  Please check the Edit/Plugins menu for more information.
+Hex-rays version 9.4.0.260714 has been detected, gooMBA plugin ready to use
+IDAMCPPlugin instance created
+IDA MCP Server v1.0 by IDA MCP
+Initializing plugin...
+Menu items created successfully
+Menu items added
+Plugin initialized successfully
+[IDAMappingsImporter] Loaded 11887 persisted exec signatures from IDB.
+Using type parser: clang version 21.1.5
+C:/Users/drych/ProjectDrift/Solara/tools/a2port/work50451/graph_src.py:32: DeprecationWarning: get_func() is deprecated, use get_func_start or get_func_entry_info()
+  ea = ib + int(h, 16); f = ida_funcs.get_func(ea)
+7FF6730753A0: restored microcode from idb
+7FF6730753A0: restored pseudocode from idb
+7FF6731970C0: restored microcode from idb
+7FF6731970C0: restored pseudocode from idb
+7FF673199AA0: restored microcode from idb
+7FF673199AA0: restored pseudocode from idb
+7FF673199B90: restored microcode from idb
+7FF673199B90: restored pseudocode from idb
+7FF67319A090: restored microcode from idb
+7FF67319A090: restored pseudocode from idb
+7FF6731AD690: restored microcode from idb
+7FF6731AD690: restored pseudocode from idb
+7FF6732ADB00: restored microcode from idb
+7FF6732ADB00: restored pseudocode from idb
+7FF6732AECE0: restored microcode from idb
+7FF6732AECE0: restored pseudocode from idb
+7FF6732AF4C0: restored microcode from idb
+7FF6732AF4C0: restored pseudocode from idb
+7FF6732B4D40: restored microcode from idb
+7FF6732B4D40: restored pseudocode from idb
+7FF673350CB0: restored microcode from idb
+7FF673350CB0: restored pseudocode from idb
+7FF673386AD0: restored microcode from idb
+7FF673386AD0: restored pseudocode from idb
+7FF6734963A0: restored microcode from idb
+7FF6734963A0: restored pseudocode from idb
+7FF673F207A0: restored microcode from idb
+7FF673F207A0: restored pseudocode from idb
+7FF675569AB0: restored microcode from idb
+7FF675569AB0: restored pseudocode from idb
+7FF6758102C0: restored microcode from idb
+7FF6758102C0: restored pseudocode from idb
+7FF675A89B20: restored microcode from idb
+7FF675A89B20: restored pseudocode from idb
+7FF6760A0990: restored microcode from idb
+7FF6760A0990: restored pseudocode from idb
+7FF6766CA240: restored microcode from idb
+7FF6766CA240: restored pseudocode from idb
+7FF6766E49A0: restored microcode from idb
+7FF6766E49A0: restored pseudocode from idb
+7FF6766E9030: restored microcode from idb
+7FF6766E9030: restored pseudocode from idb
+7FF6766EBE60: restored microcode from idb
+7FF6766EBE60: restored pseudocode from idb
+7FF6766F0260: restored microcode from idb
+7FF6766F0260: restored pseudocode from idb
+7FF6766F02F0: restored microcode from idb
+7FF6766F02F0: restored pseudocode from idb
+7FF6766F2F30: restored microcode from idb
+7FF6766F2F30: restored pseudocode from idb
+7FF676712E20: restored microcode from idb
+7FF676712E20: restored pseudocode from idb
+7FF676714B10: restored microcode from idb
+7FF676714B10: restored pseudocode from idb
+7FF67671C830: restored microcode from idb
+7FF67671C830: restored pseudocode from idb
+7FF67672DEF0: restored microcode from idb
+7FF67672DEF0: restored pseudocode from idb
+7FF67676E080: restored microcode from idb
+7FF67676E080: restored pseudocode from idb
+7FF6767738D0: restored microcode from idb
+7FF6767738D0: restored pseudocode from idb
+7FF676779CF0: restored microcode from idb
+7FF676779CF0: restored pseudocode from idb
+7FF676783AA0: restored microcode from idb
+7FF676783AA0: restored pseudocode from idb
+7FF6767844C0: restored microcode from idb
+7FF6767844C0: restored pseudocode from idb
+7FF67734E2E0: restored microcode from idb
+7FF67734E2E0: restored pseudocode from idb
+7FF677353BA0: restored microcode from idb
+7FF677353BA0: restored pseudocode from idb
+7FF677355300: restored microcode from idb
+7FF677355300: restored pseudocode from idb
+7FF677373C30: restored microcode from idb
+7FF677373C30: restored pseudocode from idb
+7FF677381BC0: restored microcode from idb
+7FF677381BC0: restored pseudocode from idb
+7FF6773AA7F0: restored microcode from idb
+7FF6773AA7F0: restored pseudocode from idb
+7FF6773AAEA0: restored microcode from idb
+7FF6773AAEA0: restored pseudocode from idb
+7FF6773ABA00: restored microcode from idb
+7FF6773ABA00: restored pseudocode from idb
+7FF6773ADCA0: restored microcode from idb
+7FF6773ADCA0: restored pseudocode from idb
+7FF6773B4A30: restored microcode from idb
+7FF6773B4A30: restored pseudocode from idb
+7FF6773C1530: restored microcode from idb
+7FF6773C1530: restored pseudocode from idb
+7FF6773EB6D0: restored microcode from idb
+7FF6773EB6D0: restored pseudocode from idb
+7FF677406990: restored microcode from idb
+7FF677406990: restored pseudocode from idb
+7FF67740F7C0: restored microcode from idb
+7FF67740F7C0: restored pseudocode from idb
+7FF677413B10: restored microcode from idb
+7FF677413B10: restored pseudocode from idb
+7FF677428AF0: restored microcode from idb
+7FF677428AF0: restored pseudocode from idb
+7FF677429EE0: restored microcode from idb
+7FF677429EE0: restored pseudocode from idb
+7FF67743A880: restored microcode from idb
+7FF67743A880: restored pseudocode from idb
+7FF67743C730: restored microcode from idb
+7FF67743C730: restored pseudocode from idb
+7FF677487660: restored microcode from idb
+7FF677487660: restored pseudocode from idb
+7FF6774893D0: restored microcode from idb
+7FF6774893D0: restored pseudocode from idb
+7FF677492A40: restored microcode from idb
+7FF677492A40: restored pseudocode from idb
+7FF67749C7B0: restored microcode from idb
+7FF67749C7B0: restored pseudocode from idb
+7FF6774B99B0: restored microcode from idb
+7FF6774B99B0: restored pseudocode from idb
+7FF6774BBD80: restored microcode from idb
+7FF6774BBD80: restored pseudocode from idb
+7FF6774BCCB0: restored microcode from idb
+7FF6774BCCB0: restored pseudocode from idb
+7FF6774C4630: restored microcode from idb
+7FF6774C4630: restored pseudocode from idb
+7FF6774DF7A0: restored microcode from idb
+7FF6774DF7A0: restored pseudocode from idb
+7FF6774E2110: restored microcode from idb
+7FF6774E2110: restored pseudocode from idb
+7FF6774E63C0: restored microcode from idb
+7FF6774E63C0: restored pseudocode from idb
+7FF6774E7560: restored microcode from idb
+7FF6774E7560: restored pseudocode from idb
+7FF6774EFC40: restored microcode from idb
+7FF6774EFC40: restored pseudocode from idb
+7FF67750F360: restored microcode from idb
+7FF67750F360: restored pseudocode from idb
+7FF67750FF10: restored microcode from idb
+7FF67750FF10: restored pseudocode from idb
+7FF6775104E0: restored microcode from idb
+7FF6775104E0: restored pseudocode from idb
+7FF6775108C0: restored microcode from idb
+7FF6775108C0: restored pseudocode from idb
+7FF6775113D0: restored microcode from idb
+7FF6775113D0: restored pseudocode from idb
+7FF677515660: restored microcode from idb
+7FF677515660: restored pseudocode from idb
+7FF6775417E0: restored microcode from idb
+7FF6775417E0: restored pseudocode from idb
+7FF6775438F0: restored microcode from idb
+7FF6775438F0: restored pseudocode from idb
+7FF677544470: restored microcode from idb
+7FF677544470: restored pseudocode from idb
+7FF677544E10: restored microcode from idb
+7FF677544E10: restored pseudocode from idb
+7FF67754B5E0: restored microcode from idb
+7FF67754B5E0: restored pseudocode from idb
+7FF677562070: restored microcode from idb
+7FF677562070: restored pseudocode from idb
+7FF677562B00: restored microcode from idb
+7FF677562B00: restored pseudocode from idb
+7FF677563050: restored microcode from idb
+7FF677563050: restored pseudocode from idb
+7FF67756F130: restored microcode from idb
+7FF67756F130: restored pseudocode from idb
+7FF677570C40: restored microcode from idb
+7FF677570C40: restored pseudocode from idb
+7FF678100950: restored microcode from idb
+7FF678100950: restored pseudocode from idb
+7FF672D57920: restored microcode from idb
+7FF672D57920: restored pseudocode from idb
+7FF672E88410: restored microcode from idb
+7FF672E88410: restored pseudocode from idb
+7FF672E88BA0: restored microcode from idb
+7FF672E88BA0: restored pseudocode from idb
+7FF672EFF910: restored microcode from idb
+7FF672EFF910: restored pseudocode from idb
+7FF672F1B5F0: restored microcode from idb
+7FF672F1B5F0: restored pseudocode from idb
+7FF67302C220: restored microcode from idb
+7FF67302C220: restored pseudocode from idb
+graph 22284x 89
+Flushing buffers, please wait...ok
+IDA MCP Server terminated
+Unloading IDP module C:\Program Files\IDA Professional 9.4\procs\pc.dll...

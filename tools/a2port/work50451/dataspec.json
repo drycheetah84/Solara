@@ -1,0 +1,1414 @@
+{
+ "1254F50": {
+  "src": "22",
+  "seg": ".text",
+  "name": "loc_7FF6732B4F50",
+  "string": null,
+  "refs": [
+   {
+    "func": 19221824,
+    "site_off": 518,
+    "mnem": "nop",
+    "ord": null,
+    "nd": 17,
+    "func50": null
+   },
+   {
+    "func": 19221824,
+    "site_off": 865,
+    "mnem": "jnz",
+    "ord": null,
+    "nd": 17,
+    "func50": null
+   }
+  ],
+  "in_func": {
+   "func": 19221824,
+   "off": 528,
+   "size": 4638,
+   "end": 19226462,
+   "bytes": [
+    65,
+    131,
+    126,
+    8,
+    0,
+    65,
+    15,
+    16,
+    22,
+    15,
+    41,
+    84,
+    36,
+    32,
+    15,
+    41
+   ],
+   "insn": "cmp     dword ptr [r14+8], 0",
+   "func50": null
+  }
+ },
+ "12B9074": {
+  "src": "47",
+  "seg": ".text",
+  "name": "algn_1412B9074",
+  "string": null,
+  "refs": []
+ },
+ "12F0CB0": {
+  "src": "22",
+  "seg": ".text",
+  "name": "sub_7FF673350CB0",
+  "string": null,
+  "refs": [],
+  "in_func": {
+   "func": 19860656,
+   "off": 0,
+   "size": 652,
+   "end": 19861308,
+   "bytes": [
+    72,
+    137,
+    92,
+    36,
+    16,
+    72,
+    137,
+    108,
+    36,
+    24,
+    72,
+    137,
+    116,
+    36,
+    32,
+    72
+   ],
+   "insn": "mov     [rsp+arg_8], rbx",
+   "func50": null
+  }
+ },
+ "1326B07": {
+  "src": "22",
+  "seg": ".text",
+  "name": "",
+  "string": null,
+  "refs": [
+   {
+    "func": 20081360,
+    "site_off": 48,
+    "mnem": "cmp",
+    "ord": null,
+    "nd": 1,
+    "func50": null
+   }
+  ],
+  "in_func": {
+   "func": 20081360,
+   "off": 55,
+   "size": 109,
+   "end": 20081469,
+   "bytes": [
+    73,
+    139,
+    60,
+    30,
+    116,
+    13,
+    72,
+    133,
+    255,
+    116,
+    8,
+    72,
+    139,
+    207,
+    232,
+    38
+   ],
+   "insn": "mov     rdi, [r14+rbx]",
+   "func50": null
+  }
+ },
+ "53B3BC3": {
+  "src": "22",
+  "seg": ".text",
+  "name": "",
+  "string": null,
+  "refs": [
+   {
+    "func": 87767824,
+    "site_off": 176,
+    "mnem": "test",
+    "ord": null,
+    "nd": 3,
+    "func50": null
+   }
+  ],
+  "in_func": {
+   "func": 87767824,
+   "off": 179,
+   "size": 346,
+   "end": 87768170,
+   "bytes": [
+    117,
+    30,
+    128,
+    61,
+    44,
+    78,
+    50,
+    4,
+    2,
+    114,
+    47,
+    72,
+    141,
+    21,
+    179,
+    2
+   ],
+   "insn": "jnz     short loc_7FF677413BE3",
+   "func50": null
+  }
+ },
+ "53B3BCD": {
+  "src": "22",
+  "seg": ".text",
+  "name": "",
+  "string": null,
+  "refs": [],
+  "in_func": {
+   "func": 87767824,
+   "off": 189,
+   "size": 346,
+   "end": 87768170,
+   "bytes": [
+    47,
+    72,
+    141,
+    21,
+    179,
+    2,
+    26,
+    3,
+    72,
+    141,
+    13,
+    28,
+    78,
+    50,
+    4,
+    232
+   ],
+   "insn": "jb      short loc_7FF677413BFD",
+   "func50": null
+  }
+ },
+ "53B3BE2": {
+  "src": "22",
+  "seg": ".text",
+  "name": "",
+  "string": null,
+  "refs": [],
+  "in_func": {
+   "func": 87767824,
+   "off": 210,
+   "size": 346,
+   "end": 87768170,
+   "bytes": [
+    26,
+    128,
+    187,
+    218,
+    2,
+    0,
+    0,
+    0,
+    116,
+    17,
+    72,
+    139,
+    139,
+    8,
+    4,
+    0
+   ],
+   "insn": "jmp     short loc_7FF677413BFD",
+   "func50": null
+  }
+ },
+ "53DC76A": {
+  "src": "22",
+  "seg": ".text",
+  "name": "",
+  "string": null,
+  "refs": [],
+  "in_func": {
+   "func": 87934768,
+   "off": 58,
+   "size": 335,
+   "end": 87935103,
+   "bytes": [
+    2,
+    116,
+    33,
+    72,
+    139,
+    207,
+    232,
+    59,
+    211,
+    18,
+    254,
+    72,
+    133,
+    192,
+    15,
+    132
+   ],
+   "insn": "cmp     eax, 2",
+   "func50": 77263488
+  }
+ },
+ "54277AD": {
+  "src": "22",
+  "seg": ".text",
+  "name": "",
+  "string": null,
+  "refs": [
+   {
+    "func": 88241760,
+    "site_off": 329,
+    "mnem": "mov",
+    "ord": null,
+    "nd": 7,
+    "func50": null
+   }
+  ],
+  "in_func": {
+   "func": 88241760,
+   "off": 333,
+   "size": 513,
+   "end": 88242273,
+   "bytes": [
+    57,
+    136,
+    84,
+    29,
+    0,
+    0,
+    116,
+    12,
+    139,
+    68,
+    36,
+    40,
+    255,
+    192,
+    137,
+    68
+   ],
+   "insn": "cmp     [rax+1D54h], ecx",
+   "func50": null
+  }
+ },
+ "5429424": {
+  "src": "22",
+  "seg": ".text",
+  "name": "",
+  "string": null,
+  "refs": [
+   {
+    "func": 88249296,
+    "site_off": 78,
+    "mnem": "mov",
+    "ord": null,
+    "nd": 12,
+    "func50": null
+   }
+  ],
+  "in_func": {
+   "func": 88249296,
+   "off": 84,
+   "size": 323,
+   "end": 88249619,
+   "bytes": [
+    64,
+    132,
+    237,
+    117,
+    89,
+    128,
+    61,
+    64,
+    54,
+    131,
+    4,
+    2,
+    114,
+    37,
+    131,
+    127
+   ],
+   "insn": "test    bpl, bpl",
+   "func50": null
+  }
+ },
+ "5429427": {
+  "src": "22",
+  "seg": ".text",
+  "name": "",
+  "string": null,
+  "refs": [
+   {
+    "func": 88249296,
+    "site_off": 84,
+    "mnem": "test",
+    "ord": null,
+    "nd": 12,
+    "func50": null
+   }
+  ],
+  "in_func": {
+   "func": 88249296,
+   "off": 87,
+   "size": 323,
+   "end": 88249619,
+   "bytes": [
+    117,
+    89,
+    128,
+    61,
+    64,
+    54,
+    131,
+    4,
+    2,
+    114,
+    37,
+    131,
+    127,
+    8,
+    0,
+    116
+   ],
+   "insn": "jnz     short loc_7FF677489482",
+   "func50": null
+  }
+ },
+ "54B13D0": {
+  "src": "22",
+  "seg": ".text",
+  "name": "sub_7FF6775113D0",
+  "string": "@UVAWH",
+  "refs": [],
+  "in_func": {
+   "func": 88806352,
+   "off": 0,
+   "size": 3074,
+   "end": 88809426,
+   "bytes": [
+    64,
+    85,
+    86,
+    65,
+    87,
+    72,
+    141,
+    108,
+    36,
+    240,
+    72,
+    129,
+    236,
+    16,
+    1,
+    0
+   ],
+   "insn": "push    rbp",
+   "func50": null
+  }
+ },
+ "54B1421": {
+  "src": "22",
+  "seg": ".text",
+  "name": "",
+  "string": null,
+  "refs": [],
+  "in_func": {
+   "func": 88806352,
+   "off": 81,
+   "size": 3074,
+   "end": 88809426,
+   "bytes": [
+    2,
+    15,
+    133,
+    146,
+    11,
+    0,
+    0,
+    72,
+    137,
+    156,
+    36,
+    56,
+    1,
+    0,
+    0,
+    72
+   ],
+   "insn": "cmp     eax, 2",
+   "func50": null
+  }
+ },
+ "54E17E0": {
+  "src": "22",
+  "seg": ".text",
+  "name": "AVRPawn::ClearTeam",
+  "string": null,
+  "refs": [
+   {
+    "func": 87338656,
+    "site_off": 7,
+    "mnem": "jmp",
+    "ord": null,
+    "nd": 0,
+    "func50": null
+   },
+   {
+    "func": 87350432,
+    "site_off": 21,
+    "mnem": "jmp",
+    "ord": null,
+    "nd": 0,
+    "func50": null
+   },
+   {
+    "func": 88022672,
+    "site_off": 66,
+    "mnem": "call",
+    "ord": null,
+    "nd": 2,
+    "func50": 90161280
+   },
+   {
+    "func": 89012464,
+    "site_off": 36,
+    "mnem": "call",
+    "ord": null,
+    "nd": 36,
+    "func50": null
+   }
+  ],
+  "in_func": {
+   "func": 89004000,
+   "off": 0,
+   "size": 207,
+   "end": 89004207,
+   "bytes": [
+    72,
+    133,
+    201,
+    15,
+    132,
+    197,
+    0,
+    0,
+    0,
+    87,
+    72,
+    131,
+    236,
+    80,
+    72,
+    139
+   ],
+   "insn": "test    rcx, rcx",
+   "func50": null
+  }
+ },
+ "54E4E10": {
+  "src": "22",
+  "seg": ".text",
+  "name": "sub_7FF677544E10",
+  "string": null,
+  "refs": [
+   {
+    "func": 87341568,
+    "site_off": 7,
+    "mnem": "jmp",
+    "ord": null,
+    "nd": 0,
+    "func50": null
+   },
+   {
+    "func": 87378480,
+    "site_off": 295,
+    "mnem": "call",
+    "ord": null,
+    "nd": 2,
+    "func50": null
+   },
+   {
+    "func": 88036992,
+    "site_off": 99,
+    "mnem": "call",
+    "ord": null,
+    "nd": 2,
+    "func50": 90184160
+   }
+  ],
+  "in_func": {
+   "func": 89017872,
+   "off": 0,
+   "size": 55,
+   "end": 89017927,
+   "bytes": [
+    72,
+    133,
+    201,
+    116,
+    49,
+    83,
+    72,
+    131,
+    236,
+    32,
+    72,
+    139,
+    217,
+    68,
+    136,
+    129
+   ],
+   "insn": "test    rcx, rcx",
+   "func50": null
+  }
+ },
+ "804BDA0": {
+  "src": "22",
+  "seg": ".rdata",
+  "name": "off_7FF67A0ABDA0",
+  "string": null,
+  "refs": [
+   {
+    "func": 74140432,
+    "site_off": 67,
+    "mnem": "lea",
+    "ord": 0,
+    "nd": 1,
+    "func50": null
+   },
+   {
+    "func": 74243824,
+    "site_off": 3399,
+    "mnem": "lea",
+    "ord": 32,
+    "nd": 35,
+    "func50": null
+   },
+   {
+    "func": 74506368,
+    "site_off": 78,
+    "mnem": "lea",
+    "ord": 0,
+    "nd": 3,
+    "func50": null
+   },
+   {
+    "func": 74554608,
+    "site_off": 802,
+    "mnem": "lea",
+    "ord": 6,
+    "nd": 7,
+    "func50": null
+   },
+   {
+    "func": 74597568,
+    "site_off": 2215,
+    "mnem": "lea",
+    "ord": 25,
+    "nd": 26,
+    "func50": null
+   },
+   {
+    "func": 87112752,
+    "site_off": 264,
+    "mnem": "lea",
+    "ord": 0,
+    "nd": 1,
+    "func50": null
+   },
+   {
+    "func": 87714192,
+    "site_off": 166,
+    "mnem": "lea",
+    "ord": 1,
+    "nd": 11,
+    "func50": null
+   },
+   {
+    "func": 87714192,
+    "site_off": 679,
+    "mnem": "lea",
+    "ord": 5,
+    "nd": 11,
+    "func50": null
+   }
+  ]
+ },
+ "84A2B38": {
+  "src": "22",
+  "seg": ".rdata",
+  "name": "UA2ReplaySystem_VFT",
+  "string": null,
+  "refs": [
+   {
+    "func": 86981536,
+    "site_off": 48,
+    "mnem": "lea",
+    "ord": 0,
+    "nd": 3,
+    "func50": null
+   },
+   {
+    "func": 86987520,
+    "site_off": 20,
+    "mnem": "lea",
+    "ord": 0,
+    "nd": 2,
+    "func50": null
+   }
+  ]
+ },
+ "84E6D20": {
+  "src": "22",
+  "seg": ".rdata",
+  "name": "UGameTimeComponent_VFT",
+  "string": null,
+  "refs": [
+   {
+    "func": 87169984,
+    "site_off": 15,
+    "mnem": "lea",
+    "ord": 0,
+    "nd": 7,
+    "func50": null
+   },
+   {
+    "func": 87602896,
+    "site_off": 94,
+    "mnem": "lea",
+    "ord": 3,
+    "nd": 13,
+    "func50": null
+   }
+  ]
+ },
+ "8D0A1F8": {
+  "src": "47",
+  "seg": ".rdata",
+  "name": "off_148D0A1F8",
+  "string": null,
+  "refs": [
+   {
+    "func": 76870144,
+    "site_off": 68,
+    "mnem": "lea",
+    "ord": 0,
+    "nd": 3,
+    "func50": 76906256
+   },
+   {
+    "func": 76874304,
+    "site_off": 436,
+    "mnem": "lea",
+    "ord": 0,
+    "nd": 3,
+    "func50": null
+   },
+   {
+    "func": 76993296,
+    "site_off": 1160,
+    "mnem": "lea",
+    "ord": 29,
+    "nd": 47,
+    "func50": 77029408
+   },
+   {
+    "func": 77136464,
+    "site_off": 334,
+    "mnem": "lea",
+    "ord": 0,
+    "nd": 5,
+    "func50": 77172576
+   },
+   {
+    "func": 77455760,
+    "site_off": 1540,
+    "mnem": "lea",
+    "ord": 11,
+    "nd": 40,
+    "func50": 77491888
+   },
+   {
+    "func": 77455760,
+    "site_off": 2775,
+    "mnem": "lea",
+    "ord": 26,
+    "nd": 40,
+    "func50": 77491888
+   },
+   {
+    "func": 77455760,
+    "site_off": 2863,
+    "mnem": "lea",
+    "ord": 27,
+    "nd": 40,
+    "func50": 77491888
+   },
+   {
+    "func": 77558304,
+    "site_off": 189,
+    "mnem": "lea",
+    "ord": 1,
+    "nd": 13,
+    "func50": null
+   }
+  ]
+ },
+ "924A700@22": {
+  "src": "22",
+  "seg": ".rdata",
+  "name": "stru_7FF67B2AA700",
+  "string": null,
+  "refs": []
+ },
+ "924A700@47": {
+  "src": "47",
+  "seg": ".rdata",
+  "name": "aHttpsApiOriond",
+  "string": "https://api.oriondrift.net",
+  "refs": [
+   {
+    "func": 90694432,
+    "site_off": 300,
+    "mnem": "lea",
+    "ord": 1,
+    "nd": 15,
+    "func50": 90903168
+   }
+  ]
+ },
+ "95DF980": {
+  "src": "22",
+  "seg": ".data",
+  "name": "qword_7FF67B63F980",
+  "string": null,
+  "refs": [
+   {
+    "func": 88801040,
+    "site_off": 333,
+    "mnem": "mov",
+    "ord": 3,
+    "nd": 8,
+    "func50": null
+   },
+   {
+    "func": 88802528,
+    "site_off": 43,
+    "mnem": "cmovnz",
+    "ord": 2,
+    "nd": 14,
+    "func50": null
+   },
+   {
+    "func": 88802528,
+    "site_off": 365,
+    "mnem": "lea",
+    "ord": 13,
+    "nd": 14,
+    "func50": null
+   }
+  ]
+ },
+ "95DF988": {
+  "src": "22",
+  "seg": ".data",
+  "name": "dword_7FF67B63F988",
+  "string": null,
+  "refs": [
+   {
+    "func": 88801040,
+    "site_off": 304,
+    "mnem": "mov",
+    "ord": 2,
+    "nd": 8,
+    "func50": null
+   },
+   {
+    "func": 88802528,
+    "site_off": 23,
+    "mnem": "cmp",
+    "ord": 0,
+    "nd": 14,
+    "func50": null
+   }
+  ]
+ },
+ "95DF98C": {
+  "src": "22",
+  "seg": ".data",
+  "name": "",
+  "string": null,
+  "refs": []
+ },
+ "9710B80": {
+  "src": "22",
+  "seg": ".data",
+  "name": "stru_7FF67B770B80",
+  "string": null,
+  "refs": [
+   {
+    "func": 18051264,
+    "site_off": 62,
+    "mnem": "lea",
+    "ord": 2,
+    "nd": 5,
+    "func50": null
+   },
+   {
+    "func": 18051264,
+    "site_off": 71,
+    "mnem": "lea",
+    "ord": 3,
+    "nd": 5,
+    "func50": null
+   },
+   {
+    "func": 18061984,
+    "site_off": 147,
+    "mnem": "lea",
+    "ord": 2,
+    "nd": 5,
+    "func50": null
+   },
+   {
+    "func": 18061984,
+    "site_off": 156,
+    "mnem": "lea",
+    "ord": 3,
+    "nd": 5,
+    "func50": null
+   },
+   {
+    "func": 18062224,
+    "site_off": 191,
+    "mnem": "lea",
+    "ord": 2,
+    "nd": 5,
+    "func50": null
+   },
+   {
+    "func": 18062224,
+    "site_off": 200,
+    "mnem": "lea",
+    "ord": 3,
+    "nd": 5,
+    "func50": null
+   },
+   {
+    "func": 18063504,
+    "site_off": 173,
+    "mnem": "lea",
+    "ord": 2,
+    "nd": 5,
+    "func50": null
+   },
+   {
+    "func": 18063504,
+    "site_off": 182,
+    "mnem": "lea",
+    "ord": 3,
+    "nd": 5,
+    "func50": null
+   }
+  ]
+ },
+ "9C5D0A0@22": {
+  "src": "22",
+  "seg": ".data",
+  "name": "qword_7FF67BCBD0A0",
+  "string": null,
+  "refs": [
+   {
+    "func": 88803520,
+    "site_off": 30,
+    "mnem": "mov",
+    "ord": 1,
+    "nd": 15,
+    "func50": null
+   },
+   {
+    "func": 88806352,
+    "site_off": 31,
+    "mnem": "mov",
+    "ord": 1,
+    "nd": 38,
+    "func50": null
+   }
+  ]
+ },
+ "9C5D0A0@47": {
+  "src": "47",
+  "seg": ".rdata",
+  "name": "",
+  "string": null,
+  "refs": []
+ },
+ "A480348": {
+  "src": "47",
+  "seg": ".data",
+  "name": "dword_14A480348",
+  "string": null,
+  "refs": [
+   {
+    "func": 13535168,
+    "site_off": 43,
+    "mnem": "lea",
+    "ord": 3,
+    "nd": 14,
+    "func50": 13535168
+   },
+   {
+    "func": 20776752,
+    "site_off": 69,
+    "mnem": "cmp",
+    "ord": 1,
+    "nd": 11,
+    "func50": null
+   },
+   {
+    "func": 20777104,
+    "site_off": 89,
+    "mnem": "cmp",
+    "ord": 2,
+    "nd": 12,
+    "func50": null
+   },
+   {
+    "func": 20793744,
+    "site_off": 315,
+    "mnem": "cmp",
+    "ord": 21,
+    "nd": 56,
+    "func50": null
+   },
+   {
+    "func": 20794576,
+    "site_off": 315,
+    "mnem": "cmp",
+    "ord": 21,
+    "nd": 45,
+    "func50": null
+   },
+   {
+    "func": 20929840,
+    "site_off": 142,
+    "mnem": "cmp",
+    "ord": 14,
+    "nd": 15,
+    "func50": null
+   },
+   {
+    "func": 21213104,
+    "site_off": 92,
+    "mnem": "cmp",
+    "ord": 2,
+    "nd": 48,
+    "func50": null
+   }
+  ]
+ },
+ "A4810D4": {
+  "src": "47",
+  "seg": ".data",
+  "name": "dword_14A4810D4",
+  "string": null,
+  "refs": [
+   {
+    "func": 13585120,
+    "site_off": 43,
+    "mnem": "lea",
+    "ord": 3,
+    "nd": 14,
+    "func50": 13585120
+   },
+   {
+    "func": 20795232,
+    "site_off": 461,
+    "mnem": "cmp",
+    "ord": 39,
+    "nd": 47,
+    "func50": null
+   },
+   {
+    "func": 20795792,
+    "site_off": 475,
+    "mnem": "cmp",
+    "ord": 39,
+    "nd": 47,
+    "func50": 20818080
+   },
+   {
+    "func": 21984704,
+    "site_off": 9,
+    "mnem": "cmp",
+    "ord": 1,
+    "nd": 4,
+    "func50": null
+   },
+   {
+    "func": 21995552,
+    "site_off": 22,
+    "mnem": "cmp",
+    "ord": 1,
+    "nd": 4,
+    "func50": null
+   },
+   {
+    "func": 22002208,
+    "site_off": 726,
+    "mnem": "cmp",
+    "ord": 5,
+    "nd": 11,
+    "func50": null
+   },
+   {
+    "func": 22096640,
+    "site_off": 66,
+    "mnem": "mov",
+    "ord": 2,
+    "nd": 36,
+    "func50": 22118928
+   },
+   {
+    "func": 63220112,
+    "site_off": 31,
+    "mnem": "cmp",
+    "ord": 1,
+    "nd": 8,
+    "func50": 63243552
+   }
+  ]
+ },
+ "A6D3882": {
+  "src": "47",
+  "seg": ".data",
+  "name": "byte_14A6D3882",
+  "string": null,
+  "refs": [
+   {
+    "func": 18210688,
+    "site_off": 25,
+    "mnem": "cmp",
+    "ord": 1,
+    "nd": 17,
+    "func50": 18232944
+   },
+   {
+    "func": 20458800,
+    "site_off": 2604,
+    "mnem": "cmp",
+    "ord": 40,
+    "nd": 48,
+    "func50": null
+   },
+   {
+    "func": 20458800,
+    "site_off": 2676,
+    "mnem": "cmp",
+    "ord": 46,
+    "nd": 48,
+    "func50": null
+   },
+   {
+    "func": 20907424,
+    "site_off": 282,
+    "mnem": "cmp",
+    "ord": 1,
+    "nd": 3,
+    "func50": null
+   },
+   {
+    "func": 21248672,
+    "site_off": 211,
+    "mnem": "cmp",
+    "ord": 1,
+    "nd": 5,
+    "func50": null
+   },
+   {
+    "func": 21248672,
+    "site_off": 236,
+    "mnem": "cmp",
+    "ord": 3,
+    "nd": 5,
+    "func50": null
+   },
+   {
+    "func": 22151824,
+    "site_off": 44,
+    "mnem": "cmp",
+    "ord": 0,
+    "nd": 3,
+    "func50": null
+   },
+   {
+    "func": 43634080,
+    "site_off": 20,
+    "mnem": "cmp",
+    "ord": 0,
+    "nd": 14,
+    "func50": null
+   }
+  ]
+ },
+ "A6D3883": {
+  "src": "47",
+  "seg": ".data",
+  "name": "byte_14A6D3883",
+  "string": null,
+  "refs": [
+   {
+    "func": 20458800,
+    "site_off": 2613,
+    "mnem": "cmp",
+    "ord": 41,
+    "nd": 48,
+    "func50": null
+   },
+   {
+    "func": 20458800,
+    "site_off": 2685,
+    "mnem": "cmp",
+    "ord": 47,
+    "nd": 48,
+    "func50": null
+   },
+   {
+    "func": 20907424,
+    "site_off": 295,
+    "mnem": "cmp",
+    "ord": 2,
+    "nd": 3,
+    "func50": null
+   },
+   {
+    "func": 21248672,
+    "site_off": 220,
+    "mnem": "cmp",
+    "ord": 2,
+    "nd": 5,
+    "func50": null
+   },
+   {
+    "func": 21248672,
+    "site_off": 245,
+    "mnem": "cmp",
+    "ord": 4,
+    "nd": 5,
+    "func50": null
+   },
+   {
+    "func": 61678800,
+    "site_off": 1783,
+    "mnem": "cmp",
+    "ord": 96,
+    "nd": 159,
+    "func50": 61702224
+   },
+   {
+    "func": 70053824,
+    "site_off": 61,
+    "mnem": "mov",
+    "ord": 1,
+    "nd": 8,
+    "func50": 70077648
+   },
+   {
+    "func": 70075008,
+    "site_off": 5261,
+    "mnem": "mov",
+    "ord": 84,
+    "nd": 238,
+    "func50": 70098832
+   }
+  ]
+ },
+ "AC0A1A0": {
+  "src": "47",
+  "seg": ".data",
+  "name": "qword_14AC0A1A0",
+  "string": null,
+  "refs": [
+   {
+    "func": 89553968,
+    "site_off": 536,
+    "mnem": "mov",
+    "ord": 14,
+    "nd": 15,
+    "func50": 90077648
+   },
+   {
+    "func": 90482848,
+    "site_off": 189,
+    "mnem": "mov",
+    "ord": 0,
+    "nd": 1,
+    "func50": null
+   },
+   {
+    "func": 90532880,
+    "site_off": 11,
+    "mnem": "cmp",
+    "ord": 0,
+    "nd": 10,
+    "func50": null
+   },
+   {
+    "func": 90532880,
+    "site_off": 59,
+    "mnem": "mov",
+    "ord": 1,
+    "nd": 10,
+    "func50": null
+   },
+   {
+    "func": 90534176,
+    "site_off": 16,
+    "mnem": "mov",
+    "ord": 0,
+    "nd": 2,
+    "func50": null
+   },
+   {
+    "func": 91770144,
+    "site_off": 13,
+    "mnem": "cmp",
+    "ord": 0,
+    "nd": 3,
+    "func50": null
+   },
+   {
+    "func": 91789104,
+    "site_off": 177,
+    "mnem": "mov",
+    "ord": 0,
+    "nd": 1,
+    "func50": null
+   }
+  ]
+ },
+ "FCC220": {
+  "src": "22",
+  "seg": ".text",
+  "name": "sub_7FF67302C220",
+  "string": null,
+  "refs": [
+   {
+    "func": 13596960,
+    "site_off": 81,
+    "mnem": "call",
+    "ord": null,
+    "nd": 11,
+    "func50": null
+   },
+   {
+    "func": 13596960,
+    "site_off": 143,
+    "mnem": "call",
+    "ord": null,
+    "nd": 11,
+    "func50": null
+   },
+   {
+    "func": 13596960,
+    "site_off": 205,
+    "mnem": "call",
+    "ord": null,
+    "nd": 11,
+    "func50": null
+   },
+   {
+    "func": 13596960,
+    "site_off": 267,
+    "mnem": "call",
+    "ord": null,
+    "nd": 11,
+    "func50": null
+   },
+   {
+    "func": 14844944,
+    "site_off": 54,
+    "mnem": "call",
+    "ord": null,
+    "nd": 7,
+    "func50": null
+   },
+   {
+    "func": 14846880,
+    "site_off": 54,
+    "mnem": "call",
+    "ord": null,
+    "nd": 7,
+    "func50": null
+   },
+   {
+    "func": 15333648,
+    "site_off": 54,
+    "mnem": "call",
+    "ord": null,
+    "nd": 7,
+    "func50": null
+   },
+   {
+    "func": 15447536,
+    "site_off": 191,
+    "mnem": "call",
+    "ord": null,
+    "nd": 10,
+    "func50": null
+   }
+  ],
+  "in_func": {
+   "func": 16564768,
+   "off": 0,
+   "size": 128,
+   "end": 16564896,
+   "bytes": [
+    72,
+    137,
+    92,
+    36,
+    8,
+    72,
+    137,
+    116,
+    36,
+    16,
+    87,
+    72,
+    131,
+    236,
+    48,
+    72
+   ],
+   "insn": "mov     [rsp+arg_0], rbx",
+   "func50": 18012560
+  }
+ }
+}

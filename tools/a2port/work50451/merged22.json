@@ -1,0 +1,803 @@
+{
+ "10153A0": {
+  "status": "agree",
+  "func50": "0x117c720",
+  "rva50": "0x117c720",
+  "direct": "both",
+  "f47": "0x1177030",
+  "hop": "0x117c720",
+  "direct_f": "0x117c720"
+ },
+ "11370C0": {
+  "status": "agree",
+  "func50": "0x12ab270",
+  "rva50": "0x12ab270",
+  "direct": "both",
+  "f47": "0x12a5b60",
+  "hop": "0x12ab270",
+  "direct_f": "0x12ab270"
+ },
+ "1139AA0": {
+  "status": "agree",
+  "func50": "0x12ade50",
+  "rva50": "0x12ade50",
+  "direct": "graph",
+  "f47": "0x12a8740",
+  "hop": "0x12ade50",
+  "direct_f": "0x12ade50"
+ },
+ "1139B90": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "113A090": {
+  "status": "agree",
+  "func50": "0x12ae600",
+  "rva50": "0x12ae600",
+  "direct": "both",
+  "f47": "0x12a8ef0",
+  "hop": "0x12ae600",
+  "direct_f": "0x12ae600"
+ },
+ "114D690": {
+  "status": "agree",
+  "func50": "0x12be600",
+  "rva50": "0x12be600",
+  "direct": "both",
+  "f47": "0x12b8ef0",
+  "hop": "0x12be600",
+  "direct_f": "0x12be600"
+ },
+ "124DB00": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "124ECE0": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "124F4C0": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "1254D40": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "12F0CB0": {
+  "status": "agree",
+  "func50": "0x14898b0",
+  "rva50": "0x14898b0",
+  "direct": "both",
+  "f47": "0x14841a0",
+  "hop": "0x14898b0",
+  "direct_f": "0x14898b0"
+ },
+ "1326AD0": {
+  "status": "agree",
+  "func50": "0x14b7560",
+  "rva50": "0x14b7560",
+  "direct": "window",
+  "f47": "0x14b1e50",
+  "hop": "0x14b7560",
+  "direct_f": "0x14b7560"
+ },
+ "14363A0": {
+  "status": "agree",
+  "func50": "0x15d2ba0",
+  "rva50": "0x15d2ba0",
+  "direct": "graph",
+  "f47": "0x15cd490",
+  "hop": "0x15d2ba0",
+  "direct_f": "0x15d2ba0"
+ },
+ "1EC07A0": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "3509AB0": {
+  "status": "agree",
+  "func50": "0x3695740",
+  "rva50": "0x3695740",
+  "direct": "native",
+  "f47": "0x368fbc0",
+  "hop": "0x3695740",
+  "direct_f": "0x3695740"
+ },
+ "37B02C0": {
+  "status": "agree",
+  "func50": "0x3950f60",
+  "rva50": "0x3950f60",
+  "direct": "both",
+  "f47": "0x394b3e0",
+  "hop": "0x3950f60",
+  "direct_f": "0x3950f60"
+ },
+ "3A29B20": {
+  "status": "agree",
+  "func50": "0x3bd3a80",
+  "rva50": "0x3bd3a80",
+  "direct": "native",
+  "f47": "0x3bcdef0",
+  "hop": "0x3bd3a80",
+  "direct_f": "0x3bd3a80"
+ },
+ "4040990": {
+  "status": "agree",
+  "func50": "0x41fb690",
+  "rva50": "0x41fb690",
+  "direct": "native",
+  "f47": "0x41f5a60",
+  "hop": "0x41fb690",
+  "direct_f": "0x41fb690"
+ },
+ "466A240": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "46849A0": {
+  "status": "agree",
+  "func50": "0x49a2540",
+  "rva50": "0x49a2540",
+  "direct": "native",
+  "f47": "0x4999830",
+  "hop": "0x49a2540",
+  "direct_f": "0x49a2540"
+ },
+ "4689030": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "468BE60": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "4690260": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "46902F0": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "4692F30": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "46B2E20": {
+  "status": "agree",
+  "func50": "0x49f9930",
+  "rva50": "0x49f9930",
+  "direct": "graph",
+  "f47": "0x49f0c10",
+  "hop": "0x49f9930",
+  "direct_f": "0x49f9930"
+ },
+ "46B4B10": {
+  "status": "agree",
+  "func50": "0x49e4210",
+  "rva50": "0x49e4210",
+  "direct": "graph",
+  "f47": "0x49db4f0",
+  "hop": "0x49e4210",
+  "direct_f": "0x49e4210"
+ },
+ "46BC830": {
+  "status": "agree",
+  "func50": "0x49e4670",
+  "rva50": "0x49e4670",
+  "direct": "graph",
+  "f47": "0x49db950",
+  "hop": "0x49e4670",
+  "direct_f": "0x49e4670"
+ },
+ "46CDEF0": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "470E080": {
+  "status": "agree",
+  "func50": "0x49fb100",
+  "rva50": "0x49fb100",
+  "direct": "graph",
+  "f47": "0x49f2470",
+  "hop": "0x49fb100",
+  "direct_f": "0x49fb100"
+ },
+ "47138D0": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "4719CF0": {
+  "status": "agree",
+  "func50": "0x4ab8df0",
+  "rva50": "0x4ab8df0",
+  "direct": "graph",
+  "f47": "0x4aafe20",
+  "hop": "0x4ab8df0",
+  "direct_f": "0x4ab8df0"
+ },
+ "4723AA0": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "47244C0": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "52EE2E0": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "52F3BA0": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "52F5300": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "5313C30": {
+  "status": "hop",
+  "func50": "0x4a64830",
+  "rva50": "0x4a64830",
+  "direct": "none",
+  "f47": "0x4a5b8b0",
+  "hop": "0x4a64830",
+  "direct_f": null
+ },
+ "5321BC0": {
+  "status": "agree",
+  "func50": "0x54d8af0",
+  "rva50": "0x54d8af0",
+  "direct": "window",
+  "f47": "0x54a40c0",
+  "hop": "0x54d8af0",
+  "direct_f": "0x54d8af0"
+ },
+ "534A7F0": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "534AEA0": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "534BA00": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "534DCA0": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "5354A30": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "5361530": {
+  "status": "agree",
+  "func50": "0x55371a0",
+  "rva50": "0x55371a0",
+  "direct": "both",
+  "f47": "0x54ff5e0",
+  "hop": "0x55371a0",
+  "direct_f": "0x55371a0"
+ },
+ "538B6D0": {
+  "status": "agree",
+  "func50": "0x5597980",
+  "rva50": "0x5597980",
+  "direct": "window",
+  "f47": "0x5560d70",
+  "hop": "0x5597980",
+  "direct_f": "0x5597980"
+ },
+ "53A6990": {
+  "status": "agree",
+  "func50": "0x55b3570",
+  "rva50": "0x55b3570",
+  "direct": "graph",
+  "f47": "0x557ebc0",
+  "hop": "0x55b3570",
+  "direct_f": "0x55b3570"
+ },
+ "53AF7C0": {
+  "status": "agree",
+  "func50": "0x55ba7f0",
+  "rva50": "0x55ba7f0",
+  "direct": "graph",
+  "f47": "0x5585e40",
+  "hop": "0x55ba7f0",
+  "direct_f": "0x55ba7f0"
+ },
+ "53B3B10": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "53C8AF0": {
+  "status": "agree",
+  "func50": "0x55d0e20",
+  "rva50": "0x55d0e20",
+  "direct": "graph",
+  "f47": "0x559d280",
+  "hop": "0x55d0e20",
+  "direct_f": "0x55d0e20"
+ },
+ "53C9EE0": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "53DA880": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "53DC730": {
+  "status": "agree",
+  "func50": "0x49af280",
+  "rva50": "0x49af280",
+  "direct": "graph",
+  "f47": "0x49a6570",
+  "hop": "0x49af280",
+  "direct_f": "0x49af280"
+ },
+ "5427660": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "54293D0": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "5432A40": {
+  "status": "agree",
+  "func50": "0x53dcb10",
+  "rva50": "0x53dcb10",
+  "direct": "graph",
+  "f47": "0x53d2ac0",
+  "hop": "0x53dcb10",
+  "direct_f": "0x53dcb10"
+ },
+ "543C7B0": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "54599B0": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "545BD80": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "545CCB0": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "5464630": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "547F7A0": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "5482110": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "54863C0": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "5487560": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "548FC40": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "54AF360": {
+  "status": "agree",
+  "func50": "0x41fb690",
+  "rva50": "0x41fb690",
+  "direct": "native",
+  "f47": "0x41f5a60",
+  "hop": "0x41fb690",
+  "direct_f": "0x41fb690"
+ },
+ "54AFF10": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "54B04E0": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "54B08C0": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "54B13D0": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "54B5660": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "54E17E0": {
+  "status": "agree",
+  "func50": "0x5539d00",
+  "rva50": "0x5539d00",
+  "direct": "graph",
+  "f47": "0x5502140",
+  "hop": "0x5539d00",
+  "direct_f": "0x5539d00"
+ },
+ "54E38F0": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "54E4470": {
+  "status": "hop",
+  "func50": "0x553b700",
+  "rva50": "0x553b700",
+  "direct": "none",
+  "f47": "0x55039c0",
+  "hop": "0x553b700",
+  "direct_f": null
+ },
+ "54E4E10": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "54EB5E0": {
+  "status": "direct",
+  "func50": "0x5857100",
+  "rva50": "0x5857100",
+  "direct": "graph",
+  "f47": "0x5811270",
+  "hop": null,
+  "direct_f": "0x5857100"
+ },
+ "5502070": {
+  "status": "agree",
+  "func50": "0x586be50",
+  "rva50": "0x586be50",
+  "direct": "graph",
+  "f47": "0x5823b80",
+  "hop": "0x586be50",
+  "direct_f": "0x586be50"
+ },
+ "5502B00": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "5503050": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "550F130": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "5510C40": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "60A0990": {
+  "status": "agree",
+  "func50": "0x6c4e720",
+  "rva50": "0x6c4e760",
+  "direct": "window",
+  "f47": "0x6ba70d0",
+  "hop": "0x6c4e720",
+  "direct_f": "0x6c4e720"
+ },
+ "CF7920": {
+  "status": "agree",
+  "func50": "0xd04040",
+  "rva50": "0xd04040",
+  "direct": "window",
+  "f47": "0xd04040",
+  "hop": "0xd04040",
+  "direct_f": "0xd04040"
+ },
+ "E28410": {
+  "status": "agree",
+  "func50": "0xe33810",
+  "rva50": "0xe33810",
+  "direct": "window",
+  "f47": "0xe33810",
+  "hop": "0xe33810",
+  "direct_f": "0xe33810"
+ },
+ "E28BA0": {
+  "status": "agree",
+  "func50": "0xe33c70",
+  "rva50": "0xe33c70",
+  "direct": "window",
+  "f47": "0xe33c70",
+  "hop": "0xe33c70",
+  "direct_f": "0xe33c70"
+ },
+ "E9F910": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "EBB5F0": {
+  "status": "none",
+  "func50": null,
+  "rva50": null,
+  "direct": "none",
+  "f47": null,
+  "hop": null,
+  "direct_f": null
+ },
+ "FCC220": {
+  "status": "agree",
+  "func50": "0x112d990",
+  "rva50": "0x112d990",
+  "direct": "graph",
+  "f47": "0x11282a0",
+  "hop": "0x112d990",
+  "direct_f": "0x112d990"
+ }
+}

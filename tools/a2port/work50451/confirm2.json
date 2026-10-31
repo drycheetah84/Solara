@@ -1,0 +1,821 @@
+{
+"confirmed": {
+"1177030": {
+"rva50": "0x117c400",
+"status": "interp-verified",
+"ratio": 0.947
+},
+"1245000": {
+"rva50": "0x124a6f0",
+"status": "interp-verified",
+"ratio": 1.0
+},
+"125F7B0": {
+"rva50": "0x1264a80",
+"status": "interp-verified",
+"ratio": 1.0
+},
+"12621D6": {
+"rva50": "0x12678c6",
+"status": "interp-verified",
+"ratio": 1.0
+},
+"12639B8": {
+"rva50": "0x1268c68",
+"status": "interp-verified",
+"ratio": 0.978
+},
+"1265139": {
+"rva50": "0x126a829",
+"status": "interp-verified",
+"ratio": 1.0
+},
+"1268F6E": {
+"rva50": "0x126e4de",
+"status": "interp-verified",
+"ratio": 1.0
+},
+"1269000": {
+"rva50": "0x126e4b0",
+"status": "interp-verified",
+"ratio": 1.0
+},
+"12F0CB0": {
+"rva50": "0x12f6240",
+"status": "interp-verified",
+"ratio": 0.97
+},
+"14363A0": {
+"rva50": "0x143b550",
+"status": "interp-verified",
+"ratio": 0.928
+},
+"22ACF5C": {
+"rva50": "0x22b230c",
+"status": "interp-verified",
+"ratio": 0.961
+},
+"3509AB0": {
+"rva50": "0x350f250",
+"status": "interp-verified",
+"ratio": 0.956
+},
+"3509ACC": {
+"rva50": "0x350f26c",
+"status": "interp-verified",
+"ratio": 0.956
+},
+"3A29B20": {
+"rva50": "0x3a2f6a0",
+"status": "interp-verified",
+"ratio": 0.988
+},
+"3E8BBF4": {
+"rva50": "0x3e91824",
+"status": "interp-verified",
+"ratio": 0.934
+},
+"3E8D3FB": {
+"rva50": "0x3e9302b",
+"status": "interp-verified",
+"ratio": 1.0
+},
+"3E8D4EB": {
+"rva50": "0x3e9302b",
+"status": "interp-verified",
+"ratio": 1.0
+},
+"4040990": {
+"rva50": "0x40465c0",
+"status": "interp-verified",
+"ratio": 0.998
+},
+"41E6549": {
+"rva50": "0x41ec179",
+"status": "interp-verified",
+"ratio": 1.0
+},
+"4264D26": {
+"rva50": "0x426a956",
+"status": "interp-verified",
+"ratio": 1.0
+},
+"42D2523": {
+"rva50": "0x42d8233",
+"status": "interp-verified",
+"ratio": 1.0
+},
+"463FE20": {
+"rva50": "0x4645b30",
+"status": "matched",
+"ratio": 0.7
+},
+"4640580": {
+"rva50": "0x4646290",
+"status": "matched",
+"ratio": 0.7
+},
+"4643350": {
+"rva50": "0x4649060",
+"status": "matched",
+"ratio": 0.982
+},
+"4643F30": {
+"rva50": "0x4649c40",
+"status": "matched",
+"ratio": 0.913
+},
+"4644120": {
+"rva50": "0x4649e30",
+"status": "matched",
+"ratio": 0.913
+},
+"46443B0": {
+"rva50": "0x464a0c0",
+"status": "matched",
+"ratio": 0.913
+},
+"465BE70": {
+"rva50": "0x4661b80",
+"status": "matched",
+"ratio": 1.0
+},
+"465C436": {
+"rva50": "0x4662146",
+"status": "matched",
+"ratio": 1.0
+},
+"465C4FD": {
+"rva50": "0x466220d",
+"status": "matched",
+"ratio": 1.0
+},
+"465F820": {
+"rva50": "0x4665530",
+"status": "matched",
+"ratio": 0.997
+},
+"46645DD": {
+"rva50": "0x466a2ed",
+"status": "interp-verified",
+"ratio": 1.0
+},
+"4665F80": {
+"rva50": "0x466bc90",
+"status": "matched",
+"ratio": 0.998
+},
+"4665FAB": {
+"rva50": "0x466bcbb",
+"status": "matched",
+"ratio": 0.998
+},
+"466A240": {
+"rva50": "0x466ff50",
+"status": "matched",
+"ratio": 0.998
+},
+"4675A60": {
+"rva50": "0x467ae30",
+"status": "interp-verified",
+"ratio": 0.99
+},
+"46B3EB0": {
+"rva50": "0x46b9bc0",
+"status": "interp-verified",
+"ratio": 1.0
+},
+"46BC830": {
+"rva50": "0x46c2540",
+"status": "interp-verified",
+"ratio": 1.0
+},
+"46BEBC0": {
+"rva50": "0x46c48d0",
+"status": "matched",
+"ratio": 1.0
+},
+"46BEDA0": {
+"rva50": "0x46c4ab0",
+"status": "matched",
+"ratio": 1.0
+},
+"46CBD00": {
+"rva50": "0x46d1a10",
+"status": "interp-verified",
+"ratio": 1.0
+},
+"46CC430": {
+"rva50": "0x46d2140",
+"status": "interp-verified",
+"ratio": 1.0
+},
+"46D77A0": {
+"rva50": "0x46dd4b0",
+"status": "matched",
+"ratio": 1.0
+},
+"46DDB20": {
+"rva50": "0x46e3830",
+"status": "interp-verified",
+"ratio": 1.0
+},
+"47138D0": {
+"rva50": "0x47195e0",
+"status": "matched",
+"ratio": 0.972
+},
+"4723AA0": {
+"rva50": "0x47297b0",
+"status": "matched",
+"ratio": 0.968
+},
+"4728BE0": {
+"rva50": "0x472e8f0",
+"status": "matched",
+"ratio": 0.958
+},
+"47D5C82": {
+"rva50": "0x47dbd62",
+"status": "interp-verified",
+"ratio": 1.0
+},
+"47D6CB2": {
+"rva50": "0x47dcd92",
+"status": "interp-verified",
+"ratio": 1.0
+},
+"47D6F82": {
+"rva50": "0x47dcd92",
+"status": "interp-verified",
+"ratio": 1.0
+},
+"47E9615": {
+"rva50": "0x47ef6f5",
+"status": "interp-verified",
+"ratio": 1.0
+},
+"47F670A": {
+"rva50": "0x47fc7ea",
+"status": "matched",
+"ratio": 0.989
+},
+"4A61380": {
+"rva50": "0x4a6a300",
+"status": "interp-verified",
+"ratio": 0.998
+},
+"4A7E030": {
+"rva50": "0x4a86fb0",
+"status": "matched",
+"ratio": 0.969
+},
+"4A87370": {
+"rva50": "0x4a902f0",
+"status": "interp-verified",
+"ratio": 1.0
+},
+"4AB2880": {
+"rva50": "0x4abb850",
+"status": "interp-verified",
+"ratio": 1.0
+},
+"52DC906": {
+"rva50": "0x52e66a6",
+"status": "interp-verified",
+"ratio": 1.0
+},
+"531EF40": {
+"rva50": "0x5328ce0",
+"status": "interp-verified",
+"ratio": 1.0
+},
+"531EF96": {
+"rva50": "0x5328d36",
+"status": "interp-verified",
+"ratio": 1.0
+},
+"5333610": {
+"rva50": "0x533d3b0",
+"status": "interp-verified",
+"ratio": 1.0
+},
+"534A7F0": {
+"rva50": "0x5354590",
+"status": "interp-verified",
+"ratio": 1.0
+},
+"53AF7C0": {
+"rva50": "0x53b9560",
+"status": "matched",
+"ratio": 0.922
+},
+"53B2B20": {
+"rva50": "0x53bc8c0",
+"status": "matched",
+"ratio": 0.813
+},
+"53B3BC3": {
+"rva50": "0x53bd963",
+"status": "matched",
+"ratio": 0.813
+},
+"53B3BCC": {
+"rva50": "0x53bd96c",
+"status": "matched",
+"ratio": 0.813
+},
+"53B3BCD": {
+"rva50": "0x53bd96d",
+"status": "matched",
+"ratio": 0.813
+},
+"53B3BE1": {
+"rva50": "0x53bd981",
+"status": "matched",
+"ratio": 0.813
+},
+"53B3BE2": {
+"rva50": "0x53bd982",
+"status": "matched",
+"ratio": 0.813
+},
+"53B3BFD": {
+"rva50": "0x53bd99d",
+"status": "matched",
+"ratio": 0.813
+},
+"53B3C02": {
+"rva50": "0x53bd9a2",
+"status": "matched",
+"ratio": 0.813
+},
+"53B3C48": {
+"rva50": "0x53bd9e8",
+"status": "matched",
+"ratio": 0.813
+},
+"53C9EE0": {
+"rva50": "0x53d3cb0",
+"status": "interp-verified",
+"ratio": 1.0
+},
+"53DB090": {
+"rva50": "0x53e51d0",
+"status": "matched",
+"ratio": 0.939
+},
+"5429424": {
+"rva50": "0x543ef44",
+"status": "interp-verified",
+"ratio": 0.947
+},
+"5429427": {
+"rva50": "0x543ef47",
+"status": "interp-verified",
+"ratio": 0.947
+},
+"54AF360": {
+"rva50": "0x54da270",
+"status": "interp-verified",
+"ratio": 1.0
+},
+"54B358C": {
+"rva50": "0x54de86c",
+"status": "interp-verified",
+"ratio": 0.933
+},
+"54B5660": {
+"rva50": "0x54e0d20",
+"status": "interp-verified",
+"ratio": 0.947
+},
+"54B6D15": {
+"rva50": "0x54e3025",
+"status": "interp-verified",
+"ratio": 0.992
+},
+"54EB150": {
+"rva50": "0x551ec40",
+"status": "interp-verified",
+"ratio": 0.947
+},
+"54EB15E": {
+"rva50": "0x551ec4e",
+"status": "interp-verified",
+"ratio": 0.947
+},
+"5502070": {
+"rva50": "0x5539c30",
+"status": "matched",
+"ratio": 1.0
+},
+"5567C6D": {
+"rva50": "0x55e7a0d",
+"status": "matched",
+"ratio": 0.999
+},
+"56E7A90": {
+"rva50": "0x5726240",
+"status": "matched",
+"ratio": 0.999
+},
+"56ED310": {
+"rva50": "0x572b8d0",
+"status": "interp-verified",
+"ratio": 1.0
+},
+"5804A58": {
+"rva50": "0x58484c8",
+"status": "matched",
+"ratio": 0.811
+}
+},
+"rejected": {
+"111B4A0": {
+"rva50": "0x1120750",
+"status": "interp-verified",
+"ratio": 0.2
+},
+"124F4B8": {
+"rva50": "0x1254888",
+"status": "interp-verified",
+"ratio": 0.413
+},
+"124F4C0": {
+"rva50": "0x1254890",
+"status": "interp-verified",
+"ratio": 0.413
+},
+"124F5F1": {
+"rva50": "0x1254ad1",
+"status": "interp-verified",
+"ratio": 0.442
+},
+"1261F1A": {
+"rva50": "0x126758a",
+"status": "interp-verified",
+"ratio": 0.293
+},
+"126361F": {
+"rva50": "0x1268b8f",
+"status": "interp-verified",
+"ratio": 0.853
+},
+"1267DB3": {
+"rva50": "0x126d333",
+"status": "interp-verified",
+"ratio": 0.226
+},
+"1268073": {
+"rva50": "0x126d4a3",
+"status": "interp-verified",
+"ratio": 0.224
+},
+"1269351": {
+"rva50": "0x126e931",
+"status": "interp-verified",
+"ratio": 0.627
+},
+"12B8EF0": {
+"rva50": "0x12be350",
+"status": "interp-verified",
+"ratio": 0.216
+},
+"12F0F01": {
+"rva50": "0x12f6311",
+"status": "interp-verified",
+"ratio": 0.831
+},
+"1326B07": {
+"rva50": "0x132bfc7",
+"status": "interp-verified",
+"ratio": 0.806
+},
+"1EC07A0": {
+"rva50": "0x1ec5b60",
+"status": "interp-verified",
+"ratio": 0.895
+},
+"1EC13E0": {
+"rva50": "0x1ec6990",
+"status": "interp-verified",
+"ratio": 0.67
+},
+"22AD1DE": {
+"rva50": "0x22b270e",
+"status": "interp-verified",
+"ratio": 0.561
+},
+"3EC7C90": {
+"rva50": "0x3ecd440",
+"status": "interp-verified",
+"ratio": 0.57
+},
+"41F5A60": {
+"rva50": "0x41fb510",
+"status": "interp-verified",
+"ratio": 0.222
+},
+"46ADE50": {
+"rva50": "0x46b3630",
+"status": "interp-verified",
+"ratio": 0.134
+},
+"46B2280": {
+"rva50": "0x46b7ba0",
+"status": "interp-verified",
+"ratio": 0.383
+},
+"46B2360": {
+"rva50": "0x46b8070",
+"status": "interp-verified",
+"ratio": 0.763
+},
+"46B2E20": {
+"rva50": "0x46b8930",
+"status": "interp-verified",
+"ratio": 0.466
+},
+"46C9580": {
+"rva50": "0x46cf070",
+"status": "interp-verified",
+"ratio": 0.36
+},
+"46DA020": {
+"rva50": "0x46dfd30",
+"status": "interp-verified",
+"ratio": 0.731
+},
+"47BB3A7": {
+"rva50": "0x47c0cd7",
+"status": "interp-verified",
+"ratio": 0.835
+},
+"47BB507": {
+"rva50": "0x47c1037",
+"status": "interp-verified",
+"ratio": 0.631
+},
+"494F200": {
+"rva50": "0x4956f20",
+"status": "interp-verified",
+"ratio": 0.102
+},
+"49D5750": {
+"rva50": "0x49dd890",
+"status": "interp-verified",
+"ratio": 0.19
+},
+"4A09560": {
+"rva50": "0x4a11f20",
+"status": "interp-verified",
+"ratio": 0.698
+},
+"4A12EC0": {
+"rva50": "0x4a1bb90",
+"status": "interp-verified",
+"ratio": 0.891
+},
+"4A169D0": {
+"rva50": "0x4a1f690",
+"status": "interp-verified",
+"ratio": 0.896
+},
+"4A17C10": {
+"rva50": "0x4a208d0",
+"status": "interp-verified",
+"ratio": 0.859
+},
+"4A4AF80": {
+"rva50": "0x4a53d70",
+"status": "interp-verified",
+"ratio": 0.351
+},
+"52EE2E0": {
+"rva50": "0x52f7c70",
+"status": "interp-verified",
+"ratio": 0.347
+},
+"5361530": {
+"rva50": "0x536b190",
+"status": "interp-verified",
+"ratio": 0.151
+},
+"53A2B10": {
+"rva50": "0x53ac1d0",
+"status": "interp-verified",
+"ratio": 0.272
+},
+"53BE1F0": {
+"rva50": "0x53c7b90",
+"status": "interp-verified",
+"ratio": 0.421
+},
+"53C8AF0": {
+"rva50": "0x53d27b0",
+"status": "interp-verified",
+"ratio": 0.335
+},
+"53DC320": {
+"rva50": "0x53e6340",
+"status": "interp-verified",
+"ratio": 0.159
+},
+"53DC340": {
+"rva50": "0x53e6350",
+"status": "interp-verified",
+"ratio": 0.176
+},
+"53DC730": {
+"rva50": "0x53e6790",
+"status": "interp-verified",
+"ratio": 0.32
+},
+"53DC768": {
+"rva50": "0x53e6908",
+"status": "interp-verified",
+"ratio": 0.23
+},
+"53DC76A": {
+"rva50": "0x53e690a",
+"status": "interp-verified",
+"ratio": 0.23
+},
+"541D8EF": {
+"rva50": "0x54317cf",
+"status": "interp-verified",
+"ratio": 0.368
+},
+"542DAC0": {
+"rva50": "0x5444190",
+"status": "interp-verified",
+"ratio": 0.16
+},
+"5432A40": {
+"rva50": "0x544a120",
+"status": "interp-verified",
+"ratio": 0.28
+},
+"54380E0": {
+"rva50": "0x54500d0",
+"status": "interp-verified",
+"ratio": 0.162
+},
+"543C7B0": {
+"rva50": "0x5455320",
+"status": "interp-verified",
+"ratio": 0.555
+},
+"545BD80": {
+"rva50": "0x5479e40",
+"status": "interp-verified",
+"ratio": 0.02
+},
+"545CCB0": {
+"rva50": "0x547aa60",
+"status": "interp-verified",
+"ratio": 0.096
+},
+"5464630": {
+"rva50": "0x5483a10",
+"status": "interp-verified",
+"ratio": 0.145
+},
+"547AE4B": {
+"rva50": "0x549d63b",
+"status": "interp-verified",
+"ratio": 0.458
+},
+"547F7A0": {
+"rva50": "0x54a2d20",
+"status": "interp-verified",
+"ratio": 0.559
+},
+"5482110": {
+"rva50": "0x54a5d80",
+"status": "interp-verified",
+"ratio": 0.27
+},
+"54863C0": {
+"rva50": "0x54aa780",
+"status": "interp-verified",
+"ratio": 0.037
+},
+"5487560": {
+"rva50": "0x54abc80",
+"status": "interp-verified",
+"ratio": 0.188
+},
+"54A1930": {
+"rva50": "0x54ca590",
+"status": "interp-verified",
+"ratio": 0.57
+},
+"54B04E0": {
+"rva50": "0x54db2f0",
+"status": "interp-verified",
+"ratio": 0.368
+},
+"54B6C90": {
+"rva50": "0x54e2c70",
+"status": "interp-verified",
+"ratio": 0.407
+},
+"54E4470": {
+"rva50": "0x5517340",
+"status": "interp-verified",
+"ratio": 0.228
+},
+"54E4E10": {
+"rva50": "0x5517a30",
+"status": "interp-verified",
+"ratio": 0.544
+},
+"54EAC60": {
+"rva50": "0x551e710",
+"status": "interp-verified",
+"ratio": 0.241
+},
+"54EB5E0": {
+"rva50": "0x551f320",
+"status": "interp-verified",
+"ratio": 0.2
+},
+"54F8210": {
+"rva50": "0x552df50",
+"status": "interp-verified",
+"ratio": 0.667
+},
+"54FF5E0": {
+"rva50": "0x5536b80",
+"status": "interp-verified",
+"ratio": 0.565
+},
+"55027F0": {
+"rva50": "0x553a020",
+"status": "interp-verified",
+"ratio": 0.809
+},
+"5537829": {
+"rva50": "0x5594fc9",
+"status": "interp-verified",
+"ratio": 0.212
+},
+"55378E1": {
+"rva50": "0x5594fe1",
+"status": "interp-verified",
+"ratio": 0.189
+},
+"5537979": {
+"rva50": "0x5594fc9",
+"status": "interp-verified",
+"ratio": 0.208
+},
+"5537A41": {
+"rva50": "0x5594fe1",
+"status": "interp-verified",
+"ratio": 0.186
+},
+"5539930": {
+"rva50": "0x5598720",
+"status": "interp-verified",
+"ratio": 0.129
+},
+"553A71B": {
+"rva50": "0x5599f7b",
+"status": "interp-verified",
+"ratio": 0.089
+},
+"5596130": {
+"rva50": "0x560df30",
+"status": "interp-verified",
+"ratio": 0.181
+},
+"5598B60": {
+"rva50": "0x56105d0",
+"status": "interp-verified",
+"ratio": 0.356
+},
+"55A06C0": {
+"rva50": "0x5616770",
+"status": "interp-verified",
+"ratio": 0.07
+},
+"55D66F3": {
+"rva50": "0x5643a23",
+"status": "interp-verified",
+"ratio": 0.457
+},
+"564F76B": {
+"rva50": "0x56a7bcb",
+"status": "interp-verified",
+"ratio": 0.062
+},
+"568BB00": {
+"rva50": "0x56d9f60",
+"status": "interp-verified",
+"ratio": 0.2
+}
+}
+}
