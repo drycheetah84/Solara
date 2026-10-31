@@ -518,16 +518,16 @@ template <typename P> bool CallNative(SDK::UObject* obj, const char* cls, const 
 Vec3 g_markPos;                                      // markpos / expectdelta
 double g_memFirstMB = -1.0;                          // first `mem` sample (leak checks)
 int g_markersSeen = 0;                               // camera markers found by the last BuildObjects
-// A trigger shape's world pose + scaled size, read straight off the component (ComponentToWorld @0x1D0:
+// A trigger shape's world pose + scaled size, read straight off the component (ComponentToWorld @0x1E0 on 50451 (0x1D0 on 47031; measured live with op xformprobe):
 // quat, translation @+0x20, scale @+0x40; Box BoxExtent / Sphere SphereRadius / Capsule HalfHeight+Radius
 // @0x540; bGenerateOverlapEvents = bit 3 of 0x25A).
 Rot QuatToRot(double X, double Y, double Z, double W);   // above/below
 void UpdateTrigger(TriggerShape& t)
 {
     const uint8_t* c = static_cast<const uint8_t*>(t.comp);
-    const double* q = reinterpret_cast<const double*>(c + 0x1D0);
-    const double* tr = reinterpret_cast<const double*>(c + 0x1D0 + 0x20);
-    const double* sc = reinterpret_cast<const double*>(c + 0x1D0 + 0x40);
+    const double* q = reinterpret_cast<const double*>(c + 0x1E0);
+    const double* tr = reinterpret_cast<const double*>(c + 0x1E0 + 0x20);
+    const double* sc = reinterpret_cast<const double*>(c + 0x1E0 + 0x40);
     t.center = { tr[0], tr[1], tr[2] };
     t.rot = QuatToRot(q[0], q[1], q[2], q[3]);
     const double sx = std::fabs(sc[0]), sy = std::fabs(sc[1]), sz = std::fabs(sc[2]);
@@ -729,13 +729,13 @@ bool BuildObjectsStep(int32_t budget)
                 so.lockOwner = ol->second.owner;
             }
 
-        // RootComponent@0x1A8 -> ComponentToWorld@0x1D0 (quat@+0, translation@+0x20, scale@+0x40)
+        // RootComponent@0x1A8 -> ComponentToWorld@0x1E0 (50451) (quat@+0, translation@+0x20, scale@+0x40)
         void* root = *reinterpret_cast<void**>(reinterpret_cast<uintptr_t>(o) + 0x1C8);
         if (root)
         {
-            const double* q = reinterpret_cast<const double*>(reinterpret_cast<uintptr_t>(root) + 0x1D0 + 0x00);
-            const double* t = reinterpret_cast<const double*>(reinterpret_cast<uintptr_t>(root) + 0x1D0 + 0x20);
-            const double* s = reinterpret_cast<const double*>(reinterpret_cast<uintptr_t>(root) + 0x1D0 + 0x40);
+            const double* q = reinterpret_cast<const double*>(reinterpret_cast<uintptr_t>(root) + 0x1E0 + 0x00);
+            const double* t = reinterpret_cast<const double*>(reinterpret_cast<uintptr_t>(root) + 0x1E0 + 0x20);
+            const double* s = reinterpret_cast<const double*>(reinterpret_cast<uintptr_t>(root) + 0x1E0 + 0x40);
             so.location = { t[0], t[1], t[2] };
             so.scale    = { s[0], s[1], s[2] };
             so.rotation = QuatToRot(q[0], q[1], q[2], q[3]);
@@ -1859,9 +1859,9 @@ void RefreshTransforms()
         if (!Alive(a) || (*(reinterpret_cast<const uint8_t*>(a) + 0x69) & 0x01)) continue;
         void* root = *reinterpret_cast<void**>(reinterpret_cast<uintptr_t>(a) + 0x1C8);
         if (!root) continue;
-        const double* q = reinterpret_cast<const double*>(reinterpret_cast<uintptr_t>(root) + 0x1D0 + 0x00);
-        const double* t = reinterpret_cast<const double*>(reinterpret_cast<uintptr_t>(root) + 0x1D0 + 0x20);
-        const double* s = reinterpret_cast<const double*>(reinterpret_cast<uintptr_t>(root) + 0x1D0 + 0x40);
+        const double* q = reinterpret_cast<const double*>(reinterpret_cast<uintptr_t>(root) + 0x1E0 + 0x00);
+        const double* t = reinterpret_cast<const double*>(reinterpret_cast<uintptr_t>(root) + 0x1E0 + 0x20);
+        const double* s = reinterpret_cast<const double*>(reinterpret_cast<uintptr_t>(root) + 0x1E0 + 0x40);
         o.location = { t[0], t[1], t[2] };
         o.scale    = { s[0], s[1], s[2] };
         o.rotation = QuatToRot(q[0], q[1], q[2], q[3]);
@@ -2221,6 +2221,7 @@ int CountQuestDefs(const wchar_t* needle, int* total)
 }
 
 void ScriptOp(const Snapshot& snap, const std::string& line);   // below
+static SDK::FVector GetVec(SDK::UObject* o, const char* cls, const char* fn);   // below
 void RunScript(const Snapshot& snap)
 {
     LoadScriptOnce();
@@ -2320,12 +2321,12 @@ void ScriptOp(const Snapshot& snap, const std::string& line)
             if (!ob || ob == mine || ob->IsDefaultObject() || !ob->IsA(pawnCls) || (*(reinterpret_cast<const uint8_t*>(ob) + 0x69) & 1)) continue;
             void* r = *reinterpret_cast<void**>(reinterpret_cast<uintptr_t>(ob) + 0x1C8);
             if (!r) continue;
-            if (reinterpret_cast<const double*>(reinterpret_cast<uintptr_t>(r) + 0x1D0 + 0x20)[2] < -50000.0) continue;
+            if (reinterpret_cast<const double*>(reinterpret_cast<uintptr_t>(r) + 0x1E0 + 0x20)[2] < -50000.0) continue;
             other = ob;
         }
         if (!other) { Log("[script] FAIL sbaddatplayer: no other player pawn"); return; }
         void* root = *reinterpret_cast<void**>(reinterpret_cast<uintptr_t>(other) + 0x1C8);
-        const double* t = reinterpret_cast<const double*>(reinterpret_cast<uintptr_t>(root) + 0x1D0 + 0x20);
+        const double* t = reinterpret_cast<const double*>(reinterpret_cast<uintptr_t>(root) + 0x1E0 + 0x20);
         char loc[96];
         snprintf(loc, sizeof(loc), "%.1f,%.1f,%.1f", t[0] + dx, t[1] + dy, t[2] + dz);
         g_lastSpawnLoc = { t[0] + dx, t[1] + dy, t[2] + dz };
@@ -2348,7 +2349,7 @@ void ScriptOp(const Snapshot& snap, const std::string& line)
             if (!o || o == mine || o->IsDefaultObject() || !o->IsA(pawnCls) || (*(reinterpret_cast<const uint8_t*>(o) + 0x69) & 1)) continue;
             void* r = *reinterpret_cast<void**>(reinterpret_cast<uintptr_t>(o) + 0x1C8);
             if (!r) continue;
-            const double z = reinterpret_cast<const double*>(reinterpret_cast<uintptr_t>(r) + 0x1D0 + 0x20)[2];
+            const double z = reinterpret_cast<const double*>(reinterpret_cast<uintptr_t>(r) + 0x1E0 + 0x20)[2];
             if (z < -50000.0) continue;                        // an unpossessed pawn parked out of the world
             other = o;
         }
@@ -2356,7 +2357,7 @@ void ScriptOp(const Snapshot& snap, const std::string& line)
         for (const auto& it : g_palette) if (it.name.find(cls) != std::string::npos) { pick = &it; break; }
         if (!other || !pick) { Log("[script] FAIL spawnatplayer: %s", !other ? "no other player pawn" : "class not in palette"); return; }
         void* root = *reinterpret_cast<void**>(reinterpret_cast<uintptr_t>(other) + 0x1C8);
-        const double* t = reinterpret_cast<const double*>(reinterpret_cast<uintptr_t>(root) + 0x1D0 + 0x20);
+        const double* t = reinterpret_cast<const double*>(reinterpret_cast<uintptr_t>(root) + 0x1E0 + 0x20);
         Command c{ CmdType::SpawnItem };
         c.str = pick->path;
         c.loc = { t[0] + dx, t[1] + dy, t[2] + dz };
@@ -2665,7 +2666,7 @@ void ScriptOp(const Snapshot& snap, const std::string& line)
             SDK::UObject* tm = *reinterpret_cast<SDK::UObject**>(b + 0x488);
             double l[3] = { 0, 0, 0 };
             if (void* root = *reinterpret_cast<void**>(b + 0x1C8))
-            { const double* t = reinterpret_cast<const double*>(reinterpret_cast<uintptr_t>(root) + 0x1D0 + 0x20); l[0] = t[0]; l[1] = t[1]; l[2] = t[2]; }
+            { const double* t = reinterpret_cast<const double*>(reinterpret_cast<uintptr_t>(root) + 0x1E0 + 0x20); l[0] = t[0]; l[1] = t[1]; l[2] = t[2]; }
             Log("[script] SLOT '%s' %s at (%.0f,%.0f,%.0f) gm=%s tm=%s", id.c_str(), s->GetName().c_str(), l[0], l[1], l[2],
                 lgm ? lgm->GetName().c_str() : "-", tm ? tm->GetName().c_str() : "-");
         }
@@ -2694,6 +2695,163 @@ void ScriptOp(const Snapshot& snap, const std::string& line)
         const bool ok = ksl && g_pc && CallNative(ksl, "KismetSystemLibrary", "ExecuteConsoleCommand", p);
         memset(&p.Command, 0, sizeof(p.Command));   // the FString points at our buffer: not the engine's to free
         Log("[script] console '%s': %s", cmd.c_str(), ok ? "sent" : "FAILED");
+        return;
+    }
+    if (!strcmp(op, "heart"))                 // heart [x y z] -- ask the server for our HeartBall, like pulling it from the chest
+    {                                         // (AVRPawn::Server_SpawnHeartBall(Location); default: 80cm in front of the pawn)
+        auto* pawn = g_pc ? *reinterpret_cast<SDK::AActor**>(reinterpret_cast<uintptr_t>(g_pc) + 0x360) : nullptr;   // AcknowledgedPawn
+        if (!pawn) { Log("[script] FAIL heart: no local pawn"); return; }
+        struct { SDK::FVector Location; } p{};   // VRPawn_Server_SpawnHeartBall (0x18: FVector Location)
+        double x = 0, y = 0, z = 0;
+        if (sscanf_s(rest.c_str(), "%lf %lf %lf", &x, &y, &z) == 3) p.Location = SDK::FVector{ x, y, z };
+        else
+        {
+            const SDK::FVector at = GetVec(pawn, "Actor", "K2_GetActorLocation"), fw = GetVec(pawn, "Actor", "GetActorForwardVector");
+            p.Location = SDK::FVector{ at.X + fw.X * 80.0, at.Y + fw.Y * 80.0, at.Z + 40.0 };
+        }
+        const bool ok = CallNative(pawn, "VRPawn", "Server_SpawnHeartBall", p);
+        Log("[script] heart: Server_SpawnHeartBall(%.0f, %.0f, %.0f) from %s: %s", p.Location.X, p.Location.Y, p.Location.Z,
+            pawn->GetName().c_str(), ok ? "sent" : "FAILED");
+        return;
+    }
+    if (!strcmp(op, "hit"))                   // hit [fx fy fz] -- smack the nearest ball like a hand would (AVRPawn::Server_HitProp)
+    {
+        auto* pawn = g_pc ? *reinterpret_cast<SDK::AActor**>(reinterpret_cast<uintptr_t>(g_pc) + 0x360) : nullptr;
+        auto* disc = SDK::UObject::FindClassFast("DiscEntity");
+        if (!pawn || !disc) { Log("[script] FAIL hit: pawn=%p DiscEntity=%p", (void*)pawn, (void*)disc); return; }
+        const SDK::FVector me = GetVec(pawn, "Actor", "K2_GetActorLocation");
+        SDK::AActor* best = nullptr; double bestD2 = 1e18; SDK::FVector bp{};
+        const int32_t n = SDK::UObject::GObjects->Num();
+        for (int32_t i = 0; i < n; ++i)
+        {
+            auto* o = SDK::UObject::GObjects->GetByIndex(i);
+            if (!o || o->IsDefaultObject() || !o->IsA(disc)) continue;
+            const SDK::FVector p = GetVec(o, "Actor", "K2_GetActorLocation");
+            const double d2 = (p.X - me.X) * (p.X - me.X) + (p.Y - me.Y) * (p.Y - me.Y) + (p.Z - me.Z) * (p.Z - me.Z);
+            if (d2 < bestD2) { bestD2 = d2; best = static_cast<SDK::AActor*>(o); bp = p; }
+        }
+        if (!best) { Log("[script] FAIL hit: no ball in this world"); return; }
+        struct { SDK::UObject* ctx; double ReturnValue; } t{ CurrentWorld() ? static_cast<SDK::UObject*>(CurrentWorld()) : nullptr, 0.0 };
+        CallStatic("GameplayStatics", "GetTimeSeconds", t);
+        struct {                                          // VRPawn_Server_HitProp (0x50)
+            SDK::AActor* Actor; SDK::AActor* previousOwner; double lastSeenTimestamp; double Timestamp;
+            SDK::FVector position; SDK::FVector Force;
+        } p{};
+        p.Actor = best; p.previousOwner = nullptr; p.lastSeenTimestamp = t.ReturnValue; p.Timestamp = t.ReturnValue + 0.05;
+        p.position = bp;
+        double fx = 0, fy = 600, fz = 300;
+        sscanf_s(rest.c_str(), "%lf %lf %lf", &fx, &fy, &fz);
+        p.Force = SDK::FVector{ fx, fy, fz };
+        const bool ok = CallNative(pawn, "VRPawn", "Server_HitProp", p);
+        Log("[script] hit %s at (%.0f, %.0f, %.0f) %.1fm away, force (%.0f, %.0f, %.0f) ts=%.2f: %s", best->GetName().c_str(),
+            bp.X, bp.Y, bp.Z, sqrt(bestD2) / 100.0, fx, fy, fz, p.Timestamp, ok ? "sent" : "FAILED");
+        return;
+    }
+    if (!strcmp(op, "push"))                  // push <name-part> [vx vy vz] -- local velocity kick on our copy of a ball (the
+    {                                         // hand-contact half of a hit; the owner's physics sync then streams it up)
+        char part[96] = {}; double vx = 0, vy = 800, vz = 400;
+        sscanf_s(rest.c_str(), "%95s %lf %lf %lf", part, (unsigned)sizeof(part), &vx, &vy, &vz);
+        auto* disc = SDK::UObject::FindClassFast("DiscEntity");
+        const int32_t n = SDK::UObject::GObjects->Num();
+        for (int32_t i = 0; disc && i < n; ++i)
+        {
+            auto* o = SDK::UObject::GObjects->GetByIndex(i);
+            if (!o || o->IsDefaultObject() || !o->IsA(disc) || o->GetName().find(part) == std::string::npos) continue;
+            // A2 balls are moved by their UPropMovementComponent (not engine rigid-body physics), so set ITS velocity.
+            auto* pmc = SDK::UObject::FindClassFast("PropMovementComponent");
+            SDK::UObject* mc = nullptr;
+            for (int32_t j = 0; pmc && j < n && !mc; ++j)
+            {
+                auto* c = SDK::UObject::GObjects->GetByIndex(j);
+                if (c && c->Outer == o && c->IsA(pmc)) mc = c;
+            }
+            struct { SDK::FVector NewVelocity; } sv{ SDK::FVector{ vx, vy, vz } };   // PropMovementComponent_SetVelocityInWorldSpace
+            const bool ok = mc && CallNative(mc, "PropMovementComponent", "SetVelocityInWorldSpace", sv);
+            Log("[script] push %s v=(%.0f, %.0f, %.0f) via %s: %s", o->GetName().c_str(), vx, vy, vz,
+                mc ? mc->GetName().c_str() : "<no PropMovementComponent>", ok ? "applied" : "FAILED");
+            return;
+        }
+        Log("[script] FAIL push: no ball matching '%s'", part);
+        return;
+    }
+    if (!strcmp(op, "arena") || !strcmp(op, "leavearena"))   // arena <slotID> -- tell the server we walked into that arena
+    {                                                        // (AVRPawn::Server_NotifyPlayerEnteredArena / ...LeftArena)
+        auto* pawn = g_pc ? *reinterpret_cast<SDK::AActor**>(reinterpret_cast<uintptr_t>(g_pc) + 0x360) : nullptr;
+        if (!pawn || rest.empty()) { Log("[script] FAIL %s: pawn=%p slot='%s'", op, (void*)pawn, rest.c_str()); return; }
+        const std::wstring w(rest.begin(), rest.end());
+        struct { SDK::FString newSlotID; } p{ SDK::FString(w.c_str()) };
+        const bool ok = CallNative(pawn, "VRPawn", !strcmp(op, "arena") ? "Server_NotifyPlayerEnteredArena" : "Server_NotifyPlayerLeftArena", p);
+        memset(&p.newSlotID, 0, sizeof(p.newSlotID));   // our buffer, not the engine's to free
+        Log("[script] %s '%s': %s", op, rest.c_str(), ok ? "sent" : "FAILED");
+        return;
+    }
+    if (!strcmp(op, "tp"))                    // tp x y z [yaw] -- move our own pawn (AVRPawn::TeleportPawn), e.g. into an arena door
+    {
+        auto* pawn = g_pc ? *reinterpret_cast<SDK::AActor**>(reinterpret_cast<uintptr_t>(g_pc) + 0x360) : nullptr;
+        double x = 0, y = 0, z = 0, yaw = 0;
+        if (!pawn || sscanf_s(rest.c_str(), "%lf %lf %lf %lf", &x, &y, &z, &yaw) < 3) { Log("[script] FAIL tp: want x y z [yaw]"); return; }
+        struct { SDK::FVector DestLocation; SDK::FRotator DestRotation; } p{ SDK::FVector{ x, y, z }, SDK::FRotator{ 0.0, yaw, 0.0 } };
+        const bool ok = CallNative(pawn, "VRPawn", "TeleportPawn", p);
+        const SDK::FVector now = GetVec(pawn, "Actor", "K2_GetActorLocation");
+        Log("[script] tp (%.0f, %.0f, %.0f): %s -> pawn now (%.0f, %.0f, %.0f)", x, y, z, ok ? "sent" : "FAILED", now.X, now.Y, now.Z);
+        return;
+    }
+    if (!strcmp(op, "actors"))                // actors <name part> -- any live actor whose name contains it, with its position
+    {
+        auto* act = SDK::UObject::FindClassFast("Actor");
+        const int32_t n = SDK::UObject::GObjects->Num();
+        int shown = 0;
+        for (int32_t i = 0; act && i < n && shown < 60; ++i)
+        {
+            auto* o = SDK::UObject::GObjects->GetByIndex(i);
+            if (!o || o->IsDefaultObject() || !o->IsA(act)) continue;
+            const std::string nm = o->GetName();
+            if (!rest.empty() && nm.find(rest) == std::string::npos) continue;
+            const SDK::FVector p = GetVec(o, "Actor", "K2_GetActorLocation");
+            Log("[script] actor %s (%.0f, %.0f, %.0f)", nm.c_str(), p.X, p.Y, p.Z);
+            ++shown;
+        }
+        Log("[script] actors '%s': %d shown", rest.c_str(), shown);
+        return;
+    }
+    if (!strcmp(op, "ballpos"))               // ballpos -- every ball's position (watch a hit play out)
+    {
+        auto* disc = SDK::UObject::FindClassFast("DiscEntity");
+        const int32_t n = SDK::UObject::GObjects->Num();
+        int shown = 0;
+        for (int32_t i = 0; disc && i < n && shown < 40; ++i)
+        {
+            auto* o = SDK::UObject::GObjects->GetByIndex(i);
+            if (!o || o->IsDefaultObject() || !o->IsA(disc)) continue;
+            const SDK::FVector p = GetVec(o, "Actor", "K2_GetActorLocation"), v = GetVec(o, "Actor", "GetVelocity");
+            if (rest.empty() || o->GetName().find(rest) != std::string::npos)
+            { Log("[script] ballpos %s (%.0f, %.0f, %.0f) v=(%.0f, %.0f, %.0f)", o->GetName().c_str(), p.X, p.Y, p.Z, v.X, v.Y, v.Z); ++shown; }
+        }
+        return;
+    }
+    if (!strcmp(op, "xformprobe"))            // xformprobe -- find ComponentToWorld.Translation on this build, live
+    {
+        auto* pawn = g_pc ? *reinterpret_cast<SDK::AActor**>(reinterpret_cast<uintptr_t>(g_pc) + 0x360) : nullptr;
+        auto* root = pawn ? pawn->RootComponent : nullptr;
+        if (!root) { Log("[script] xformprobe: no pawn root"); return; }
+        const SDK::FVector w = GetVec(root, "SceneComponent", "K2_GetComponentLocation");
+        const uintptr_t c = reinterpret_cast<uintptr_t>(root);
+        for (uintptr_t off = 0x180; off <= 0x260; off += 8)
+        {
+            const double* d = reinterpret_cast<const double*>(c + off);
+            if (fabs(d[0] - w.X) < 0.01 && fabs(d[1] - w.Y) < 0.01 && fabs(d[2] - w.Z) < 0.01)
+                Log("[script] xformprobe: translation (%.1f, %.1f, %.1f) found at comp+0x%llX -> ComponentToWorld base 0x%llX",
+                    w.X, w.Y, w.Z, (unsigned long long)off, (unsigned long long)(off - 0x20));
+        }
+        Log("[script] xformprobe done (world %.1f, %.1f, %.1f)", w.X, w.Y, w.Z);
+        return;
+    }
+    if (!strcmp(op, "pawnpos"))               // pawnpos -- where our own pawn is
+    {
+        auto* pawn = g_pc ? *reinterpret_cast<SDK::AActor**>(reinterpret_cast<uintptr_t>(g_pc) + 0x360) : nullptr;
+        if (!pawn) { Log("[script] pawnpos: no local pawn"); return; }
+        const SDK::FVector at = GetVec(pawn, "Actor", "K2_GetActorLocation");
+        Log("[script] pawnpos %s (%.0f, %.0f, %.0f)", pawn->GetName().c_str(), at.X, at.Y, at.Z);
         return;
     }
     if (!strcmp(op, "join"))                  // join <ip[:port]> -- `open` a server from anywhere, front-end included
@@ -2728,8 +2886,11 @@ void ScriptOp(const Snapshot& snap, const std::string& line)
             const uintptr_t b = reinterpret_cast<uintptr_t>(o);
             if (tmc && o->IsA(tmc))
             {
-                auto* slot = *reinterpret_cast<SDK::UObject**>(b + 0x328);
-                Log("[tms] %s slot=%s holders=%d", o->GetName().c_str(), slot ? slot->GetName().c_str() : "NULL", *reinterpret_cast<int32_t*>(b + 0x3F0));
+                // [50451] ATicketManager: SlotID FString @0x340, ModuleSlot @0x350, TicketHolders @0x390, VerifiedTicketHolders @0x3A0
+                auto* slot = *reinterpret_cast<SDK::UObject**>(b + 0x350);
+                const auto* sid = reinterpret_cast<const SDK::FString*>(b + 0x340);
+                Log("[tms] %s slotID='%s' slot=%s holders=%d verified=%d", o->GetName().c_str(), sid->IsValid() ? sid->ToString().c_str() : "",
+                    slot ? slot->GetName().c_str() : "NULL", *reinterpret_cast<int32_t*>(b + 0x398), *reinterpret_cast<int32_t*>(b + 0x3A8));
             }
             else if (msc && o->IsA(msc) && o->Class->GetName().find("ImportanceVolume") != std::string::npos)
                 Log("[tms] slot %s tm=%p", o->GetName().c_str(), *reinterpret_cast<void**>(b + 0x488));
@@ -3536,6 +3697,14 @@ void ScriptOp(const Snapshot& snap, const std::string& line)
         return;
     }
     Log("[script] unknown op '%s'", op);
+}
+
+// FVector-returning reflected getters without linking Engine_functions.cpp.
+static SDK::FVector GetVec(SDK::UObject* o, const char* cls, const char* fn)
+{
+    struct { SDK::FVector ReturnValue; } r{};
+    CallNative(o, cls, fn, r);
+    return r.ReturnValue;
 }
 
 // -SpecEditConnect=<ip:port>: join a server on start-up. The spectator build has no auto-connect of its

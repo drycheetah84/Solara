@@ -1,0 +1,834 @@
+[
+{
+"line": 4240,
+"literal": "0x3C",
+"class": "UOfflineBallSimSubsystem",
+"field": "BallSimManager",
+"confidence": "high"
+},
+{
+"line": 4319,
+"literal": "0x84",
+"class": "UNetDriver",
+"field": "NetServerMaxTickRate",
+"confidence": "high"
+},
+{
+"line": 4337,
+"literal": "0x84",
+"class": "UNetDriver",
+"field": "NetServerMaxTickRate",
+"confidence": "high"
+},
+{
+"line": 4338,
+"literal": "0xA0",
+"class": "UNetDriver",
+"field": "MaxNetTickRate",
+"confidence": "high"
+},
+{
+"line": 4376,
+"literal": "0xA4",
+"class": "UNetDriver",
+"field": "MaxInternetClientRate",
+"confidence": "high"
+},
+{
+"line": 4377,
+"literal": "0xA8",
+"class": "UNetDriver",
+"field": "MaxClientRate",
+"confidence": "high"
+},
+{
+"line": 4430,
+"literal": "0x2C8",
+"class": "AGameStateBase",
+"field": "ReplicatedWorldTimeSecondsDouble",
+"confidence": "high"
+},
+{
+"line": 4431,
+"literal": "0x2C4",
+"class": "AGameStateBase",
+"field": "ReplicatedWorldTimeSeconds",
+"confidence": "high"
+},
+{
+"line": 4446,
+"literal": "0x2B0",
+"class": "AGameStateBase",
+"field": "PlayerArray",
+"confidence": "high"
+},
+{
+"line": 4447,
+"literal": "0x2B8",
+"class": "AGameStateBase",
+"field": "PlayerArray.Num",
+"confidence": "high"
+},
+{
+"line": 4453,
+"literal": "0x2A0",
+"class": "APlayerState",
+"field": "CompressedPing",
+"confidence": "high"
+},
+{
+"line": 4454,
+"literal": "0x2A2",
+"class": "APlayerState",
+"field": "bIsSpectator",
+"confidence": "high"
+},
+{
+"line": 4460,
+"literal": "0x330",
+"class": "APlayerState",
+"field": "PlayerNamePrivate",
+"confidence": "high"
+},
+{
+"line": 4476,
+"literal": "0x1C22",
+"class": "AVRPawn",
+"field": "PlayerIndex",
+"confidence": "high"
+},
+{
+"line": 4488,
+"literal": "0x928",
+"class": "AVRPawn",
+"field": "Entity",
+"confidence": "high"
+},
+{
+"line": 4498,
+"literal": "0xF0",
+"class": "UA2PlayerEntity",
+"field": "FrequentDataReplicationOnly",
+"confidence": "high"
+},
+{
+"line": 4506,
+"literal": "0x2B8",
+"class": "APawn",
+"field": "PlayerState",
+"confidence": "high"
+},
+{
+"line": 4557,
+"literal": "0xE8",
+"class": "UA2PlayerEntity",
+"field": "Pawn",
+"confidence": "high"
+},
+{
+"line": 4562,
+"literal": "0x2B8",
+"class": "APawn",
+"field": "PlayerState",
+"confidence": "high"
+},
+{
+"line": 4653,
+"literal": "0x1C22",
+"class": "AVRPawn",
+"field": "PlayerIndex",
+"confidence": "high"
+},
+{
+"line": 4654,
+"literal": "0x1210",
+"class": "AVRPawn",
+"field": "currentDiscEntity",
+"confidence": "high"
+},
+{
+"line": 4655,
+"literal": "0x1E60",
+"class": "AVRPawn",
+"field": "HeartBall",
+"confidence": "high"
+},
+{
+"line": 4656,
+"literal": "0x1B38",
+"class": "AVRPawn",
+"field": "BallSimManager",
+"confidence": "high"
+},
+{
+"line": 4784,
+"literal": "0x60",
+"class": "AActor",
+"field": "bAlwaysRelevant",
+"confidence": "high"
+},
+{
+"line": 4785,
+"literal": "0x170",
+"class": "AActor",
+"field": "NetCullDistanceSquared",
+"confidence": "high"
+},
+{
+"line": 4786,
+"literal": "0x178",
+"class": "AActor",
+"field": "NetUpdateFrequency",
+"confidence": "high"
+},
+{
+"line": 4787,
+"literal": "0x17C",
+"class": "AActor",
+"field": "MinNetUpdateFrequency",
+"confidence": "high"
+},
+{
+"line": 4788,
+"literal": "0x180",
+"class": "AActor",
+"field": "NetPriority",
+"confidence": "high"
+},
+{
+"line": 4826,
+"literal": "0x4F0",
+"class": "ADiscEntity",
+"field": "PhysicsSync",
+"confidence": "high"
+},
+{
+"line": 4827,
+"literal": "0xC8",
+"class": "UA2PhysicsSync",
+"field": "PhysicsSyncRepData.owningActor",
+"confidence": "high"
+},
+{
+"line": 4863,
+"literal": "0x320",
+"class": "ATicketManager",
+"field": "SlotID.Num",
+"confidence": "high"
+},
+{
+"line": 4864,
+"literal": "0x380",
+"class": "ATicketManager",
+"field": "TicketHolders.Num",
+"confidence": "high"
+},
+{
+"line": 4865,
+"literal": "0x390",
+"class": "ATicketManager",
+"field": "VerifiedTicketHolders.Num",
+"confidence": "high"
+},
+{
+"line": 4866,
+"literal": "0x36C",
+"class": "ATicketManager",
+"field": "CurrentTicket",
+"confidence": "high"
+},
+{
+"line": 4867,
+"literal": "0x370",
+"class": "ATicketManager",
+"field": "RequiredTicket",
+"confidence": "high"
+},
+{
+"line": 4868,
+"literal": "0x2F0",
+"class": "ATicketManager",
+"field": "TeamColors.Num",
+"confidence": "high"
+},
+{
+"line": 4869,
+"literal": "0x2E8",
+"class": "ATicketManager",
+"field": "TeamColors",
+"confidence": "high"
+},
+{
+"line": 4883,
+"literal": "0x1C22",
+"class": "AVRPawn",
+"field": "PlayerIndex",
+"confidence": "high"
+},
+{
+"line": 5001,
+"literal": "0x178",
+"class": "AActor",
+"field": "NetUpdateFrequency",
+"confidence": "high"
+},
+{
+"line": 5002,
+"literal": "0x17C",
+"class": "AActor",
+"field": "MinNetUpdateFrequency",
+"confidence": "high"
+},
+{
+"line": 5003,
+"literal": "0x159",
+"class": "AActor",
+"field": "NetDormancy",
+"confidence": "high"
+},
+{
+"line": 5004,
+"literal": "0x60",
+"class": "AActor",
+"field": "bAlwaysRelevant",
+"confidence": "high"
+},
+{
+"line": 5392,
+"literal": "0x4F0",
+"class": "ADiscEntity",
+"field": "PhysicsSync",
+"confidence": "high"
+},
+{
+"line": 5396,
+"literal": "0xC8",
+"class": "UA2PhysicsSync",
+"field": "PhysicsSyncRepData.owningActor",
+"confidence": "high"
+},
+{
+"line": 5427,
+"literal": "0xC8",
+"class": "UA2PhysicsSync",
+"field": "PhysicsSyncRepData.owningActor",
+"confidence": "high"
+},
+{
+"line": 5448,
+"literal": "0x18",
+"class": "FReplicatedPhysicsObjectData",
+"field": "position",
+"confidence": "high"
+},
+{
+"line": 5454,
+"literal": "0xB0",
+"class": "UA2PhysicsSync",
+"field": "PrimitiveComp",
+"confidence": "high"
+},
+{
+"line": 5455,
+"literal": "0x18",
+"class": "FReplicatedPhysicsObjectData",
+"field": "position",
+"confidence": "high"
+},
+{
+"line": 5474,
+"literal": "0x18",
+"class": "FReplicatedPhysicsObjectData",
+"field": "position",
+"confidence": "high"
+},
+{
+"line": 5476,
+"literal": "0x4F0",
+"class": "ADiscEntity",
+"field": "PhysicsSync",
+"confidence": "high"
+},
+{
+"line": 5477,
+"literal": "0xB0",
+"class": "UA2PhysicsSync",
+"field": "PrimitiveComp",
+"confidence": "high"
+},
+{
+"line": 5538,
+"literal": "0x50",
+"class": "FBallSimulation",
+"field": "Discs.Num",
+"confidence": "high",
+"note": "22284 Balls.Num",
+"old_field": "Balls.Num"
+},
+{
+"line": 5539,
+"literal": "0x38",
+"class": "FBallSimulation",
+"field": "Players",
+"confidence": "high"
+},
+{
+"line": 5540,
+"literal": "0x40",
+"class": "FBallSimulation",
+"field": "Players.Num",
+"confidence": "high"
+},
+{
+"line": 5558,
+"literal": "0x48",
+"class": "FBallSimulation",
+"field": "Discs",
+"confidence": "high",
+"old_field": "Balls"
+},
+{
+"line": 5559,
+"literal": "0x50",
+"class": "FBallSimulation",
+"field": "Discs.Num",
+"confidence": "high",
+"old_field": "Balls.Num"
+},
+{
+"line": 5560,
+"literal": "0x58",
+"class": "FBallSimulation",
+"field": "States",
+"confidence": "high"
+},
+{
+"line": 5561,
+"literal": "0x60",
+"class": "FBallSimulation",
+"field": "States.Num",
+"confidence": "high"
+},
+{
+"line": 5612,
+"literal": "0x48",
+"class": "FBallSimulation",
+"field": "Discs",
+"confidence": "high",
+"old_field": "Balls"
+},
+{
+"line": 5613,
+"literal": "0x50",
+"class": "FBallSimulation",
+"field": "Discs.Num",
+"confidence": "high",
+"old_field": "Balls.Num"
+},
+{
+"line": 5614,
+"literal": "0x58",
+"class": "FBallSimulation",
+"field": "States",
+"confidence": "high"
+},
+{
+"line": 5615,
+"literal": "0x60",
+"class": "FBallSimulation",
+"field": "States.Num",
+"confidence": "high"
+},
+{
+"line": 5955,
+"literal": "0xF0",
+"class": "UA2PlayerEntity",
+"field": "FrequentDataReplicationOnly",
+"confidence": "high"
+},
+{
+"line": 5971,
+"literal": "0xF0",
+"class": "UA2PlayerEntity",
+"field": "FrequentDataReplicationOnly",
+"confidence": "high"
+},
+{
+"line": 5971,
+"literal": "0x10",
+"class": "FReplicatedFrequentData",
+"field": "Root.position",
+"confidence": "high"
+},
+{
+"line": 6217,
+"literal": "0x2E8",
+"class": "ATicketManager",
+"field": "TeamColors",
+"confidence": "high"
+},
+{
+"line": 6218,
+"literal": "0x2F0",
+"class": "ATicketManager",
+"field": "TeamColors.Num",
+"confidence": "high"
+},
+{
+"line": 6242,
+"literal": "0x928",
+"class": "AVRPawn",
+"field": "Entity",
+"confidence": "high"
+},
+{
+"line": 6249,
+"literal": "0x2E8",
+"class": "ATicketManager",
+"field": "TeamColors",
+"confidence": "high"
+},
+{
+"line": 6250,
+"literal": "0x2F0",
+"class": "ATicketManager",
+"field": "TeamColors.Num",
+"confidence": "high"
+},
+{
+"line": 6264,
+"literal": "0xC8",
+"class": "UA2Entity",
+"field": "MassHandle.Index",
+"confidence": "high"
+},
+{
+"line": 6265,
+"literal": "0xCC",
+"class": "UA2Entity",
+"field": "MassHandle.SerialNumber",
+"confidence": "high"
+},
+{
+"line": 6279,
+"literal": "0x2B8",
+"class": "APawn",
+"field": "PlayerState",
+"confidence": "high"
+},
+{
+"line": 6302,
+"literal": "0x928",
+"class": "AVRPawn",
+"field": "Entity",
+"confidence": "high"
+},
+{
+"line": 6463,
+"literal": "0x390",
+"class": "ATicketManager",
+"field": "VerifiedTicketHolders.Num",
+"confidence": "high"
+},
+{
+"line": 6464,
+"literal": "0x380",
+"class": "ATicketManager",
+"field": "TicketHolders.Num",
+"confidence": "high"
+},
+{
+"line": 6465,
+"literal": "0x36C",
+"class": "ATicketManager",
+"field": "CurrentTicket",
+"confidence": "high"
+},
+{
+"line": 6466,
+"literal": "0x370",
+"class": "ATicketManager",
+"field": "RequiredTicket",
+"confidence": "high"
+},
+{
+"line": 6467,
+"literal": "0x368",
+"class": "ATicketManager",
+"field": "bOverrideTicketManagerLimits",
+"confidence": "high"
+},
+{
+"line": 6468,
+"literal": "0x3E0",
+"class": "ATicketManager",
+"field": "TeamSizes",
+"confidence": "high"
+},
+{
+"line": 6468,
+"literal": "0x3E8",
+"class": "ATicketManager",
+"field": "TeamSizes.Num",
+"confidence": "high"
+},
+{
+"line": 6469,
+"literal": "0x3F0",
+"class": "ATicketManager",
+"field": "MaxTeamSizes",
+"confidence": "high"
+},
+{
+"line": 6469,
+"literal": "0x3F8",
+"class": "ATicketManager",
+"field": "MaxTeamSizes.Num",
+"confidence": "high"
+},
+{
+"line": 6472,
+"literal": "0x148",
+"class": "AActor",
+"field": "Owner",
+"confidence": "medium"
+},
+{
+"line": 6501,
+"literal": "0x398",
+"class": "ATicketManager",
+"field": "bBallSimulationNeedsRebuild",
+"confidence": "high"
+},
+{
+"line": 6516,
+"literal": "0x390",
+"class": "ATicketManager",
+"field": "VerifiedTicketHolders.Num",
+"confidence": "high"
+},
+{
+"line": 6708,
+"literal": "0x4F0",
+"class": "UPhysicalComponent",
+"field": "Collider",
+"confidence": "high"
+},
+{
+"line": 6844,
+"literal": "0x4E0",
+"class": "UPhysicalComponent",
+"field": "OnOverlapByPlayerServer",
+"confidence": "high"
+},
+{
+"line": 6847,
+"literal": "0x470",
+"class": "UPhysicalComponent",
+"field": "OnOverlapByPlayer",
+"confidence": "high"
+},
+{
+"line": 6847,
+"literal": "0x4B0",
+"class": "UPhysicalComponent",
+"field": "OnOverlapByPlayerSimple",
+"confidence": "high"
+},
+{
+"line": 6865,
+"literal": "0x4E0",
+"class": "UPhysicalComponent",
+"field": "OnOverlapByPlayerServer",
+"confidence": "high"
+},
+{
+"line": 6901,
+"literal": "0x4F0",
+"class": "UPhysicalComponent",
+"field": "Collider",
+"confidence": "high"
+},
+{
+"line": 6902,
+"literal": "0x1A8",
+"class": "AActor",
+"field": "RootComponent",
+"confidence": "high"
+},
+{
+"line": 7010,
+"literal": "0x928",
+"class": "AVRPawn",
+"field": "Entity",
+"confidence": "high"
+},
+{
+"line": 7038,
+"literal": "0x2D0",
+"class": "APawn",
+"field": "Controller",
+"confidence": "high"
+},
+{
+"line": 7043,
+"literal": "0x100",
+"class": "UA2PlayerEntity",
+"field": "FrequentDataReplicationOnly.Root.position.X",
+"confidence": "high"
+},
+{
+"line": 7044,
+"literal": "0x108",
+"class": "UA2PlayerEntity",
+"field": "FrequentDataReplicationOnly.Root.position.Y",
+"confidence": "high"
+},
+{
+"line": 7045,
+"literal": "0x110",
+"class": "UA2PlayerEntity",
+"field": "FrequentDataReplicationOnly.Root.position.Z",
+"confidence": "high"
+},
+{
+"line": 7056,
+"literal": "0x1C22",
+"class": "AVRPawn",
+"field": "PlayerIndex",
+"confidence": "high"
+},
+{
+"line": 7060,
+"literal": "0x4BC",
+"class": "UGameStateManagerComponent",
+"field": "currentState",
+"confidence": "high"
+},
+{
+"line": 7071,
+"literal": "0x4BC",
+"class": "UGameStateManagerComponent",
+"field": "currentState",
+"confidence": "high"
+},
+{
+"line": 7090,
+"literal": "0x1C22",
+"class": "AVRPawn",
+"field": "PlayerIndex",
+"confidence": "high"
+},
+{
+"line": 7316,
+"literal": "0x2D0",
+"class": "APawn",
+"field": "Controller",
+"confidence": "high"
+},
+{
+"line": 7317,
+"literal": "0x928",
+"class": "AVRPawn",
+"field": "Entity",
+"confidence": "high"
+},
+{
+"line": 7320,
+"literal": "0x100",
+"class": "UA2PlayerEntity",
+"field": "FrequentDataReplicationOnly.Root.position.X",
+"confidence": "high"
+},
+{
+"line": 7321,
+"literal": "0x108",
+"class": "UA2PlayerEntity",
+"field": "FrequentDataReplicationOnly.Root.position.Y",
+"confidence": "high"
+},
+{
+"line": 7322,
+"literal": "0x110",
+"class": "UA2PlayerEntity",
+"field": "FrequentDataReplicationOnly.Root.position.Z",
+"confidence": "high"
+},
+{
+"line": 7360,
+"literal": "0x2B8",
+"class": "APawn",
+"field": "PlayerState",
+"confidence": "high"
+},
+{
+"line": 7361,
+"literal": "0x380",
+"class": "AAxPlayerState",
+"field": "TeamIndex",
+"confidence": "high"
+},
+{
+"line": 7374,
+"literal": "0x1C22",
+"class": "AVRPawn",
+"field": "PlayerIndex",
+"confidence": "high"
+},
+{
+"line": 7424,
+"literal": "0x2B8",
+"class": "APawn",
+"field": "PlayerState",
+"confidence": "high"
+},
+{
+"line": 7426,
+"literal": "0x380",
+"class": "AAxPlayerState",
+"field": "TeamIndex",
+"confidence": "high"
+},
+{
+"line": 7444,
+"literal": "0x1C22",
+"class": "AVRPawn",
+"field": "PlayerIndex",
+"confidence": "high"
+},
+{
+"line": 7563,
+"literal": "0x2D0",
+"class": "APawn",
+"field": "Controller",
+"confidence": "high"
+},
+{
+"line": 7575,
+"literal": "0x1C22",
+"class": "AVRPawn",
+"field": "PlayerIndex",
+"confidence": "high"
+},
+{
+"line": 7726,
+"literal": "0x1C22",
+"class": "AVRPawn",
+"field": "PlayerIndex",
+"confidence": "high"
+},
+{
+"line": 7727,
+"literal": "0x2B8",
+"class": "APawn",
+"field": "PlayerState",
+"confidence": "high"
+},
+{
+"line": 7961,
+"literal": "0x318",
+"class": "ADiscEntity",
+"field": "RollbackRecentPlayerHit",
+"confidence": "high"
+}
+]
