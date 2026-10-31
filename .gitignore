@@ -42,3 +42,12 @@ tools/a2port/work50451/*.id2
 tools/a2port/work50451/*.nam
 tools/a2port/work50451/*.til
 tools/a2port/work50451/__pycache__/
+
+# client DLL build outputs
+tools/specedit*/*.obj
+tools/specedit*/*.dll
+tools/specedit*/*.exp
+tools/specedit*/*.lib
+tools/specedit*/*.map
+tools/specedit*/*.log
+tools/specedit*/*.bak

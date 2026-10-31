@@ -1,0 +1,853 @@
+// se_render.cpp - the render half: get ImGui on screen inside the game's D3D12 swapchain.
+//
+// The game ships its own Dear ImGui (UImGuiManager), but it exposes no UFunctions and its context is
+// private native state, so we cannot draw into it. We therefore bring our own ImGui and hook the
+// swapchain, which is the standard overlay approach and keeps our UI completely independent of the
+// game's debug UI.
+//
+// Hooking D3D12 needs the vtables of IDXGISwapChain3 and ID3D12CommandQueue, and you cannot get those
+// without a device. Creating a throwaway device + swapchain on a hidden window to read the vtable
+// layout is the usual trick and is safe: it touches nothing the game owns.
+//
+// Everything here runs on the RENDER thread. It may read the snapshot and push commands. It must never
+// touch a UObject - see se_core.h.
+
+#include "se_core.h"
+
+#include <d3d12.h>
+#include <dxgi1_4.h>
+#include <vector>
+#include <mutex>
+#include "MinHook.h"
+#include "imgui.h"
+#include "imgui_internal.h"
+#include "backends/imgui_impl_win32.h"
+#include "backends/imgui_impl_dx12.h"
+
+#include <wincodec.h>
+#include <string>
+#include <unordered_map>
+#include "se_icons_data.h"
+#pragma comment(lib, "windowscodecs.lib")
+#pragma comment(lib, "ole32.lib")
+#include <psapi.h>
+#pragma comment(lib, "psapi.lib")
+#pragma comment(lib, "d3d12.lib")
+#pragma comment(lib, "dxgi.lib")
+
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND, UINT, WPARAM, LPARAM);
+
+namespace se {
+std::atomic<unsigned> g_presentCount{ 0 };
+
+#ifdef HALCYON_EOS
+bool g_uiVisible = false;   // published Rift build: hidden until F12, so ordinary spectators never see it
+#else
+bool g_uiVisible = true;
+#endif
+
+namespace {
+
+typedef HRESULT(__stdcall* Present_t)(IDXGISwapChain3*, UINT, UINT);
+typedef void(__stdcall* ExecuteCommandLists_t)(ID3D12CommandQueue*, UINT, ID3D12CommandList* const*);
+typedef HRESULT(__stdcall* ResizeBuffers_t)(IDXGISwapChain3*, UINT, UINT, UINT, DXGI_FORMAT, UINT);
+typedef HRESULT(__stdcall* ResizeBuffers1_t)(IDXGISwapChain3*, UINT, UINT, UINT, DXGI_FORMAT, UINT, const UINT*, IUnknown* const*);
+ResizeBuffers_t        g_resizeOrig  = nullptr;
+ResizeBuffers1_t       g_resize1Orig = nullptr;
+
+Present_t              g_presentOrig = nullptr;
+ExecuteCommandLists_t  g_execOrig    = nullptr;
+WNDPROC                g_wndProcOrig = nullptr;
+
+ID3D12Device*              g_device    = nullptr;
+ID3D12CommandQueue*        g_cmdQueue  = nullptr;   // learned from ExecuteCommandLists
+ID3D12DescriptorHeap*      g_srvHeap   = nullptr;
+ID3D12DescriptorHeap*      g_rtvHeap   = nullptr;
+ID3D12GraphicsCommandList* g_cmdList   = nullptr;
+HWND                       g_hwnd      = nullptr;
+bool                       g_imguiReady = false;
+
+struct FrameCtx
+{
+    ID3D12CommandAllocator* allocator = nullptr;
+    ID3D12Resource*         backbuffer = nullptr;
+    D3D12_CPU_DESCRIPTOR_HANDLE rtv{};
+};
+std::vector<FrameCtx> g_frames;
+
+// UE-style dark theme. Deliberately close to the editor: near-black panels, thin square-ish corners,
+// a blue-grey accent, and tight padding so dense property rows read well.
+void ApplyUnrealStyle()
+{
+    ImGuiStyle& s = ImGui::GetStyle();
+    s.WindowRounding    = 2.0f;
+    s.ChildRounding     = 2.0f;
+    s.FrameRounding     = 2.0f;
+    s.PopupRounding     = 2.0f;
+    s.ScrollbarRounding = 2.0f;
+    s.TabRounding       = 2.0f;
+    s.GrabRounding      = 2.0f;
+    s.WindowPadding     = ImVec2(6, 6);
+    s.FramePadding      = ImVec2(6, 3);
+    s.ItemSpacing       = ImVec2(6, 4);
+    s.IndentSpacing     = 16.0f;
+    s.ScrollbarSize     = 12.0f;
+    s.WindowBorderSize  = 1.0f;
+    s.FrameBorderSize   = 1.0f;
+    s.WindowMenuButtonPosition = ImGuiDir_None;
+
+    // UE5's stock dark palette (FStyleColors): Background #151515, Panel #242424, Header #2F2F2F,
+    // Recessed #1A1A1A, Input #0F0F0F, InputOutline/Dropdown #383838, Hover #575757, Foreground #C0C0C0,
+    // Primary/Select #0070E0. Panels are #242424 with #151515 gutters between them, inputs are recessed
+    // near-black wells, and the one saturated colour is the selection blue.
+    auto hex = [](unsigned v, float a = 1.0f) {
+        return ImVec4(((v >> 16) & 0xFF) / 255.0f, ((v >> 8) & 0xFF) / 255.0f, (v & 0xFF) / 255.0f, a);
+    };
+    ImVec4* c = s.Colors;
+    const ImVec4 background = hex(0x151515), panel = hex(0x242424), header = hex(0x2F2F2F);
+    const ImVec4 recessed = hex(0x1A1A1A), input = hex(0x0F0F0F), outline = hex(0x383838);
+    const ImVec4 hover = hex(0x575757), fg = hex(0xC0C0C0), primary = hex(0x0070E0);
+
+    c[ImGuiCol_Text]                 = fg;
+    c[ImGuiCol_TextDisabled]         = hex(0x808080);
+    c[ImGuiCol_WindowBg]             = panel;
+    c[ImGuiCol_ChildBg]              = panel;
+    c[ImGuiCol_PopupBg]              = hex(0x1A1A1A, 0.98f);
+    c[ImGuiCol_Border]               = background;
+    c[ImGuiCol_BorderShadow]         = ImVec4(0, 0, 0, 0);
+    c[ImGuiCol_FrameBg]              = input;
+    c[ImGuiCol_FrameBgHovered]       = recessed;
+    c[ImGuiCol_FrameBgActive]        = input;
+    c[ImGuiCol_TitleBg]              = background;
+    c[ImGuiCol_TitleBgActive]        = background;
+    c[ImGuiCol_TitleBgCollapsed]     = background;
+    c[ImGuiCol_MenuBarBg]            = background;
+    c[ImGuiCol_ScrollbarBg]          = panel;
+    c[ImGuiCol_ScrollbarGrab]        = outline;
+    c[ImGuiCol_ScrollbarGrabHovered] = hover;
+    c[ImGuiCol_ScrollbarGrabActive]  = hex(0x808080);
+    c[ImGuiCol_CheckMark]            = primary;
+    c[ImGuiCol_SliderGrab]           = primary;
+    c[ImGuiCol_SliderGrabActive]     = hex(0x1C8AFF);
+    c[ImGuiCol_Button]               = outline;
+    c[ImGuiCol_ButtonHovered]        = hover;
+    c[ImGuiCol_ButtonActive]         = primary;
+    c[ImGuiCol_Header]               = header;           // collapsible category bars
+    c[ImGuiCol_HeaderHovered]        = hex(0x3A3A3A);
+    c[ImGuiCol_HeaderActive]         = primary;
+    c[ImGuiCol_Separator]            = background;
+    c[ImGuiCol_SeparatorHovered]     = primary;
+    c[ImGuiCol_ResizeGrip]           = ImVec4(0, 0, 0, 0);
+    c[ImGuiCol_Tab]                  = background;       // inactive tab blends into the gutter
+    c[ImGuiCol_TabHovered]           = header;
+    c[ImGuiCol_TabSelected]          = panel;            // active tab is the panel colour, as in UE5
+    c[ImGuiCol_TabSelectedOverline]  = primary;
+    c[ImGuiCol_TabDimmed]            = background;
+    c[ImGuiCol_TabDimmedSelected]    = panel;
+    c[ImGuiCol_TableHeaderBg]        = header;
+    c[ImGuiCol_TableBorderLight]     = background;
+    c[ImGuiCol_TableBorderStrong]    = background;
+    c[ImGuiCol_TableRowBg]           = panel;
+    c[ImGuiCol_TableRowBgAlt]        = hex(0x282828);
+    c[ImGuiCol_TextSelectedBg]       = hex(0x0070E0, 0.45f);
+    c[ImGuiCol_NavCursor]            = primary;
+
+    s.WindowRounding = 0.0f;       // UE5 panels are square; only small controls are rounded
+    s.WindowBorderSize = 0.0f;
+    s.FrameBorderSize  = 0.0f;
+    s.TabRounding      = 3.0f;
+    s.TabBorderSize    = 0.0f;
+    s.TabBarOverlineSize = 2.0f;
+}
+
+// ── who owns the mouse ────────────────────────────────────────────────────────────────────────
+// A2 is a mouse-look game: it hides the cursor, clips it to the window, re-centres it every frame and
+// reads raw mouse deltas. With the overlay passing everything through, the cursor vanished the moment it
+// entered the window and the editor could not be clicked. So the editor now behaves like Unreal's own
+// viewport: while the UI is up the mouse and keyboard are the EDITOR's -- cursor visible and free --
+// and holding RIGHT mouse hands both back to the game, so RMB + drag looks and RMB + WASD flies.
+typedef BOOL(WINAPI* ClipCursor_t)(const RECT*);
+typedef BOOL(WINAPI* SetCursorPos_t)(int, int);
+typedef int(WINAPI* ShowCursor_t)(BOOL);
+typedef HCURSOR(WINAPI* SetCursor_t)(HCURSOR);
+ClipCursor_t   g_clipOrig   = nullptr;
+SetCursorPos_t g_setPosOrig = nullptr;
+ShowCursor_t   g_showOrig   = nullptr;
+SetCursor_t    g_setCurOrig = nullptr;
+
+bool EditorOwnsInput()
+{
+    // With the editor camera flying the view, the editor owns everything, right mouse included (it is the
+    // camera's look button). Otherwise holding RMB hands input to the game, as before.
+    return g_uiVisible && g_imguiReady && (Cam().active || !(GetAsyncKeyState(VK_RBUTTON) & 0x8000));
+}
+
+POINT g_lockPt{};   // where the cursor is pinned while looking
+
+void BeginLook(HWND hwnd)
+{
+    GetCursorPos(&g_lockPt);
+    SetCapture(hwnd);
+    if (g_showOrig) while (g_showOrig(FALSE) >= 0) {}
+    Cam().looking = true;
+}
+void EndLook()
+{
+    Cam().looking = false;
+    ReleaseCapture();
+    if (g_setPosOrig) g_setPosOrig(g_lockPt.x, g_lockPt.y);
+    if (g_showOrig) while (g_showOrig(TRUE) < 0) {}
+}
+
+// While the editor owns input, the game may not confine, re-centre or hide the cursor.
+BOOL WINAPI Hook_ClipCursor(const RECT* r)       { return g_clipOrig(EditorOwnsInput() ? nullptr : r); }
+BOOL WINAPI Hook_SetCursorPos(int x, int y)      { return EditorOwnsInput() ? TRUE : g_setPosOrig(x, y); }
+int  WINAPI Hook_ShowCursor(BOOL show)           { return (EditorOwnsInput() && !show) ? 0 : g_showOrig(show); }
+HCURSOR WINAPI Hook_SetCursor(HCURSOR c)
+{
+    if (EditorOwnsInput() && !c) c = LoadCursorW(nullptr, MAKEINTRESOURCEW(32512));
+    return g_setCurOrig(c);
+}
+
+bool IsMouseMsg(UINT m)
+{
+    return m == WM_INPUT || (m >= WM_MOUSEFIRST && m <= WM_MOUSELAST) || m == WM_MOUSEHOVER || m == WM_MOUSELEAVE;
+}
+bool IsKeyDownMsg(UINT m) { return m == WM_KEYDOWN || m == WM_SYSKEYDOWN || m == WM_CHAR || m == WM_SYSCHAR; }
+
+LRESULT __stdcall WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
+{
+    if (msg == WM_KEYDOWN && (wp == VK_F12 || wp == VK_INSERT)) { g_uiVisible = !g_uiVisible; se::Log("[ui] editor %s (%s)", g_uiVisible ? "shown" : "hidden", wp == VK_F12 ? "F12" : "Insert"); return 0; }   // F12 (Insert also works)
+    if (!g_uiVisible || !g_imguiReady)
+    {
+        if (Cam().looking) EndLook();
+        return CallWindowProc(g_wndProcOrig, hwnd, msg, wp, lp);
+    }
+
+    // Unreal-style viewport camera. RMB over the bare viewport starts looking: the cursor is hidden and
+    // pinned, and its movement becomes look deltas for the game thread, which also reads WASD/QE/Shift
+    // directly. While looking nothing reaches ImGui or the game.
+    CameraInput& cam = Cam();
+    if (cam.active)
+    {
+        if (msg == WM_RBUTTONDOWN && !ImGui::GetIO().WantCaptureMouse) { BeginLook(hwnd); return 0; }
+        if (cam.looking)
+        {
+            if (msg == WM_RBUTTONUP || msg == WM_CAPTURECHANGED || msg == WM_KILLFOCUS)
+            {
+                EndLook();
+                return msg == WM_KILLFOCUS ? CallWindowProc(g_wndProcOrig, hwnd, msg, wp, lp) : 0;
+            }
+            if (msg == WM_MOUSEMOVE)
+            {
+                POINT p;
+                GetCursorPos(&p);
+                if (p.x != g_lockPt.x || p.y != g_lockPt.y)
+                {
+                    cam.dx = cam.dx + static_cast<float>(p.x - g_lockPt.x);
+                    cam.dy = cam.dy + static_cast<float>(p.y - g_lockPt.y);
+                    if (g_setPosOrig) g_setPosOrig(g_lockPt.x, g_lockPt.y);
+                }
+                return 0;
+            }
+            if (msg == WM_MOUSEWHEEL) { cam.wheel += GET_WHEEL_DELTA_WPARAM(wp) > 0 ? 1 : -1; return 0; }
+            if (msg == WM_SETCURSOR)  { if (g_setCurOrig) g_setCurOrig(nullptr); return TRUE; }
+            if (msg == WM_INPUT)      return DefWindowProcW(hwnd, msg, wp, lp);
+            if (IsMouseMsg(msg) || IsKeyDownMsg(msg) || msg == WM_KEYUP || msg == WM_SYSKEYUP) return 0;
+        }
+    }
+
+    ImGui_ImplWin32_WndProcHandler(hwnd, msg, wp, lp);   // ImGui always sees input while it is up
+
+    if (!EditorOwnsInput())                              // RMB held: the game drives (look / fly)
+        return CallWindowProc(g_wndProcOrig, hwnd, msg, wp, lp);
+
+    if (msg == WM_SETCURSOR && LOWORD(lp) == HTCLIENT)
+    {
+        // Undo whatever hiding the game already did (the display counter can sit below zero), and show
+        // an arrow unless ImGui has asked for a resize or text cursor this frame.
+        if (g_showOrig) while (g_showOrig(TRUE) < 0) {}
+        if (ImGui::GetMouseCursor() == ImGuiMouseCursor_Arrow) SetCursor(LoadCursorW(nullptr, MAKEINTRESOURCEW(32512)));
+        return TRUE;
+    }
+    if (IsMouseMsg(msg))
+    {
+        if (g_clipOrig) g_clipOrig(nullptr);
+        // WM_INPUT must still be completed through DefWindowProc, or the raw-input queue backs up.
+        return msg == WM_INPUT ? DefWindowProcW(hwnd, msg, wp, lp) : 0;
+    }
+    // Keys go to the editor (W/E/R switch the gizmo, typing goes into search boxes) instead of moving
+    // the player. Key-UPs still pass, so nothing held from before RMB was released gets stuck down.
+    if (IsKeyDownMsg(msg)) return 0;
+    return CallWindowProc(g_wndProcOrig, hwnd, msg, wp, lp);
+}
+
+// The swapchain hands us the device; the command queue has to be learned from the game's own
+// ExecuteCommandLists, because ImGui's DX12 backend needs the queue the game actually presents with.
+void __stdcall Hook_ExecuteCommandLists(ID3D12CommandQueue* q, UINT n, ID3D12CommandList* const* lists)
+{
+    if (!g_cmdQueue && q && q->GetDesc().Type == D3D12_COMMAND_LIST_TYPE_DIRECT) g_cmdQueue = q;
+    g_execOrig(q, n, lists);
+}
+
+// The overlay holds a reference to every swapchain back buffer (GetBuffer). DXGI requires ALL of them to be
+// released before ResizeBuffers -- holding them made the game's resize fail the moment the window was
+// resized, which crashed the client. Release before the resize, rebuild after.
+void ReleaseRenderTargets()
+{
+    for (auto& f : g_frames)
+        if (f.backbuffer) { f.backbuffer->Release(); f.backbuffer = nullptr; }
+}
+
+void CreateRenderTargets(IDXGISwapChain3* sc)
+{
+    DXGI_SWAP_CHAIN_DESC desc{};
+    sc->GetDesc(&desc);
+    const UINT count = desc.BufferCount;
+    if (count != g_frames.size() || !g_rtvHeap)
+    {
+        // Buffer count changed: new RTV heap sized for it, and an allocator per buffer.
+        for (auto& f : g_frames) if (f.allocator) { f.allocator->Release(); f.allocator = nullptr; }
+        if (g_rtvHeap) { g_rtvHeap->Release(); g_rtvHeap = nullptr; }
+        D3D12_DESCRIPTOR_HEAP_DESC rtv{};
+        rtv.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+        rtv.NumDescriptors = count;
+        if (FAILED(g_device->CreateDescriptorHeap(&rtv, IID_PPV_ARGS(&g_rtvHeap)))) { g_frames.clear(); return; }
+        g_frames.assign(count, FrameCtx{});
+        for (auto& f : g_frames) g_device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&f.allocator));
+    }
+    const UINT rtvSize = g_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+    D3D12_CPU_DESCRIPTOR_HANDLE h = g_rtvHeap->GetCPUDescriptorHandleForHeapStart();
+    for (UINT i = 0; i < count; ++i)
+    {
+        g_frames[i].rtv = h;
+        if (SUCCEEDED(sc->GetBuffer(i, IID_PPV_ARGS(&g_frames[i].backbuffer))) && g_frames[i].backbuffer)
+            g_device->CreateRenderTargetView(g_frames[i].backbuffer, nullptr, h);
+        h.ptr += rtvSize;
+    }
+}
+
+HRESULT __stdcall Hook_ResizeBuffers(IDXGISwapChain3* sc, UINT n, UINT w, UINT h, DXGI_FORMAT fmt, UINT flags)
+{
+    if (g_imguiReady) ReleaseRenderTargets();
+    const HRESULT hr = g_resizeOrig(sc, n, w, h, fmt, flags);
+    if (g_imguiReady) CreateRenderTargets(sc);
+    Log("[render] ResizeBuffers %ux%u buffers=%u -> 0x%08X", w, h, n, static_cast<unsigned>(hr));
+    return hr;
+}
+
+HRESULT __stdcall Hook_ResizeBuffers1(IDXGISwapChain3* sc, UINT n, UINT w, UINT h, DXGI_FORMAT fmt, UINT flags,
+                                      const UINT* masks, IUnknown* const* queues)
+{
+    if (g_imguiReady) ReleaseRenderTargets();
+    const HRESULT hr = g_resize1Orig(sc, n, w, h, fmt, flags, masks, queues);
+    if (g_imguiReady) CreateRenderTargets(sc);
+    Log("[render] ResizeBuffers1 %ux%u buffers=%u -> 0x%08X", w, h, n, static_cast<unsigned>(hr));
+    return hr;
+}
+
+bool InitImGui(IDXGISwapChain3* sc)
+{
+    if (FAILED(sc->GetDevice(IID_PPV_ARGS(&g_device)))) { Log("[render] GetDevice failed"); return false; }
+
+    DXGI_SWAP_CHAIN_DESC desc{};
+    sc->GetDesc(&desc);
+    g_hwnd = desc.OutputWindow;
+    const UINT count = desc.BufferCount;
+
+    D3D12_DESCRIPTOR_HEAP_DESC srv{};
+    srv.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+    srv.NumDescriptors = 128;                       // [0] the font, [1..] the item icons (LoadIcons)
+    srv.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+    if (FAILED(g_device->CreateDescriptorHeap(&srv, IID_PPV_ARGS(&g_srvHeap)))) return false;
+
+    D3D12_DESCRIPTOR_HEAP_DESC rtv{};
+    rtv.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+    rtv.NumDescriptors = count;
+    rtv.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+    if (FAILED(g_device->CreateDescriptorHeap(&rtv, IID_PPV_ARGS(&g_rtvHeap)))) return false;
+
+    const UINT rtvSize = g_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+    D3D12_CPU_DESCRIPTOR_HANDLE h = g_rtvHeap->GetCPUDescriptorHandleForHeapStart();
+    g_frames.resize(count);
+    for (UINT i = 0; i < count; ++i)
+    {
+        g_frames[i].rtv = h;
+        sc->GetBuffer(i, IID_PPV_ARGS(&g_frames[i].backbuffer));
+        if (g_frames[i].backbuffer) g_device->CreateRenderTargetView(g_frames[i].backbuffer, nullptr, h);
+        g_device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&g_frames[i].allocator));
+        h.ptr += rtvSize;
+    }
+    if (FAILED(g_device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, g_frames[0].allocator,
+                                           nullptr, IID_PPV_ARGS(&g_cmdList)))) return false;
+    g_cmdList->Close();
+
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    io.IniFilename = nullptr;                       // do not litter the game folder
+    ApplyUnrealStyle();
+    ImGui_ImplWin32_Init(g_hwnd);
+    ImGui_ImplDX12_Init(g_device, static_cast<int>(count), DXGI_FORMAT_R8G8B8A8_UNORM, g_srvHeap,
+                        g_srvHeap->GetCPUDescriptorHandleForHeapStart(),
+                        g_srvHeap->GetGPUDescriptorHandleForHeapStart());
+
+    g_wndProcOrig = reinterpret_cast<WNDPROC>(SetWindowLongPtr(g_hwnd, GWLP_WNDPROC,
+                                              reinterpret_cast<LONG_PTR>(WndProc)));
+    Log("[render] ImGui up: hwnd=%p buffers=%u", g_hwnd, count);
+    return true;
+}
+
+// ---- item icons ------------------------------------------------------------------------------
+// The game ships an icon for each level-editor item (A2/LevelEditor/AutogeneratedIcons); they are embedded
+// in this DLL as PNGs (se_icons_data.h). Loaded ONCE, the first frame after ImGui is up: decoded with WIC,
+// written into small CPU-visible textures (no upload command list needed), one SRV each in the ImGui heap.
+// Fixed cost (~93 x 96x96 RGBA = ~3.4 MB), never reloaded or freed-and-remade, so it cannot creep: the real
+// level editor re-created its icon textures and slowly ate memory; this never allocates after the load.
+std::unordered_map<std::string, unsigned long long> g_iconTex;   // icon name -> ImTextureID (GPU handle)
+std::vector<ID3D12Resource*> g_iconRes;                           // kept for the process lifetime
+bool g_iconsLoaded = false;
+size_t PrivateBytes()
+{
+    PROCESS_MEMORY_COUNTERS_EX pm{};
+    return GetProcessMemoryInfo(GetCurrentProcess(), reinterpret_cast<PROCESS_MEMORY_COUNTERS*>(&pm), sizeof(pm)) ? pm.PrivateUsage : 0;
+}
+void LoadIcons()
+{
+    g_iconsLoaded = true;
+    if (wcsstr(GetCommandLineW(), L"-SENoIcons")) { Log("[icons] off (-SENoIcons)"); return; }   // A/B: memory with/without
+    const size_t memBefore = PrivateBytes();
+    const HRESULT co = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+    IWICImagingFactory* wic = nullptr;
+    if (FAILED(CoCreateInstance(CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&wic))) || !wic)
+    {
+        Log("[icons] WIC unavailable - drawn icons only");
+        if (SUCCEEDED(co)) CoUninitialize();
+        return;
+    }
+    const UINT inc = g_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+    D3D12_CPU_DESCRIPTOR_HANDLE cpu = g_srvHeap->GetCPUDescriptorHandleForHeapStart();
+    D3D12_GPU_DESCRIPTOR_HANDLE gpu = g_srvHeap->GetGPUDescriptorHandleForHeapStart();
+    int loaded = 0;
+    std::vector<unsigned char> px;
+    for (int i = 0; i < se::icons::kCount && i + 1 < 128; ++i)
+    {
+        const auto& e = se::icons::kAll[i];
+        IWICStream* stream = nullptr; IWICBitmapDecoder* dec = nullptr; IWICBitmapFrameDecode* frame = nullptr; IWICFormatConverter* conv = nullptr;
+        UINT w = 0, h = 0;
+        bool ok = SUCCEEDED(wic->CreateStream(&stream)) &&
+                  SUCCEEDED(stream->InitializeFromMemory(const_cast<BYTE*>(e.data), e.size)) &&
+                  SUCCEEDED(wic->CreateDecoderFromStream(stream, nullptr, WICDecodeMetadataCacheOnDemand, &dec)) &&
+                  SUCCEEDED(dec->GetFrame(0, &frame)) && SUCCEEDED(wic->CreateFormatConverter(&conv)) &&
+                  SUCCEEDED(conv->Initialize(frame, GUID_WICPixelFormat32bppRGBA, WICBitmapDitherTypeNone, nullptr, 0.0, WICBitmapPaletteTypeCustom)) &&
+                  SUCCEEDED(conv->GetSize(&w, &h)) && w > 0 && h > 0 && w <= 512 && h <= 512;
+        if (ok)
+        {
+            px.resize(static_cast<size_t>(w) * h * 4);
+            ok = SUCCEEDED(conv->CopyPixels(nullptr, w * 4, static_cast<UINT>(px.size()), px.data()));
+        }
+        if (conv) conv->Release();
+        if (frame) frame->Release();
+        if (dec) dec->Release();
+        if (stream) stream->Release();
+        if (!ok) continue;
+
+        D3D12_HEAP_PROPERTIES hp{};
+        hp.Type = D3D12_HEAP_TYPE_CUSTOM;
+        hp.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
+        hp.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;
+        D3D12_RESOURCE_DESC rd{};
+        rd.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+        rd.Width = w; rd.Height = h; rd.DepthOrArraySize = 1; rd.MipLevels = 1;
+        rd.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+        rd.SampleDesc.Count = 1;
+        rd.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+        ID3D12Resource* tex = nullptr;
+        // COMMON: a texture is promoted implicitly from COMMON to PIXEL_SHADER_RESOURCE when sampled.
+        if (FAILED(g_device->CreateCommittedResource(&hp, D3D12_HEAP_FLAG_NONE, &rd, D3D12_RESOURCE_STATE_COMMON, nullptr, IID_PPV_ARGS(&tex))) || !tex)
+            continue;
+        if (FAILED(tex->Map(0, nullptr, nullptr)) ||
+            FAILED(tex->WriteToSubresource(0, nullptr, px.data(), w * 4, static_cast<UINT>(px.size()))))
+        {
+            tex->Release();
+            continue;
+        }
+        tex->Unmap(0, nullptr);
+        const int slot = 1 + loaded;
+        D3D12_SHADER_RESOURCE_VIEW_DESC sd{};
+        sd.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+        sd.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+        sd.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+        sd.Texture2D.MipLevels = 1;
+        D3D12_CPU_DESCRIPTOR_HANDLE c = cpu; c.ptr += static_cast<SIZE_T>(slot) * inc;
+        D3D12_GPU_DESCRIPTOR_HANDLE g = gpu; g.ptr += static_cast<UINT64>(slot) * inc;
+        g_device->CreateShaderResourceView(tex, &sd, c);
+        g_iconRes.push_back(tex);
+        g_iconTex[e.name] = g.ptr;
+        ++loaded;
+    }
+    wic->Release();
+    if (SUCCEEDED(co)) CoUninitialize();
+    Log("[icons] %d of %d item icon(s) loaded; process private memory +%.1f MB for them (loaded once, never again)", loaded,
+        se::icons::kCount, (static_cast<double>(PrivateBytes()) - static_cast<double>(memBefore)) / (1024.0 * 1024.0));
+}
+
+// ---- synthetic mouse drag (tests) ---------------------------------------------------------------------
+// A scripted drag goes straight into ImGui's input queue, frame by frame: move to the start, press, 30
+// steps to the end, release. It drives exactly the code a real drag does (gizmo hover, grab, drag, release)
+// without the OS cursor or window focus, so it is deterministic on a desktop that is in use.
+struct SynthDrag { bool on = false; int frame = 0; float sx = 0, sy = 0, ex = 0, ey = 0; };
+SynthDrag g_synth;
+std::mutex g_synthMx;
+void SyntheticDragTick()
+{
+    std::lock_guard<std::mutex> lk(g_synthMx);
+    if (!g_synth.on) return;
+    ImGuiIO& io = ImGui::GetIO();
+    const int kSteps = 30, f = g_synth.frame++;
+    if (f <= 2) { io.AddMousePosEvent(g_synth.sx, g_synth.sy); if (f == 2) io.AddMouseButtonEvent(0, true); return; }
+    if (f <= 2 + kSteps)
+    {
+        const float t = static_cast<float>(f - 2) / kSteps;
+        io.AddMousePosEvent(g_synth.sx + (g_synth.ex - g_synth.sx) * t, g_synth.sy + (g_synth.ey - g_synth.sy) * t);
+        io.AddMouseButtonEvent(0, true);
+        return;
+    }
+    io.AddMousePosEvent(g_synth.ex, g_synth.ey);
+    io.AddMouseButtonEvent(0, false);
+    if (f > 2 + kSteps + 3) { g_synth.on = false; Log("[ui] synthetic drag done"); }
+}
+
+
+// The whole editor UI for one frame, fenced: an access violation or C++ exception in any panel is logged and the
+// frame is abandoned (the caller then repairs ImGui's state) instead of killing the game.
+bool SafeDrawEditorUI()
+{
+    static int s_faults = 0;
+    __try { DrawEditorUI(); return true; }
+    __except (EXCEPTION_EXECUTE_HANDLER)
+    {
+        if (s_faults++ < 20) se::Log("[ui] the editor UI faulted (code 0x%08X) -- frame skipped, the game carries on", GetExceptionCode());
+        return false;
+    }
+}
+
+// ---- screenshots (tests / the docs): the frame as presented, editor UI included, read back from the GPU ----
+// Screen grabs of the window fail when it isn't on top (or the desktop is locked); this reads the back buffer
+// itself. RequestScreenshot(path) -> the next presented frame is written as a 24-bit BMP.
+std::mutex g_shotMx;
+std::string g_shotPath;
+bool WriteBmp(const std::string& path, const uint8_t* src, UINT w, UINT h, UINT pitch, DXGI_FORMAT fmt)
+{
+    FILE* f = nullptr;
+    if (fopen_s(&f, path.c_str(), "wb") || !f) return false;
+    const UINT row = (w * 3 + 3) & ~3u;
+    const uint32_t dataSize = row * h, fileSize = 54 + dataSize;
+    uint8_t hdr[54] = { 'B', 'M' };
+    memcpy(hdr + 2, &fileSize, 4); const uint32_t off = 54; memcpy(hdr + 10, &off, 4);
+    const uint32_t ih = 40; memcpy(hdr + 14, &ih, 4);
+    const int32_t iw = static_cast<int32_t>(w), ihh = static_cast<int32_t>(h);
+    memcpy(hdr + 18, &iw, 4); memcpy(hdr + 22, &ihh, 4);
+    const uint16_t planes = 1, bpp = 24; memcpy(hdr + 26, &planes, 2); memcpy(hdr + 28, &bpp, 2);
+    memcpy(hdr + 34, &dataSize, 4);
+    fwrite(hdr, 1, 54, f);
+    std::vector<uint8_t> line(row, 0);
+    for (int y = static_cast<int>(h) - 1; y >= 0; --y)
+    {
+        const uint8_t* p = src + static_cast<size_t>(y) * pitch;
+        for (UINT x = 0; x < w; ++x)
+        {
+            uint8_t r, g, b;
+            if (fmt == DXGI_FORMAT_R10G10B10A2_UNORM)
+            {
+                uint32_t v; memcpy(&v, p + x * 4, 4);
+                r = static_cast<uint8_t>((v & 0x3FF) >> 2); g = static_cast<uint8_t>(((v >> 10) & 0x3FF) >> 2); b = static_cast<uint8_t>(((v >> 20) & 0x3FF) >> 2);
+            }
+            else if (fmt == DXGI_FORMAT_B8G8R8A8_UNORM || fmt == DXGI_FORMAT_B8G8R8A8_UNORM_SRGB)
+            { b = p[x * 4]; g = p[x * 4 + 1]; r = p[x * 4 + 2]; }
+            else { r = p[x * 4]; g = p[x * 4 + 1]; b = p[x * 4 + 2]; }
+            line[x * 3] = b; line[x * 3 + 1] = g; line[x * 3 + 2] = r;
+        }
+        fwrite(line.data(), 1, row, f);
+    }
+    fclose(f);
+    return true;
+}
+// Called with the command list open, the back buffer in RENDER_TARGET state; leaves it in PRESENT. Returns the
+// readback buffer to read after the list has executed (nullptr = no capture).
+ID3D12Resource* ShotRecord(ID3D12Resource* bb, D3D12_PLACED_SUBRESOURCE_FOOTPRINT& fp, UINT& rows, UINT64& total)
+{
+    const D3D12_RESOURCE_DESC d = bb->GetDesc();
+    UINT64 rowBytes = 0;
+    g_device->GetCopyableFootprints(&d, 0, 1, 0, &fp, &rows, &rowBytes, &total);
+    D3D12_HEAP_PROPERTIES hp{}; hp.Type = D3D12_HEAP_TYPE_READBACK;
+    D3D12_RESOURCE_DESC rd{};
+    rd.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER; rd.Width = total; rd.Height = 1; rd.DepthOrArraySize = 1; rd.MipLevels = 1;
+    rd.SampleDesc.Count = 1; rd.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+    ID3D12Resource* rb = nullptr;
+    if (FAILED(g_device->CreateCommittedResource(&hp, D3D12_HEAP_FLAG_NONE, &rd, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(&rb))))
+        return nullptr;
+    D3D12_RESOURCE_BARRIER b{};
+    b.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+    b.Transition.pResource = bb; b.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+    b.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET; b.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_SOURCE;
+    g_cmdList->ResourceBarrier(1, &b);
+    D3D12_TEXTURE_COPY_LOCATION dst{}; dst.pResource = rb; dst.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT; dst.PlacedFootprint = fp;
+    D3D12_TEXTURE_COPY_LOCATION srcl{}; srcl.pResource = bb; srcl.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX; srcl.SubresourceIndex = 0;
+    g_cmdList->CopyTextureRegion(&dst, 0, 0, 0, &srcl, nullptr);
+    b.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_SOURCE; b.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+    g_cmdList->ResourceBarrier(1, &b);
+    return rb;
+}
+
+HRESULT __stdcall Hook_Present(IDXGISwapChain3* sc, UINT interval, UINT flags)
+{
+    se::g_presentCount.fetch_add(1, std::memory_order_relaxed);
+    if (!g_imguiReady)
+    {
+        if (!InitImGui(sc)) return g_presentOrig(sc, interval, flags);
+        g_imguiReady = true;
+        if (!g_iconsLoaded) LoadIcons();          // once: the game's item icons (fixed cost, never reloaded)
+    }
+    if (!g_uiVisible || !g_cmdQueue) return g_presentOrig(sc, interval, flags);
+
+    ImGui_ImplDX12_NewFrame();
+    ImGui_ImplWin32_NewFrame();
+    if (se::g_uiMouseParked) ImGui::GetIO().AddMousePosEvent(-FLT_MAX, -FLT_MAX);   // docs/tests: no hover tooltips
+    SyntheticDragTick();                            // tests: a scripted drag, fed after the real input so it wins
+    ImGui::NewFrame();
+    {
+        // A fault anywhere in the editor UI must not take the game with it: catch it, repair ImGui's stacks
+        // (unclosed windows / popups / IDs) and carry on with the next frame.
+        ImGuiErrorRecoveryState rec;
+        ImGui::ErrorRecoveryStoreState(&rec);
+        if (!SafeDrawEditorUI()) ImGui::ErrorRecoveryTryToRecoverState(&rec);
+    }
+    ImGui::Render();
+
+    // ImGui lays out in the window's client pixels, but the game draws into its back buffer, which Windows
+    // then stretches onto the window. In fullscreen those differ whenever the game's resolution isn't the
+    // window's (or the process is DPI-scaled): the overlay landed in the wrong place -- outlines shifted
+    // toward the top-left, by more the further from the corner. Scale what ImGui drew into back-buffer
+    // pixels so it is stretched along with the game's image.
+    {
+        DXGI_SWAP_CHAIN_DESC scd{};
+        ImDrawData* dd = ImGui::GetDrawData();
+        if (dd && dd->DisplaySize.x > 0 && dd->DisplaySize.y > 0 && SUCCEEDED(sc->GetDesc(&scd)))
+        {
+            const float bw = static_cast<float>(scd.BufferDesc.Width), bh = static_cast<float>(scd.BufferDesc.Height);
+            const float sx = bw / dd->DisplaySize.x, sy = bh / dd->DisplaySize.y;
+            static float s_loggedX = 1.0f, s_loggedY = 1.0f;
+            if (std::fabs(sx - s_loggedX) > 0.001f || std::fabs(sy - s_loggedY) > 0.001f)
+            {
+                Log("[render] overlay %.0fx%.0f vs back buffer %.0fx%.0f: scaling the overlay by %.3f x %.3f",
+                    dd->DisplaySize.x, dd->DisplaySize.y, bw, bh, sx, sy);
+                s_loggedX = sx; s_loggedY = sy;
+            }
+            if (std::fabs(sx - 1.0f) > 0.001f || std::fabs(sy - 1.0f) > 0.001f)
+            {
+                for (int n = 0; n < dd->CmdListsCount; ++n)
+                {
+                    ImDrawList* cl = dd->CmdLists[n];
+                    for (ImDrawVert& v : cl->VtxBuffer) { v.pos.x *= sx; v.pos.y *= sy; }
+                    for (ImDrawCmd& c : cl->CmdBuffer)
+                        c.ClipRect = ImVec4(c.ClipRect.x * sx, c.ClipRect.y * sy, c.ClipRect.z * sx, c.ClipRect.w * sy);
+                }
+                dd->DisplayPos = ImVec2(dd->DisplayPos.x * sx, dd->DisplayPos.y * sy);
+                dd->DisplaySize = ImVec2(bw, bh);
+            }
+        }
+    }
+
+    const UINT idx = sc->GetCurrentBackBufferIndex();
+    if (idx < g_frames.size() && g_frames[idx].allocator && g_frames[idx].backbuffer)
+    {
+        FrameCtx& f = g_frames[idx];
+        D3D12_RESOURCE_BARRIER b{};
+        b.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+        b.Transition.pResource   = f.backbuffer;
+        b.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
+        b.Transition.StateAfter  = D3D12_RESOURCE_STATE_RENDER_TARGET;
+        b.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+
+        f.allocator->Reset();
+        g_cmdList->Reset(f.allocator, nullptr);
+        g_cmdList->ResourceBarrier(1, &b);
+        g_cmdList->OMSetRenderTargets(1, &f.rtv, FALSE, nullptr);
+        g_cmdList->SetDescriptorHeaps(1, &g_srvHeap);
+        std::string shotPath;
+        { std::lock_guard<std::mutex> lk(g_shotMx); shotPath.swap(g_shotPath); }
+        // "clean:<path>": this frame's shot without the editor UI (the scene as players see it)
+        const bool clean = shotPath.rfind("clean:", 0) == 0;
+        if (clean) shotPath.erase(0, 6);
+        if (!clean) ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), g_cmdList);
+        D3D12_PLACED_SUBRESOURCE_FOOTPRINT fp{}; UINT rows = 0; UINT64 total = 0;
+        ID3D12Resource* rb = shotPath.empty() ? nullptr : ShotRecord(f.backbuffer, fp, rows, total);
+        if (!rb)
+        {
+            b.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+            b.Transition.StateAfter  = D3D12_RESOURCE_STATE_PRESENT;
+            g_cmdList->ResourceBarrier(1, &b);
+        }
+        g_cmdList->Close();
+        ID3D12CommandList* lists[] = { g_cmdList };
+        g_cmdQueue->ExecuteCommandLists(1, lists);
+        if (rb)
+        {
+            // wait for this one list (a single stall, only when a screenshot was asked for), then write the file
+            ID3D12Fence* fence = nullptr;
+            if (SUCCEEDED(g_device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence))))
+            {
+                HANDLE ev = CreateEventW(nullptr, FALSE, FALSE, nullptr);
+                g_cmdQueue->Signal(fence, 1);
+                fence->SetEventOnCompletion(1, ev);
+                WaitForSingleObject(ev, 2000);
+                CloseHandle(ev);
+                fence->Release();
+            }
+            void* data = nullptr;
+            D3D12_RANGE rr{ 0, static_cast<SIZE_T>(total) };
+            const D3D12_RESOURCE_DESC d = f.backbuffer->GetDesc();
+            bool ok = false;
+            if (SUCCEEDED(rb->Map(0, &rr, &data)) && data)
+            {
+                ok = WriteBmp(shotPath, static_cast<const uint8_t*>(data) + fp.Offset, static_cast<UINT>(d.Width), d.Height, fp.Footprint.RowPitch, d.Format);
+                D3D12_RANGE none{ 0, 0 };
+                rb->Unmap(0, &none);
+            }
+            rb->Release();
+            se::Log("[shot] %s %s (%llux%u, format %d)", ok ? "saved" : "FAILED", shotPath.c_str(), d.Width, d.Height, (int)d.Format);
+        }
+    }
+    return g_presentOrig(sc, interval, flags);
+}
+
+// Build a throwaway device + swapchain purely to read the vtable layout. Nothing the game owns is
+// touched; the objects are released immediately.
+void* g_resizeSlot = nullptr;
+void* g_resize1Slot = nullptr;
+bool GrabVTables(void** presentSlot, void** execSlot)
+{
+    WNDCLASSEXW wc{ sizeof(wc) };
+    wc.lpfnWndProc = DefWindowProcW;
+    wc.hInstance = GetModuleHandleW(nullptr);
+    wc.lpszClassName = L"SpecEditorProbe";
+    RegisterClassExW(&wc);
+    HWND wnd = CreateWindowW(wc.lpszClassName, L"", WS_OVERLAPPEDWINDOW, 0, 0, 8, 8, nullptr, nullptr,
+                             wc.hInstance, nullptr);
+    if (!wnd) { UnregisterClassW(wc.lpszClassName, wc.hInstance); return false; }
+
+    ID3D12Device* dev = nullptr;
+    IDXGIFactory4* factory = nullptr;
+    ID3D12CommandQueue* queue = nullptr;
+    IDXGISwapChain1* sc1 = nullptr;
+    bool ok = false;
+
+    if (SUCCEEDED(D3D12CreateDevice(nullptr, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&dev))) &&
+        SUCCEEDED(CreateDXGIFactory1(IID_PPV_ARGS(&factory))))
+    {
+        D3D12_COMMAND_QUEUE_DESC qd{};
+        qd.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
+        if (SUCCEEDED(dev->CreateCommandQueue(&qd, IID_PPV_ARGS(&queue))))
+        {
+            DXGI_SWAP_CHAIN_DESC1 sd{};
+            sd.BufferCount = 2;
+            sd.Width = sd.Height = 8;
+            sd.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+            sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+            sd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+            sd.SampleDesc.Count = 1;
+            if (SUCCEEDED(factory->CreateSwapChainForHwnd(queue, wnd, &sd, nullptr, nullptr, &sc1)))
+            {
+                *presentSlot = (*reinterpret_cast<void***>(sc1))[8];    // IDXGISwapChain::Present
+                g_resizeSlot = (*reinterpret_cast<void***>(sc1))[13];   // IDXGISwapChain::ResizeBuffers
+                IDXGISwapChain3* sc3 = nullptr;
+                if (SUCCEEDED(sc1->QueryInterface(IID_PPV_ARGS(&sc3))) && sc3)
+                {
+                    g_resize1Slot = (*reinterpret_cast<void***>(sc3))[39];  // IDXGISwapChain3::ResizeBuffers1
+                    sc3->Release();
+                }
+                *execSlot    = (*reinterpret_cast<void***>(queue))[10]; // ExecuteCommandLists
+                ok = true;
+            }
+        }
+    }
+    if (sc1) sc1->Release();
+    if (queue) queue->Release();
+    if (factory) factory->Release();
+    if (dev) dev->Release();
+    DestroyWindow(wnd);
+    UnregisterClassW(wc.lpszClassName, wc.hInstance);
+    return ok;
+}
+
+}  // namespace
+
+bool InstallRenderHook()
+{
+    void* present = nullptr;
+    void* exec = nullptr;
+    if (!GrabVTables(&present, &exec)) { Log("[render] could not read D3D12 vtables"); return false; }
+
+    if (MH_Initialize() != MH_OK && MH_Initialize() != MH_ERROR_ALREADY_INITIALIZED) return false;
+    if (MH_CreateHook(present, &Hook_Present, reinterpret_cast<void**>(&g_presentOrig)) != MH_OK ||
+        MH_EnableHook(present) != MH_OK) { Log("[render] Present hook failed"); return false; }
+    if (MH_CreateHook(exec, &Hook_ExecuteCommandLists, reinterpret_cast<void**>(&g_execOrig)) != MH_OK ||
+        MH_EnableHook(exec) != MH_OK) { Log("[render] ExecuteCommandLists hook failed"); return false; }
+
+    if (g_resizeSlot && MH_CreateHook(g_resizeSlot, &Hook_ResizeBuffers, reinterpret_cast<void**>(&g_resizeOrig)) == MH_OK)
+        MH_EnableHook(g_resizeSlot);
+    else Log("[render] ResizeBuffers hook failed -- resizing the window may crash");
+    if (g_resize1Slot && MH_CreateHook(g_resize1Slot, &Hook_ResizeBuffers1, reinterpret_cast<void**>(&g_resize1Orig)) == MH_OK)
+        MH_EnableHook(g_resize1Slot);
+    Log("[render] hooks installed (Present=%p ExecuteCommandLists=%p ResizeBuffers=%p ResizeBuffers1=%p)", present, exec,
+        g_resizeSlot, g_resize1Slot);
+
+    // Cursor ownership (see EditorOwnsInput). Failing any of these only costs cursor behaviour, not the UI.
+    HMODULE u32 = GetModuleHandleW(L"user32.dll");
+    struct { const char* name; void* hook; void** orig; } cur[] = {
+        { "ClipCursor",   reinterpret_cast<void*>(&Hook_ClipCursor),   reinterpret_cast<void**>(&g_clipOrig) },
+        { "SetCursorPos", reinterpret_cast<void*>(&Hook_SetCursorPos), reinterpret_cast<void**>(&g_setPosOrig) },
+        { "ShowCursor",   reinterpret_cast<void*>(&Hook_ShowCursor),   reinterpret_cast<void**>(&g_showOrig) },
+        { "SetCursor",    reinterpret_cast<void*>(&Hook_SetCursor),    reinterpret_cast<void**>(&g_setCurOrig) },
+    };
+    int ok = 0;
+    for (auto& h : cur)
+    {
+        void* target = u32 ? reinterpret_cast<void*>(GetProcAddress(u32, h.name)) : nullptr;
+        if (target && MH_CreateHook(target, h.hook, h.orig) == MH_OK && MH_EnableHook(target) == MH_OK) ++ok;
+        else Log("[render] cursor hook %s failed", h.name);
+    }
+    Log("[render] cursor ownership hooks: %d/4 (RMB hands the mouse to the game)", ok);
+    return true;
+}
+
+}  // namespace se
+
+// Item name ("LE_SM_Foo_C", "LE_BP_Bar", a sandbox id like "LargeBoostPickup") -> the game's icon for it.
+// Cached per name, misses included: drawing an icon never builds a string or allocates after the first ask.
+unsigned long long se::IconTexture(const std::string& itemName)
+{
+    if (!g_iconsLoaded || g_iconTex.empty()) return 0;
+    static std::unordered_map<std::string, unsigned long long> s_cache;
+    auto c = s_cache.find(itemName);
+    if (c != s_cache.end()) return c->second;
+    std::string n = itemName;
+    if (n.size() > 2 && n.compare(n.size() - 2, 2, "_C") == 0) n.resize(n.size() - 2);
+    unsigned long long tex = 0;
+    if (auto it = g_iconTex.find(n); it != g_iconTex.end()) tex = it->second;
+    else if (n.rfind("LE_", 0) == 0) { if (auto it2 = g_iconTex.find("aa_se_" + n.substr(3)); it2 != g_iconTex.end()) tex = it2->second; }
+    else if (auto it3 = g_iconTex.find("aa_se_" + n); it3 != g_iconTex.end()) tex = it3->second;
+    if (s_cache.size() < 4096) s_cache[itemName] = tex;
+    return tex;
+}
+
+std::atomic<bool> se::g_uiMouseParked{ false };
+void se::RequestScreenshot(const std::string& path) { std::lock_guard<std::mutex> lk(g_shotMx); g_shotPath = path; }
+void se::StartSyntheticDrag(int sx, int sy, int ex, int ey)
+{
+    POINT a{ sx, sy }, b{ ex, ey };
+    if (g_hwnd) { ScreenToClient(g_hwnd, &a); ScreenToClient(g_hwnd, &b); }   // ImGui works in client pixels
+    std::lock_guard<std::mutex> lk(g_synthMx);
+    g_synth = { true, 0, static_cast<float>(a.x), static_cast<float>(a.y), static_cast<float>(b.x), static_cast<float>(b.y) };
+}
