@@ -110,6 +110,9 @@ type RegisterServerRequest struct {
 	Region       *string `json:"region"`
 	ImguiPort    *string `json:"imgui_port"`
 	MaxPlayers   int     `json:"max_players"`
+	// Solara: the game build the server reports (the DLL's kBuildVersion; 50451 sends its NetCL "50450").
+	// Optional; when absent the deployment keeps the fixed a2BuildVersion as before.
+	Version *string `json:"version"`
 }
 
 func NewRegisterServerRequest() *RegisterServerRequest { return &RegisterServerRequest{} }

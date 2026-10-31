@@ -218,6 +218,9 @@ func (s *A2StationDbServer) RegisterServer(c *hosting.Context) hosting.Result {
 	depRow.IpAddress = a2Str(ip + ":" + port)
 	depRow.Region = a2Str(region)
 	depRow.Version = a2Str(a2BuildVersion)
+	if !a2IsNullOrWhiteSpace(body.Version) {
+		depRow.Version = body.Version // Solara: the build the server reports (50451 browsers filter on it)
+	}
 	depRow.CreatedAt = createdAt
 	depRow.Online = true
 	depRow.PlayerCount = 0
@@ -243,6 +246,9 @@ func (s *A2StationDbServer) RegisterServer(c *hosting.Context) hosting.Result {
 	sess.Port = port
 	sess.MaxPlayers = maxPlayers
 	sess.Bucket = a2BuildVersion
+	if !a2IsNullOrWhiteSpace(body.Version) {
+		sess.Bucket = *body.Version // Solara: advertise the build the server reports
+	}
 	sess.BuildId = a2BuildIdNum
 	sess.ImguiPort = a2Deref(body.ImguiPort)
 	sess.StationId = a2Str(stationId)

@@ -309,7 +309,8 @@ func a2ServerLoginResponse(apiKey, userId string) *models.LogInServerResponse {
 
 // LogInWithKeyV1 handles POST /v1/users/log_in_with_key (alias of the v0 route).
 func (s *A2StationDbServer) LogInWithKeyV1(c *hosting.Context) hosting.Result {
-	return s.LogInWithKey(c)
+	// Solara: 50451 parses FLoginServerResponse (permissions keyed by fleet_id, plus bans).
+	return v1LoginFrom(s.LogInWithKey(c))
 }
 
 // a2UpsertLoginUser is the user upsert shared verbatim by the v0 and v2
