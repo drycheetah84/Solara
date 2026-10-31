@@ -2902,8 +2902,10 @@ void ScriptOp(const Snapshot& snap, const std::string& line)
                 // [50451] ATicketManager: SlotID FString @0x340, ModuleSlot @0x350, TicketHolders @0x390, VerifiedTicketHolders @0x3A0
                 auto* slot = *reinterpret_cast<SDK::UObject**>(b + 0x350);
                 const auto* sid = reinterpret_cast<const SDK::FString*>(b + 0x340);
-                Log("[tms] %s slotID='%s' slot=%s holders=%d verified=%d", o->GetName().c_str(), sid->IsValid() ? sid->ToString().c_str() : "",
-                    slot ? slot->GetName().c_str() : "NULL", *reinterpret_cast<int32_t*>(b + 0x398), *reinterpret_cast<int32_t*>(b + 0x3A8));
+                // bUseTeam0Whitelist @0x303, bUseTeam1Whitelist @0x304, WhitelistStrings TArray @0x308 (Num @0x310)
+                Log("[tms] %s slotID='%s' slot=%s holders=%d verified=%d wl0=%d wl1=%d wlStrings=%d", o->GetName().c_str(), sid->IsValid() ? sid->ToString().c_str() : "",
+                    slot ? slot->GetName().c_str() : "NULL", *reinterpret_cast<int32_t*>(b + 0x398), *reinterpret_cast<int32_t*>(b + 0x3A8),
+                    (int)*reinterpret_cast<uint8_t*>(b + 0x303), (int)*reinterpret_cast<uint8_t*>(b + 0x304), *reinterpret_cast<int32_t*>(b + 0x310));
             }
             else if (msc && o->IsA(msc) && o->Class->GetName().find("ImportanceVolume") != std::string::npos)
                 Log("[tms] slot %s tm=%p", o->GetName().c_str(), *reinterpret_cast<void**>(b + 0x488));
