@@ -119,4 +119,5 @@ func (s *MothershipServer) register() {
 	h.Handle("GET", "/v1/env/automation", "AutomationGetEnvironments", s.AutomationGetEnvironments)
 	h.Handle("POST", "/v1/deployment/automation", "AutomationCreateDeployment", s.AutomationCreateDeployment)
 	h.Handle("GET", "/v1/deployment/automation", "AutomationGetDeployments", s.AutomationGetDeployments)
+	registerStatic(h) // static.aa-mothership.com objects (not in the original route table)
 }

@@ -1,0 +1,313 @@
+﻿TERMS OF SERVICE
+Effective Date: March 2, 2026
+
+
+Another Axiom Inc., a Delaware corporation (“Another Axiom”, “we,” “us,” “our,” and their derivatives) provides Gorilla Tag®, Orion Drift™, and other video games, including any playtest programs and mobile applications (“Apps”) including any mobile and/or application based versions of our video games (all collectively, our “Games”), websites, including https://www.gorillatagvr.com/ and https://www.anotheraxiom.com/ and their respective subdomains (collectively, our “Websites”), and other online services (with our Games, Apps, and Websites, collectively our “Services”).
+
+
+THESE TERMS OF SERVICE (THESE “TERMS”) CONTAIN VERY IMPORTANT INFORMATION REGARDING YOUR RIGHTS AND OBLIGATIONS, AS WELL AS CONDITIONS, LIMITATIONS, AND EXCLUSIONS THAT APPLY TO YOU. PLEASE READ THEM CAREFULLY BECAUSE THEY GOVERN YOUR USE OF OUR SERVICES. 
+
+
+ARBITRATION NOTICE: UNLESS YOU OPT-OUT OF ARBITRATION WITHIN 30 DAYS OF THE DATE YOU FIRST AGREE TO THESE TERMS BY FOLLOWING THE OPT-OUT PROCEDURE SPECIFIED IN SECTION 20 (ARBITRATION AGREEMENT), AND EXCEPT FOR CERTAIN TYPES OF DISPUTES DESCRIBED IN THAT SECTION, YOU AGREE THAT DISPUTES BETWEEN YOU AND ANOTHER AXIOM WILL BE RESOLVED BY BINDING, INDIVIDUAL ARBITRATION, AND YOU ARE WAIVING YOUR RIGHT TO A TRIAL BY JURY OR TO PARTICIPATE AS A PLAINTIFF OR CLASS MEMBER IN ANY PURPORTED CLASS ACTION OR REPRESENTATIVE PROCEEDING.
+
+
+1. Agreement to Terms, Privacy Policy, and Fan Content & Mod Policy
+
+
+By using any of our Services, you agree to be bound by these Terms, our Fan Content & Mod Policy (the “Fan Content & Mod Policy”), and our Privacy Policy (the “Privacy Policy”). Our Privacy Policy and Fan Content & Mod Policy are each incorporated by reference into these Terms. 
+
+
+IF YOU DO NOT AGREE TO BE BOUND BY THESE TERMS, OUR FAN CONTENT & MOD POLICY, OR OUR PRIVACY POLICY, DO NOT USE ANY OF OUR SERVICES.
+ 
+To accept these Terms, you must be at least 18 years of age or have reached the legal age of majority in the country in which your Account (defined below) is registered.
+
+
+If you are younger than 18 years of age, or have not yet reached the legal age of majority in the country in which your Account is registered, your parent or legal guardian must create an Account for you and agree to these Terms in order for you to use our Services. Before you begin to use any of our Services, you agree to ask your parent or legal guardian to explain these Terms to you. 
+
+
+If you are accepting these Terms on behalf of your child under the age of 18, or age of majority in the country in which your child’s Account is registered, you also (a) represent that you are the parent or legal guardian of your child; (b) affirm that you accept these Terms, our Fan Content & Mod Policy, and our Privacy Policy on behalf of your child; and (c) accept all liability for your child’s actions and compliance with these Terms, our Fan Content & Mod Policy, and our Privacy Policy.
+
+
+2. Privacy Policy
+
+
+All personal information we collect through our Services is subject to our Privacy Policy. Please let us know if you have any questions about our practices concerning the collection and processing of your personal information.
+
+
+3. Account Requirements 
+
+
+If you want to use our Games, you must have a valid PlayStation®, Quest®, or Steam® account, as applicable (collectively, “Accounts,” and each, an “Account”). We do not administer Accounts, rather, they are administered by Sony®, Meta®, or Valve®, respectively. Each Account is subject to the relevant third party’s terms and conditions, and you agree to abide by those terms while using any of our Games. You are responsible for all activities that occur under any Account associated with you, whether or not you know about them. We will not be liable for any loss that you may incur as a result of someone else’s authorized or unauthorized access to your Account. You may be liable, however, for losses incurred by Another Axiom or third parties due to someone else’s use of your Account. Later versions of our Games may require that you establish a different account with us, and additional terms and restrictions will then apply.
+
+
+4. Children
+
+
+In accordance with the policies of Meta, Gorilla Tag is available to Quest Pro, Quest 2, Quest 3, and next-gen headset users at least 10 years of age who access Gorilla Tag using a Parent-Managed Account, and Quest 1 and Rift® users at least 13 years of age. In accordance with the policies of Valve, Gorilla Tag is available to Steam users at least 13 years of age. In accordance with the policies of Sony, Gorilla Tag is available to PlayStation users under 13 years of age only if parental consent has been provided to Sony. 
+
+
+Orion Drift is only available to Meta users at least 13 years of age.
+
+
+If we are notified that you are an underage user of our Games, or access Gorilla Tag without using a Parent-Managed Account as required by Meta or without parental consent as required by Sony, your Account may at the request of Meta, Sony, Valve, Steam or another platform provider be banned. 
+
+
+5. Intellectual Property Rights
+
+
+All aspects of our Services, including, without limitation, any works of authorship (e.g., any trailers, images, sounds, etc.), trademarks, features, or functionality, and other intellectual property contained in, comprising, or underlying our Services, are owned by Another Axiom, its licensors, or other providers of such material and are protected by United States and international copyright, trademark, patent, trade secret, and other intellectual property or proprietary rights laws.
+
+
+©2021 Another Axiom Inc., Another Axiom®, Gorilla Tag®, Orion Drift™, and all related names, logos, product and service names, designs, and slogans are trademarks of Another Axiom or its affiliates or licensors. You must not use such marks without our prior written permission, and we reserve all rights. All other names, logos, product and service names, designs, and slogans on our Services are the trademarks of their respective owners.
+
+
+6. Limited License to Use our Services
+
+
+These Terms permit you to use our Services and view and use the content contained in our Services for your personal, non-commercial use only. As to our Games, the license contemplated by this Section 6 (Limited License to Use our Services) gives you a personal, non-exclusive, non-transferable, revocable, non-sublicensable, and limited license to use one copy of each of our Games for your personal, non-commercial use. For clarity, the foregoing license is only granted to those people that have purchased from or otherwise been given access to our Games by us or one of our third party publishers. Except as may be permitted pursuant to our Fan Content & Mod Policy, you must not reproduce, distribute, modify, create derivative works of, publicly display, publicly perform, republish, download, store, or transmit any of the material included in our Services. You must not access or use for any commercial purposes any part of our Services or materials available through them. No right, title, or interest in or to our Services or any content thereof is transferred to you, and all rights not expressly granted are reserved by Another Axiom. Any use of our Services not expressly permitted by these Terms is a breach of these Terms and may violate copyright, trademark, and other laws.
+
+
+7. Feedback
+
+
+You may elect to informally provide us with Feedback from time to time. You agree that Another Axiom will own, and you hereby assign to Another Axiom your intellectual property rights in and to any and all Feedback and that Another Axiom will be free to use, disclose, reproduce, license, distribute, and exploit the Feedback provided by you, royalty-free and entirely without obligation or restriction of any kind on account of intellectual property rights or otherwise. “Feedback” means any feedback or ideas you provide to us regarding our Services or any suggested improvements.
+
+
+8. Prohibited Uses
+
+
+You may use our Services only for lawful purposes and in accordance with these Terms. You agree not to:
+
+
+1. disable, overburden, damage, or impair (or attempt to disable, overburden, damage, or impair) our Services or interfere with anyone else’s use of our Services;
+2. exploit, harm, threaten, or harass anyone, or engage in any other conduct that affects anyone else’s use or enjoyment of our Services or may harm Another Axiom, as determined by us;
+3. engage in any activity that may result in injury, death, property damage, nuisance, or liability of any kind; 
+4. cheat, including, without limitation, by accessing any of our Games in an unauthorized manner, playing with multiple accounts, sharing accounts, changing your age in any Game, using any techniques to alter or falsify a device’s location (for example, through GPS spoofing), or selling or trading accounts;
+5. use our Services, or any portion thereof, to send advertising or promotional material or for any commercial purpose, for the benefit of any third party, or in any manner not permitted by these Terms;
+6. use our Services to submit or link to any content which is defamatory, abusive, hateful, threatening, spam or spam-like, likely to offend, contains adult or objectionable content, contains personal information of others, risks copyright infringement, encourages unlawful activity, or otherwise violates any laws;
+7. impersonate or attempt to impersonate Another Axiom or anyone else; 
+8. use our Services in any way that violates applicable laws, or use our Services to violate the legal rights of others, including, without limitation, their privacy, publicity, and intellectual property rights;
+9. collect or store any personal information from our Services from other users of our Services, without their express permission;
+10. remove any copyright, trademark, or other proprietary rights notices contained in or on our Services;
+11. use, display, mirror, or frame our Services or any individual element within our Services, Another Axiom’s name, any Another Axiom trademark, logo, or other proprietary information, or the layout and design of any page or form contained on a page, without Another Axiom’s express written consent;
+12. use any robot, spider, or other automatic or manual device, process, or means to access our Services for any purpose, including monitoring or copying any of the material on our Services;
+13. modify, adapt, translate, or reverse engineer any portion of our Services, or use any manual process to monitor or copy any of the material on our Services for any unauthorized purpose;
+14. use any device, software, or routine that interferes with the proper working of our Services;
+15. introduce any viruses, Trojan horses, worms, logic bombs, or other material that is malicious or technologically harmful;
+16. attempt to gain unauthorized access to, interfere with, damage, or disrupt any parts of our Services, including any server on which our Services are stored, or any server, computer, or database connected to our Services;
+17. attack our Services via a denial-of-service attack or a distributed denial-of-service attack;
+18. otherwise attempt to interfere with the proper working of our Services; and
+19. encourage or enable any other person to do any of the foregoing.
+
+
+Although Another Axiom is not obligated to monitor access to or use of our Services, we have the right to do so for the purpose of operating and updating our Services, to ensure compliance with these Terms, and to comply with applicable law or other legal requirements. We reserve the right, but are not obligated, to remove, disable, or suspend your or any user’s access to any of our Services, at any time and without notice, including, without limitation, if we, at our sole discretion, consider any activity when using our Services to be objectionable or in violation of these Terms. If you are removed, disabled, or suspended from accessing our Games, you are not eligible for any refunds associated with that Game, including any in-game purchases. We have the right to investigate violations of these Terms or conduct that affects our Services, including consulting and cooperating with law enforcement authorities to prosecute users who violate the law.
+
+
+To ensure that our Services are a safe and welcoming space for all users, you agree to report to us any users that you believe are violating any of the foregoing prohibitions by completing a support ticket at https://support.gorillatagvr.com/ or emailing us at support@anotheraxiom.com.
+
+
+9. Health and Safety Precautions for our Games 
+
+
+While you are using our Games, please be aware of your surroundings and play and communicate safely.
+The below should be reviewed before use of our Games. Failing to review the below health and safety precautions may cause damage to property, injury, or death. These health and safety precautions are not intended to be an exhaustive list, and use of our Games may involve other health and safety risks not contained below. 
+
+
+ANOTHER AXIOM IS NOT LIABLE FOR ANY DAMAGE TO PROPERTY, INJURY, OR DEATH THAT MAY OCCUR AS THE RESULT OF YOUR FAILURE TO REVIEW THE HEALTH AND SAFETY PRECAUTIONS OR AS A RESULT OF THE INTERACTIONS BETWEEN YOU OR YOUR FAMILY MEMBERS AND PEOPLE OR OBJECTS IN OR AROUND THE PLAY AREA DURING YOUR USE OF OUR GAMES.
+
+
+1. Epileptic Seizure Warning. Please note that certain people are susceptible to epileptic seizures or loss of consciousness when exposed to certain flashing lights or light patterns, even if they have never experienced epileptic symptoms or been previously diagnosed with epilepsy. Such people may have a seizure while watching certain images on screens, including virtual reality headsets, or playing certain video games, including our Games. If you or anyone in your family has ever had symptoms related to epilepsy (seizures or loss of consciousness in particular) when exposed to flashing lights, you should consult your doctor prior to playing our Games. Stop playing our Games and consult a doctor if you have any of the following symptoms: convulsions; eye or muscle twitching; loss of consciousness or awareness; altered vision, involuntary movements, or disorientation. Another Axiom is not liable for any death, injury, or health complications resulting from any epileptic symptoms or conditions which may occur during or as a result of your use of our Games. To reduce the likelihood of a seizure or epileptic symptoms do not play our Games when tired or need sleep, and take 10- or 15-minute breaks every 30 minutes while playing our Games.
+
+
+2. Motion Sickness. Playing video games (especially virtual reality games), including our Games, may cause motion sickness in some users. If you feel dizzy or nauseous when playing our Games, stop playing and rest. Do not drive, operate heavy machinery, or engage in other demanding or strenuous activities until you feel better. To limit the risk of motion sickness while playing our Games, do not use our Games when you are tired, need sleep, are under the influence of alcohol or drugs, are hung-over, have digestive problems, are under emotional stress or anxiety, or when suffering from cold, flu, headaches, migraines, earaches, or other health issues which may increase your susceptibility to adverse symptoms.
+
+
+3. Repetitive Motion Injuries and Eyestrain. Playing video games, including our Games, can make your muscles, joints, skin, or eyes hurt. To avoid problems such as tendinitis, carpal tunnel syndrome, skin irritation, or eyestrain: avoid excessive play; take a 10- to 15-minute break every 30 minutes while playing our Games; if your hands, wrists, arms, eyes, or other parts of your body become tired or sore while playing, or if you feel symptoms such as tingling, numbness, burning, or stiffness, stop and rest for several hours before playing again; and if you continue to have any of the above symptoms or other discomfort during or after playing our Games, stop playing and consult a doctor.
+
+
+4. Play Area Precautions. Give yourself plenty of room to play our Games. Always be aware of your surroundings when playing our Games. While playing our Games in virtual reality you will be moving around the play area and using your hands to control gameplay. Make sure the play area is clear of furniture, objects, and other people that could be bumped into during gameplay. Please ensure that you are not near other people, stairs, balconies, windows, walls, furniture, or other objects that may pose a danger to you or could be damaged or injured during or immediately after using our Games. All objects that may pose tripping hazards, could cause injury, or could be damaged as the result of your contact with them while playing our Games should be removed from the play area prior to you playing our Games. A minimum six-feet-by-six-feet unobstructed play area is recommended for safe enjoyment of our Games. Never handle sharp or dangerous objects while playing our Games. Due to the immersive nature of our Games, sound volumes should be kept at low enough levels so that you are able to maintain awareness of your surroundings while playing our Games and so as not to damage your hearing. You should not use our Games if your awareness of your surroundings is impaired by lack of sleep, drugs, alcohol, the effects of a hangover, stress, anxiety, or when suffering from a cold, flu, headaches, migraines, or other illnesses.
+
+
+10. Limited License to Broadcast Gameplay
+
+
+We believe that our Games are best served by an active and excited community of users. To encourage community growth and development, we hereby grant each valid user of our Games (“Broadcasting User”) a personal, non-exclusive, non-transferable, revocable, and limited license to broadcast such Broadcasting User’s unique gameplay (“Broadcasted Content”), but only through third party media that is, at the time of broadcast, currently approved by Another Axiom (“Approved Broadcaster(s)”). In furtherance of your exercise of the foregoing limited license, you may assume that other users who participate in gameplay with you have given you non-exclusive performance rights for their parts in your Broadcasted Content, unless or until you have notice that they revoke permission in accordance with the provisions outlined below. To the extent a user revokes permission, our license with respect to Broadcasted Content, including that user, is revoked.
+
+
+The above limited license is subject to the additional conditions:
+
+
+1. a Broadcasting User may only broadcast their own gameplay;
+2. all Broadcasted Content must otherwise comply with these Terms, our Fan Content & Mod Policy, and our Privacy Policy;
+3. Broadcasting Users assume all liability for ensuring their Broadcasted Content, and any monetization of Broadcasted Content, fully complies with all applicable laws, as well as the Approved Broadcaster(s)’ applicable terms of service, policies, rules, and guidelines; and
+4. Another Axiom may revoke a Broadcasting User’s license to broadcast for any or no reason and without notice.
+
+
+Any user may revoke their permission to be included in Broadcasted Content by providing written notice to the applicable Broadcasting User of their decision to revoke (“Revocation Notice”). Without any obligation to do so, Another Axiom may also provide Revocation Notices, on a case-by-case basis, on behalf of users. Upon receipt of a Revocation Notice, the Broadcasting User must promptly remove the Broadcasted Content or otherwise modify the Broadcasted Content to remove the user who revoked. Another Axiom does not assume any responsibility for ensuring compliance with the foregoing.
+
+
+Below is an exclusive list of currently Approved Broadcasters. Users may only use Broadcasted Content through currently Approved Broadcasters. We do not claim any affiliation with the Approved Broadcasters, and we do not make any representations as to the quality or functionality of the Approved Broadcasters’ services.
+
+
+1. Twitch Interactive, Inc.
+2. YouTube, LLC
+3. Meta Platforms, Inc.
+4. Twitter Inc.
+5. reddit Inc.
+6. Discord, Inc.
+
+
+We reserve the right to add or remove Approved Broadcasters as we see fit. If you would like to request that a broadcaster be added to the list above, feel free to contact us by completing a support ticket at https://support.gorillatagvr.com/ or emailing us at support@anotheraxiom.com. 
+
+
+11. Playtests
+
+
+Another Axiom may, in its sole discretion, ask you to participate in a playtest to help test and improve our Games (each, a “Playtest Program”). If you do not enter into a separate written agreement with Another Axiom regarding your participation in that Playtest Program, you agree this Section 11 (Playtests) will govern your participation in that Playtest Program.
+
+
+As consideration for your full participation in a Playtest Program and compliance with your obligations below, Another Axiom will provide you with an in-game reward, as determined by Another Axiom.
+
+
+As a participant in the Playtest Program, you may be exposed to confidential, pre-release materials and information about our Games. You may not share, copy, disclose, distribute, stream, publish, transmit, post, or otherwise make available to a third party, directly or indirectly, any non-public information that (a) we disclose to you, (b) you may disclose to us, or (c) you may otherwise learn as the result of your participation in the Playtest Program.
+
+
+You may be asked to provide us with Feedback based on your play experiences and agree that we will own, and you hereby assign to us, any and all Feedback that you may provide to us.
+
+
+As long as you are participating in the Playtest Program, we grant you a personal, non-exclusive, non-transferable, revocable, and limited license to use our Games and any other documents, information, materials, or communications relating to our Games, solely for the purposes of participating in the Playtest Program and providing Feedback to us about your experience with our Games. Use of our Games or confidential information regarding the Playtest Program in any manner not expressly permitted in these Terms is strictly prohibited.
+
+
+We reserve the right, but are not obligated, to remove, disable, or suspend your participation in the Playtest Program at any time, without notice, and for any reason or no reason. We reserve the right to withdraw or change the Playtest Program, in our sole discretion and without notice. We will not be liable to you if for any reason all or any part of the Playtest Program is unavailable at any time or for any period.
+We retain ownership and other applicable rights in the Playtest Program, which are protected by United States and international copyright, trademark, patent, trade secret, and other intellectual property or proprietary rights laws.
+
+
+12. Changes to our Services 
+
+
+We reserve the right to withdraw, modify, suspend, or discontinue any of our Services in our sole discretion and without notice. Our Services are not necessarily always complete or up-to-date, and we are under no obligation to update them. We will not be liable if for any reason all or any part of our Services is unavailable at any time or for any period.
+
+
+We may, from time to time, provide enhancements or improvements to the features or functionality of our Games, which may include patches, bug fixes, updates, upgrades, and other modifications. Updates may modify or delete certain features or functionalities of our Games. You agree that we have no obligation to provide any updates or continue to provide or enable any particular features or functionalities of our Games.
+
+
+13. Reliance on Information Made Available Through our Services
+
+
+We do not warrant the accuracy, completeness, or usefulness of any information made available through our Services. Any reliance you place on such information is strictly at your own risk. We disclaim all liability and responsibility arising from any reliance placed on such information by you or any other user of our Services, or by anyone who may be informed of any information made available through our Services.
+
+
+14. Third Party Content 
+
+
+Our Services may display, include, or make available third party content (including data, information, links, applications, and other products or services). This third party content is provided for your convenience only. We have no control over third party content and accept no responsibility for third party content or for any loss or damage that may arise from your use of such third party content. 
+
+
+15. Link to our Websites 
+
+
+You may link to our Websites, provided you do so in a way that is fair and legal and does not damage our reputation or take advantage of it, but you must not link in such a way as to suggest any form of association, approval, or endorsement on our part.
+
+
+16. Termination
+
+
+We may terminate your access to and use of our Services, at our sole discretion, at any time and without notice to you. Upon termination, all provisions regarding Another Axiom’s limitation of liability and Sections 5 (Intellectual Property Rights), 7 (Feedback), 17 (Disclaimer of Warranties), 18 (Limitation of Liability), 19 (Indemnification), 20 (Arbitration Agreement), 21 (Waiver and Severability), and 22 (Entire Agreement) will survive such termination.
+
+
+17. DISCLAIMER OF WARRANTIES
+
+
+YOU EXPRESSLY AGREE THAT YOUR USE OF OUR SERVICES IS AT YOUR SOLE RISK. OUR SERVICES AND ALL INFORMATION, CONTENT, MATERIALS, AND PRODUCTS (INCLUDING OUR GAMES AND OTHER SOFTWARE) INCLUDED IN OR OTHERWISE MADE AVAILABLE TO YOU THROUGH OUR SERVICES ARE PROVIDED BY ANOTHER AXIOM ON AN “AS-IS” AND “AS-AVAILABLE” BASIS. TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, ANOTHER AXIOM DISCLAIMS ALL WARRANTIES OF ANY KIND, WHETHER EXPRESS OR IMPLIED, STATUTORY, OR OTHERWISE, INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OF MERCHANTABILITY, NON-INFRINGEMENT, AND FITNESS FOR PARTICULAR PURPOSE. WITHOUT LIMITING THE FOREGOING, NEITHER ANOTHER AXIOM NOR ANYONE ASSOCIATED WITH ANOTHER AXIOM REPRESENTS OR WARRANTS THAT OUR SERVICES, THE INFORMATION, CONTENT, MATERIALS, AND PRODUCTS (INCLUDING OUR GAMES AND SOFTWARE) INCLUDED IN OR OTHERWISE MADE AVAILABLE TO YOU THROUGH OUR SERVICES, OR ELECTRONIC COMMUNICATIONS SENT FROM ANOTHER AXIOM, WILL BE ACCURATE, RELIABLE, ERROR-FREE, OR UNINTERRUPTED, THAT DEFECTS WILL BE CORRECTED, THAT OUR SERVICES OR THE SERVER THAT MAKES THEM AVAILABLE TO YOU ARE FREE OF VIRUSES OR OTHER HARMFUL COMPONENTS, OR THAT OUR SERVICES WILL OTHERWISE MEET YOUR NEEDS OR EXPECTATIONS.
+
+
+YOU ASSUME ALL RISKS RELATING TO YOUR ONLINE OR OFFLINE COMMUNICATIONS AND INTERACTIONS WITH OTHER USERS OF OUR SERVICES. YOU UNDERSTAND THAT ANOTHER AXIOM DOES NOT SCREEN OR INQUIRE INTO THE BACKGROUND OF ANY USERS OF OUR SERVICES. ANOTHER AXIOM MAKES NO REPRESENTATIONS OR WARRANTIES AS TO THE CONDUCT OF USERS OF OUR SERVICES. YOU AGREE TO TAKE REASONABLE PRECAUTIONS IN ALL COMMUNICATIONS AND INTERACTIONS WITH OTHER USERS OF OUR SERVICES, PARTICULARLY IF YOU DECIDE TO MEET OFFLINE OR IN PERSON.
+
+
+THE FOREGOING DOES NOT AFFECT ANY WARRANTIES THAT CANNOT BE EXCLUDED OR LIMITED UNDER APPLICABLE LAW.
+
+
+18. LIMITATION OF LIABILITY
+
+
+TO THE FULLEST EXTENT PERMITTED UNDER APPLICABLE LAW, IN NO EVENT WILL ANOTHER AXIOM OR ITS AFFILIATES OR ITS OR THEIR RESPECTIVE OFFICERS, DIRECTORS, EMPLOYEES, SHAREHOLDERS, MEMBERS, CONTRACTORS, AGENTS, LICENSORS, LICENSEES, SERVICE PROVIDERS, SUPPLIERS, SUCCESSORS, OR ASSIGNS BE LIABLE FOR DAMAGES OF ANY KIND, INCLUDING ANY INDIRECT, SPECIAL, INCIDENTAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, UNDER ANY LEGAL THEORY, ARISING OUT OF OR IN CONNECTION WITH (A) THESE TERMS, (B) THE USE OF OR INABILITY TO USE OUR SERVICES, OR (C) ANY COMMUNICATIONS, INTERACTIONS, OR MEETINGS WITH OTHER USERS OF OUR SERVICES, INCLUDING, WITHOUT LIMITATION, PERSONAL INJURY, PAIN AND SUFFERING, EMOTIONAL DISTRESS, LOSS OF REVENUE, LOSS OF PROFITS, LOSS OF BUSINESS OR ANTICIPATED SAVINGS, LOSS OF USE, LOSS OF GOODWILL, LOSS OF DATA, AND WHETHER CAUSED BY TORT (INCLUDING NEGLIGENCE), BREACH OF CONTRACT, OR OTHERWISE, EVEN IF FORESEEABLE.
+
+
+TO THE FULLEST EXTENT PERMITTED UNDER APPLICABLE LAW, IN NO EVENT WILL ANOTHER AXIOM’S TOTAL LIABILITY ARISING OUT OF OR IN CONNECTION WITH (A) THESE TERMS, (B) THE USE OF OR INABILITY TO USE OUR SERVICES, OR (C) ANY COMMUNICATIONS, INTERACTIONS, OR MEETINGS WITH OTHER USERS OF OUR SERVICES, EXCEED ONE THOUSAND UNITED STATES DOLLARS ($1,000.00 USD). THE EXCLUSIONS AND LIMITATIONS OF DAMAGES SET FORTH ABOVE ARE FUNDAMENTAL ELEMENTS OF THE BASIS OF THE BARGAIN BETWEEN ANOTHER AXIOM AND YOU.
+
+
+THE FOREGOING DOES NOT AFFECT ANY LIABILITY THAT CANNOT BE EXCLUDED OR LIMITED UNDER APPLICABLE LAW.
+
+
+19. Indemnification
+
+
+You agree to defend, indemnify, and hold harmless Another Axiom and its affiliates and its and their respective officers, directors, employees, shareholders, members, contractors, agents, licensors, licensees, service providers, suppliers, successors, and assigns (each, an “Indemnified Party”) from and against any and all loss and damage, including, without limitation, reasonable fees and costs of counsel, incurred by any Indemnified Party in any claim, action, or proceeding arising out of or in connection with your violation of these Terms or your use of our Services. You agree to reimburse the Indemnified Party on demand and after the Indemnified Party provides reasonable proof for any payment made or loss suffered to which the foregoing indemnity applies.
+
+
+20. ARBITRATION AND CLASS ACTION AND JURY TRIAL WAIVERS 
+
+
+PLEASE READ THIS SECTION 20 (THE “ARBITRATION AGREEMENT”) CAREFULLY. IT AFFECTS YOUR LEGAL RIGHTS. IT PROVIDES FOR RESOLUTION OF MOST DISPUTES THROUGH INDIVIDUAL ARBITRATION INSTEAD OF COURT TRIALS AND CLASS ACTIONS. THIS SECTION 20 (ARBITRATION AGREEMENT) ALSO CONTAINS A JURY TRIAL WAIVER AND A WAIVER OF ANY AND ALL RIGHTS TO PROCEED IN CLASS, COLLECTIVE, CONSOLIDATED (OTHER THAN ANY BATCHING PROCEDURES CONDUCTED BY THE ARBITRAL FORUM), PRIVATE ATTORNEY GENERAL, OR REPRESENTATIVE ACTION IN ARBITRATION OR LITIGATION TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW.
+
+
+1. Arbitration. You and Another Axiom agree that any dispute, claim, or controversy between you and Another Axiom, including, without limitation, any dispute, claim, or controversy arising out of or relating to these Terms or the breach, termination, enforcement, interpretation, or validity thereof or the Services (collectively, “Disputes”), whether such Disputes arose before, on, or subsequent to you entering these Terms, will be exclusively resolved by individual, binding arbitration in accordance with this Arbitration Agreement. The arbitrator will also be responsible for determining all threshold arbitrability issues, including, without limitation, issues of arbitrability, issues relating to whether these Terms are unconscionable or illusory, in whole or in part, and any defense to arbitration, including, without limitation, waiver, delay, laches, or estoppel.
+
+
+2. Injunctive or Other Equitable Relief. Notwithstanding anything contrary herein, each party retains the right to bring an individual action in small claims court seeking only individualized relief, so long as the action is not removed or appealed to a court of general jurisdiction. In addition, (i) the parties each retain the right to seek injunctive or other equitable relief in a court of competent jurisdiction to prevent the actual or threatened infringement, misappropriation, or violation of a party’s copyrights, trademarks, trade secrets, patents, or other intellectual property rights (including anti-circumvention claims or any other related statutory rights) (an “IP Equity Action”), and (ii) Another Axiom retains the right to bring an action in a court of competent jurisdiction arising out of or relating to your violation of Section 8 (Prohibited Uses). You agree any Disputes arising out of or related to (i) and (ii) will be governed by Delaware law and controlling United States federal law, without regard to the choice or conflicts of law provisions of any jurisdiction to the contrary, and any such Disputes will be subject to the exclusive jurisdiction of, and you consent to venue in, the state and federal courts located in San Francisco County, California. 
+
+
+3. Class Action and Jury Trial Waivers. You acknowledge and agree that you and Another Axiom are each waiving the right to a trial by jury or to participate as a plaintiff or class member in any purported class, collective, consolidated (other than any batching procedures conducted by the arbitral forum), private attorney general, or representative proceeding. Further, unless both you and Another Axiom otherwise agree in writing, any arbitration will be conducted only on an individual basis and not in a class, collective, consolidated (other than any batching procedures conducted by the arbitral forum), or representative proceeding. If any court or arbitrator determines that this Subsection (c) (Class Action and Jury Trial Waivers) is void or unenforceable for any reason or that an arbitration can proceed on a class basis, then the Arbitration Agreement will be deemed null and void in its entirety, and you and Another Axiom will be deemed not to have agreed to arbitrate the Disputes. Except as provided in the preceding sentence, this Section 20 (Arbitration Agreement) will survive any termination of these Terms. To the extent that any Disputes are allowed to proceed on a class, collective, consolidated (other than any batching procedures conducted by the arbitral forum), or representative basis, such Disputes must be governed by Delaware law and controlling United States federal law, and litigated in the state or federal courts located in San Francisco County, California, and the parties agree that litigation of those Disputes will be stayed pending the outcome of any individual Disputes in arbitration. Notwithstanding the foregoing, you or Another Axiom may participate in a class-wide settlement.
+
+
+4. Opt-out Procedures. To opt-out of this Arbitration Agreement, you must send Another Axiom a written opt-out notice (“Opt-Out Notice”) by email at support@anotheraxiom.com within 30 days from the Effective Date or the date that you first accessed the Services, whichever is later (“Opt-Out Period”). The Opt-Out Notice must contain your full legal name, your complete mailing and email address, a clear statement that you wish to opt-out of this Arbitration Agreement, and your signature. If your Opt-Out Period has passed, you are not eligible to opt-out of this Arbitration Agreement. If you opt-out of this Arbitration Agreement, all other provisions of these Terms will continue to apply to you. Opting out of this Arbitration Agreement will have no effect on any future arbitration agreements you may enter into with Another Axiom. As stated above, if you do not opt-out of this Arbitration Agreement within the Opt-Out Period, then you will be bound to the terms and conditions of this Arbitration Agreement. If you timely provide Another Axiom with a valid Opt-Out Notice, you agree that all Disputes will be governed by Delaware law and controlling United States federal law, without regard to the choice or conflicts of law provisions of any jurisdiction to the contrary, and any such Disputes will be subject to the exclusive jurisdiction of, and you consent to venue in, the state and federal courts located in San Francisco County, California.
+
+
+5. Arbitration JAMS Rules. All Disputes will be submitted to JAMS for arbitration before one arbitrator in accordance with the applicable JAMS clauses, rules, and procedures (the “JAMS Rules”) or the JAMS Mass Arbitration Procedures and Guidelines and Mass Arbitration Fee Schedule (the “JAMS Mass Arbitration Rules”) (as applicable) then in effect, except as modified by this Section 20 (Arbitration Agreement). The Federal Arbitration Act will govern the interpretation and enforcement of this Section 20 (Arbitration Agreement). If 75 or more similar Demands for Arbitration are presented by or with the assistance, coordination, or cooperation of the same law firm, group of law firms, cooperating law firms, or organization, the JAMS Mass Arbitration Rules will apply. It is the intent of the parties that the FAA and the JAMS Rules and JAMS Mass Arbitration Rules (as applicable) will preempt all state laws to the fullest extent permitted by law. If the FAA and the JAMS Rules and JAMS Mass Arbitration Rules (as applicable) are found to not apply to any issue that arises under this Arbitration Agreement, then that issue will be resolved under the laws of Delaware.
+
+
+6. Mandatory Pre-Arbitration Notice and Informal Dispute Resolution Procedure. You and Another Axiom agree that good-faith, informal efforts to resolve disputes often can result in a prompt, cost-effective, and mutually beneficial outcome. Therefore, in the event of a Dispute, you and Another Axiom each agree to send the other party a written Notice of Dispute (“Notice of Dispute” or “Notice”). A Notice of Dispute from you to Another Axiom must be emailed to legal@anotheraxiom.com (“Notice Address”). Any Notice of Dispute must include (i) the claimant’s full legal name, complete mailing address, and email address; (ii) a description of the nature and basis of the Dispute; (iii) any relevant facts regarding claimant’s use of the Services; and (iv) a personally signed statement from the claimant (and not their counsel) verifying the accuracy of the contents of the Notice. The Notice must be individualized, meaning it can concern only your dispute and no other person’s dispute. Another Axiom will send any Notice of Dispute to you at the email address (or another form of contact information) it has for you. After receipt of a Notice of Dispute, the parties will engage in a good faith effort to resolve the Dispute for a period of 60 days (which can be extended by agreement). You and Another Axiom agree that, after receipt of the Notice of Dispute, the recipient may request an individualized telephone or video settlement conference (which can be held after the 60-day period), and both parties will attend (with counsel, if represented). You and Another Axiom agree that the parties (and counsel, if represented) will work cooperatively to schedule the conference at the earliest mutually-convenient time and to seek to reach a resolution. Compliance with this mandatory Notice and informal dispute resolution procedure is a condition precedent to initiating arbitration. Any applicable limitations period (including statute of limitations) and any filing fee deadlines will be tolled while the parties engage in the informal dispute resolution procedures set forth in this Subsection (f) (Mandatory Pre-Arbitration Notice and Informal Dispute Resolution Procedure). If any aspect of these requirements has not been met, the parties agree that a court of competent jurisdiction may enjoin the filing or stay the prosecution of an arbitration. Nothing in this Subsection (f) (Mandatory Pre-Arbitration Notice and Informal Dispute Resolution Procedure) limits the right of a party to seek damages in arbitration for non-compliance with this Section 20 (Arbitration Agreement).
+
+
+7. Arbitration Location and Procedure. If the parties cannot resolve the Dispute after complying with Subsection (f) (Mandatory Pre-Arbitration Notice and Informal Dispute Resolution Procedure), a party who desires to initiate arbitration must provide the other party with a written Demand for Arbitration as specified in the JAMS Rules or JAMS Mass Arbitration Rules (as applicable). If the Dispute does not exceed $10,000, then the arbitration will be conducted solely on the basis of the documents that you and Another Axiom submit to the arbitrator, unless the parties agree otherwise or the arbitrator determines that a hearing is necessary. If the Dispute exceeds $10,000, a party’s right to a hearing will be determined by the JAMS Rules or JAMS Mass Arbitration Rules (as applicable). Any arbitration hearing will be conducted remotely by telephone or video conference to the extent possible, but if the arbitrator determines, or the parties agree, that a hearing should be conducted in person, the arbitration hearing will take place in San Francisco County, California, or such other place agreed upon by the parties consistent with both parties’ right to reasonable access to arbitration. Subject to the JAMS Rules or JAMS Mass Arbitration Rules (as applicable), the arbitrator will have the discretion to direct a reasonable exchange of information by the parties, consistent with the expedited nature of the arbitration. At the conclusion of the arbitration proceeding, the arbitrator will render an award within the time frame specified in the JAMS Rules or JAMS Mass Arbitration Rules (as applicable). The arbitrator’s decision will include the essential findings and conclusions upon which the arbitrator based the award. An arbitrator’s award that has been fully satisfied will not be entered in any court. The arbitrator’s award of damages must be consistent with the terms of Section 18 (Limitation of Liability) as to the types and amounts of damages for which a party may be held liable. Your responsibility to pay any JAMS filing, administrative, and arbitrator fees will be solely as set forth in the JAMS Rules or JAMS Mass Arbitration Rules (as applicable).
+
+
+8. Confidentiality. The parties agree that the arbitrator is authorized to issue an order requiring that confidential information of either party disclosed during the arbitration (whether in documents or orally) may not be used or disclosed except in connection with the arbitration or a proceeding to enforce the arbitration award, and that any permitted court filing of confidential information must be done under seal to the furthest extent permitted by law.
+
+
+9. Opt-out of Future Changes to the Arbitration Agreement. Notwithstanding the provisions of Section 23 (Changes to these Terms), if Another Axiom makes any future material changes to this Arbitration Agreement, you may reject any such change by sending an email to support@anotheraxiom.com within 30 days of the date of the posting of that change that provides (i) your full legal name and (ii) a description of the change(s) you are rejecting. This will not qualify as an Opt-Out Notice. To opt-out of the entire Arbitration Agreement, you must comply with Subsection (d) (Opt-Out Procedures).  
+
+
+21. Waiver and Severability
+
+
+No waiver by Another Axiom of any term or condition set out in these Terms will be deemed a further or continuing waiver of such term or condition or a waiver of any other term or condition, and any failure of Another Axiom to assert a right under these Terms will not constitute a waiver of such right. 
+
+
+If any provision, or portion thereof, of these Terms is held by an arbitrator appointed pursuant to the terms of Section 20 (Arbitration Agreement) above or a court of competent jurisdiction to be invalid, illegal, or unenforceable for any reason, such provision, or portion thereof, will be deemed to be severable and, if possible, superseded by a valid, enforceable provision, or portion thereof, that matches the intent of the original provision, or portion thereof, as closely as possible. The remaining provisions of these Terms will continue in full force and effect.
+
+
+22. Entire Agreement
+
+
+These Terms together with our Privacy Policy, our Fan Content & Mod Policy, and our other community policies that may be posted by Another Axiom constitute the sole and entire agreement between you and Another Axiom regarding our Services and supersede all prior and contemporaneous understandings, agreements, representations, and warranties, both written and oral, regarding their subject matter.
+
+
+23. Changes to these Terms
+
+
+We may revise and update these Terms from time to time in our sole discretion. All changes are effective immediately when we post them. If you continue to use our Services, following the posting of revised Terms, you are signifying that you accept and agree to the changes. You are expected to check this page from time to time, so you are aware of any changes.
+
+
+24. Sony Interactive Entertainment America‎ Terms for PlayStation Users
+
+
+Purchase and use of items are subject to the Network Terms of Service and User Agreement. This online service has been sublicensed to you by Sony Interactive Entertainment America.
+
+
+25. Contact Us 
+
+
+If you have any questions about our Services or these Terms, please contact us by completing a support ticket at https://support.gorillatagvr.com/ or emailing us at support@anotheraxiom.com.
+
+If you are a law enforcement agency, please email us at support@anotheraxiom.com with the subject line “Law Enforcement Request.”
