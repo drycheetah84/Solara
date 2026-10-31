@@ -9,6 +9,7 @@ from pecore import PE, EXE, call_index
 
 FIND22, FIND50 = 0x463FE20, 0x49558F0
 T = {"NumSet": 0x4643F30, "BoolSet": 0x46443B0, "StrSet": 0x4644120, "IterRelease": 0x4675A60}
+if len(sys.argv) > 1: T = {a.split("=")[0]: int(a.split("=")[1], 16) for a in sys.argv[1:]}
 P22, P50 = PE(EXE["22"]), PE(EXE["50"])
 ci22, ci50 = call_index(P22), call_index(P50)
 

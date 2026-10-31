@@ -7,6 +7,8 @@ import json, re, sys, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 exec(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "fieldaudit.py")).read().split("src = sys.argv[1]")[0])
 SRC = r"C:\Users\drych\ProjectDrift\Solara\Server\dllmain_50451.cpp"
+for _a in sys.argv[2:]:
+    if _a.startswith("--src="): SRC = _a[6:]   # e.g. specedit.h (shared by builds: see the #if guard below)
 claims = json.load(open(sys.argv[1]))
 lines = open(SRC, encoding="utf-8", newline="").read().split("\n")
 applied, already, rejected = [], [], []
@@ -15,7 +17,9 @@ for c in claims:
     if c.get("class") in (None, "?") or c.get("field") in (None, "?"):
         rejected.append((c, "unclassified")); continue
     lit = int(c["literal"], 16) if str(c["literal"]).lower().startswith("0x") else int(c["literal"])
-    if c.get("delta_of"):   # e.g. TArray Num = field + 8
+    if c.get("field") == "sizeof":   # struct size (stride / buffer), from the dump's "// 0xSIZE (..)" header
+        v = {b: next((SIZE[b][k] for k in strip(c["class"]) if k in SIZE[b]), None) for b in S}
+    elif c.get("delta_of"):   # e.g. TArray Num = field + 8
         v = {b: (lambda x: None if x is None else x + c["delta"])(get(b, c["class"], c["delta_of"])) for b in S}
     else:
         v = {b: path(b, c["class"], c["field"]) for b in S}
@@ -34,11 +38,22 @@ for c in claims:
     edits.setdefault(i, []).append((pat, lit, n, c))
 for i, es in edits.items():
     code, sep, cmt = lines[i].partition("//")
-    for pat, lit, n, c in es:
-        code = pat.sub("0x%X" % n, code)
+    seen = {}
+    for k, (pat, lit, n, c) in enumerate(es):   # placeholders first: 0x2B0->0x310 and 0x310->0x370 on one line must not chain
+        if lit in seen: continue
+        seen[lit] = n
+        code = pat.sub("@@%d@@" % k, code)
         applied.append((c["line"], c["class"], c["field"], hex(lit), hex(n)))
+    for k, (pat, lit, n, c) in enumerate(es):
+        code = code.replace("@@%d@@" % k, "0x%X" % n)
     tag = " [50451 offs]" if "[50451 offs]" not in cmt else ""
-    lines[i] = code + sep + cmt + (tag if sep else ("  //" + tag if es else ""))
+    new = code + sep + cmt + (tag if sep else ("  //" + tag if es else ""))
+    if SRC.lower().endswith("specedit.h"):   # shared by 22284/47031/50451: keep the original line for the others
+        eol = "\r" if lines[i].endswith("\r") else ""
+        new = new.rstrip("\r")
+        lines[i] = "#if HALCYON_GAME_BUILD == 50451" + eol + "\n" + new + eol + "\n#else" + eol + "\n" + lines[i].rstrip("\r") + eol + "\n#endif" + eol
+    else:
+        lines[i] = new
 print("applied", len(applied), "already-ok", len(already), "rejected", len(rejected))
 for a in applied: print("  APPLY", *a)
 for c, why in rejected: print("  REJECT", c.get("line"), c.get("class"), c.get("field"), c.get("literal"), "--", why)

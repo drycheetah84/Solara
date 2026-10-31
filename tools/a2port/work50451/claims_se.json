@@ -1,0 +1,527 @@
+[
+{
+"line": 210,
+"literal": "0xA30",
+"class": "AVRPlayerController",
+"field": "StationDashboardPlayerId",
+"confidence": "high"
+},
+{
+"line": 642,
+"literal": "0x560",
+"class": "UStaticMeshComponent",
+"field": "StaticMesh",
+"confidence": "high"
+},
+{
+"line": 916,
+"literal": "0x120",
+"class": "FAAQuestEntry",
+"field": "sizeof",
+"confidence": "high"
+},
+{
+"line": 948,
+"literal": "0x120",
+"class": "FAAQuestEntry",
+"field": "sizeof",
+"confidence": "high"
+},
+{
+"line": 953,
+"literal": "0x40",
+"class": "FAAQuestBundle",
+"field": "sizeof",
+"confidence": "high"
+},
+{
+"line": 982,
+"literal": "0x120",
+"class": "FAAQuestEntry",
+"field": "sizeof",
+"confidence": "high"
+},
+{
+"line": 983,
+"literal": "0xF0",
+"class": "FAAQuestEntry",
+"field": "Title",
+"confidence": "high"
+},
+{
+"line": 986,
+"literal": "0x120",
+"class": "FAAQuestEntry",
+"field": "sizeof",
+"confidence": "high"
+},
+{
+"line": 998,
+"literal": "0x120",
+"class": "FAAQuestEntry",
+"field": "sizeof",
+"confidence": "high"
+},
+{
+"line": 1000,
+"literal": "0x30",
+"class": "FAAQuestEntry",
+"field": "VersionNumber",
+"confidence": "high"
+},
+{
+"line": 1002,
+"literal": "0xE8",
+"class": "FAAQuestEntry",
+"field": "OptionalRequiredProgress",
+"confidence": "high"
+},
+{
+"line": 1004,
+"literal": "0xE8",
+"class": "FAAQuestEntry",
+"field": "OptionalRequiredProgress",
+"confidence": "high"
+},
+{
+"line": 1005,
+"literal": "0x118",
+"class": "FAAQuestEntry",
+"field": "bTestQuest",
+"confidence": "high"
+},
+{
+"line": 1016,
+"literal": "0xA0",
+"class": "FAAQuestEntry",
+"field": "ChildQuests",
+"confidence": "high"
+},
+{
+"line": 1019,
+"literal": "0xF0",
+"class": "FAAQuestEntry",
+"field": "Title",
+"confidence": "high"
+},
+{
+"line": 1020,
+"literal": "0x108",
+"class": "FAAQuestEntry",
+"field": "Description",
+"confidence": "high"
+},
+{
+"line": 1025,
+"literal": "0x100",
+"class": "FAAQuestEntry",
+"field": "GlyphID",
+"confidence": "high"
+},
+{
+"line": 1036,
+"literal": "0x120",
+"class": "FAAQuestEntry",
+"field": "sizeof",
+"confidence": "high"
+},
+{
+"line": 1049,
+"literal": "0xF0",
+"class": "FAAQuestEntry",
+"field": "Title",
+"confidence": "high"
+},
+{
+"line": 1050,
+"literal": "0x120",
+"class": "FAAQuestEntry",
+"field": "sizeof",
+"confidence": "high"
+},
+{
+"line": 1071,
+"literal": "0x40",
+"class": "FAAQuestBundle",
+"field": "sizeof",
+"confidence": "high"
+},
+{
+"line": 1096,
+"literal": "0xF0",
+"class": "FAAQuestEntry",
+"field": "Title",
+"confidence": "high"
+},
+{
+"line": 1097,
+"literal": "0x120",
+"class": "FAAQuestEntry",
+"field": "sizeof",
+"confidence": "high"
+},
+{
+"line": 1127,
+"literal": "0x120",
+"class": "FAAQuestEntry",
+"field": "sizeof",
+"confidence": "high"
+},
+{
+"line": 1134,
+"literal": "0xF0",
+"class": "FAAQuestEntry",
+"field": "Title",
+"confidence": "high"
+},
+{
+"line": 1137,
+"literal": "0x100",
+"class": "FAAQuestEntry",
+"field": "GlyphID",
+"confidence": "high"
+},
+{
+"line": 1325,
+"literal": "0x40",
+"class": "FAAQuestBundle",
+"field": "sizeof",
+"confidence": "high"
+},
+{
+"line": 1331,
+"literal": "0xF0",
+"class": "FAAQuestEntry",
+"field": "Title",
+"confidence": "high"
+},
+{
+"line": 1332,
+"literal": "0x120",
+"class": "FAAQuestEntry",
+"field": "sizeof",
+"confidence": "high"
+},
+{
+"line": 1395,
+"literal": "0x20",
+"class": "FA2QuestStorage",
+"field": "sizeof",
+"confidence": "high"
+},
+{
+"line": 1427,
+"literal": "0x20",
+"class": "FA2QuestProgression",
+"field": "sizeof",
+"confidence": "high"
+},
+{
+"line": 1436,
+"literal": "0x20",
+"class": "FA2QuestStorage",
+"field": "sizeof",
+"confidence": "high"
+},
+{
+"line": 1437,
+"literal": "0x20",
+"class": "FA2QuestStorage",
+"field": "sizeof",
+"confidence": "high"
+},
+{
+"line": 1442,
+"literal": "0x18",
+"class": "FA2QuestStorage",
+"field": "CompletedTime",
+"confidence": "high"
+},
+{
+"line": 1445,
+"literal": "0x20",
+"class": "FA2QuestStorage",
+"field": "sizeof",
+"confidence": "high"
+},
+{
+"line": 1449,
+"literal": "0x20",
+"class": "FA2QuestStorage",
+"field": "sizeof",
+"confidence": "high"
+},
+{
+"line": 1453,
+"literal": "0x18",
+"class": "FA2QuestStorage",
+"field": "CompletedTime",
+"confidence": "high"
+},
+{
+"line": 1454,
+"literal": "0x20",
+"class": "FA2QuestStorage",
+"field": "sizeof",
+"confidence": "high"
+},
+{
+"line": 1459,
+"literal": "0x20",
+"class": "FA2QuestStorage",
+"field": "sizeof",
+"confidence": "high"
+},
+{
+"line": 1460,
+"literal": "0x20",
+"class": "FA2QuestStorage",
+"field": "sizeof",
+"confidence": "high"
+},
+{
+"line": 1463,
+"literal": "0x20",
+"class": "FA2QuestStorage",
+"field": "sizeof",
+"confidence": "high"
+},
+{
+"line": 1542,
+"literal": "0x928",
+"class": "AVRPawn",
+"field": "Entity",
+"confidence": "high"
+},
+{
+"line": 1544,
+"literal": "0x100",
+"class": "UA2PlayerEntity",
+"field": "FrequentDataReplicationOnly.Root.position.X",
+"confidence": "high"
+},
+{
+"line": 1549,
+"literal": "0xA30",
+"class": "AVRPlayerController",
+"field": "StationDashboardPlayerId",
+"confidence": "high"
+},
+{
+"line": 1620,
+"literal": "0x30",
+"class": "UObjectPrefabDefinition",
+"field": "Blueprint",
+"confidence": "high"
+},
+{
+"line": 1621,
+"literal": "0x38",
+"class": "UObjectPrefabDefinition",
+"field": "Settings",
+"confidence": "high"
+},
+{
+"line": 1622,
+"literal": "0x94",
+"class": "UObjectPrefabDefinitionSettings",
+"field": "UniqueID",
+"confidence": "high"
+},
+{
+"line": 2168,
+"literal": "0x928",
+"class": "AVRPawn",
+"field": "Entity",
+"confidence": "high"
+},
+{
+"line": 2171,
+"literal": "0x100",
+"class": "UA2PlayerEntity",
+"field": "FrequentDataReplicationOnly.Root.position.X",
+"confidence": "high"
+},
+{
+"line": 2920,
+"literal": "0x30",
+"class": "UObjectPrefabDefinition",
+"field": "Blueprint",
+"confidence": "high"
+},
+{
+"line": 2921,
+"literal": "0x38",
+"class": "UObjectPrefabDefinition",
+"field": "Settings",
+"confidence": "high"
+},
+{
+"line": 2922,
+"literal": "0x94",
+"class": "UObjectPrefabDefinitionSettings",
+"field": "UniqueID",
+"confidence": "high"
+},
+{
+"line": 3321,
+"literal": "0x458",
+"class": "ABP_ModuleSlotWithImportanceVolume_C",
+"field": "ImportanceVolume",
+"confidence": "high"
+},
+{
+"line": 3545,
+"literal": "0x308",
+"class": "AOneillGravityActor",
+"field": "RotationAxis",
+"confidence": "high"
+},
+{
+"line": 3548,
+"literal": "0x29C",
+"class": "AOneillGravityActor",
+"field": "MaxGravityDistance",
+"confidence": "high"
+},
+{
+"line": 3549,
+"literal": "0x302",
+"class": "AOneillGravityActor",
+"field": "InvertGravity",
+"confidence": "high"
+},
+{
+"line": 3554,
+"literal": "0x298",
+"class": "AGravityVolumeActor",
+"field": "bIsAdditive",
+"confidence": "high"
+},
+{
+"line": 3555,
+"literal": "0x2A0",
+"class": "AGravityVolumeActor",
+"field": "BoxTrigger",
+"confidence": "high"
+},
+{
+"line": 3555,
+"literal": "0x2B0",
+"class": "AGravityBoxActor",
+"field": "BoxTrigger",
+"confidence": "high"
+},
+{
+"line": 3558,
+"literal": "0x540",
+"class": "UBoxComponent",
+"field": "BoxExtent",
+"confidence": "high"
+},
+{
+"line": 3562,
+"literal": "0x2A6",
+"class": "AGravityBoxActor",
+"field": "InvertGravity",
+"confidence": "high"
+},
+{
+"line": 3666,
+"literal": "0x368",
+"class": "UGamemodesManager",
+"field": "loadedGamemodes",
+"confidence": "high"
+},
+{
+"line": 3671,
+"literal": "0x368",
+"class": "UGamemodesManager",
+"field": "loadedGamemodes",
+"confidence": "high"
+},
+{
+"line": 3674,
+"literal": "0x170",
+"class": "AActor",
+"field": "NetCullDistanceSquared",
+"confidence": "high"
+},
+{
+"line": 3728,
+"literal": "0x170",
+"class": "AActor",
+"field": "NetCullDistanceSquared",
+"confidence": "high"
+},
+{
+"line": 3769,
+"literal": "0x2B0",
+"class": "UGamemodesManager",
+"field": "gamemodesWaitingForSlots",
+"confidence": "high"
+},
+{
+"line": 3769,
+"literal": "0x310",
+"class": "UGamemodesManager",
+"field": "loadedSlots",
+"confidence": "high"
+},
+{
+"line": 3769,
+"literal": "0x368",
+"class": "UGamemodesManager",
+"field": "loadedGamemodes",
+"confidence": "high"
+},
+{
+"line": 4818,
+"literal": "0x928",
+"class": "AVRPawn",
+"field": "Entity",
+"confidence": "high"
+},
+{
+"line": 4820,
+"literal": "0x100",
+"class": "UA2PlayerEntity",
+"field": "FrequentDataReplicationOnly.Root.position.X",
+"confidence": "high"
+},
+{
+"line": 4913,
+"literal": "0x928",
+"class": "AVRPawn",
+"field": "Entity",
+"confidence": "high"
+},
+{
+"line": 4915,
+"literal": "0x100",
+"class": "UA2PlayerEntity",
+"field": "FrequentDataReplicationOnly.Root.position.X",
+"confidence": "high"
+},
+{
+"line": 7818,
+"literal": "0xA30",
+"class": "AVRPlayerController",
+"field": "StationDashboardPlayerId",
+"confidence": "high"
+},
+{
+"line": 7988,
+"literal": "0x400",
+"class": "ALevelEditorPawn",
+"field": "RepData",
+"confidence": "high"
+},
+{
+"line": 8311,
+"literal": "0x440",
+"class": "UPrefabComponent",
+"field": "GameMode",
+"confidence": "high"
+}
+]

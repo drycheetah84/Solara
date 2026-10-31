@@ -1,0 +1,9 @@
+[
+{"line":4818,"literal":"0x928","class":"AVRPawn","field":"Entity","confidence":"high"},
+{"line":4820,"literal":"0x100","class":"UA2PlayerEntity","field":"FrequentDataReplicationOnly.Root.position.X","confidence":"high"},
+{"line":4913,"literal":"0x928","class":"AVRPawn","field":"Entity","confidence":"high"},
+{"line":4915,"literal":"0x100","class":"UA2PlayerEntity","field":"FrequentDataReplicationOnly.Root.position.X","confidence":"high"},
+{"line":7818,"literal":"0xA30","class":"AVRPlayerController","field":"StationDashboardPlayerId","confidence":"high"},
+{"line":7988,"literal":"0x400","class":"ALevelEditorPawn","field":"RepData","confidence":"high"},
+{"line":8311,"literal":"0x440","class":"UPrefabComponent","field":"GameMode","confidence":"high"}
+]

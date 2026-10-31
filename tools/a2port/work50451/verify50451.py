@@ -10,7 +10,8 @@ R = json.load(open(os.path.join(W, "resolved2.json")))
 ok = {int(r["rva50"], 16) for r in R.values() if r.get("rva50")}
 ok |= {0x12BE784, 0x4A92080,                                    # apply MANUAL (fn-end / range-end, byte-matched)
        0x53D9DE4, 0x53D9DE7, 0x57942B5, 0x57942BF, 0x57942D4}   # unique signature hits (entitlement, ball-spawner)
-ok |= {0x49558F0, 0x4958DA0, 0x49591B0, 0x4958F50, 0x498E770}   # NetVar natives (nvalign2.py + decompile type checks)
+ok |= {0x49558F0, 0x4958DA0, 0x49591B0, 0x4958F50, 0x498E770}
+ok |= {0x4974800, 0x4A06AB0, 0x4A29B40}   # SeSb NodeRemove (identical insn stream to 22284 0x465BE70)   # NetVar natives (nvalign2.py + decompile type checks)
 BOUNDS = {0x1000000, 0x5000000, 0x5A00000, 0xC000000, 0xA5BB000}
 hx = re.compile(r'0x0*([0-9A-Fa-f]{6,8})\b')
 bad = []; n = 0

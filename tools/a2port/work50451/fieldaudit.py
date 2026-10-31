@@ -3,15 +3,18 @@
 # that field's 22284 or 47031 offset but not its 50451 offset, it is stale.
 import re, glob, json, sys, collections
 SD = r"C:\Users\drych\ProjectDrift\Solara\Server\gamesdk"
-PAR = {}; TYP = {}
+PAR = {}; TYP = {}; SIZE = {}
 def load(b):
-    d = collections.defaultdict(dict); PAR[b] = {}; TYP[b] = collections.defaultdict(dict)
+    d = collections.defaultdict(dict); PAR[b] = {}; TYP[b] = collections.defaultdict(dict); SIZE[b] = {}
     for fn in glob.glob(rf"{SD}\{b}\SDK\*_classes.hpp") + glob.glob(rf"{SD}\{b}\SDK\*_structs.hpp"):
-        cur = None
+        cur = None; lastsz = None
         for l in open(fn, encoding="utf-8", errors="ignore"):
+            msz = re.match(r'// (0x[0-9A-Fa-f]+) \(0x[0-9A-Fa-f]+ - 0x[0-9A-Fa-f]+\)', l)
+            if msz: lastsz = int(msz.group(1), 16)
             m = re.match(r'(?:class|struct)\s+(?:(?:SDK_ALIGN|alignas)\(0x\w+\)\s+)?(\w+)\b(?!;)', l)
             if m and not l.rstrip().endswith(";"):
                 cur = m.group(1)
+                if lastsz is not None: SIZE[b].setdefault(cur, lastsz); lastsz = None
                 pm = re.search(r':\s*public\s+(\w+)', l)
                 if pm: PAR[b][cur] = pm.group(1)
             m = re.search(r'\s(\w+)(?:\[\w+\])?(?:\s*:\s*\d+)?;\s+// (0x[0-9A-F]+)\(', l)
