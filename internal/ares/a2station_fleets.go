@@ -240,5 +240,9 @@ func (s *A2StationDbServer) FetchAllStationsV2(c *hosting.Context) hosting.Resul
 			items = append(items, a2DeploymentToFleetStation(d))
 		}
 	}
-	return hosting.Ok(&models.StationsPageV2{FleetId: "", Items: items})
+	page := &models.StationsPageV2{FleetId: "", Items: items}
+	if v := a2QueryOr(c, "version", ""); a2IsV50Client(v) {
+		return hosting.Ok(a2StationsPageFor50451(page, v)) // Solara: 50451 import shape
+	}
+	return hosting.Ok(page)
 }
