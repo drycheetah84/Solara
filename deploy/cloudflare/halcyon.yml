@@ -24,8 +24,9 @@ ingress:
     service: http://127.0.0.1:80
 
   # Ares web dashboard (admin). Protect with Cloudflare Access if exposed.
+  # Next.js dashboard (web/dashboard) on :3000; it proxies to Solara :8080 / :78 with the admin key.
   - hostname: dash.halcy0n.net
-    service: http://127.0.0.1:8080
+    service: http://127.0.0.1:3000
 
   # catch-all
   - service: http_status:404
