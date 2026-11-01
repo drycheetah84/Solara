@@ -447,7 +447,9 @@ func TestA2DeploymentFetchWithStationConfig(t *testing.T) {
 
 	// netvar overrides text
 	w = a2Do(t, s, "GET", "/v1/deployments/dep-9/netvar_overrides", "", nil)
-	if !strings.HasSuffix(w.Body.String(), "\nworld\t\tconfig/x\t1") || w.Header().Get("Content-Type") != "text/plain; charset=utf-8" {
+	// Solara: the station's board URL rides along as config/stationConfig/<key> (stationConfigWorldLines).
+	if !strings.HasSuffix(w.Body.String(), "\nworld\t\tconfig/x\t1\nworld\t\tconfig/stationConfig/BoardTextureUrl1\thttps://cdn.example/x.png") ||
+		w.Header().Get("Content-Type") != "text/plain; charset=utf-8" {
 		t.Errorf("netvar overrides: %q", w.Body.String())
 	}
 	if b, err := os.ReadFile(filepath.Join(dir, "netvar_overrides", "dep-9.txt")); err != nil || string(b) != w.Body.String() {

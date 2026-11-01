@@ -84,6 +84,7 @@ func BuildText(station *models.StationDbObject) string {
 				lines = append(lines, "world\t\t"+rest[len("world."):]+"\t"+value)
 			}
 		}
+		lines = append(lines, stationConfigWorldLines(station.Config)...)
 	}
 	joined := strings.Join(lines, "\n")
 	sum := sha1.Sum([]byte(joined))
@@ -243,4 +244,26 @@ func a2SafeFileName(s string) string {
 		}
 	}
 	return b.String()
+}
+
+// stationConfigWorldLines (Solara extension): the station's board / sign images and announcement as world
+// netvar overrides under config/stationConfig/<key>. On the original build the game server fetched its own
+// deployment with include_station_config at dashboard init and applied these natively (sub_5409770); on 50451
+// that fetch is not triggered (its DLL trigger still uses stale RVAs), so without this the boards never got
+// their URLs. Only non-empty values are sent, and an explicit nv.world.config/stationConfig/<key> wins.
+func stationConfigWorldLines(cfg map[string]*string) []string {
+	keys := append([]string{"StationAnnouncement"}, BoardConfigKeys...)
+	sort.Strings(keys)
+	out := []string{}
+	for _, k := range keys {
+		if _, explicit := cfg[NetvarOverridePrefix+"world.config/stationConfig/"+k]; explicit {
+			continue
+		}
+		v, ok := cfg[k]
+		if !ok || v == nil || strings.TrimSpace(*v) == "" {
+			continue
+		}
+		out = append(out, "world\t\tconfig/stationConfig/"+k+"\t"+Clean(v))
+	}
+	return out
 }
