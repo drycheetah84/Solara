@@ -105,6 +105,7 @@ func (s *MothershipServer) register() {
 	h.Handle("POST", "/v1/moderation/server/ban", "ServerCreateBan", s.ServerCreateBan)
 	h.Handle("POST", "/v1/moderation/server/bans/bulk", "ServerBulkBans", s.ServerBulkBans)
 	h.Handle("GET", "/v1/moderation/server/active_ban", "Solara/ServerActiveBan", s.ServerActiveBan)
+	h.Handle("POST", "/v1/moderation/server/unban", "Solara/ServerUnban", s.ServerUnban)
 	h.Handle("GET", "/v1/moderation", "ListModeration", s.ListModeration)
 	h.Handle("GET", "/v1/moderation/automation", "GetModerationAutomation", s.GetModerationAutomation)
 	h.Handle("POST", "/v1/moderation/automation", "PostModerationAutomation", s.PostModerationAutomation)

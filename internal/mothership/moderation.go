@@ -220,3 +220,25 @@ func (s *MothershipServer) DeleteModerationAutomation(c *hosting.Context) hostin
 	cl.Delete(mute.Id)
 	return jsonAnon(stj.O("status", "deleted"), 200)
 }
+
+// ServerUnban (Solara extension) lifts a player's bans: POST /v1/moderation/server/unban {"player_id":X} ends every
+// still-active ban of that player now (ExpiresAt = now; the record is kept). -> {"lifted":n}
+func (s *MothershipServer) ServerUnban(c *hosting.Context) hosting.Result {
+	if !isAdmin(c.Request) {
+		return unauthorized()
+	}
+	playerId := str(parseBody(c.Request), "player_id")
+	if playerId == "" {
+		return errorResult("player_id required", 400)
+	}
+	now := dotnet.UtcNow()
+	cl, n := bans(), 0
+	for _, b := range cl.Find(func(b *models.MothershipBanDbObject) bool { return dbEq(b.PlayerId, playerId) }) {
+		if b.ExpiresAt.After(now) {
+			b.ExpiresAt = now
+			cl.Update(b)
+			n++
+		}
+	}
+	return jsonAnon(stj.O("lifted", n), 200)
+}
