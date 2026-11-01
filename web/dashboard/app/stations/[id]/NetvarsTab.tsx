@@ -18,7 +18,8 @@ import { Plus, Trash2, Save, RefreshCw, Search, X } from "lucide-react";
 const NV = "nv.";
 
 // Gamemode slots the server reported as loaded (SlotID of each UModuleState, 2026-09-10 boot).
-const LIVE_SLOTS = [
+// Fallback only: the catalog's live_slots (the running server's SLOTMAP log, tools/netvarcat) win.
+const FALLBACK_SLOTS = [
   "*",
   "TKB_PlazaFront", "TKB_PlazaEast", "TKB_PlazaWest", "TKB_ComplexWest", "TKB_ComplexEast", "TKB_Basement", "TKB_Prime",
   "TKB_Quest_Full", "ScraprunPrime", "ClubGolf", "ClubGolfBack9", "TKBGolf", "PKR_Rockwall_1",
@@ -91,6 +92,9 @@ type Catalog = {
   presets: Record<string, { path: string; value: unknown }[]>;
   modules: CatalogModule[];
   station_keys: string[];
+  /** slot ids the running server reported (SLOTMAP), "*" first */
+  live_slots?: string[];
+  generated_from?: string;
 };
 
 function OverrideCell({ sc, cfgKey, type, def }: { sc: StationCfg; cfgKey: string; type: string; def: unknown }) {
@@ -178,13 +182,14 @@ function CatalogView({ sc }: { sc: StationCfg }) {
         <IconBtn title="Reload overrides" onClick={sc.load}><RefreshCw size={13} /></IconBtn>
       </div>
       <p className="text-xs mb-4" style={{ color: "var(--muted)" }}>
-        {cat ? `${cat.world.length} world netvars · ${cat.modules.reduce((n, m) => n + m.vars.length, 0)} gamemode variables across ${cat.modules.length} gamemodes · ` : "Loading… · "}
+        {cat?.generated_from && <span className="block mb-1">Catalog: {cat.generated_from.split(":")[0]}</span>}
+        {cat ? `${cat.world.length} world netvars ·${cat.modules.reduce((n, m) => n + m.vars.length, 0)} gamemode variables across ${cat.modules.length} gamemodes · ` : "Loading… · "}
         {overrideCount} override(s) set. Saving pushes the change to the running server immediately (no polling); it is written into the gamemode&apos;s real config, so the whitelist, team names and scripts all see it. Clearing restores the original.
       </p>
       {(err || sc.err) && <div className="mb-3 text-xs" style={{ color: "var(--red)" }}>{err || sc.err}</div>}
       <div className="mb-4"><SearchBox value={q} onChange={setQ} placeholder="Search (e.g. brake, MatchLength, jakeball)" /></div>
       <datalist id="nv-live-slots">
-        {LIVE_SLOTS.map(s => <option key={s} value={s} />)}
+        {(cat?.live_slots?.length ? cat.live_slots : FALLBACK_SLOTS).map(s => <option key={s} value={s} />)}
       </datalist>
 
       <div style={{ maxHeight: 720, overflowY: "auto" }}>
@@ -201,7 +206,7 @@ function CatalogView({ sc }: { sc: StationCfg }) {
                   list="nv-live-slots"
                   value={slot} onChange={e => setSlots(s => ({ ...s, [m.level]: e.target.value.trim() || "*" }))} />
                 <span>
-                  (pick a live slot — jakeball runs in TKB_PlazaFront/East/West, TKB_ComplexWest/East, TKB_Basement;{" "}
+                  (pick one of the slots this build&apos;s server reported;{" "}
                   <span className="font-mono">*</span> = any gamemode that reads a variable with this name)
                 </span>
               </div>
