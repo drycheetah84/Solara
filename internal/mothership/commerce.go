@@ -142,12 +142,10 @@ func (s *MothershipServer) ClientPurchase(c *hosting.Context) hosting.Result {
 	if !isAdmin(c.Request) && isClient(c.Request) {
 		userId := getUserIdFromToken(c.Request)
 		offerId := str(parseBody(c.Request), "OfferId")
-		for _, id := range a2BundleIds() {
-			if stableId("offer:"+id) == offerId {
-				authLog(fmt.Sprintf("[STORE] %s purchased %s", userId, id))
-				return jsonAnon(stj.O("Changes", []any{stj.O("entitlement_id", stableId(userId+":"+id),
-					"in_game_id", id, "name", id, "quantity", 1)}), 200)
-			}
+		if o := a2FindOffer(offerId); o != nil {
+			authLog(fmt.Sprintf("[STORE] %s purchased %s (%s x%d)", userId, o.Key, o.InGameId, o.Change))
+			return jsonAnon(stj.O("Changes", []any{stj.O("entitlement_id", stableId(userId+":"+o.InGameId),
+				"in_game_id", o.InGameId, "name", o.InGameId, "quantity", o.Change)}), 200)
 		}
 		return jsonError(404, "NotFound", "Offer not found", "", nil)
 	}
