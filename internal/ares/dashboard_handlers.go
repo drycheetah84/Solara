@@ -40,6 +40,16 @@ func (s *AresDashboardServer) GetStations(c *hosting.Context) hosting.Result {
 			ds.CreatedAt = st.CreatedAt
 			ds.Online = st.Online
 			ds.LastOnline = st.LastOnline
+			// Solara: the station row's LastOnline only moves on register / a posted event, while a live
+			// server's heartbeats (every 5 s) move its deployment's LastEvent. Show the newest of the two
+			// so "Last Seen" reflects the running server instead of the time it registered. Display only:
+			// the stored station row and the game-facing station API are unchanged.
+			for _, d := range deps {
+				if d.LastEvent != nil && (ds.LastOnline == nil || d.LastEvent.After(*ds.LastOnline)) {
+					le := *d.LastEvent
+					ds.LastOnline = &le
+				}
+			}
 			ds.Deployments = len(deps)
 			for _, d := range deps {
 				if d.Online {

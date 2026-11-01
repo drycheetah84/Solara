@@ -510,3 +510,37 @@ func TestDashboardGenerateApiKeyShape(t *testing.T) {
 		t.Fatalf("payload = %s", p)
 	}
 }
+
+// Solara: a station's dashboard "last_online" follows its deployments' heartbeat stamp (LastEvent),
+// not only the stored station row (which moves on register / posted events only).
+func TestDashboardStationLastOnlineFollowsHeartbeat(t *testing.T) {
+	resetDashAuth(t, nil)
+	withTempDB(t)
+	s := newAresDashboardServer()
+
+	old := dotnet.Now().AddMinutes(-51)
+	beat := dotnet.Now()
+	stations := docdb.GetCollection(Database, true, models.NewStationDbObject)
+	st := models.NewStationDbObject()
+	st.StationId, st.StationName, st.LastOnline = dashStrPtr("st1"), dashStrPtr("Halcyon"), &old
+	stations.Insert(st)
+	deps := docdb.GetCollection(Database, true, models.NewDeploymentDbObject)
+	d := models.NewDeploymentDbObject()
+	d.DeploymentId, d.StationId, d.Online, d.LastEvent = dashStrPtr("dep1"), dashStrPtr("st1"), true, &beat
+	deps.Insert(d)
+
+	w := do(t, s, "GET", "/api/stations", "", adminHdr)
+	arr := stj.MustParse(w.Body.Bytes()).EnumerateArray()
+	if len(arr) != 1 {
+		t.Fatalf("stations = %s", w.Body.String())
+	}
+	// The document store keeps millisecond precision, so compare to the second ("2006-01-02T15:04:05).
+	want := stj.MarshalString(beat)[:20]
+	if got := arr[0].GetProperty("last_online").GetRawText(); !strings.HasPrefix(got, want) {
+		t.Fatalf("last_online = %s, want the heartbeat stamp %s", got, want)
+	}
+	// The stored station row is untouched (display-only change).
+	if stored := stations.FindOne(func(x *models.StationDbObject) bool { return dashLiteEq(x.StationId, "st1") }); stored.LastOnline.Sub(old).Abs() > time.Millisecond {
+		t.Fatalf("station row LastOnline was modified")
+	}
+}
