@@ -426,6 +426,7 @@ func TestFriends(t *testing.T) {
 }
 
 func TestInventoryClientGrantsCatalogue(t *testing.T) {
+	t.Setenv("SOLARA_FULL_INVENTORY_IDS", "someone-else, inv-user")
 	s := newTestServer(t)
 	catalogueMu.Lock()
 	catalogueAt = dotnet.MinValue // force a rebuild
@@ -568,5 +569,32 @@ func TestServerActiveBan(t *testing.T) {
 	}
 	if m := decode(t, do(t, s, "GET", "/v1/moderation/server/active_ban?player_id=OTHER", "", adm...)); m["banned"] != false {
 		t.Fatalf("other player: %v", m)
+	}
+}
+
+// A player off the allowlist gets only what they own (plus currencies at 0), never the catalogue or worn items.
+func TestInventoryClientNotAllowlisted(t *testing.T) {
+	t.Setenv("SOLARA_FULL_INVENTORY_IDS", "inv-user")
+	s := newTestServer(t)
+	tok := tokenFor("plain-user", time.Now().Add(time.Hour).Unix())
+	inv := encodeQuestBlob(`{"equippedItems":["Hat"]}`)
+	do(t, s, "POST", "/v1/userdata/client", `{"key_name":"player_inventory","value":"`+inv+`"}`, "x-mothership-token", tok)
+	adm := []string{"x-server-api-key", testServerKey}
+	do(t, s, "POST", "/v1/inventory", `{"player_id":"plain-user","item_id":"i1","entitlement_id":"e1","in_game_id":"OwnedThing","name":"OwnedThing"}`, adm...)
+	body := do(t, s, "GET", "/v1/inventory/client", "", "x-mothership-token", tok).Body.String()
+	_, cur := a2CatalogueItems()
+	if strings.Contains(body, `"in_game_id":"Hat"`) || !strings.Contains(body, `"in_game_id":"OwnedThing"`) ||
+		strings.Count(body, `"quantity":`) != len(cur)+1 ||
+		!strings.Contains(body, `"in_game_id":"HardCurrencyJoules","name":"HardCurrencyJoules","quantity":0}`) {
+		t.Fatalf("%.600s", body)
+	}
+
+	// The allowlist also matches the Meta id of a linked v2 player.
+	t.Setenv("SOLARA_FULL_INVENTORY_IDS", "9990001")
+	pl := models.NewMothershipV2PlayerDbObject()
+	pl.PlayerId, pl.ExternalProviderId = strp("plain-user"), strp("9990001")
+	v2Players().Insert(pl)
+	if !fullCatalogueUser("plain-user") || fullCatalogueUser("other") {
+		t.Fatal("v2 link")
 	}
 }

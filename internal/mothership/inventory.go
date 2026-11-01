@@ -235,6 +235,21 @@ func (s *MothershipServer) GetInventoryClient(c *hosting.Context) hosting.Result
 		}
 	}
 
+	// Solara: the full catalogue is only for the allowlisted accounts (fullCatalogueUser). Everyone else gets
+	// what they really own (the stored items above) plus every currency at 0, which keeps the client's
+	// inventory gate open without handing out cosmetics.
+	if !fullCatalogueUser(userId) {
+		ids, cur := a2CatalogueItems()
+		for _, id := range ids {
+			if cur[id] && !have[id] {
+				entitlements = append(entitlements, stj.O("entitlement_id", stableId(userId+":"+id),
+					"in_game_id", id, "name", id, "quantity", 0))
+			}
+		}
+		authLog(fmt.Sprintf("[INVENTORY] %s: not allowlisted -> %d owned entitlement(s) + currencies", userId, len(have)))
+		return jsonAnon(stj.O("Results", stj.O("QUEST", stj.O("platform", "QUEST", "isPrimary", true, "entitlements", entitlements))), 200)
+	}
+
 	// Grant what the player wears, then the shared catalogue (so the client's
 	// inventory gate opens even for a player who never joined a station).
 	// Solara: always merged (stored items no longer hide the catalogue).
@@ -314,4 +329,44 @@ func (s *MothershipServer) AddInventoryItem(c *hosting.Context) hosting.Result {
 
 	allItems := cl.Find(func(i *models.MothershipInventoryItemDbObject) bool { return dbEq(i.PlayerId, playerId) })
 	return jsonAnon(stj.O("Results", allItems), 200)
+}
+
+// defaultFullCatalogueIds are the Meta account ids that get every cosmetic: drycheetah (main and spec
+// accounts) and unreleasedd. SOLARA_FULL_INVENTORY_IDS (comma-separated Meta or Mothership player ids)
+// replaces the list when set.
+var defaultFullCatalogueIds = []string{"28147570424869138", "27955102177488739", "28327711050183927"}
+
+func fullCatalogueIds() []string {
+	if v := strings.TrimSpace(os.Getenv("SOLARA_FULL_INVENTORY_IDS")); v != "" {
+		out := []string{}
+		for _, p := range strings.Split(v, ",") {
+			if p = strings.TrimSpace(p); p != "" {
+				out = append(out, p)
+			}
+		}
+		return out
+	}
+	return defaultFullCatalogueIds
+}
+
+// fullCatalogueUser reports whether the Mothership player id (the token subject) is allowlisted, either
+// directly or through any platform account (v2 ExternalProviderId / v1 ExternalAccountId) linked to it.
+func fullCatalogueUser(playerId string) bool {
+	allow := fullCatalogueIds()
+	if containsStr(allow, playerId) {
+		return true
+	}
+	for _, p := range v2Players().Find(func(p *models.MothershipV2PlayerDbObject) bool { return dbEq(p.PlayerId, playerId) }) {
+		if containsStr(allow, sv(p.ExternalProviderId)) {
+			return true
+		}
+	}
+	for _, p := range col(models.NewMothershipPlayerDbObject).Find(func(p *models.MothershipPlayerDbObject) bool {
+		return dbEq(p.MothershipPlayerId, playerId)
+	}) {
+		if containsStr(allow, sv(p.ExternalAccountId)) {
+			return true
+		}
+	}
+	return false
 }
