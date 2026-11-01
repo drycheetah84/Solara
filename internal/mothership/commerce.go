@@ -10,6 +10,8 @@
 package mothership
 
 import (
+	"fmt"
+
 	"solara/internal/docdb"
 	"solara/internal/hosting"
 	"solara/internal/mothership/models"
@@ -135,6 +137,20 @@ func (s *MothershipServer) AutomationGetOfferDisplays(c *hosting.Context) hostin
 // ClientPurchase processes a client purchase by offer ID (requires the admin
 // key in the original as well).
 func (s *MothershipServer) ClientPurchase(c *hosting.Context) hosting.Result {
+	// Solara: a player buying one of the 50451 storefront's offers (storefront50451.go). Body {OfferDisplayId,
+	// OfferDisplayIndex, OfferId}; reply {"Changes": [entitlement]} (parser 0x4DCF4E0 -> 0x4DD9F30, quantity int).
+	if !isAdmin(c.Request) && isClient(c.Request) {
+		userId := getUserIdFromToken(c.Request)
+		offerId := str(parseBody(c.Request), "OfferId")
+		for _, id := range a2BundleIds() {
+			if stableId("offer:"+id) == offerId {
+				authLog(fmt.Sprintf("[STORE] %s purchased %s", userId, id))
+				return jsonAnon(stj.O("Changes", []any{stj.O("entitlement_id", stableId(userId+":"+id),
+					"in_game_id", id, "name", id, "quantity", 1)}), 200)
+			}
+		}
+		return jsonError(404, "NotFound", "Offer not found", "", nil)
+	}
 	if !isAdmin(c.Request) {
 		return unauthorized()
 	}
@@ -148,6 +164,11 @@ func (s *MothershipServer) ClientPurchase(c *hosting.Context) hosting.Result {
 }
 
 func (s *MothershipServer) ClientRefreshIap(c *hosting.Context) hosting.Result {
+	// Solara: a player gets the 50451 shape ({"NewInventoryChangesAvailable": bool}, parser 0x4DCFF90; the client
+	// sends GET). Nothing comes from a platform store here, so there are never new changes.
+	if !isAdmin(c.Request) && isClient(c.Request) {
+		return jsonAnon(stj.O("NewInventoryChangesAvailable", false), 200)
+	}
 	if !isAdmin(c.Request) {
 		return unauthorized()
 	}
@@ -265,6 +286,11 @@ func (s *MothershipServer) AutomationTransactionSunset(c *hosting.Context) hosti
 
 // ClientGetStorefront returns the storefront with offers and displays.
 func (s *MothershipServer) ClientGetStorefront(c *hosting.Context) hosting.Result {
+	// Solara: a player (x-mothership-token) gets the 50451 storefront. The original admitted admins only,
+	// so every client fetch was a 401 ("Could not get the store for the user") and the bundle UI had no offers.
+	if !isAdmin(c.Request) && isClient(c.Request) {
+		return jsonAnon(stj.O("Results", a2Storefront(getUserIdFromToken(c.Request))), 200)
+	}
 	if !isAdmin(c.Request) {
 		return unauthorized()
 	}

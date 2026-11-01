@@ -58,9 +58,9 @@ func (s *MothershipServer) GetUserDataClient(c *hosting.Context) hosting.Result 
 		authLog(fmt.Sprintf("[USERDATA] %s GET %s -> not stored yet, returning empty (bootstrap)", userId, keyName))
 		empty := models.NewMothershipUserDataDbObject()
 		empty.DataId, empty.UserId, empty.KeyName, empty.Value, empty.Generation = strp(""), strp(userId), strp(keyName), strp(""), 0
-		return jsonT(empty, 200)
+		return userDataResult(empty)
 	}
-	return jsonT(item, 200)
+	return userDataResult(item)
 }
 
 // ---- AUTO-COMPLETED QUESTS --------------------------------------------------
@@ -278,7 +278,7 @@ func (s *MothershipServer) PostUserDataClient(c *hosting.Context) hosting.Result
 		existing.Generation = existing.Generation + 1
 		cl.Update(existing)
 		authLog(fmt.Sprintf("[USERDATA] %s SAVED %s gen=%d bytes=%d", userId, keyName, existing.Generation, utf16Len(*existing.Value)))
-		return jsonT(existing, 200)
+		return userDataResult(existing)
 	}
 
 	data := models.NewMothershipUserDataDbObject()
@@ -289,7 +289,7 @@ func (s *MothershipServer) PostUserDataClient(c *hosting.Context) hosting.Result
 	data.Generation = 1
 	cl.Insert(data)
 	authLog(fmt.Sprintf("[USERDATA] %s CREATED %s bytes=%d (first ever save of this key)", userId, keyName, utf16Len(*data.Value)))
-	return jsonT(data, 200)
+	return userDataResult(data)
 }
 
 // DeleteUserData deletes a specific user data key for a player.
@@ -332,4 +332,29 @@ func (s *MothershipServer) ListUserDataMetadata(c *hosting.Context) hosting.Resu
 	}
 	results := col(models.NewMothershipUserDataMetadataDbObject).FindAll()
 	return jsonAnon(stj.O("Results", results), 200)
+}
+
+// userDataResult: the stored record plus the fields the 50451 client's user-data parsers require
+// (GET 0x4DDE8A0 / POST 0x4DDF630): metadata_id, created_by and last_written_by are mandatory strings and
+// generation an unsigned int -- without them every GET is "Get UserData Error" (HTTP 200, "malformed").
+// created_time / last_updated_time are optional and omitted. Older clients ignore the extra keys.
+func userDataResult(d *models.MothershipUserDataDbObject) hosting.Result {
+	meta := sv(d.DataId)
+	if meta == "" {
+		meta = sv(d.KeyName)
+	}
+	gen := d.Generation
+	if gen < 0 {
+		gen = 0
+	}
+	return jsonAnon(stj.O(
+		"id", sv(d.DataId),
+		"user_id", sv(d.UserId),
+		"key_name", sv(d.KeyName),
+		"value", sv(d.Value),
+		"generation", gen,
+		"metadata_id", meta,
+		"created_by", sv(d.UserId),
+		"last_written_by", sv(d.UserId),
+	), 200)
 }

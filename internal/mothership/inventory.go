@@ -6,6 +6,7 @@ package mothership
 
 import (
 	"crypto/sha1"
+	_ "embed"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -56,6 +57,49 @@ func decodeEquippedItems(storedValue *string) (ids []string) {
 		ids = append(ids, v)
 	}
 	return ids
+}
+
+// Solara extension: every item id the 50451 game knows (DT_ItemCatalogMetadata rows, dumped live by the
+// server DLL's [ITEMCAT] pass), "<in_game_id>	<EA2CatalogItemCategory>". Added to the catalogue after the
+// file's lines (so a "-<id>" line there still blocks one); currencies (category 5) get a balance.
+//
+//go:embed a2_50451_items.tsv
+var a2ItemsTsv string
+
+const a2CurrencyQuantity = 1000000
+
+var (
+	a2ItemsOnce     sync.Once
+	a2ItemsIds      []string
+	a2ItemsCurrency map[string]bool
+)
+
+func a2CatalogueItems() ([]string, map[string]bool) {
+	a2ItemsOnce.Do(func() { a2ItemsIds, a2ItemsCurrency = parseA2Items() })
+	return a2ItemsIds, a2ItemsCurrency
+}
+
+func parseA2Items() (ids []string, currency map[string]bool) {
+	currency = map[string]bool{}
+	for _, line := range strings.Split(a2ItemsTsv, "\n") {
+		line = strings.TrimSpace(line)
+		if line == "" || line[0] == '#' {
+			continue
+		}
+		f := strings.Split(line, "\t")
+		ids = append(ids, f[0])
+		if len(f) > 1 && f[1] == "5" {
+			currency[f[0]] = true
+		}
+	}
+	return ids, currency
+}
+
+func a2ItemQuantity(id string) int {
+	if _, cur := a2CatalogueItems(); cur[id] {
+		return a2CurrencyQuantity
+	}
+	return 1
 }
 
 var (
@@ -111,6 +155,12 @@ func cosmeticCatalogue() []string {
 		}
 	}()
 
+	if ids50, _ := a2CatalogueItems(); len(ids50) > 0 {
+		for _, id := range ids50 {
+			add(id)
+		}
+	}
+
 	func() {
 		defer func() {
 			if p := recover(); p != nil {
@@ -155,19 +205,40 @@ func (s *MothershipServer) GetInventoryClient(c *hosting.Context) hosting.Result
 	}
 
 	entitlements := []any{}
+	have := map[string]bool{}
 	for _, item := range inventoryItems().Find(func(i *models.MothershipInventoryItemDbObject) bool {
 		return dbEq(i.PlayerId, userId)
 	}) {
 		// skip a malformed stored item rather than fail the whole load (a null
 		// ItemDataJson throws ArgumentNullException, caught the same way)
 		if el, err := stj.Parse([]byte(sv(item.ItemDataJson))); err == nil {
-			entitlements = append(entitlements, rewrittenElement{el})
+			if v, ok := el.TryGetProperty("in_game_id"); !ok || v.ValueKind() != stj.String {
+				continue // not an entitlement: one malformed entry fails the whole 50451 inventory load
+			}
+			// 50451 entitlement parser (0x4DDBA90) requires entitlement_id, in_game_id, name AND an int
+			// quantity -- one entitlement without it fails the whole inventory load.
+			if _, ok := el.TryGetProperty("quantity"); ok {
+				entitlements = append(entitlements, rewrittenElement{el})
+			} else {
+				g := func(k string) string {
+					if v, ok := el.TryGetProperty(k); ok && v.ValueKind() == stj.String {
+						return sv(v.GetString())
+					}
+					return ""
+				}
+				entitlements = append(entitlements, stj.O("entitlement_id", g("entitlement_id"), "in_game_id", g("in_game_id"),
+					"name", g("name"), "quantity", a2ItemQuantity(g("in_game_id"))))
+			}
+			if v, ok := el.TryGetProperty("in_game_id"); ok && v.ValueKind() == stj.String {
+				have[sv(v.GetString())] = true
+			}
 		}
 	}
 
 	// Grant what the player wears, then the shared catalogue (so the client's
 	// inventory gate opens even for a player who never joined a station).
-	if len(entitlements) == 0 {
+	// Solara: always merged (stored items no longer hide the catalogue).
+	{
 		inv := findUserData(userData(), userId, "player_inventory")
 		var invValue *string
 		if inv != nil {
@@ -182,10 +253,14 @@ func (s *MothershipServer) GetInventoryClient(c *hosting.Context) hosting.Result
 			}
 		}
 		for _, id := range granted {
+			if have[id] {
+				continue
+			}
 			entitlements = append(entitlements, stj.O(
 				"entitlement_id", stableId(userId+":"+id),
 				"in_game_id", id,
 				"name", id,
+				"quantity", a2ItemQuantity(id),
 			))
 		}
 		if len(entitlements) > 0 {

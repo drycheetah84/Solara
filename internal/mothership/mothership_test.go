@@ -118,7 +118,7 @@ func TestRouteTableMatchesOriginal(t *testing.T) {
 	}
 	var got []string
 	for _, e := range s.HTTP.Endpoints() {
-		if strings.HasPrefix(e.Name, "Static/") { // static.aa-mothership.com objects (static.go), appended after the original table
+		if strings.HasPrefix(e.Name, "Static/") || strings.HasPrefix(e.Name, "Solara/") { // static.go objects + 50451 client extensions, not in the original table
 			continue
 		}
 		got = append(got, e.Method+" "+e.RouteUri+" "+e.Name)

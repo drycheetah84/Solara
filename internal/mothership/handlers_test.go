@@ -81,7 +81,7 @@ func TestUserDataLifecycle(t *testing.T) {
 	hdr := []string{"x-mothership-token", tok}
 
 	expect(t, do(t, s, "GET", "/v1/userdata/client?key_name=player_inventory", "", hdr...), 200,
-		`{"id":"","user_id":"u1","key_name":"player_inventory","value":"","generation":0}`)
+		`{"id":"","user_id":"u1","key_name":"player_inventory","value":"","generation":0,"metadata_id":"player_inventory","created_by":"u1","last_written_by":"u1"}`)
 	expect(t, do(t, s, "GET", "/v1/userdata/client", "", hdr...), 400,
 		`{"statusCode":400,"name":"BadRequest","message":"Missing key_name or token subject","details":"","key_name":"","error":"Missing key_name or token subject"}`)
 
@@ -437,16 +437,31 @@ func TestInventoryClientGrantsCatalogue(t *testing.T) {
 	catalogueAt = dotnet.MinValue // force a rebuild
 	catalogueMu.Unlock()
 	rec := do(t, s, "GET", "/v1/inventory/client", "", "x-mothership-token", tok)
-	want := `{"Results":[{"platform":"QUEST","isPrimary":true,"entitlements":[` +
-		`{"entitlement_id":"` + stableId("inv-user:Hat") + `","in_game_id":"Hat","name":"Hat"},` +
-		`{"entitlement_id":"` + stableId("inv-user:Coat") + `","in_game_id":"Coat","name":"Coat"}]}]}`
-	expect(t, rec, 200, want)
+	// worn items first, then the embedded 50451 catalogue; every entitlement carries an int quantity
+	// (the 50451 parser 0x4DDBA90 rejects the whole load without one)
+	wantPrefix := `{"Results":[{"platform":"QUEST","isPrimary":true,"entitlements":[` +
+		`{"entitlement_id":"` + stableId("inv-user:Hat") + `","in_game_id":"Hat","name":"Hat","quantity":1},` +
+		`{"entitlement_id":"` + stableId("inv-user:Coat") + `","in_game_id":"Coat","name":"Coat","quantity":1},`
+	body := rec.Body.String()
+	if rec.Code != 200 || !strings.HasPrefix(body, wantPrefix) {
+		t.Fatalf("got %d %.400s", rec.Code, body)
+	}
+	ids, cur := a2CatalogueItems()
+	if len(ids) < 600 || len(cur) != 3 || strings.Count(body, `"quantity":`) != len(ids)+2 {
+		t.Fatalf("catalogue: %d ids, %d currencies, %d quantities", len(ids), len(cur), strings.Count(body, `"quantity":`))
+	}
+	if !strings.Contains(body, `"in_game_id":"HardCurrencyJoules","name":"HardCurrencyJoules","quantity":1000000}`) ||
+		strings.Contains(body, "BadgeDeveloper") {
+		t.Fatal("currency balance / developer items")
+	}
 
-	// Stored inventory rows win (re-written as JsonElement).
+	// A stored row that is not an entitlement (no in_game_id) is skipped; the catalogue still loads.
 	adm := []string{"x-server-api-key", testServerKey}
 	do(t, s, "POST", "/v1/inventory", `{"player_id":"inv-user","item_id":"i1", "x" : [ 1 ]}`, adm...)
-	expect(t, do(t, s, "GET", "/v1/inventory/client", "", "x-mothership-token", tok), 200,
-		`{"Results":[{"platform":"QUEST","isPrimary":true,"entitlements":[{"player_id":"inv-user","item_id":"i1","x":[1]}]}]}`)
+	body2 := do(t, s, "GET", "/v1/inventory/client", "", "x-mothership-token", tok).Body.String()
+	if strings.Contains(body2, `"item_id"`) || strings.Count(body2, `"quantity":`) != len(ids)+2 {
+		t.Fatalf("%.300s", body2)
+	}
 	expect(t, do(t, s, "GET", "/v1/inventory/client", ""), 401,
 		`{"statusCode":401,"name":"Unauthorized","message":"Missing or invalid session token","details":"","key_name":"","error":"Missing or invalid session token"}`)
 }
