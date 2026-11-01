@@ -42,7 +42,14 @@ func v1LoginFrom(r hosting.Result) hosting.Result {
 		if p == nil {
 			continue
 		}
-		out.Permissions = append(out.Permissions, &v1UserPermission{StationId: p.StationId, FleetId: p.StationId, Permission: p.Permission})
+		// 50451 permission check (0x56BD700) grants a permission only when the entry's fleet equals the current
+		// fleet or is FName None (empty) -- None is the wildcard. "global" would become FName "Global", match
+		// nothing, and the player would hold every permission yet pass no check. Global perms go out empty.
+		fleet := p.StationId
+		if fleet == nil || *fleet == "" || a2EqFoldS(fleet, "global") {
+			fleet = a2Str("")
+		}
+		out.Permissions = append(out.Permissions, &v1UserPermission{StationId: p.StationId, FleetId: fleet, Permission: p.Permission})
 	}
 	return hosting.Ok(out)
 }
