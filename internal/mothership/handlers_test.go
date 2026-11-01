@@ -598,3 +598,22 @@ func TestInventoryClientNotAllowlisted(t *testing.T) {
 		t.Fatal("v2 link")
 	}
 }
+
+// 50451 client title-data contract (parser 0x4DCBFA0): an array of {title_id, updated_at, key, data, server_only}.
+func TestClientTitleData50451Shape(t *testing.T) {
+	s := newTestServer(t)
+	old := TitleDataExtra
+	TitleDataExtra = func() map[string]string { return map[string]string{"BoardTextureUrl1": "https://x/b.png", "Empty": ""} }
+	t.Cleanup(func() { TitleDataExtra = old })
+	do(t, s, "POST", "/v1/title-data", `{"key":"Motd","value":"hi"}`, "x-server-api-key", testServerKey)
+	body := do(t, s, "GET", "/v1/title-data/client", "", nil...).Body.String()
+	for _, want := range []string{`"key":"Motd"`, `"data":"hi"`, `"key":"BoardTextureUrl1"`, `"data":"https://x/b.png"`,
+		`"server_only":false`, `"title_id":"a2"`, `"updated_at":"`} {
+		if !strings.Contains(body, want) {
+			t.Fatalf("missing %s in %s", want, body)
+		}
+	}
+	if strings.Contains(body, `"key":"Empty"`) || !strings.HasPrefix(body, `{"Results":[`) {
+		t.Fatal(body)
+	}
+}

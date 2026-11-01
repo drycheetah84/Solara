@@ -7,6 +7,9 @@
 package mothership
 
 import (
+	"sort"
+	"time"
+
 	"solara/internal/docdb"
 	"solara/internal/hosting"
 	"solara/internal/mothership/models"
@@ -188,9 +191,50 @@ func (s *MothershipServer) DeleteTitleData(c *hosting.Context) hosting.Result {
 	return deleteTitleData(c)
 }
 
-// ClientGetTitleData returns all title data (no auth required).
+// TitleDataExtra (Solara) supplies extra client title-data entries: the live station's board image URLs. Set by
+// the station package at startup (it cannot be imported from here). 50451 boards whose ImageLoader Source is
+// MothershipTitleData (BoardTextureUrl1/2/11, ShuttlePosterUrl, ShuttleUrl4-6) read their URL from this response,
+// not from the station config -- without this an uploaded board never showed.
+var TitleDataExtra func() map[string]string
+
+// ClientGetTitleData returns all title data (no auth required). Stored keys win over TitleDataExtra.
 func (s *MothershipServer) ClientGetTitleData(c *hosting.Context) hosting.Result {
-	return jsonAnon(stj.O("Results", titleData().FindAll()), 200)
+	items := titleData().FindAll()
+	if TitleDataExtra != nil {
+		have := map[string]bool{}
+		for _, it := range items {
+			have[sv(it.Key)] = true
+		}
+		extra := TitleDataExtra()
+		keys := make([]string, 0, len(extra))
+		for k := range extra {
+			keys = append(keys, k)
+		}
+		sort.Strings(keys)
+		for _, k := range keys {
+			if have[k] || extra[k] == "" {
+				continue
+			}
+			it := models.NewMothershipTitleDataDbObject()
+			it.Key, it.Value = strp(k), strp(extra[k])
+			items = append(items, it)
+		}
+	}
+	// 50451 client parser (0x4DCBFA0): Results is an ARRAY and every entry needs strings title_id, updated_at, key,
+	// data and a bool server_only (env_id / deployment_id optional) -- an entry missing one fails the whole load,
+	// so the stored {key, value} rows were never usable by this build. Emit that shape ("value" kept alongside
+	// "data" for anything that read the old field).
+	now := time.Now().UTC().Format("2006-01-02T15:04:05.000Z")
+	out := make([]any, 0, len(items))
+	for _, it := range items {
+		upd := sv(it.UpdatedAt)
+		if upd == "" {
+			upd = now
+		}
+		out = append(out, stj.O("title_id", "a2", "updated_at", upd, "key", sv(it.Key), "data", sv(it.Value),
+			"value", sv(it.Value), "server_only", false))
+	}
+	return jsonAnon(stj.O("Results", out), 200)
 }
 
 // AutomationSetTitleData creates or updates a title data entry.
