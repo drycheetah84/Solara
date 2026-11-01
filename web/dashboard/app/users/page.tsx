@@ -5,6 +5,7 @@ import { api, type User, type Station } from "../../lib/api";
 import { fmt, ago } from "../../lib/utils";
 import { X } from "lucide-react";
 import GameBans from "./GameBans";
+import ItemsModal from "./ItemsModal";
 
 function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
   return (
@@ -38,6 +39,7 @@ export default function UsersPage() {
   const [banDuration, setBanDuration] = useState("0");
   const [saving, setSaving]         = useState(false);
   const [actionErr, setActionErr]   = useState<string | null>(null);
+  const [itemsFor, setItemsFor] = useState<User | null>(null);
 
   useEffect(() => {
     Promise.all([api.users(), api.stations()])
@@ -175,6 +177,11 @@ export default function UsersPage() {
                         Ban
                       </button>
                     )}
+                    <button onClick={() => setItemsFor(u)}
+                      className="text-xs px-2 py-1 rounded"
+                      style={{ color: "var(--text)", border: "1px solid var(--border)" }}>
+                      Items
+                    </button>
                     <button onClick={() => toggleAdmin(u)}
                       className="text-xs px-2 py-1 rounded"
                       style={{ color: u.is_admin ? "#f0883e" : "var(--muted)", border: "1px solid var(--border)" }}>
@@ -187,6 +194,10 @@ export default function UsersPage() {
           </tbody>
         </table>
       </div>
+
+      {itemsFor && (
+        <ItemsModal userId={itemsFor.user_id} username={itemsFor.username || itemsFor.user_id} onClose={() => setItemsFor(null)} />
+      )}
 
       {/* Ban modal */}
       {banTarget && (

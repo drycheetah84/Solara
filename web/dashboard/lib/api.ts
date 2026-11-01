@@ -124,6 +124,12 @@ export type GameBan = {
   expires_at: string;
 };
 
+// Grantable item from the 50451 catalogue (GET /api/catalog/items).
+export type CatalogItem = { id: string; currency: boolean };
+export type OwnedItem = { id: string; quantity: number; currency: boolean };
+// GET /api/users/{id}/inventory
+export type UserInventory = { player_id: string; full_catalogue: boolean; items: OwnedItem[] };
+
 export type ActionResult = {
   success: boolean;
   error?: string;
@@ -280,6 +286,14 @@ export const api = {
   // In-game / game-server bans (Mothership) -- the in-game moderation panel issues these
   gameBans:     ()                 => get<GameBan[]>("game_bans"),
   liftGameBans: (playerId: string) => post<ActionResult>(`game_bans/${encodeURIComponent(playerId)}/unban`),
+
+  // Cosmetics / currency (Mothership inventory). user_id = dashboard user id (Meta id) or Mothership player id.
+  catalogItems:  ()                                   => get<CatalogItem[]>("catalog/items"),
+  userInventory: (userId: string)                     => get<UserInventory | ActionResult>(`users/${encodeURIComponent(userId)}/inventory`),
+  grantItem:     (userId: string, itemId: string, quantity: number) =>
+    post<ActionResult>(`users/${encodeURIComponent(userId)}/inventory`, { item_id: itemId, quantity }),
+  revokeItem:    (userId: string, itemId: string)     =>
+    del<ActionResult>(`users/${encodeURIComponent(userId)}/inventory/${encodeURIComponent(itemId)}`),
 
   // Role management
   createRole: (stationId: string, roleName: string, roleDescription: string) =>

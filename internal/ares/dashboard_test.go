@@ -107,7 +107,9 @@ func TestDashboardRouteTable(t *testing.T) {
 	// The 53 original routes come first and in order; Solara's additions
 	// (SEC-SID server-token API) are registered after them.
 	extra := []string{"GET /api/server-tokens ListServerTokens", "DELETE /api/server-tokens/{id} RevokeServerToken",
-		"GET /api/game_bans Solara/GetGameBans", "POST /api/game_bans/{player_id}/unban Solara/LiftGameBans"}
+		"GET /api/game_bans Solara/GetGameBans", "POST /api/game_bans/{player_id}/unban Solara/LiftGameBans",
+		"GET /api/catalog/items Solara/GetGrantableItems", "GET /api/users/{user_id}/inventory Solara/GetUserInventory",
+		"POST /api/users/{user_id}/inventory Solara/GrantUserItem", "DELETE /api/users/{user_id}/inventory/{item_id} Solara/RevokeUserItem"}
 	if len(got) != len(want)+len(extra) || strings.Join(got[:len(want)], "\n") != strings.Join(want, "\n") ||
 		strings.Join(got[len(want):], "\n") != strings.Join(extra, "\n") {
 		t.Fatalf("route table mismatch:\n got %v\nwant %v + %v", got, want, extra)
