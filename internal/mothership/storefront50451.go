@@ -1,6 +1,6 @@
 // Solara extension: the 50451 ("pod-cosmetics") client storefront.
 //
-// GET /v1/storefront/client is parsed by 0x4DCE910 as {"Results": [offer display]}; each display (0x4DD7D00) is
+// GET /v1/storefront/client is parsed by 0x4DCE910 as {"Results": {"<display name>": offer display}}; each display (0x4DD7D00) is
 // {name, offer_display_id, offers: [offer]} and each offer (0x4DDC260) is
 //
 //	{OfferId, PersonalizedCredits{}, PersonalizedDebits{}, RawCredits{}, RawDebits{}, PurchaseAllowed bool,
@@ -45,7 +45,7 @@ func splitLines(s string) []string {
 	return out
 }
 
-func a2Storefront(userId string) []any {
+func a2Storefront(userId string) stj.Obj {
 	offersList := []any{}
 	for i, id := range a2BundleIds() {
 		credit := stj.O(id, stj.O(
@@ -68,9 +68,10 @@ func a2Storefront(userId string) []any {
 			"OfferName", id,
 		))
 	}
-	return []any{stj.O(
+	// root 0x4DCE910: Results is an OBJECT keyed by display name, each member an offer display (0x4DD7D00)
+	return stj.O("IAP", stj.O(
 		"name", "IAP",
 		"offer_display_id", stableId("offer_display:IAP"),
 		"offers", offersList,
-	)}
+	))
 }

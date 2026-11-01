@@ -271,7 +271,9 @@ func (s *MothershipServer) GetInventoryClient(c *hosting.Context) hosting.Result
 		}
 	}
 
-	return jsonAnon(stj.O("Results", []any{stj.O("platform", "QUEST", "isPrimary", true, "entitlements", entitlements)}), 200)
+	// 50451 root parser (0x4DCDF10): Results is an OBJECT keyed by platform (cmp [v+1Eh],3), each member an
+	// object -> 0x4DDD070. An array fails the whole load ("malformed, no message or statusCode found").
+	return jsonAnon(stj.O("Results", stj.O("QUEST", stj.O("platform", "QUEST", "isPrimary", true, "entitlements", entitlements))), 200)
 }
 
 // GetInventory returns inventory items for a player.

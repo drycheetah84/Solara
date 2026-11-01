@@ -439,7 +439,7 @@ func TestInventoryClientGrantsCatalogue(t *testing.T) {
 	rec := do(t, s, "GET", "/v1/inventory/client", "", "x-mothership-token", tok)
 	// worn items first, then the embedded 50451 catalogue; every entitlement carries an int quantity
 	// (the 50451 parser 0x4DDBA90 rejects the whole load without one)
-	wantPrefix := `{"Results":[{"platform":"QUEST","isPrimary":true,"entitlements":[` +
+	wantPrefix := `{"Results":{"QUEST":{"platform":"QUEST","isPrimary":true,"entitlements":[` +
 		`{"entitlement_id":"` + stableId("inv-user:Hat") + `","in_game_id":"Hat","name":"Hat","quantity":1},` +
 		`{"entitlement_id":"` + stableId("inv-user:Coat") + `","in_game_id":"Coat","name":"Coat","quantity":1},`
 	body := rec.Body.String()
