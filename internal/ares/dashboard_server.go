@@ -117,6 +117,8 @@ func newAresDashboardServer() *AresDashboardServer {
 	// -- Solara additions, registered after every original route (SEC-SID) --
 	h.Handle("GET", "/api/server-tokens", "ListServerTokens", s.ListServerTokens)
 	h.Handle("DELETE", "/api/server-tokens/{id}", "RevokeServerToken", s.RevokeServerToken)
+	h.Handle("GET", "/api/game_bans", "Solara/GetGameBans", s.GetGameBans)
+	h.Handle("POST", "/api/game_bans/{player_id}/unban", "Solara/LiftGameBans", s.LiftGameBans)
 	return s
 }
 

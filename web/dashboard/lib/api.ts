@@ -110,6 +110,20 @@ export type Member = {
   roles: string[];
 };
 
+// A still-active Mothership ban (in-game moderation panel / game server), GET /api/game_bans.
+export type GameBan = {
+  ban_id: string;
+  player_id: string;
+  meta_id: string;
+  username: string;
+  category: number;
+  reason: string;
+  duration_minutes: number;
+  source: string;
+  created_at: string;
+  expires_at: string;
+};
+
 export type ActionResult = {
   success: boolean;
   error?: string;
@@ -262,6 +276,10 @@ export const api = {
     post<ActionResult>(`users/${userId}/ban`, { station_id: stationId, reason, duration }),
   unbanUser: (userId: string, stationId: string) =>
     patch<ActionResult>(`users/${userId}/unban`, { station_id: stationId }),
+
+  // In-game / game-server bans (Mothership) -- the in-game moderation panel issues these
+  gameBans:     ()                 => get<GameBan[]>("game_bans"),
+  liftGameBans: (playerId: string) => post<ActionResult>(`game_bans/${encodeURIComponent(playerId)}/unban`),
 
   // Role management
   createRole: (stationId: string, roleName: string, roleDescription: string) =>

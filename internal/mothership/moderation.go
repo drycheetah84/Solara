@@ -231,14 +231,5 @@ func (s *MothershipServer) ServerUnban(c *hosting.Context) hosting.Result {
 	if playerId == "" {
 		return errorResult("player_id required", 400)
 	}
-	now := dotnet.UtcNow()
-	cl, n := bans(), 0
-	for _, b := range cl.Find(func(b *models.MothershipBanDbObject) bool { return dbEq(b.PlayerId, playerId) }) {
-		if b.ExpiresAt.After(now) {
-			b.ExpiresAt = now
-			cl.Update(b)
-			n++
-		}
-	}
-	return jsonAnon(stj.O("lifted", n), 200)
+	return jsonAnon(stj.O("lifted", LiftBans(playerId)), 200)
 }

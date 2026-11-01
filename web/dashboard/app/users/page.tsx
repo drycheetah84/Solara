@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { api, type User, type Station } from "../../lib/api";
 import { fmt, ago } from "../../lib/utils";
 import { X } from "lucide-react";
+import GameBans from "./GameBans";
 
 function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
   return (
@@ -103,6 +104,8 @@ export default function UsersPage() {
           {err}
         </div>
       )}
+
+      <GameBans />
 
       <div className="rounded-lg overflow-hidden" style={{ border: "1px solid var(--border)" }}>
         <table className="w-full text-sm">
