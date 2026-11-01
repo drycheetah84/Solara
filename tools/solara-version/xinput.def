@@ -1,0 +1,15 @@
+LIBRARY XINPUT1_4
+EXPORTS
+    XInputGetState=P_XInputGetState @2
+    XInputSetState=P_XInputSetState @3
+    XInputGetCapabilities=P_XInputGetCapabilities @4
+    XInputEnable=P_XInputEnable @5
+    XInputGetAudioDeviceIds=P_XInputGetAudioDeviceIds @10
+    XInputGetBatteryInformation=P_XInputGetBatteryInformation @7
+    XInputGetKeystroke=P_XInputGetKeystroke @8
+    Ord100=P_Ord100 @100 NONAME
+    Ord101=P_Ord101 @101 NONAME
+    Ord102=P_Ord102 @102 NONAME
+    Ord103=P_Ord103 @103 NONAME
+    Ord104=P_Ord104 @104 NONAME
+    Ord108=P_Ord108 @108 NONAME
