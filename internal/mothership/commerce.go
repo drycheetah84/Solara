@@ -143,9 +143,17 @@ func (s *MothershipServer) ClientPurchase(c *hosting.Context) hosting.Result {
 		userId := getUserIdFromToken(c.Request)
 		offerId := str(parseBody(c.Request), "OfferId")
 		if o := a2FindOffer(offerId); o != nil {
-			authLog(fmt.Sprintf("[STORE] %s purchased %s (%s x%d)", userId, o.Key, o.InGameId, o.Change))
-			return jsonAnon(stj.O("Changes", []any{stj.O("entitlement_id", stableId(userId+":"+o.InGameId),
-				"in_game_id", o.InGameId, "name", o.InGameId, "quantity", o.Change)}), 200)
+			authLog(fmt.Sprintf("[STORE] %s purchased %s", userId, o.Key))
+			changes := []any{}
+			for _, c := range o.Credits {
+				q := c.Change
+				if c.Type == "CURRENCY" {
+					q = a2CurrencyQuantity // balances are not tracked: the stored total stays the granted amount
+				}
+				changes = append(changes, stj.O("entitlement_id", stableId(userId+":"+c.InGameId),
+					"in_game_id", c.InGameId, "name", c.InGameId, "quantity", q))
+			}
+			return jsonAnon(stj.O("Changes", changes), 200)
 		}
 		return jsonError(404, "NotFound", "Offer not found", "", nil)
 	}
