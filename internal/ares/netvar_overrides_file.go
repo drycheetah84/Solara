@@ -252,7 +252,7 @@ func a2SafeFileName(s string) string {
 // that fetch is not triggered (its DLL trigger still uses stale RVAs), so without this the boards never got
 // their URLs. Only non-empty values are sent, and an explicit nv.world.config/stationConfig/<key> wins.
 func stationConfigWorldLines(cfg map[string]*string) []string {
-	keys := append([]string{"StationAnnouncement"}, BoardConfigKeys...)
+	keys := append([]string{}, stationConfigNetvarKeys...)
 	sort.Strings(keys)
 	out := []string{}
 	for _, k := range keys {

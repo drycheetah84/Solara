@@ -1,6 +1,7 @@
 package ares
 
 import (
+	"strconv"
 	"strings"
 
 	"solara/internal/mothership"
@@ -39,10 +40,33 @@ func boardTitleData() (out map[string]string) {
 	if st == nil || st.Config == nil {
 		return out
 	}
-	for _, k := range append([]string{"StationAnnouncement"}, BoardConfigKeys...) {
+	for _, k := range append([]string{"StationAnnouncement"}, AllBoardImageKeys...) {
 		if v, ok := st.Config[k]; ok && v != nil && strings.TrimSpace(*v) != "" {
 			out[k] = *v
 		}
 	}
 	return out
 }
+
+// AllBoardImageKeys (Solara): every image key a 50451 board or poster reads -- the dashboard's BoardConfigKeys
+// plus BoardTextureUrl7-14 (in the config/stationConfig netvar schema) and the shuttle posters (title data only,
+// from the maps' ImageLoader components). A station config value for any of them is forwarded.
+var AllBoardImageKeys = func() []string {
+	k := append([]string{}, BoardConfigKeys...)
+	for i := 7; i <= 14; i++ {
+		k = append(k, "BoardTextureUrl"+strconv.Itoa(i))
+	}
+	return append(k, "ShuttlePosterUrl", "ShuttleUrl4", "ShuttleUrl5", "ShuttleUrl6")
+}()
+
+// stationConfigNetvarKeys: the keys that exist under config/stationConfig in the 50451 netvar schema
+// (NetVars/config.json) -- the shuttle posters are not there, so they go to title data only.
+var stationConfigNetvarKeys = func() []string {
+	out := []string{"StationAnnouncement"}
+	for _, k := range AllBoardImageKeys {
+		if !strings.HasPrefix(k, "Shuttle") {
+			out = append(out, k)
+		}
+	}
+	return out
+}()
