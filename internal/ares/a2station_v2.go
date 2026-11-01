@@ -5,7 +5,7 @@
 package ares
 
 import (
-	"encoding/json"
+	"fmt"
 
 	"solara/internal/ares/models"
 	"solara/internal/dotnet"
@@ -47,26 +47,30 @@ func v1LoginFrom(r hosting.Result) hosting.Result {
 	return hosting.Ok(out)
 }
 
-// v50StationItem is FStationResponse as the 50451 client imports it: config is an FString (the existing v2
-// shape sends a JSON object, written for the 29932 client), district_populations a TMap<FString,int32>, and
-// last_event an FDateTime. FJsonObjectConverter fails the whole item on a type mismatch, which left the 50451
-// station browser with a fleet but no stations under it.
+// v50StationItem is what the 50451 dashboard imports each /v2/stations item into: FJoinableStationResponse
+// (344 B; StationDashboardManager+48, read by the session builder 0x567D930), NOT FStationResponse. Its config
+// is a TMap<FString,FString> -- the session builder reads "max_players" / "num_reserved_slots" from it -- and it
+// carries fleet_name, is_public and is_allowlist. A string config fails the whole page import (the browser then
+// shows nothing at all); without is_public the station is not offered.
 type v50StationItem struct {
-	StationId           *string         `json:"station_id"`
-	FleetId             *string         `json:"fleet_id"`
-	SessionId           *string         `json:"session_id"`
-	StationName         *string         `json:"station_name"`
-	Region              string          `json:"region"`
-	Ip                  *string         `json:"ip"`
-	Version             *string         `json:"version"`
-	DeploymentCl        *string         `json:"deployment_cl"`
-	Created             dotnet.DateTime `json:"created"`
-	Online              bool            `json:"online"`
-	LastEvent           dotnet.DateTime `json:"last_event"`
-	PlayerCount         int             `json:"player_count"`
-	Disabled            bool            `json:"disabled"`
-	Config              string          `json:"config"`
-	DistrictPopulations map[string]int  `json:"district_populations"`
+	StationId           *string           `json:"station_id"`
+	FleetId             *string           `json:"fleet_id"`
+	FleetName           *string           `json:"fleet_name"`
+	SessionId           *string           `json:"session_id"`
+	StationName         *string           `json:"station_name"`
+	Region              string            `json:"region"`
+	Ip                  *string           `json:"ip"`
+	Version             *string           `json:"version"`
+	DeploymentCl        *string           `json:"deployment_cl"`
+	Created             dotnet.DateTime   `json:"created"`
+	Online              bool              `json:"online"`
+	LastEvent           dotnet.DateTime   `json:"last_event"`
+	PlayerCount         int               `json:"player_count"`
+	Disabled            bool              `json:"disabled"`
+	Config              map[string]string `json:"config"`
+	DistrictPopulations map[string]int    `json:"district_populations"`
+	IsPublic            bool              `json:"is_public"`
+	IsAllowlist         bool              `json:"is_allowlist"`
 }
 
 type v50StationsPage struct {
@@ -94,21 +98,28 @@ func a2StationsPageFor50451(p *models.StationsPageV2, version string) *v50Statio
 		if it.Ip != nil && hasExact[*it.Ip] && (it.Version == nil || *it.Version != version) {
 			continue
 		}
-		cfg := "{}"
-		if len(it.Config) > 0 {
-			if b, err := json.Marshal(it.Config); err == nil {
-				cfg = string(b)
+		cfg := map[string]string{"max_players": "75", "num_reserved_slots": "0"}
+		for k, v := range it.Config {
+			if v != nil {
+				cfg[k] = fmt.Sprint(v)
 			}
 		}
 		last := it.Created
 		if it.LastEvent != nil {
 			last = *it.LastEvent
 		}
+		fleetName := it.StationName
+		if it.FleetId != nil {
+			if st := a2FindStation(*it.FleetId); st != nil && st.StationName != nil {
+				fleetName = st.StationName
+			}
+		}
 		out.Items = append(out.Items, &v50StationItem{
-			StationId: it.StationId, FleetId: it.FleetId, SessionId: it.SessionId, StationName: it.StationName,
-			Region: a2Deref(it.Region), Ip: it.Ip, Version: it.Version, DeploymentCl: it.DeploymentCl,
-			Created: it.Created, Online: it.Online, LastEvent: last, PlayerCount: it.PlayerCount,
-			Disabled: it.Disabled, Config: cfg, DistrictPopulations: map[string]int{},
+			StationId: it.StationId, FleetId: it.FleetId, FleetName: fleetName, SessionId: it.SessionId,
+			StationName: it.StationName, Region: a2Deref(it.Region), Ip: it.Ip, Version: it.Version,
+			DeploymentCl: it.DeploymentCl, Created: it.Created, Online: it.Online, LastEvent: last,
+			PlayerCount: it.PlayerCount, Disabled: it.Disabled, Config: cfg, DistrictPopulations: map[string]int{},
+			IsPublic: true, IsAllowlist: false,
 		})
 	}
 	return out

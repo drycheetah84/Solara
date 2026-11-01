@@ -164,6 +164,9 @@ var a2AllPermissions = []string{
 	"color:red", "color:yellow", "color:green",
 	"anonymous_mode",
 	"fleet_report:read", "fleet_report:write", "self:fleet_report:read", "self:fleet_report:write",
+	// Solara: permissions the 50451 client checks (EStationDashboardPermission LevelEditor, EventHost,
+	// PerfHud, VipJoin, UserDataWrite) that the original list predates.
+	"level_editor", "event_host", "perf_hud", "vip:join", "user_data:write",
 }
 
 // a2GetPermissionsForUser mirrors GetPermissionsForUser(user).
