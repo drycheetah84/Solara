@@ -148,6 +148,31 @@ func (s *MothershipServer) ListModeration(c *hosting.Context) hosting.Result {
 	return hosting.NotFound(nil)
 }
 
+// ServerActiveBan (Solara extension) answers "is this player banned right now?" for the game server DLL, which
+// enforces bans when a player logs in to the station (the 50451 client build has the server-side check compiled
+// out). GET /v1/moderation/server/active_ban?player_id=X -> {"banned":bool,"reason":..,"expires_at":..}; the ban
+// that expires last wins. Admin/server auth like the other server moderation routes.
+func (s *MothershipServer) ServerActiveBan(c *hosting.Context) hosting.Result {
+	if !isAdmin(c.Request) {
+		return unauthorized()
+	}
+	playerId, ok := c.Request.Query("player_id")
+	if !ok || playerId == "" {
+		return jsonAnon(stj.O("banned", false), 200)
+	}
+	now := dotnet.UtcNow()
+	var active *models.MothershipBanDbObject
+	for _, b := range bans().Find(func(b *models.MothershipBanDbObject) bool { return dbEq(b.PlayerId, playerId) }) {
+		if b.ExpiresAt.After(now) && (active == nil || b.ExpiresAt.After(active.ExpiresAt)) {
+			active = b
+		}
+	}
+	if active == nil {
+		return jsonAnon(stj.O("banned", false), 200)
+	}
+	return jsonAnon(stj.O("banned", true, "reason", active.Reason, "expires_at", active.ExpiresAt), 200)
+}
+
 // GetModerationAutomation returns all bans, mutes and reports.
 func (s *MothershipServer) GetModerationAutomation(c *hosting.Context) hosting.Result {
 	if !isAdmin(c.Request) {

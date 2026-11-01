@@ -547,3 +547,26 @@ func tampered(tok string) string {
 	}
 	return tok[:len(tok)-1] + "A"
 }
+
+// Solara extension used by the game-server DLL to enforce bans at station login.
+func TestServerActiveBan(t *testing.T) {
+	s := newTestServer(t)
+	expect(t, do(t, s, "GET", "/v1/moderation/server/active_ban?player_id=P1", ""), 401, unauthorizedBody)
+	adm := []string{"x-automation-key", testAutomationKey}
+	if m := decode(t, do(t, s, "GET", "/v1/moderation/server/active_ban?player_id=P1", "", adm...)); m["banned"] != false {
+		t.Fatalf("no bans: %v", m)
+	}
+	do(t, s, "POST", "/v1/moderation/server/ban", `{"player_id":"P1","duration_minutes":0,"reason":"expired"}`, adm...)
+	if m := decode(t, do(t, s, "GET", "/v1/moderation/server/active_ban?player_id=P1", "", adm...)); m["banned"] != false {
+		t.Fatalf("a 0-minute ban is already expired: %v", m)
+	}
+	do(t, s, "POST", "/v1/moderation/server/ban", `{"player_id":"P1","duration_minutes":30,"reason":"short"}`, adm...)
+	do(t, s, "POST", "/v1/moderation/server/ban", `{"player_id":"P1","duration_minutes":600,"reason":"long"}`, adm...)
+	m := decode(t, do(t, s, "GET", "/v1/moderation/server/active_ban?player_id=P1", "", adm...))
+	if m["banned"] != true || m["reason"] != "long" {
+		t.Fatalf("active ban (longest wins): %v", m)
+	}
+	if m := decode(t, do(t, s, "GET", "/v1/moderation/server/active_ban?player_id=OTHER", "", adm...)); m["banned"] != false {
+		t.Fatalf("other player: %v", m)
+	}
+}
