@@ -17,7 +17,7 @@ func TestTechTrees(t *testing.T) {
 			Tree            struct{ Name string }
 			NodeDefinitions []struct {
 				Name     string `json:"name"`
-				NodeId   string `json:"node_id"`
+				NodeId   string `json:"id"`
 				TreeId   string `json:"tree_id"`
 				Unlocked bool   `json:"unlocked"`
 			}

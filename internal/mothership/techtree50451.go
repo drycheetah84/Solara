@@ -12,7 +12,7 @@
 //	                    cost: {<key>: {Delta, Entitlement{entitlement_id, name, in_game_id, title_id, env_id, type}}},
 //	                    transaction: {transaction_id, name, title_id, env_id, inventory_changes: {<key>: {Delta, Entitlement}}},
 //	                    unlocked: bool}],
-//	 Track: {...} (optional: only read when it is a non-empty object)}
+//	 Track: {...} (REQUIRED key; {} or null accepted). Every node and the Tree also carry "id" (node id must be non-empty)}
 //
 // Unlock: the game server calls POST <base>/<scope>/<tree id>/node/unlock (0x4DF7060; also /node/forceUnlock) with
 // {node_id, mothership_player_id}; /node/lock (0x4DF1EB0) adds refund_costs / rewind_rewards. Solara enforces the
@@ -137,10 +137,10 @@ func a2TreeState(playerId string, t *a2Tree, refresh bool) stj.Obj {
 		defs = append(defs, stj.O(
 			"tree_id", a2TreeId(t),
 			"name", n.Name,
-			"node_id", a2NodeId(n),
+			"id", a2NodeId(n), // required, non-empty (key at 0x148D80558)
 			"prerequisite_nodes", stj.O(),
-			"prerequisite_entitlements", stj.O(),
-			"prerequisite_levels", stj.O(),
+			"prerequisite_entitlements", []any{},
+			"prerequisite_levels", []any{},
 			"cost", cost,
 			"transaction", stj.O("transaction_id", stableId("tx:"+n.Graph+":"+n.Name), "name", n.Name, "title_id", "", "env_id", "",
 				"inventory_changes", changes),
@@ -148,8 +148,9 @@ func a2TreeState(playerId string, t *a2Tree, refresh bool) stj.Obj {
 		))
 	}
 	return stj.O("PlayerId", playerId, "InventoryRefreshRequired", refresh,
-		"Tree", stj.O("env_id", "", "title_id", "", "name", t.Name, "track_id", ""),
-		"NodeDefinitions", defs)
+		"Tree", stj.O("id", a2TreeId(t), "env_id", "", "title_id", "", "name", t.Name, "track_id", ""),
+		"NodeDefinitions", defs,
+		"Track", stj.O()) // required key: a missing Track fails the whole tree ("malformed"); {} or null = no track
 }
 
 // ClientGetProgressionTrees serves every tech tree with the player's unlocks.
