@@ -63,6 +63,8 @@ const (
 var a2RouteAuth = map[string]a2AuthLevel{
 	// Solara: challenge records -- any issued key; the handler limits a player key to its own user_id
 	"Solara/AddChallengeRecord": a2Writer,
+	// Solara: quest rewards -- the handler further requires a trusted (game server) credential
+	"Solara/PostQuestReward": a2Writer,
 	// account / privilege management
 	"CreateUserApiKey":           a2Admin,
 	"CreateOrUpdateUser":         a2Admin,

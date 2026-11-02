@@ -3394,6 +3394,28 @@ void ScriptOp(const Snapshot& snap, const std::string& line)
         Log("[script] qkiosk: %d widget(s)", found);
         return;
     }
+    if (!strcmp(op, "near"))                  // near x y z radius -- every live actor within radius, with its class (cap 120)
+    {
+        double c[3] = {}, r = 0;
+        if (sscanf_s(rest.c_str(), "%lf %lf %lf %lf", &c[0], &c[1], &c[2], &r) != 4) { Log("[script] FAIL near: want x y z radius"); return; }
+        auto* act = SDK::UObject::FindClassFast("Actor");
+        const int32_t n = SDK::UObject::GObjects->Num();
+        int shown = 0;
+        for (int32_t i = 0; act && i < n && shown < 120; ++i)
+        {
+            SDK::UObject* o = SDK::UObject::GObjects->GetByIndex(i);
+            if (!o || o->IsDefaultObject() || !o->IsA(act)) continue;
+            auto* a = static_cast<SDK::AActor*>(o);
+            if (!a->RootComponent) continue;
+            const SDK::FVector p = GetVec(a, "Actor", "K2_GetActorLocation");
+            const double dx = p.X - c[0], dy = p.Y - c[1], dz = p.Z - c[2];
+            if (dx * dx + dy * dy + dz * dz > r * r) continue;
+            Log("[script] near %s (%s) (%.0f, %.0f, %.0f)", o->GetName().c_str(), o->Class ? o->Class->GetName().c_str() : "?", p.X, p.Y, p.Z);
+            ++shown;
+        }
+        Log("[script] near: %d actor(s)", shown);
+        return;
+    }
     if (!strcmp(op, "classchain"))            // classchain <Class> -- its parent chain, and a live instance's root collision
     {
         auto* cls = SDK::UObject::FindClassFast(rest.c_str());
@@ -3488,6 +3510,99 @@ void ScriptOp(const Snapshot& snap, const std::string& line)
             return;
         }
         Log("[script] FAIL %s: no quest component on the local controller", op);
+        return;
+    }
+    if (!strcmp(op, "store"))                 // store [load] -- UA2StoreSubsystem: (re)load, or dump parsed inventory currencies + offers
+    {
+        SDK::UObject* ss = nullptr;
+        for (int i = 0; i < SDK::UObject::GObjects->Num() && !ss; ++i)
+        {
+            auto* o2 = SDK::UObject::GObjects->GetByIndex(i);
+            if (o2 && !o2->IsDefaultObject() && o2->Class && o2->Class->GetName() == "A2StoreSubsystem") ss = o2;
+        }
+        if (!ss) { Log("[script] FAIL store: no A2StoreSubsystem"); return; }
+        static uint8_t pb[256];
+        if (rest == "load")
+        {
+            for (const char* f : { "StartLoadingStore", "StartLoadingPlayerInventory" })
+                if (SDK::UFunction* fn = sereflect::FindFn(ss, f)) { memset(pb, 0, sizeof pb); sereflect::CallFn(ss, fn, pb); Log("[script] store: %s called", f); }
+            return;
+        }
+        auto fstr = [](const uint8_t* p) -> std::string {
+            const wchar_t* w = *reinterpret_cast<wchar_t* const*>(p);
+            const int n = *reinterpret_cast<const int32_t*>(p + 8);
+            std::string s;
+            for (int k = 0; w && k < n - 1 && k < 120; ++k) s += static_cast<char>(w[k]);
+            return s;
+        };
+        if (SDK::UFunction* fn = sereflect::FindFn(ss, "GetInventoryFromBlueprint"))
+        {
+            memset(pb, 0, sizeof pb);
+            sereflect::CallFn(ss, fn, pb);
+            const uint8_t* arr = *reinterpret_cast<uint8_t* const*>(pb);
+            const int n = *reinterpret_cast<const int32_t*>(pb + 8);
+            int cur = 0;
+            for (int k = 0; arr && k < n; ++k)
+            {
+                const uint8_t* e = arr + k * 0x48;
+                const std::string id = fstr(e + 0x20);
+                if (id.find("Currency") != std::string::npos || k < 2)
+                {
+                    Log("[script] store inv[%d] inGameEnt='%s' ent='%s' inGameId='%s' name='%s' qty=%d", k, fstr(e).c_str(), fstr(e + 0x10).c_str(),
+                        id.c_str(), fstr(e + 0x30).c_str(), *reinterpret_cast<const int32_t*>(e + 0x40));
+                    ++cur;
+                }
+            }
+            Log("[script] store inventory: %d item(s)", n);
+        }
+        if (SDK::UFunction* fn = sereflect::FindFn(ss, "GetOfferDisplayNames"))
+        {
+            memset(pb, 0, sizeof pb);
+            sereflect::CallFn(ss, fn, pb);
+            const uint8_t* arr = *reinterpret_cast<uint8_t* const*>(pb);
+            const int n = *reinterpret_cast<const int32_t*>(pb + 8);
+            std::vector<std::string> names;
+            for (int k = 0; arr && k < n; ++k) names.push_back(fstr(arr + k * 0x10));
+            Log("[script] store displays: %d", n);
+            SDK::UFunction* by = sereflect::FindFn(ss, "GetOfferByDisplayName");
+            for (const std::string& dn : names)
+            {
+                if (!by) break;
+                std::wstring w(dn.begin(), dn.end());
+                SDK::FString fs(w.c_str());
+                memset(pb, 0, sizeof pb);
+                memcpy(pb, &fs, sizeof fs);
+                sereflect::CallFn(ss, by, pb);
+                const uint8_t* oa = *reinterpret_cast<uint8_t* const*>(pb + 0x10);
+                const int on = *reinterpret_cast<const int32_t*>(pb + 0x18);
+                Log("[script] store display '%s': %d offer(s)", dn.c_str(), on);
+                for (int k = 0; oa && k < on && k < 3; ++k)
+                {
+                    const uint8_t* of = oa + k * 0x98;
+                    Log("[script]   offer idx=%d allowed=%d displayId='%s' rawCredits=%d rawDebits=%d persCredits=%d persDebits=%d",
+                        *reinterpret_cast<const int32_t*>(of + 0x54), of[0x50], fstr(of + 0x40).c_str(), *reinterpret_cast<const int32_t*>(of + 0x60),
+                        *reinterpret_cast<const int32_t*>(of + 0x70), *reinterpret_cast<const int32_t*>(of + 0x80), *reinterpret_cast<const int32_t*>(of + 0x90));
+                }
+            }
+        }
+        if (SDK::UFunction* fn = sereflect::FindFn(ss, "GetTimestampOfLastSuccessfulStoreLoad"))
+        {
+            memset(pb, 0, sizeof pb);
+            sereflect::CallFn(ss, fn, pb);
+            Log("[script] store last successful load t=%.1f", *reinterpret_cast<const float*>(pb));
+        }
+        return;
+    }
+    if (!strcmp(op, "pawnfn"))                // pawnfn <Function> -- run a no-argument function on our own pawn (AcknowledgedPawn)
+    {
+        auto* pawn = g_pc ? *reinterpret_cast<SDK::UObject**>(reinterpret_cast<uintptr_t>(g_pc) + 0x360) : nullptr;
+        if (!pawn) { Log("[script] FAIL pawnfn: no local pawn"); return; }
+        SDK::UFunction* fn = sereflect::FindFn(pawn, rest.c_str());
+        if (!fn) { Log("[script] FAIL pawnfn: %s has no %s", pawn->GetName().c_str(), rest.c_str()); return; }
+        static uint8_t zero[4096];
+        memset(zero, 0, sizeof(zero));
+        sereflect::CallFn(pawn, fn, zero);
+        Log("[script] pawnfn %s on %s returned", rest.c_str(), pawn->GetName().c_str());
         return;
     }
     if (!strcmp(op, "qrpc"))                  // qrpc <Function> -- a no-argument quest RPC (Server_StopGroup, ...) on our component
