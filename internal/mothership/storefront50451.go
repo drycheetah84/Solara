@@ -45,6 +45,7 @@ type a2Offer struct {
 
 const (
 	a2DriftiumId       = "HardCurrencyDriftium"
+	a2HypercubeId      = "HardCurrencyTechPoints"
 	a2AlacartePrice    = 800
 	a2AlacarteMaxIndex = 140
 )
@@ -83,6 +84,22 @@ func buildA2Offers() []a2Offer {
 	for i, n := range []int{1000, 2200, 5000, 11000} {
 		out = append(out, a2Offer{Key: fmt.Sprintf("IAP:Driftium%d", n), Name: fmt.Sprintf("%d Driftium", n), Display: "IAP", Index: i,
 			Credits: []a2Credit{{a2DriftiumId, "CURRENCY", n}}})
+	}
+	// DriftiumPacks: WBP_SharedATMKiosk / WBP_SharedIAPKiosk's Driftium ATM (decompiled: GetOfferByDisplayName("DriftiumPacks"),
+	// picked by DisplayIndex 0..3). Real-money packs on the live service; free here.
+	for i, n := range []int{1000, 2200, 5000, 11000} {
+		out = append(out, a2Offer{Key: fmt.Sprintf("DriftiumPacks:%d", n), Name: fmt.Sprintf("%d Driftium", n), Display: "DriftiumPacks", Index: i,
+			Credits: []a2Credit{{a2DriftiumId, "CURRENCY", n}}})
+	}
+	// HypercubePacks: WBP_SharedHypercubeATM (decompiled): index 0..3 are cash packs of 200/440/1000/2200 Hypercubes (free
+	// here), index 4..7 trade Driftium for 200/400/800/1600 Hypercubes at 1000/2000/4000/8000 Driftium.
+	for i, n := range []int{200, 440, 1000, 2200} {
+		out = append(out, a2Offer{Key: fmt.Sprintf("HypercubePacks:cash%d", n), Name: fmt.Sprintf("%d Hypercubes", n), Display: "HypercubePacks", Index: i,
+			Credits: []a2Credit{{a2HypercubeId, "CURRENCY", n}}})
+	}
+	for i, n := range []int{200, 400, 800, 1600} {
+		out = append(out, a2Offer{Key: fmt.Sprintf("HypercubePacks:driftium%d", n), Name: fmt.Sprintf("%d Hypercubes", n), Display: "HypercubePacks", Index: 4 + i,
+			Credits: []a2Credit{{a2HypercubeId, "CURRENCY", n}}, Debits: []a2Credit{{a2DriftiumId, "CURRENCY", n * 5}}})
 	}
 	// IAP 16: Klaus Breaker Bundle (the shop's bundle kiosk)
 	klaus := []a2Credit{}
@@ -145,7 +162,7 @@ func a2CreditMap(userId string, cs []a2Credit) stj.Obj {
 }
 
 func a2Storefront(userId string) stj.Obj {
-	displays := []string{"IAP", "Alacarte"}
+	displays := []string{"IAP", "Alacarte", "DriftiumPacks", "HypercubePacks"}
 	byDisplay := map[string][]any{}
 	for _, o := range a2Offers() {
 		credits, debits := a2CreditMap(userId, o.Credits), a2CreditMap(userId, o.Debits)

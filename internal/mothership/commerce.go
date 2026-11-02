@@ -11,6 +11,7 @@ package mothership
 
 import (
 	"fmt"
+	"sync"
 
 	"solara/internal/docdb"
 	"solara/internal/hosting"
@@ -143,16 +144,12 @@ func (s *MothershipServer) ClientPurchase(c *hosting.Context) hosting.Result {
 		userId := getUserIdFromToken(c.Request)
 		offerId := str(parseBody(c.Request), "OfferId")
 		if o := a2FindOffer(offerId); o != nil {
-			authLog(fmt.Sprintf("[STORE] %s purchased %s", userId, o.Key))
-			changes := []any{}
-			for _, c := range o.Credits {
-				q := c.Change
-				if c.Type == "CURRENCY" {
-					q = a2CurrencyQuantity // balances are not tracked: the stored total stays the granted amount
-				}
-				changes = append(changes, stj.O("entitlement_id", stableId(userId+":"+c.InGameId),
-					"in_game_id", c.InGameId, "name", a2EntitlementName(c.InGameId), "quantity", q))
+			changes, err := a2ApplyPurchase(userId, o)
+			if err != "" {
+				authLog(fmt.Sprintf("[STORE] %s could not buy %s: %s", userId, o.Key, err))
+				return jsonError(400, "InsufficientFunds", err, "", nil)
 			}
+			authLog(fmt.Sprintf("[STORE] %s purchased %s", userId, o.Key))
 			return jsonAnon(stj.O("Changes", changes), 200)
 		}
 		return jsonError(404, "NotFound", "Offer not found", "", nil)
@@ -303,4 +300,60 @@ func (s *MothershipServer) ClientGetStorefront(c *hosting.Context) hosting.Resul
 	o := offers().FindAll()
 	d := offerDisplays().FindAll()
 	return jsonAnon(stj.O("Results", stj.O("offers", o, "featured", []any{}, "displays", d)), 200)
+}
+
+var purchaseMu sync.Mutex
+
+// currencyBalance is the player's balance of a currency: the stored row, else the allowlisted default, else 0.
+func currencyBalance(playerId, id string) int {
+	if q, ok := storedQuantity(playerId, id); ok {
+		return q
+	}
+	if fullCatalogueUser(playerId) {
+		return a2CurrencyQuantity
+	}
+	return 0
+}
+
+// a2ApplyPurchase charges an offer's debits and grants its credits, and returns the changed entitlements with their
+// new totals (the 50451 purchase reply, parser 0x4DCF4E0 -> 0x4DD9F30). "" error = done.
+func a2ApplyPurchase(playerId string, o *a2Offer) ([]any, string) {
+	purchaseMu.Lock()
+	defer purchaseMu.Unlock()
+	totals := map[string]int{}
+	for _, d := range o.Debits {
+		if d.Type != "CURRENCY" {
+			continue
+		}
+		b := currencyBalance(playerId, d.InGameId)
+		if b < d.Change {
+			return nil, fmt.Sprintf("not enough %s: %d < %d", a2EntitlementName(d.InGameId), b, d.Change)
+		}
+		totals[d.InGameId] = b - d.Change
+	}
+	for _, c := range o.Credits {
+		if c.Type == "CURRENCY" {
+			b, ok := totals[c.InGameId]
+			if !ok {
+				b = currencyBalance(playerId, c.InGameId)
+			}
+			totals[c.InGameId] = b + c.Change
+		}
+	}
+	changes := []any{}
+	for id, q := range totals {
+		GrantItem(playerId, id, q)
+		changes = append(changes, stj.O("entitlement_id", stableId(playerId+":"+id), "in_game_id", id, "name", a2EntitlementName(id), "quantity", q))
+	}
+	for _, c := range o.Credits {
+		if c.Type == "CURRENCY" {
+			continue
+		}
+		if _, owned := storedQuantity(playerId, c.InGameId); !owned {
+			GrantItem(playerId, c.InGameId, 1)
+		}
+		changes = append(changes, stj.O("entitlement_id", stableId(playerId+":"+c.InGameId), "in_game_id", c.InGameId,
+			"name", a2EntitlementName(c.InGameId), "quantity", 1))
+	}
+	return changes, ""
 }
