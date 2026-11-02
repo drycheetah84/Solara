@@ -3394,6 +3394,46 @@ void ScriptOp(const Snapshot& snap, const std::string& line)
         Log("[script] qkiosk: %d widget(s)", found);
         return;
     }
+    if (!strcmp(op, "classchain"))            // classchain <Class> -- its parent chain, and a live instance's root collision
+    {
+        auto* cls = SDK::UObject::FindClassFast(rest.c_str());
+        if (!cls) { Log("[script] FAIL classchain: no class %s", rest.c_str()); return; }
+        std::string chain;
+        for (SDK::UStruct* s = cls; s; s = s->SuperStruct) { if (!chain.empty()) chain += " -> "; chain += s->GetName(); }
+        Log("[script] classchain %s: %s", rest.c_str(), chain.c_str());
+        const int32_t n = SDK::UObject::GObjects->Num();
+        for (int32_t i = 0; i < n; ++i)
+        {
+            SDK::UObject* c = SDK::UObject::GObjects->GetByIndex(i);
+            if (!c || c->IsDefaultObject() || !c->IsA(cls)) continue;
+            auto* a = static_cast<SDK::AActor*>(c);
+            auto* root = a->RootComponent;
+            Log("[script]   %s root %s (%s)", c->GetName().c_str(), root ? root->GetName().c_str() : "<none>",
+                root && root->Class ? root->Class->GetName().c_str() : "-");
+            break;
+        }
+        return;
+    }
+    if (!strcmp(op, "vtslot"))                // vtslot <Class> <byte offset> -- RVA of an instance's vtable and the function in that slot
+    {                                         // (static analysis has no RTTI in this build; same exe as the server)
+        char cname[128] = {}; unsigned off = 0;
+        if (sscanf_s(rest.c_str(), "%127s %u", cname, (unsigned)sizeof(cname), &off) != 2) { Log("[script] FAIL vtslot: want <Class> <offset>"); return; }
+        auto* cls = SDK::UObject::FindClassFast(cname);
+        const uintptr_t base = reinterpret_cast<uintptr_t>(GetModuleHandleW(nullptr));
+        const int32_t n = SDK::UObject::GObjects->Num();
+        for (int32_t i = 0; cls && i < n; ++i)
+        {
+            SDK::UObject* c = SDK::UObject::GObjects->GetByIndex(i);
+            if (!c || !c->IsA(cls)) continue;   // a class default object shares the class's vtable
+            const uintptr_t vt = *reinterpret_cast<const uintptr_t*>(c);
+            const uintptr_t fn = *reinterpret_cast<const uintptr_t*>(vt + off);
+            Log("[script] vtslot %s (%s): vtable RVA 0x%llX, slot +%u -> RVA 0x%llX", cname, c->GetName().c_str(),
+                (unsigned long long)(vt - base), off, (unsigned long long)(fn - base));
+            return;
+        }
+        Log("[script] FAIL vtslot: no live %s", cname);
+        return;
+    }
     if (!strcmp(op, "qchildren"))             // qchildren <guid hex> -- a definition's child quests (a quest line's tasks)
     {
         uint32_t g[4] = {};
