@@ -111,6 +111,48 @@ func isCurrencyId(id string) bool {
 	return cur[id]
 }
 
+// a2CurrencyAliases maps a currency's in_game_id to the extra key the 50451 client also looks it up by. The store
+// subsystem keys its inventory map by in_game_id, and AA2ProgressionPodActor::UpdateCurrency (0x57EA740, the tech-tree
+// pods' Hypercube counter) looks up the key "TechPoints" -- not HardCurrencyTechPoints -- so Hypercubes are also sent
+// under that id (same quantity). The kiosks match by name instead (a2EntitlementName), so they are unaffected.
+var a2CurrencyAliases = map[string]string{"HardCurrencyTechPoints": "TechPoints"}
+
+// currencyAlias returns the alias entitlement for a currency entitlement (nil = none).
+func currencyAlias(userId, id string, quantity int) stj.Obj {
+	alias, ok := a2CurrencyAliases[id]
+	if !ok {
+		return nil
+	}
+	return stj.O("entitlement_id", stableId(userId+":"+alias), "in_game_id", alias, "name", a2EntitlementName(id), "quantity", quantity)
+}
+
+// withCurrencyAliases appends the alias entitlement of every aliased currency in the list.
+func withCurrencyAliases(userId string, ents []any) []any {
+	out := ents
+	for _, e := range ents {
+		o, ok := e.(stj.Obj)
+		if !ok {
+			continue
+		}
+		var id string
+		q := 0
+		for _, kv := range o {
+			switch kv.K {
+			case "in_game_id":
+				id, _ = kv.V.(string)
+			case "quantity":
+				if n, ok := kv.V.(int); ok {
+					q = n
+				}
+			}
+		}
+		if a := currencyAlias(userId, id, q); a != nil {
+			out = append(out, a)
+		}
+	}
+	return out
+}
+
 func a2ItemQuantity(id string) int {
 	if _, cur := a2CatalogueItems(); cur[id] {
 		return a2CurrencyQuantity
@@ -272,7 +314,7 @@ func (s *MothershipServer) GetInventoryClient(c *hosting.Context) hosting.Result
 			}
 		}
 		authLog(fmt.Sprintf("[INVENTORY] %s: not allowlisted -> %d owned entitlement(s) + currencies", userId, len(have)))
-		return jsonAnon(stj.O("Results", stj.O("QUEST", stj.O("platform", "QUEST", "isPrimary", true, "entitlements", entitlements))), 200)
+		return jsonAnon(stj.O("Results", stj.O("QUEST", stj.O("platform", "QUEST", "isPrimary", true, "entitlements", withCurrencyAliases(userId, entitlements)))), 200)
 	}
 
 	// Grant what the player wears, then the shared catalogue (so the client's
@@ -313,7 +355,7 @@ func (s *MothershipServer) GetInventoryClient(c *hosting.Context) hosting.Result
 
 	// 50451 root parser (0x4DCDF10): Results is an OBJECT keyed by platform (cmp [v+1Eh],3), each member an
 	// object -> 0x4DDD070. An array fails the whole load ("malformed, no message or statusCode found").
-	return jsonAnon(stj.O("Results", stj.O("QUEST", stj.O("platform", "QUEST", "isPrimary", true, "entitlements", entitlements))), 200)
+	return jsonAnon(stj.O("Results", stj.O("QUEST", stj.O("platform", "QUEST", "isPrimary", true, "entitlements", withCurrencyAliases(userId, entitlements)))), 200)
 }
 
 // GetInventory returns inventory items for a player.

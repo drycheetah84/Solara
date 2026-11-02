@@ -448,7 +448,7 @@ func TestInventoryClientGrantsCatalogue(t *testing.T) {
 		t.Fatalf("got %d %.400s", rec.Code, body)
 	}
 	ids, cur := a2CatalogueItems()
-	if len(ids) < 600 || len(cur) != 3 || strings.Count(body, `"quantity":`) != len(ids)+2 {
+	if len(ids) < 600 || len(cur) != 3 || strings.Count(body, `"quantity":`) != len(ids)+3 { // +2 worn, +1 TechPoints alias
 		t.Fatalf("catalogue: %d ids, %d currencies, %d quantities", len(ids), len(cur), strings.Count(body, `"quantity":`))
 	}
 	if !strings.Contains(body, `"in_game_id":"HardCurrencyJoules","name":"Joules","quantity":1000000}`) ||
@@ -460,7 +460,7 @@ func TestInventoryClientGrantsCatalogue(t *testing.T) {
 	adm := []string{"x-server-api-key", testServerKey}
 	do(t, s, "POST", "/v1/inventory", `{"player_id":"inv-user","item_id":"i1", "x" : [ 1 ]}`, adm...)
 	body2 := do(t, s, "GET", "/v1/inventory/client", "", "x-mothership-token", tok).Body.String()
-	if strings.Contains(body2, `"item_id"`) || strings.Count(body2, `"quantity":`) != len(ids)+2 {
+	if strings.Contains(body2, `"item_id"`) || strings.Count(body2, `"quantity":`) != len(ids)+3 {
 		t.Fatalf("%.300s", body2)
 	}
 	expect(t, do(t, s, "GET", "/v1/inventory/client", ""), 401,
@@ -584,7 +584,8 @@ func TestInventoryClientNotAllowlisted(t *testing.T) {
 	body := do(t, s, "GET", "/v1/inventory/client", "", "x-mothership-token", tok).Body.String()
 	_, cur := a2CatalogueItems()
 	if strings.Contains(body, `"in_game_id":"Hat"`) || !strings.Contains(body, `"in_game_id":"OwnedThing"`) ||
-		strings.Count(body, `"quantity":`) != len(cur)+1 ||
+		strings.Count(body, `"quantity":`) != len(cur)+2 || // +1 owned, +1 TechPoints alias
+		!strings.Contains(body, `"in_game_id":"TechPoints","name":"TechPoints","quantity":0}`) ||
 		!strings.Contains(body, `"in_game_id":"HardCurrencyJoules","name":"Joules","quantity":0}`) {
 		t.Fatalf("%.600s", body)
 	}

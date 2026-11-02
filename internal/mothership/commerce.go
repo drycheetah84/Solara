@@ -352,6 +352,9 @@ func a2ApplyPurchase(playerId string, o *a2Offer) (stj.Obj, string) {
 	for id, q := range totals {
 		GrantItem(playerId, id, q)
 		changes = append(changes, stj.KV{K: id, V: stj.O("entitlement_id", stableId(playerId+":"+id), "in_game_id", id, "name", a2EntitlementName(id), "quantity", q)})
+		if a := currencyAlias(playerId, id, q); a != nil {
+			changes = append(changes, stj.KV{K: a2CurrencyAliases[id], V: a})
+		}
 	}
 	for _, c := range o.Credits {
 		if c.Type == "CURRENCY" {
