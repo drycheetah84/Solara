@@ -130,6 +130,9 @@ export type OwnedItem = { id: string; quantity: number; currency: boolean };
 // GET /api/users/{id}/inventory
 export type UserInventory = { player_id: string; full_catalogue: boolean; items: OwnedItem[] };
 
+// GET /api/stations/{id}/gaia -- events the live game server can play through GAIA
+export type GaiaInfo = { deployment_id: string; events: string[]; queued: number };
+
 export type ActionResult = {
   success: boolean;
   error?: string;
@@ -294,6 +297,10 @@ export const api = {
     post<ActionResult>(`users/${encodeURIComponent(userId)}/inventory`, { item_id: itemId, quantity }),
   revokeItem:    (userId: string, itemId: string)     =>
     del<ActionResult>(`users/${encodeURIComponent(userId)}/inventory/${encodeURIComponent(itemId)}`),
+
+  // GAIA announcer: force a Wwise event to play for everyone on the station's live game server
+  gaia:     (stationId: string)                => get<GaiaInfo>(`stations/${encodeURIComponent(stationId)}/gaia`),
+  gaiaPlay: (stationId: string, event: string) => post<ActionResult>(`stations/${encodeURIComponent(stationId)}/gaia/play`, { event }),
 
   // Role management
   createRole: (stationId: string, roleName: string, roleDescription: string) =>

@@ -123,6 +123,8 @@ func newAresDashboardServer() *AresDashboardServer {
 	h.Handle("GET", "/api/users/{user_id}/inventory", "Solara/GetUserInventory", s.GetUserInventory)
 	h.Handle("POST", "/api/users/{user_id}/inventory", "Solara/GrantUserItem", s.GrantUserItem)
 	h.Handle("DELETE", "/api/users/{user_id}/inventory/{item_id}", "Solara/RevokeUserItem", s.RevokeUserItem)
+	h.Handle("GET", "/api/stations/{station_id}/gaia", "Solara/GetGaia", s.GetGaia)
+	h.Handle("POST", "/api/stations/{station_id}/gaia/play", "Solara/PlayGaia", s.PlayGaia)
 	return s
 }
 

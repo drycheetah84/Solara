@@ -12,9 +12,10 @@ import {
 import NetvarsTab from "./NetvarsTab";
 import LevelsTab from "./LevelsTab";
 import BoardsTab from "./BoardsTab";
+import GaiaTab from "./GaiaTab";
 import DraftersPanel from "@/components/DraftersPanel";
 
-type Tab = "bans" | "roles" | "members" | "deployments" | "events" | "sessions" | "netvars" | "levels" | "whitelist" | "drafters" | "boards";
+type Tab = "bans" | "roles" | "members" | "deployments" | "events" | "sessions" | "netvars" | "levels" | "whitelist" | "drafters" | "boards" | "gaia";
 
 // ── Shared UI ────────────────────────────────────────────────────────────────
 
@@ -1127,6 +1128,7 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "levels",      label: "Editor levels" },
   { id: "whitelist",   label: "Whitelist"   },
   { id: "boards",      label: "Boards"      },
+  { id: "gaia",        label: "GAIA"        },
 ];
 
 export default function StationDetailPage() {
@@ -1213,6 +1215,7 @@ export default function StationDetailPage() {
       {tab === "levels"      && <LevelsTab />}
       {tab === "whitelist"   && <WhitelistTab   stationId={stationId} />}
       {tab === "boards"      && <BoardsTab      stationId={stationId} />}
+      {tab === "gaia"        && <GaiaTab        stationId={stationId} />}
     </div>
   );
 }
