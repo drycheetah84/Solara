@@ -130,7 +130,8 @@ class Pak:
         dll.OodleLZ_Decompress.restype = ctypes.c_int64
         out = bytearray(); left = e['usize']
         for a, z in e['blocks']:
-            src = s.d[base + a:base + z]; n = min(e['bsize'], left)
+            # bsize 0 = a single block holding the whole file (encoded-entry shorthand), not a 0-byte block
+            src = s.d[base + a:base + z]; n = min(e['bsize'] or e['usize'], left)
             dst = ctypes.create_string_buffer(n)
             got = dll.OodleLZ_Decompress(src, ctypes.c_int64(len(src)), dst, ctypes.c_int64(n),
                                          1, 0, 0, None, ctypes.c_int64(0), None, None, None, ctypes.c_int64(0), 3)

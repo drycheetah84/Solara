@@ -2214,15 +2214,17 @@ int CountQuestDefsImpl(const wchar_t* needle, int* total)
     if (!world) return -1;
     auto* cp = reinterpret_cast<uint8_t*>(reinterpret_cast<void*(__fastcall*)(void*)>(base + 0x49A2540)(world));
     if (!cp) return -2;
-    const uint8_t* data = *reinterpret_cast<uint8_t* const*>(cp + 336);
-    const int n = *reinterpret_cast<const int32_t*>(cp + 344);
+    // [50451] Definitions TSet @+672 (as AA2UniversalQuestKioskActor::UpdateQuestLineData reads it): elements are
+    // FAAQuestEntry (0x1E0) + 8 bytes of hash links = 488; Title FString @0x178.
+    const uint8_t* data = *reinterpret_cast<uint8_t* const*>(cp + 672);
+    const int n = *reinterpret_cast<const int32_t*>(cp + 680);
     int hits = 0;
     *total = 0;
     for (int i = 0; data && i < n && i < 8192; ++i)
     {
-        const uint8_t* e = data + static_cast<size_t>(i) * 0x128;
-        const wchar_t* t = *reinterpret_cast<const wchar_t* const*>(e + 0xF0);
-        const int len = *reinterpret_cast<const int32_t*>(e + 0xF8);
+        const uint8_t* e = data + static_cast<size_t>(i) * 488;
+        const wchar_t* t = *reinterpret_cast<const wchar_t* const*>(e + 0x178);
+        const int len = *reinterpret_cast<const int32_t*>(e + 0x180);
         if (!t || len <= 0 || len > 256) continue;
         __try { ++*total; if (wcsstr(t, needle)) ++hits; } __except (EXCEPTION_EXECUTE_HANDLER) {}
     }
@@ -2231,6 +2233,61 @@ int CountQuestDefsImpl(const wchar_t* needle, int* total)
 int CountQuestDefs(const wchar_t* needle, int* total)
 {
     __try { return CountQuestDefsImpl(needle, total); } __except (EXCEPTION_EXECUTE_HANDLER) { return -3; }
+}
+
+// [2026-11-01] Quest kiosk debugging (50451). The kiosk shows a quest line's tasks from the client progression's
+// Definitions (+672, 488-B elements) and their progress from its Storage TMap<FGuid,FA2QuestStorage> (+992,
+// 72-B elements: key @0, FA2QuestStorage @16 -> Progress @16+0x10). "Task X could not get quest storage" = no Storage
+// entry. QDumpLine fills one line per matching definition: id, type, children, prereqs, storage progress (-1 = none).
+static uint8_t* ClientProgression()
+{
+    const uintptr_t base = reinterpret_cast<uintptr_t>(GetModuleHandleW(nullptr));
+    void* world = *reinterpret_cast<void**>(base + SDK::Offsets::GWorld);
+    if (!world) return nullptr;
+    return reinterpret_cast<uint8_t*>(reinterpret_cast<void*(__fastcall*)(void*)>(base + 0x49A2540)(world));
+}
+static int StorageProgress(const uint8_t* cp, const uint8_t* guid16)
+{
+    const uint8_t* sd = *reinterpret_cast<uint8_t* const*>(cp + 992);
+    const int sn = *reinterpret_cast<const int32_t*>(cp + 1000);
+    for (int k = 0; sd && k < sn && k < 16384; ++k)
+        if (memcmp(sd + static_cast<size_t>(k) * 72, guid16, 16) == 0) return sd[static_cast<size_t>(k) * 72 + 16 + 0x10];
+    return -1;
+}
+static int SafeStorageProgress(const uint8_t* cp, const uint8_t* guid16)
+{
+    __try { return StorageProgress(cp, guid16); } __except (EXCEPTION_EXECUTE_HANDLER) { return -3; }
+}
+// Returns the number of lines written (each up to 300 chars into out[i]), or <0 on failure.
+static int QDumpImpl(const wchar_t* needle, char (*out)[300], int maxOut, int* total, int* storageCount)
+{
+    uint8_t* cp = ClientProgression();
+    if (!cp) return -2;
+    *storageCount = *reinterpret_cast<const int32_t*>(cp + 1000);
+    const uint8_t* data = *reinterpret_cast<uint8_t* const*>(cp + 672);
+    const int n = *reinterpret_cast<const int32_t*>(cp + 680);
+    int w = 0; *total = 0;
+    for (int i = 0; data && i < n && i < 8192; ++i)
+    {
+        const uint8_t* e = data + static_cast<size_t>(i) * 488;
+        const wchar_t* t = *reinterpret_cast<const wchar_t* const*>(e + 0x178);
+        const int len = *reinterpret_cast<const int32_t*>(e + 0x180);
+        if (!t || len <= 0 || len > 256) continue;
+        ++*total;
+        if (needle[0] && !wcsstr(t, needle)) continue;
+        if (w >= maxOut) continue;
+        const uint32_t* g = reinterpret_cast<const uint32_t*>(e);
+        sprintf_s(out[w], 300, "%08X%08X%08X%08X type=%u ver=%d children=%d prereqs=%d storage=%d '%ls'",
+            g[0], g[1], g[2], g[3], e[0x30], *reinterpret_cast<const int32_t*>(e + 0x34),
+            *reinterpret_cast<const int32_t*>(e + 0xC8), *reinterpret_cast<const int32_t*>(e + 0x58),
+            StorageProgress(cp, e), t);
+        ++w;
+    }
+    return w;
+}
+static int QDump(const wchar_t* needle, char (*out)[300], int maxOut, int* total, int* storageCount)
+{
+    __try { return QDumpImpl(needle, out, maxOut, total, storageCount); } __except (EXCEPTION_EXECUTE_HANDLER) { return -3; }
 }
 
 void ScriptOp(const Snapshot& snap, const std::string& line);   // below
@@ -2258,6 +2315,115 @@ void RunScript(const Snapshot& snap)
 
     ScriptOp(snap, g_script[g_scriptPc++]);
 }
+
+// ---------------------------------------------------------------------------------------------------------------
+// [2026-11-01] nvget <path>: read a WORLD netvar on THIS client (e.g. config/stationConfig/SignPlazaFront), to see
+// whether a value the server wrote ever reached clients. Same natives and root as the server DLL (same exe, 50451):
+// NetVarsManager+0x58 -> NetVarSystem, world root at +0x1A8 (game getter sub_143590B00), FindChild 0x49558F0,
+// IterRelease 0x498E770, Num/Bool/Str getters 0x49F8910 / 0x4956140 / 0x49F89F0, FMemory::Free 0x117C720.
+namespace nvc {
+constexpr uintptr_t FindChild = 0x49558F0, IterRelease = 0x498E770, NumGet = 0x49F8910, BoolGet = 0x4956140,
+                    StrGet = 0x49F89F0, MemFree = 0x117C720;
+static void Release(uintptr_t base, uint8_t* it)
+{
+    void* h = *reinterpret_cast<void**>(it + 0x38);
+    if (h) reinterpret_cast<void(__fastcall*)(void*, uint8_t*, uint8_t*)>(base + IterRelease)(h, it + 8, it);
+    it[0x48] = 0;
+}
+struct Walk { uint8_t it[13][0x100]; int held; };
+// POD-only. 1 = read ok; 0 = not found at segment *failAt; -1 = fault. *type: 2 bool, 3 number, 4 string.
+static int Read(void* root, const uint64_t* segs, int n, Walk* w, int* failAt, int* type, float* num, uint8_t* b, wchar_t* str, int strCap)
+{
+    const uintptr_t base = reinterpret_cast<uintptr_t>(GetModuleHandleW(nullptr));
+    w->held = 0; *failAt = -1; *type = -1;
+    int rc = 0;
+    __try
+    {
+        void* c = root;
+        for (int i = 0; i < n; ++i)
+        {
+            reinterpret_cast<void* (__fastcall*)(void*, uint8_t*, uint64_t, char)>(base + FindChild)(c, w->it[i], segs[i], 0);
+            w->held = i + 1;
+            if (!w->it[i][0x48]) { *failAt = i; goto done; }
+            c = w->it[i];
+        }
+        {
+            uint8_t* it = w->it[n - 1];
+            const uint32_t idx = *reinterpret_cast<uint32_t*>(it + 0x20);
+            const uintptr_t tbl = *reinterpret_cast<uintptr_t*>(it + 0x28);
+            const uintptr_t chunks = *reinterpret_cast<uintptr_t*>(tbl + ((idx & 0xFF) ? 416 : 456));
+            const uintptr_t entry = *reinterpret_cast<uintptr_t*>(chunks + 8 * (idx >> 16));
+            *type = *reinterpret_cast<uint8_t*>(*reinterpret_cast<uintptr_t*>(entry + 8) + 24);
+            if (*type == 3) *num = reinterpret_cast<float(__fastcall*)(uint8_t*)>(base + NumGet)(it);
+            else if (*type == 2) *b = static_cast<uint8_t>(reinterpret_cast<__int64(__fastcall*)(uint8_t*)>(base + BoolGet)(it) & 0xFF);
+            else if (*type == 4)
+            {
+                struct { wchar_t* data; int32_t num; int32_t max; } cur{ nullptr, 0, 0 };
+                reinterpret_cast<void* (__fastcall*)(uint8_t*, void*)>(base + StrGet)(it, &cur);
+                int k = 0;
+                if (cur.data) for (; k < strCap - 1 && k < cur.num && cur.data[k]; ++k) str[k] = cur.data[k];
+                str[k] = 0;
+                if (cur.data) reinterpret_cast<void(__fastcall*)(void*)>(base + MemFree)(cur.data);
+            }
+            rc = 1;
+        }
+    done:;
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER) { rc = -1; }
+    __try { for (int i = w->held - 1; i >= 0; --i) Release(base, w->it[i]); } __except (EXCEPTION_EXECUTE_HANDLER) {}
+    return rc;
+}
+static void* Root()
+{
+    static SDK::UClass* cls = nullptr;
+    if (!cls) cls = SDK::UObject::FindClassFast("NetVarsManager");
+    if (!cls) return nullptr;
+    const int32_t n = SDK::UObject::GObjects->Num();
+    for (int32_t i = 0; i < n; ++i)
+    {
+        SDK::UObject* o = SDK::UObject::GObjects->GetByIndex(i);
+        if (o && !o->IsDefaultObject() && o->IsA(cls))
+        {
+            const uintptr_t sys = *reinterpret_cast<uintptr_t*>(reinterpret_cast<uintptr_t>(o) + 0x58);
+            return sys ? reinterpret_cast<void*>(sys + 0x1A8) : nullptr;
+        }
+    }
+    return nullptr;
+}
+static void Get(const std::string& path)
+{
+    void* root = Root();
+    if (!root) { Log("[script] NVGET %s: no NetVarsManager/NetVarSystem", path.c_str()); return; }
+    std::vector<uint64_t> segs;
+    for (size_t p = 0; p <= path.size(); )
+    {
+        size_t e = path.find('/', p);
+        if (e == std::string::npos) e = path.size();
+        if (e > p)
+        {
+            const std::string s = path.substr(p, e - p);
+            const SDK::FName fn = SDK::UKismetStringLibrary::Conv_StringToName(SDK::FString(std::wstring(s.begin(), s.end()).c_str()));
+            uint64_t v = 0; memcpy(&v, &fn, sizeof(v)); segs.push_back(v);
+        }
+        p = e + 1;
+    }
+    if (segs.empty() || segs.size() > 13) { Log("[script] NVGET %s: bad path", path.c_str()); return; }
+    auto* w = new Walk{};
+    int failAt = -1, type = -1; float num = 0; uint8_t b = 0; wchar_t str[600] = {};
+    const int rc = Read(root, segs.data(), static_cast<int>(segs.size()), w, &failAt, &type, &num, &b, str, 600);
+    delete w;
+    if (rc == 1)
+    {
+        std::string s; for (int k = 0; str[k]; ++k) s.push_back(static_cast<char>(str[k]));
+        if (type == 4) Log("[script] NVGET %s = \"%s\" (string)", path.c_str(), s.c_str());
+        else if (type == 3) Log("[script] NVGET %s = %g (number)", path.c_str(), num);
+        else if (type == 2) Log("[script] NVGET %s = %s (bool)", path.c_str(), b ? "true" : "false");
+        else Log("[script] NVGET %s: node type %d (not a leaf value)", path.c_str(), type);
+    }
+    else if (rc == 0) Log("[script] NVGET %s: not found at segment %d", path.c_str(), failAt);
+    else Log("[script] NVGET %s: fault while reading", path.c_str());
+}
+}  // namespace nvc
 
 // One editor op (a test-script line), run now. The script runner above feeds it one line per frame; the MCP
 // bridge (se_mcp) runs single ops through it too, capturing what they log.
@@ -2601,6 +2767,11 @@ void ScriptOp(const Snapshot& snap, const std::string& line)
         Log("[script] %s expectxf %s: rot(%.1f,%.1f,%.1f) scale(%.2f,%.2f,%.2f), wanted rot(%.1f,%.1f,%.1f) scale(%.2f,%.2f,%.2f)",
             rotOk && sOk ? "PASS" : "FAIL", name, best->rotation.pitch, best->rotation.yaw, best->rotation.roll, best->scale.x, best->scale.y,
             best->scale.z, r.pitch, r.yaw, r.roll, sc.x, sc.y, sc.z);
+        return;
+    }
+    if (!strcmp(op, "nvget"))                 // nvget <world netvar path> -- read it on THIS client (replication check)
+    {
+        nvc::Get(rest);
         return;
     }
     if (!strcmp(op, "mem"))                   // mem [label] -- this client's private memory (leak checks)
@@ -3137,15 +3308,84 @@ void ScriptOp(const Snapshot& snap, const std::string& line)
         {
             SDK::UObject* c = SDK::UObject::GObjects->GetByIndex(i);
             if (!c || c->IsDefaultObject() || !c->IsA(qcCls) || !c->Outer || c->Outer->IsDefaultObject()) continue;
+            // [50451] QuestProgression @0x130: Quests TArray data @0x138 / num @0x140, FA2QuestStorage 0x30; bIsInitialized @0x160
             const uintptr_t p = reinterpret_cast<uintptr_t>(c);
-            const uint8_t* data = *reinterpret_cast<uint8_t* const*>(p + 0x128);
-            const int cnt = *reinterpret_cast<const int32_t*>(p + 0x130);
+            const uint8_t* data = *reinterpret_cast<uint8_t* const*>(p + 0x138);
+            const int cnt = *reinterpret_cast<const int32_t*>(p + 0x140);
             int prog = -1, cver = -1;
             for (int k = 0; data && k < cnt && k < 4096; ++k)
-                if (memcmp(data + k * 0x20, g, 16) == 0) { prog = data[k * 0x20 + 0x10]; cver = *reinterpret_cast<const int32_t*>(data + k * 0x20 + 0x14); }
-            Log("[script] qprog %s on %s: %d stored, this quest progress=%d completedVersion=%d init=%d local=%d",
-                rest.c_str(), c->Outer->GetName().c_str(), cnt, prog, cver, *reinterpret_cast<const uint8_t*>(p + 0x140), *reinterpret_cast<const uint8_t*>(p + 0xF8));
+                if (memcmp(data + k * 0x30, g, 16) == 0) { prog = data[k * 0x30 + 0x10]; cver = *reinterpret_cast<const int32_t*>(data + k * 0x30 + 0x14); }
+            uint8_t* cp = ClientProgression();
+            int sp = -2;
+            if (cp) sp = SafeStorageProgress(cp, reinterpret_cast<const uint8_t*>(g));
+            Log("[script] qprog %s on %s: %d replicated, this quest progress=%d completedVersion=%d init=%d | client storage progress=%d (%d entries)",
+                rest.c_str(), c->Outer->GetName().c_str(), cnt, prog, cver, *reinterpret_cast<const uint8_t*>(p + 0x160),
+                sp, cp ? *reinterpret_cast<const int32_t*>(cp + 1000) : -1);
         }
+        return;
+    }
+    if (!strcmp(op, "qdump"))                 // qdump [text] -- quest definitions on this client (title filter) + storage
+    {
+        static char lines[60][300];
+        const std::wstring w(rest.begin(), rest.end());
+        int total = 0, scount = 0;
+        const int got = QDump(w.c_str(), lines, 60, &total, &scount);
+        Log("[script] qdump '%s': %d shown of %d definition(s); client storage has %d entries", rest.c_str(), got, total, scount);
+        for (int i = 0; i < got; ++i) Log("[script]   %s", lines[i]);
+        return;
+    }
+    if (!strcmp(op, "qkiosk"))                // qkiosk -- every kiosk widget: state byte (+730) and selected quest line (+732)
+    {
+        auto* wCls = SDK::UObject::FindClassFast("A2UniversalQuestKioskUserWidget");
+        const int32_t n = SDK::UObject::GObjects->Num();
+        int found = 0;
+        for (int32_t i = 0; wCls && i < n; ++i)
+        {
+            SDK::UObject* c = SDK::UObject::GObjects->GetByIndex(i);
+            if (!c || c->IsDefaultObject() || !c->IsA(wCls)) continue;
+            const uint8_t* p = reinterpret_cast<const uint8_t*>(c);
+            const uint32_t* g = reinterpret_cast<const uint32_t*>(p + 732);
+            Log("[script] qkiosk %s: state=%u line=%08X%08X%08X%08X", c->GetName().c_str(), p[730], g[0], g[1], g[2], g[3]);
+            ++found;
+        }
+        Log("[script] qkiosk: %d widget(s)", found);
+        return;
+    }
+    if (!strcmp(op, "qrpc"))                  // qrpc <Function> -- a no-argument quest RPC (Server_StopGroup, ...) on our component
+    {
+        auto* qcCls = SDK::UObject::FindClassFast("A2PlayerQuestComponent");
+        const int32_t n = SDK::UObject::GObjects->Num();
+        for (int32_t i = 0; qcCls && i < n; ++i)
+        {
+            SDK::UObject* c = SDK::UObject::GObjects->GetByIndex(i);
+            if (!c || c->IsDefaultObject() || !c->IsA(qcCls) || c->Outer != g_pc) continue;
+            SDK::UFunction* fn = sereflect::FindFn(c, rest.c_str());
+            uint8_t parms[64] = {};
+            const bool ok = fn && SafePE(c, fn, parms);
+            Log("[script] qrpc %s on %s: %s", rest.c_str(), c->Outer->GetName().c_str(), ok ? "sent" : "FAILED");
+            return;
+        }
+        Log("[script] FAIL qrpc: no quest component on the local controller");
+        return;
+    }
+    if (!strcmp(op, "qset") || !strcmp(op, "qclear"))   // qset <guid hex> [progress=255] -- what the kiosk's Unlock does: Server_SetProgress
+    {                                                    // qclear <guid hex> -- Server_ClearProgress (same leading FGuid parm)
+        const char* fnName = !strcmp(op, "qclear") ? "Server_ClearProgress" : "Server_SetProgress";
+        struct { uint32_t g[4]; uint8_t progress; uint8_t pad[7]; } parms{};
+        for (int i = 0; i < 4 && rest.size() >= 32; ++i) parms.g[i] = static_cast<uint32_t>(strtoul(rest.substr(i * 8, 8).c_str(), nullptr, 16));
+        parms.progress = rest.size() > 33 ? static_cast<uint8_t>(atoi(rest.c_str() + 33)) : 255;
+        auto* qcCls = SDK::UObject::FindClassFast("A2PlayerQuestComponent");
+        const int32_t n = SDK::UObject::GObjects->Num();
+        for (int32_t i = 0; qcCls && i < n; ++i)
+        {
+            SDK::UObject* c = SDK::UObject::GObjects->GetByIndex(i);
+            if (!c || c->IsDefaultObject() || !c->IsA(qcCls) || c->Outer != g_pc) continue;
+            SDK::UFunction* fn = sereflect::FindFn(c, fnName);
+            const bool ok = fn && SafePE(c, fn, &parms);
+            Log("[script] %s %.32s progress=%u on %s: %s", op, rest.c_str(), parms.progress, c->Outer->GetName().c_str(), ok ? "sent" : "FAILED");
+            return;
+        }
+        Log("[script] FAIL qset: no quest component on the local controller");
         return;
     }
     if (!strcmp(op, "clickat"))               // clickat x y z -- TEST: what a viewport click from the camera toward this point selects
