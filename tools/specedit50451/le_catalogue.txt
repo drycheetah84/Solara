@@ -25,9 +25,7 @@ General|/Game/A2/Prefabs/LE_BP_Explosion.LE_BP_Explosion_C
 General|/Game/A2/Prefabs/LE_BP_GunSentryVisual.LE_BP_GunSentryVisual_C
 General|/Game/A2/Prefabs/LE_BP_HeartballDoor.LE_BP_HeartballDoor_C
 General|/Game/A2/Prefabs/LE_BP_ImpulseGrenadeBucket.LE_BP_ImpulseGrenadeBucket_C
-General|/Game/A2/Prefabs/LE_BP_LightSwitch.LE_BP_LightSwitch_C
 General|/Game/A2/Prefabs/LE_BP_MovableCube.LE_BP_MovableCube_C
-General|/Game/A2/Prefabs/LE_BP_MovableCube_Physical.LE_BP_MovableCube_Physical_C
 General|/Game/A2/Prefabs/LE_BP_Physical.LE_BP_Physical_C
 General|/Game/A2/Prefabs/LE_BP_PlaygroundTarget.LE_BP_PlaygroundTarget_C
 General|/Game/A2/Prefabs/LE_BP_PlinkoGeometry.LE_BP_PlinkoGeometry_C
@@ -63,7 +61,6 @@ General|/Game/A2/Prefabs/LE_BP_SelfDestructSound.LE_BP_SelfDestructSound_C
 General|/Game/A2/Prefabs/LE_BP_Signs_3DTracking.LE_BP_Signs_3DTracking_C
 General|/Game/A2/Prefabs/LE_BP_SoccerBallSpawner.LE_BP_SoccerBallSpawner_C
 General|/Game/A2/Prefabs/LE_BP_SubModule.LE_BP_SubModule_C
-General|/Game/A2/Prefabs/LE_BP_Teleporter.LE_BP_Teleporter_C
 General|/Game/A2/Prefabs/LE_BP_TextActor.LE_BP_TextActor_C
 General|/Game/A2/Prefabs/LE_BP_ToggleAllGravityVolumesAttachedToOwner.LE_BP_ToggleAllGravityVolumesAttachedToOwner_C
 General|/Game/A2/Prefabs/LE_BP_VFX_GeneralCelebration01a.LE_BP_VFX_GeneralCelebration01a_C
