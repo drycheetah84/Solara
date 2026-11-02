@@ -8,6 +8,7 @@ package ares
 import (
 	"sort"
 	"strconv"
+	"time"
 
 	"solara/internal/ares/models"
 	"solara/internal/dotnet"
@@ -65,6 +66,16 @@ func a2EosSessionToDeployment(s *eosmodels.EosSessionInfo) *models.DeploymentDbO
 		panic(a2NullReference())
 	}
 	d.PlayerCount = len(s.PublicPlayers)
+	// Solara: PublicPlayers only grows when a client posts an EOS join, and /update_player_count can only trim it, so
+	// the station list could sit at 0 with players on. The game server reports the real count (its netdriver's
+	// ClientConnections, every ~3 min) onto the deployment row; prefer that while it is fresh.
+	depId := s.Id
+	if s.DeploymentId != nil && *s.DeploymentId != "" {
+		depId = *s.DeploymentId
+	}
+	if row := a2FindDeployment(depId); row != nil && row.LastEvent != nil && dotnet.Now().Sub(*row.LastEvent) < 10*time.Minute {
+		d.PlayerCount = row.PlayerCount
+	}
 	d.Config = map[string]*string{
 		"port":        a2Str(s.Port),
 		"imgui_port":  a2Str(s.ImguiPort),
