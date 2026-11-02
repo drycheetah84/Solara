@@ -40,6 +40,7 @@ type a2Credit struct {
 type a2Offer struct {
 	Key, Name, Display string
 	Index              int
+	Sku                string // Meta SKU for a real-money offer ("" = bought with Mothership / in-game currency)
 	Credits, Debits    []a2Credit
 }
 
@@ -102,13 +103,9 @@ func buildA2Offers() []a2Offer {
 			Credits: []a2Credit{{a2HypercubeId, "CURRENCY", n}}, Debits: []a2Credit{{a2DriftiumId, "CURRENCY", n * 5}}})
 	}
 	// IAP 16: Klaus Breaker Bundle (the shop's bundle kiosk)
-	klaus := []a2Credit{}
-	for _, id := range []string{"WearableHelmetKlausBreaker", "WearableShoulderKlausBreaker", "WearableArmsKlausBreaker",
-		"WearableChestKlausBreaker", "EyesBlinkKlausBreaker", "ColorPresetKlausBreaker", "BadgeKlausBreaker"} {
-		klaus = append(klaus, a2Credit{id, "DURABLE", 1})
-	}
+	// Real money: Meta SKU bundle_klaus_breaker (iap.go), so no Driftium debit.
 	out = append(out, a2Offer{Key: "IAP:KlausBreakerBundle", Name: "Klaus Breaker Bundle", Display: "IAP", Index: 16,
-		Credits: klaus, Debits: []a2Credit{{a2DriftiumId, "CURRENCY", 2200}}})
+		Credits: a2KlausBreakerItems()})
 	// IAP: the real bundles of DT_ItemOnlineBundleMetadata (BundleFoundersPack is a catalogue row only -- no bundle row)
 	idx := 20
 	for _, id := range a2BundleIds() {
@@ -131,6 +128,19 @@ func buildA2Offers() []a2Offer {
 		out = append(out, a2Offer{Key: "Alacarte:" + id, Name: id, Display: "Alacarte", Index: i,
 			Credits: []a2Credit{{id, "DURABLE", 1}}, Debits: []a2Credit{{a2DriftiumId, "CURRENCY", a2AlacartePrice}}})
 		i++
+	}
+	for k := range out {
+		out[k].Sku = a2SkuForOffer(out[k].Key)
+	}
+	return out
+}
+
+// a2KlausBreakerItems is the Klaus Breaker Bundle's contents (the shop bundle kiosk, IAP display index 16).
+func a2KlausBreakerItems() []a2Credit {
+	out := []a2Credit{}
+	for _, id := range []string{"WearableHelmetKlausBreaker", "WearableShoulderKlausBreaker", "WearableArmsKlausBreaker",
+		"WearableChestKlausBreaker", "EyesBlinkKlausBreaker", "ColorPresetKlausBreaker", "BadgeKlausBreaker"} {
+		out = append(out, a2Credit{id, "DURABLE", 1})
 	}
 	return out
 }
@@ -166,7 +176,7 @@ func a2Storefront(userId string) stj.Obj {
 	byDisplay := map[string][]any{}
 	for _, o := range a2Offers() {
 		credits, debits := a2CreditMap(userId, o.Credits), a2CreditMap(userId, o.Debits)
-		byDisplay[o.Display] = append(byDisplay[o.Display], stj.O(
+		offer := stj.O(
 			"OfferId", stableId("offer:"+o.Key),
 			"PersonalizedCredits", credits,
 			"PersonalizedDebits", debits,
@@ -175,7 +185,12 @@ func a2Storefront(userId string) stj.Obj {
 			"PurchaseAllowed", true,
 			"DisplayIndex", o.Index,
 			"OfferName", o.Name,
-		))
+		)
+		if o.Sku != "" {
+			// Real money: the client buys this through the Quest Platform SDK checkout (iap.go). Both or neither.
+			offer = append(offer, stj.KV{K: "ExternalService", V: a2IapService}, stj.KV{K: "ExternalEntitlementId", V: o.Sku})
+		}
+		byDisplay[o.Display] = append(byDisplay[o.Display], offer)
 	}
 	// root 0x4DCE910: Results is an OBJECT keyed by display name, each member an offer display (0x4DD7D00)
 	res := stj.O()

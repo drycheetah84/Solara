@@ -144,6 +144,11 @@ func (s *MothershipServer) ClientPurchase(c *hosting.Context) hosting.Result {
 		userId := getUserIdFromToken(c.Request)
 		offerId := str(parseBody(c.Request), "OfferId")
 		if o := a2FindOffer(offerId); o != nil {
+			if o.Sku != "" {
+				// a real-money offer is only ever paid out by refresh-iap, after Meta confirms the purchase
+				authLog(fmt.Sprintf("[STORE] %s tried to buy real-money offer %s through Mothership -- refused", userId, o.Key))
+				return jsonError(400, "PlatformPurchaseRequired", "This offer is purchased through the platform store", "", nil)
+			}
 			changes, err := a2ApplyPurchase(userId, o)
 			if err != "" {
 				authLog(fmt.Sprintf("[STORE] %s could not buy %s: %s", userId, o.Key, err))
@@ -168,9 +173,10 @@ func (s *MothershipServer) ClientPurchase(c *hosting.Context) hosting.Result {
 
 func (s *MothershipServer) ClientRefreshIap(c *hosting.Context) hosting.Result {
 	// Solara: a player gets the 50451 shape ({"NewInventoryChangesAvailable": bool}, parser 0x4DCFF90; the client
-	// sends GET). Nothing comes from a platform store here, so there are never new changes.
+	// sends GET). Real-money Meta purchases are verified, consumed and credited here (iap.go).
 	if !isAdmin(c.Request) && isClient(c.Request) {
-		return jsonAnon(stj.O("NewInventoryChangesAvailable", false), 200)
+		userId := getUserIdFromToken(c.Request)
+		return jsonAnon(stj.O("NewInventoryChangesAvailable", userId != "" && RefreshIap(userId)), 200)
 	}
 	if !isAdmin(c.Request) {
 		return unauthorized()
