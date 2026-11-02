@@ -323,7 +323,7 @@ func currencyBalance(playerId, id string) int {
 
 // a2ApplyPurchase charges an offer's debits and grants its credits, and returns the changed entitlements with their
 // new totals (the 50451 purchase reply, parser 0x4DCF4E0 -> 0x4DD9F30). "" error = done.
-func a2ApplyPurchase(playerId string, o *a2Offer) ([]any, string) {
+func a2ApplyPurchase(playerId string, o *a2Offer) (stj.Obj, string) {
 	purchaseMu.Lock()
 	defer purchaseMu.Unlock()
 	totals := map[string]int{}
@@ -346,10 +346,12 @@ func a2ApplyPurchase(playerId string, o *a2Offer) ([]any, string) {
 			totals[c.InGameId] = b + c.Change
 		}
 	}
-	changes := []any{}
+	// Changes is an OBJECT keyed by in_game_id, like the inventory root (0x4DCF4E0: Changes -> object members ->
+	// 0x4DD9F30 {entitlement_id, in_game_id, name, quantity}); an array is "malformed" to the client.
+	changes := stj.O()
 	for id, q := range totals {
 		GrantItem(playerId, id, q)
-		changes = append(changes, stj.O("entitlement_id", stableId(playerId+":"+id), "in_game_id", id, "name", a2EntitlementName(id), "quantity", q))
+		changes = append(changes, stj.KV{K: id, V: stj.O("entitlement_id", stableId(playerId+":"+id), "in_game_id", id, "name", a2EntitlementName(id), "quantity", q)})
 	}
 	for _, c := range o.Credits {
 		if c.Type == "CURRENCY" {
@@ -358,8 +360,8 @@ func a2ApplyPurchase(playerId string, o *a2Offer) ([]any, string) {
 		if _, owned := storedQuantity(playerId, c.InGameId); !owned {
 			GrantItem(playerId, c.InGameId, 1)
 		}
-		changes = append(changes, stj.O("entitlement_id", stableId(playerId+":"+c.InGameId), "in_game_id", c.InGameId,
-			"name", a2EntitlementName(c.InGameId), "quantity", 1))
+		changes = append(changes, stj.KV{K: c.InGameId, V: stj.O("entitlement_id", stableId(playerId+":"+c.InGameId), "in_game_id", c.InGameId,
+			"name", a2EntitlementName(c.InGameId), "quantity", 1)})
 	}
 	return changes, ""
 }

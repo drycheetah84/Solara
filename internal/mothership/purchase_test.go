@@ -36,7 +36,7 @@ func TestPurchaseEconomy(t *testing.T) {
 		t.Fatalf("bought without funds: %s", b)
 	}
 	GrantItem("buyer", a2DriftiumId, 1500)
-	if code, b := buy("HypercubePacks:driftium200"); code != 200 || !strings.Contains(b, `"name":"Driftium","quantity":500`) ||
+	if code, b := buy("HypercubePacks:driftium200"); code != 200 || !strings.Contains(b, `{"Changes":{"`) || !strings.Contains(b, `"name":"Driftium","quantity":500`) ||
 		!strings.Contains(b, `"name":"TechPoints","quantity":200`) {
 		t.Fatalf("%d %s", code, b)
 	}
