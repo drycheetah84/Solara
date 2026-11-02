@@ -135,7 +135,7 @@ func a2CreditMap(userId string, cs []a2Credit) stj.Obj {
 			"change", c.Change,
 			"entitlement", stj.O(
 				"entitlement_id", stableId(userId+":"+c.InGameId),
-				"name", c.InGameId,
+				"name", a2EntitlementName(c.InGameId),
 				"in_game_id", c.InGameId,
 				"type", c.Type,
 			),

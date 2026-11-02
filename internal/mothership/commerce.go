@@ -151,7 +151,7 @@ func (s *MothershipServer) ClientPurchase(c *hosting.Context) hosting.Result {
 					q = a2CurrencyQuantity // balances are not tracked: the stored total stays the granted amount
 				}
 				changes = append(changes, stj.O("entitlement_id", stableId(userId+":"+c.InGameId),
-					"in_game_id", c.InGameId, "name", c.InGameId, "quantity", q))
+					"in_game_id", c.InGameId, "name", a2EntitlementName(c.InGameId), "quantity", q))
 			}
 			return jsonAnon(stj.O("Changes", changes), 200)
 		}

@@ -451,7 +451,7 @@ func TestInventoryClientGrantsCatalogue(t *testing.T) {
 	if len(ids) < 600 || len(cur) != 3 || strings.Count(body, `"quantity":`) != len(ids)+2 {
 		t.Fatalf("catalogue: %d ids, %d currencies, %d quantities", len(ids), len(cur), strings.Count(body, `"quantity":`))
 	}
-	if !strings.Contains(body, `"in_game_id":"HardCurrencyJoules","name":"HardCurrencyJoules","quantity":1000000}`) ||
+	if !strings.Contains(body, `"in_game_id":"HardCurrencyJoules","name":"Joules","quantity":1000000}`) ||
 		strings.Contains(body, "BadgeDeveloper") {
 		t.Fatal("currency balance / developer items")
 	}
@@ -585,7 +585,7 @@ func TestInventoryClientNotAllowlisted(t *testing.T) {
 	_, cur := a2CatalogueItems()
 	if strings.Contains(body, `"in_game_id":"Hat"`) || !strings.Contains(body, `"in_game_id":"OwnedThing"`) ||
 		strings.Count(body, `"quantity":`) != len(cur)+1 ||
-		!strings.Contains(body, `"in_game_id":"HardCurrencyJoules","name":"HardCurrencyJoules","quantity":0}`) {
+		!strings.Contains(body, `"in_game_id":"HardCurrencyJoules","name":"Joules","quantity":0}`) {
 		t.Fatalf("%.600s", body)
 	}
 

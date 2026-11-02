@@ -95,6 +95,22 @@ func parseA2Items() (ids []string, currency map[string]bool) {
 	return ids, currency
 }
 
+// a2EntitlementName is the entitlement "name" the 50451 client expects. Currencies are looked up BY NAME, not by
+// in_game_id: the kiosks (WBP_SharedIAPKiosk / WBP_SharedATMKiosk / WBP_SharedHypercubeATM / WBP_IAP_Bundle, decompiled)
+// scan A2StoreSubsystem's inventory for Name == "Driftium" / "TechPoints" and show that entry's Quantity -- the live
+// service named currency entitlements after the id without its "HardCurrency" prefix. Everything else keeps its id.
+func a2EntitlementName(id string) string {
+	if isCurrencyId(id) {
+		return strings.TrimPrefix(id, "HardCurrency")
+	}
+	return id
+}
+
+func isCurrencyId(id string) bool {
+	_, cur := a2CatalogueItems()
+	return cur[id]
+}
+
 func a2ItemQuantity(id string) int {
 	if _, cur := a2CatalogueItems(); cur[id] {
 		return a2CurrencyQuantity
@@ -217,7 +233,16 @@ func (s *MothershipServer) GetInventoryClient(c *hosting.Context) hosting.Result
 			}
 			// 50451 entitlement parser (0x4DDBA90) requires entitlement_id, in_game_id, name AND an int
 			// quantity -- one entitlement without it fails the whole inventory load.
-			if _, ok := el.TryGetProperty("quantity"); ok {
+			if idv, _ := el.TryGetProperty("in_game_id"); isCurrencyId(sv(idv.GetString())) {
+				// stored currency rows (dashboard grants, quest rewards): re-emit with the client's lookup name
+				id := sv(idv.GetString())
+				q := 0
+				if qv, ok := el.TryGetProperty("quantity"); ok && qv.ValueKind() == stj.Number {
+					q = int(qv.GetInt32())
+				}
+				entitlements = append(entitlements, stj.O("entitlement_id", stableId(userId+":"+id), "in_game_id", id,
+					"name", a2EntitlementName(id), "quantity", q))
+			} else if _, ok := el.TryGetProperty("quantity"); ok {
 				entitlements = append(entitlements, rewrittenElement{el})
 			} else {
 				g := func(k string) string {
@@ -227,7 +252,7 @@ func (s *MothershipServer) GetInventoryClient(c *hosting.Context) hosting.Result
 					return ""
 				}
 				entitlements = append(entitlements, stj.O("entitlement_id", g("entitlement_id"), "in_game_id", g("in_game_id"),
-					"name", g("name"), "quantity", a2ItemQuantity(g("in_game_id"))))
+					"name", a2EntitlementName(g("in_game_id")), "quantity", a2ItemQuantity(g("in_game_id"))))
 			}
 			if v, ok := el.TryGetProperty("in_game_id"); ok && v.ValueKind() == stj.String {
 				have[sv(v.GetString())] = true
@@ -243,7 +268,7 @@ func (s *MothershipServer) GetInventoryClient(c *hosting.Context) hosting.Result
 		for _, id := range ids {
 			if cur[id] && !have[id] {
 				entitlements = append(entitlements, stj.O("entitlement_id", stableId(userId+":"+id),
-					"in_game_id", id, "name", id, "quantity", 0))
+					"in_game_id", id, "name", a2EntitlementName(id), "quantity", 0))
 			}
 		}
 		authLog(fmt.Sprintf("[INVENTORY] %s: not allowlisted -> %d owned entitlement(s) + currencies", userId, len(have)))
@@ -274,7 +299,7 @@ func (s *MothershipServer) GetInventoryClient(c *hosting.Context) hosting.Result
 			entitlements = append(entitlements, stj.O(
 				"entitlement_id", stableId(userId+":"+id),
 				"in_game_id", id,
-				"name", id,
+				"name", a2EntitlementName(id),
 				"quantity", a2ItemQuantity(id),
 			))
 		}

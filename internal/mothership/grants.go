@@ -95,7 +95,7 @@ func OwnedItems(playerId string) []OwnedItem {
 func GrantItem(playerId, itemId string, quantity int) {
 	cl := inventoryItems()
 	data := stj.MarshalString(stj.O("entitlement_id", stableId(playerId+":"+itemId), "in_game_id", itemId,
-		"name", itemId, "quantity", quantity))
+		"name", a2EntitlementName(itemId), "quantity", quantity))
 	if existing := cl.FindOne(func(i *models.MothershipInventoryItemDbObject) bool {
 		return dbEq(i.PlayerId, playerId) && dbEq(i.ItemId, itemId)
 	}); existing != nil {
