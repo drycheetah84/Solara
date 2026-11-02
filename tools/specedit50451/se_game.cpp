@@ -2258,6 +2258,20 @@ static int SafeStorageProgress(const uint8_t* cp, const uint8_t* guid16)
 {
     __try { return StorageProgress(cp, guid16); } __except (EXCEPTION_EXECUTE_HANDLER) { return -3; }
 }
+// A definition's title into buf (empty if the slot is a free TSet entry / unreadable).
+static bool QTitle(const uint8_t* e, char* buf, size_t cap)
+{
+    buf[0] = 0;
+    __try
+    {
+        const wchar_t* t = *reinterpret_cast<const wchar_t* const*>(e + 0x178);
+        const int len = *reinterpret_cast<const int32_t*>(e + 0x180);
+        if (!t || len <= 0 || len > 256) return false;
+        sprintf_s(buf, cap, "%ls", t);
+        return true;
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER) { buf[0] = 0; return false; }
+}
 // Returns the number of lines written (each up to 300 chars into out[i]), or <0 on failure.
 static int QDumpImpl(const wchar_t* needle, char (*out)[300], int maxOut, int* total, int* storageCount)
 {
@@ -2270,17 +2284,19 @@ static int QDumpImpl(const wchar_t* needle, char (*out)[300], int maxOut, int* t
     for (int i = 0; data && i < n && i < 8192; ++i)
     {
         const uint8_t* e = data + static_cast<size_t>(i) * 488;
-        const wchar_t* t = *reinterpret_cast<const wchar_t* const*>(e + 0x178);
-        const int len = *reinterpret_cast<const int32_t*>(e + 0x180);
-        if (!t || len <= 0 || len > 256) continue;
+        char title[260];
+        if (!QTitle(e, title, sizeof(title))) continue;
         ++*total;
-        if (needle[0] && !wcsstr(t, needle)) continue;
+        if (needle[0])
+        {
+            char nb[260]; sprintf_s(nb, "%ls", needle);
+            if (!strstr(title, nb)) continue;
+        }
         if (w >= maxOut) continue;
         const uint32_t* g = reinterpret_cast<const uint32_t*>(e);
-        sprintf_s(out[w], 300, "%08X%08X%08X%08X type=%u ver=%d children=%d prereqs=%d storage=%d '%ls'",
+        sprintf_s(out[w], 300, "%08X%08X%08X%08X type=%u ver=%d children=%d prereqs=%d '%s'",
             g[0], g[1], g[2], g[3], e[0x30], *reinterpret_cast<const int32_t*>(e + 0x34),
-            *reinterpret_cast<const int32_t*>(e + 0xC8), *reinterpret_cast<const int32_t*>(e + 0x58),
-            StorageProgress(cp, e), t);
+            *reinterpret_cast<const int32_t*>(e + 0xC8), *reinterpret_cast<const int32_t*>(e + 0x58), title);
         ++w;
     }
     return w;
@@ -2288,6 +2304,33 @@ static int QDumpImpl(const wchar_t* needle, char (*out)[300], int maxOut, int* t
 static int QDump(const wchar_t* needle, char (*out)[300], int maxOut, int* total, int* storageCount)
 {
     __try { return QDumpImpl(needle, out, maxOut, total, storageCount); } __except (EXCEPTION_EXECUTE_HANDLER) { return -3; }
+}
+// One definition by id: its ChildQuests (TArray<FAAQuestRelationship{FGuid,float}> @0xC0, 20-B elements) as hex ids.
+// Returns the child count written, -1 if the id is not defined, <-1 on failure.
+static int QChildrenImpl(const uint32_t* id, uint32_t (*kids)[4], int cap, char* title, size_t titleCap)
+{
+    uint8_t* cp = ClientProgression();
+    if (!cp) return -2;
+    const uint8_t* data = *reinterpret_cast<uint8_t* const*>(cp + 672);
+    const int n = *reinterpret_cast<const int32_t*>(cp + 680);
+    for (int i = 0; data && i < n && i < 8192; ++i)
+    {
+        const uint8_t* e = data + static_cast<size_t>(i) * 488;
+        if (memcmp(e, id, 16) != 0) continue;
+        const wchar_t* t = *reinterpret_cast<const wchar_t* const*>(e + 0x178);
+        title[0] = 0;
+        if (t) sprintf_s(title, titleCap, "%ls", t);
+        const uint8_t* c = *reinterpret_cast<uint8_t* const*>(e + 0xC0);
+        const int cn = *reinterpret_cast<const int32_t*>(e + 0xC8);
+        int w = 0;
+        for (int k = 0; c && k < cn && w < cap; ++k, ++w) memcpy(kids[w], c + static_cast<size_t>(k) * 20, 16);
+        return w;
+    }
+    return -1;
+}
+static int QChildren(const uint32_t* id, uint32_t (*kids)[4], int cap, char* title, size_t titleCap)
+{
+    __try { return QChildrenImpl(id, kids, cap, title, titleCap); } __except (EXCEPTION_EXECUTE_HANDLER) { return -3; }
 }
 
 void ScriptOp(const Snapshot& snap, const std::string& line);   // below
@@ -3349,6 +3392,62 @@ void ScriptOp(const Snapshot& snap, const std::string& line)
             ++found;
         }
         Log("[script] qkiosk: %d widget(s)", found);
+        return;
+    }
+    if (!strcmp(op, "qchildren"))             // qchildren <guid hex> -- a definition's child quests (a quest line's tasks)
+    {
+        uint32_t g[4] = {};
+        for (int i = 0; i < 4 && rest.size() >= 32; ++i) g[i] = static_cast<uint32_t>(strtoul(rest.substr(i * 8, 8).c_str(), nullptr, 16));
+        static uint32_t kids[256][4];
+        char title[260] = {};
+        const int n = QChildren(g, kids, 256, title, sizeof(title));
+        Log("[script] qchildren %.32s '%s': %d", rest.c_str(), title, n);
+        for (int k = 0; k < n; ++k) Log("[script]   %08X%08X%08X%08X", kids[k][0], kids[k][1], kids[k][2], kids[k][3]);
+        return;
+    }
+    if (!strcmp(op, "qall"))                  // qall -- every replicated QuestProgression entry + PermanentQuestGrants count
+    {
+        auto* qcCls = SDK::UObject::FindClassFast("A2PlayerQuestComponent");
+        const int32_t n = SDK::UObject::GObjects->Num();
+        for (int32_t i = 0; qcCls && i < n; ++i)
+        {
+            SDK::UObject* c = SDK::UObject::GObjects->GetByIndex(i);
+            if (!c || c->IsDefaultObject() || !c->IsA(qcCls) || c->Outer != g_pc) continue;
+            const uintptr_t p = reinterpret_cast<uintptr_t>(c);
+            const uint8_t* data = *reinterpret_cast<uint8_t* const*>(p + 0x138);
+            const int cnt = *reinterpret_cast<const int32_t*>(p + 0x140);
+            Log("[script] qall: %d entries, PermanentQuestGrants=%d", cnt, *reinterpret_cast<const int32_t*>(p + 0x108));
+            for (int k = 0; data && k < cnt && k < 400; ++k)
+            {
+                const uint8_t* q = data + k * 0x30;
+                const uint32_t* g = reinterpret_cast<const uint32_t*>(q);
+                Log("[script]   %08X%08X%08X%08X progress=%u completedVer=%d progressVer=%d completedTicks=%lld", g[0], g[1], g[2], g[3],
+                    q[0x10], *reinterpret_cast<const int32_t*>(q + 0x14), *reinterpret_cast<const int32_t*>(q + 0x18),
+                    *reinterpret_cast<const long long*>(q + 0x20));
+            }
+            return;
+        }
+        Log("[script] FAIL qall: no quest component on the local controller");
+        return;
+    }
+    if (!strcmp(op, "qdone") || !strcmp(op, "qturnin"))   // qdone <guid hex> -- Server_OnCompleteQuest(id, 0 ticks)
+    {                                                    // qturnin -- Server_TurnInQuests(no optional reward quests)
+        struct { uint32_t g[4]; uint64_t ticks; } done{};
+        struct { void* data; int32_t num; int32_t max; } turnin{};
+        const bool isDone = !strcmp(op, "qdone");
+        for (int i = 0; isDone && i < 4 && rest.size() >= 32; ++i) done.g[i] = static_cast<uint32_t>(strtoul(rest.substr(i * 8, 8).c_str(), nullptr, 16));
+        auto* qcCls = SDK::UObject::FindClassFast("A2PlayerQuestComponent");
+        const int32_t n = SDK::UObject::GObjects->Num();
+        for (int32_t i = 0; qcCls && i < n; ++i)
+        {
+            SDK::UObject* c = SDK::UObject::GObjects->GetByIndex(i);
+            if (!c || c->IsDefaultObject() || !c->IsA(qcCls) || c->Outer != g_pc) continue;
+            SDK::UFunction* fn = sereflect::FindFn(c, isDone ? "Server_OnCompleteQuest" : "Server_TurnInQuests");
+            const bool ok = fn && (isDone ? SafePE(c, fn, &done) : SafePE(c, fn, &turnin));
+            Log("[script] %s %.32s: %s", op, rest.c_str(), ok ? "sent" : "FAILED");
+            return;
+        }
+        Log("[script] FAIL %s: no quest component on the local controller", op);
         return;
     }
     if (!strcmp(op, "qrpc"))                  // qrpc <Function> -- a no-argument quest RPC (Server_StopGroup, ...) on our component
