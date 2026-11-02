@@ -164,7 +164,8 @@ func TestKioskItems(t *testing.T) {
 	}
 	// Kiosks whose display robot shows an item sell exactly that item.
 	for idx, want := range map[int]string{14: "WearableArmsFestiveFist", 85: "WearableHelmetFrostline", 97: "WearableArmsSigmaKlaus",
-		113: "WearableFoamHandCobbs", 123: "WieldablePeppermintPunisher"} {
+		113: "WearableFoamHandCobbs", 123: "WieldablePeppermintPunisher", 67: "EyesBlinkKlausBreaker", 79: "HeartBallPatternFlames",
+		111: "WearableFoamHandDriftball", 112: "WearableFoamHandCircuitSamurais"} {
 		if byIndex[idx] != want {
 			t.Fatalf("kiosk %d sells %q, want %q", idx, byIndex[idx], want)
 		}
