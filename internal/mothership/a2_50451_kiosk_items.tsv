@@ -26,3 +26,31 @@
 113	WearableFoamHandCobbs
 118	WearableChestFrostReign
 123	WieldablePeppermintPunisher
+# --- INFERRED (no item display next to these kiosks; assigned from the shop's layout and the unsold winter-season items) ---
+# CLB_Christmas: the kiosk stands beside a Circuit Spryte full-body mannequin (SM_A2RobotD_Mannequin_CircuitSpryte).
+42	WearableChestCircuitSpryte
+# Wall row (x=-4014): the six winter chassis looks, colour presets.
+126	ColorPresetGingerglaze
+127	ColorPresetIcelock
+128	ColorPresetSnowmageddon
+129	ColorPresetSnowShadow
+130	ColorPresetFrostbornHide
+132	ColorPresetFlannelfied
+# Centre cluster: the winter patterns (Frostborn Hide has no catalogue pattern -> Holiday sticker pack) + Flames.
+7	PatternGingerglaze
+8	PatternIcelock
+9	PatternSnowmageddon
+10	PatternSnowShadow
+12	StickerPackHoliday
+74	PatternFlannelfied
+77	PatternFlames
+# Front row (continues the Christmas wearables row 14-16): winter eyes.
+17	EyesBlinkGingerglaze
+18	EyesBlinkIcelock
+23	EyesBlinkSnowmageddon
+89	EyesBlinkFlannelfied
+# Singles: the Flames look; 124 gets the second Circuit Spryte piece.
+48	ColorPresetFlamesEmissive
+90	PatternFlamesEmissive
+100	EyesBlinkFlame
+124	WearableHelmetCircuitSpryte
