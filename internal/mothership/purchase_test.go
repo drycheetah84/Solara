@@ -150,3 +150,37 @@ func TestQuestRewardsFromSavedProgress(t *testing.T) {
 		t.Fatalf("paid twice: %+v", got)
 	}
 }
+
+func TestKioskItems(t *testing.T) {
+	byIndex := map[int]string{}
+	seen := map[string]int{}
+	for _, o := range a2Offers() {
+		if o.Display != "Alacarte" {
+			continue
+		}
+		id := o.Credits[0].InGameId
+		byIndex[o.Index] = id
+		seen[id]++
+	}
+	// Kiosks whose display robot shows an item sell exactly that item.
+	for idx, want := range map[int]string{14: "WearableArmsFestiveFist", 85: "WearableHelmetFrostline", 97: "WearableArmsSigmaKlaus",
+		113: "WearableFoamHandCobbs", 123: "WieldablePeppermintPunisher"} {
+		if byIndex[idx] != want {
+			t.Fatalf("kiosk %d sells %q, want %q", idx, byIndex[idx], want)
+		}
+	}
+	// Never sold: special mics, staff tools, tech-tree rewards, bundle pieces; and no item at two kiosks.
+	for _, bad := range []string{"WieldableGoldMicA", "WieldableGoldMicB", "WieldableCreatorMic", "WieldableBaseballBat", "WearableHelmetKlausBreaker"} {
+		if seen[bad] > 0 {
+			t.Fatalf("%s is sold at a kiosk", bad)
+		}
+	}
+	for id, n := range seen {
+		if n > 1 {
+			t.Fatalf("%s sold at %d kiosks", id, n)
+		}
+	}
+	if byIndex[149] == "" || byIndex[132] == "" {
+		t.Fatalf("placed kiosks 132/149 have no item")
+	}
+}

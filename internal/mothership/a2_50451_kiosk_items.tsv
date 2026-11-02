@@ -1,0 +1,21 @@
+# A2 50451 cosmetic kiosks with a known item: BP_SharedIAPKiosk_C OfferDisplayIndex -> the wearable displayed right
+# next to it in the map (SHP_December2025: item meshes placed on the display robots, matched by mesh to
+# DT_ItemWearableMetadata, nearest within ~140 units). Every other kiosk index gets a stable item from the filtered pool.
+# <OfferDisplayIndex><TAB><in_game_id>
+14	WearableArmsFestiveFist
+15	WearableHelmetDriftBeanie
+16	WearableBackCrumbUnit
+53	WearableHelmetRedNoseProtocol
+85	WearableHelmetFrostline
+86	WearableShoulderFrostline
+87	WearableChestFrostline
+88	WearableArmsFrostline
+94	WearableHelmetSigmaKlaus
+95	WearableShoulderSigmaKlaus
+96	WearableChestSigmaKlaus
+97	WearableArmsSigmaKlaus
+108	WearableFoamHandRustRunners
+111	WearableFoamHandCircuitSamurais
+113	WearableFoamHandCobbs
+118	WearableChestFrostReign
+123	WieldablePeppermintPunisher

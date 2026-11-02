@@ -23,6 +23,7 @@ package mothership
 import (
 	_ "embed"
 	"fmt"
+	"strconv"
 	"strings"
 	"sync"
 
@@ -31,6 +32,36 @@ import (
 
 //go:embed a2_50451_alacarte.txt
 var a2AlacarteTxt string
+
+//go:embed a2_50451_kiosk_items.tsv
+var a2KioskItemsTsv string
+
+//go:embed a2_50451_kiosk_exclude.tsv
+var a2KioskExcludeTsv string
+
+// a2KioskTables parses the fixed kiosk items (OfferDisplayIndex -> in_game_id) and the never-sold set.
+func a2KioskTables() (map[int]string, map[string]bool) {
+	fixed, excluded := map[int]string{}, map[string]bool{}
+	for _, line := range splitLines(a2KioskItemsTsv) {
+		if line == "" || line[0] == '#' {
+			continue
+		}
+		if f := strings.Split(strings.TrimSpace(line), "\t"); len(f) == 2 {
+			if n, err := strconv.Atoi(f[0]); err == nil {
+				fixed[n] = f[1]
+			}
+		}
+	}
+	for _, line := range splitLines(a2KioskExcludeTsv) {
+		if line == "" || line[0] == '#' {
+			continue
+		}
+		if f := strings.Split(strings.TrimSpace(line), "\t"); f[0] != "" {
+			excluded[f[0]] = true
+		}
+	}
+	return fixed, excluded
+}
 
 type a2Credit struct {
 	InGameId, Type string
@@ -48,7 +79,7 @@ const (
 	a2DriftiumId       = "HardCurrencyDriftium"
 	a2HypercubeId      = "HardCurrencyTechPoints"
 	a2AlacartePrice    = 800
-	a2AlacarteMaxIndex = 140
+	a2AlacarteMaxIndex = 150 // the highest placed kiosk index is 149 (PlayerStart_Hangar)
 )
 
 func a2BundleIds() []string {
@@ -115,19 +146,36 @@ func buildA2Offers() []a2Offer {
 		out = append(out, a2Offer{Key: "IAP:" + id, Name: id, Display: "IAP", Index: idx, Credits: []a2Credit{{id, "DURABLE", 1}}})
 		idx++
 	}
-	// Alacarte: index i -> i-th newest wearable
-	i := 0
+	// Alacarte: every kiosk index 0..a2AlacarteMaxIndex sells one item. Kiosks whose display robot shows an item get
+	// exactly that item (a2_50451_kiosk_items.tsv); the rest take the next item of the newest-first wearable list
+	// (a2_50451_alacarte.txt) that is not excluded (a2_50451_kiosk_exclude.tsv: tech-tree / quest / starter / staff /
+	// bundle / special items) and not already sold at another kiosk.
+	fixed, excluded := a2KioskTables()
+	used := map[string]bool{}
+	for _, id := range fixed {
+		used[id] = true
+	}
+	pool := []string{}
 	for _, line := range splitLines(a2AlacarteTxt) {
 		id := strings.TrimSpace(line)
-		if id == "" || id[0] == '#' {
+		if id == "" || id[0] == '#' || excluded[id] || used[id] {
 			continue
 		}
-		if i > a2AlacarteMaxIndex {
-			break
+		used[id] = true
+		pool = append(pool, id)
+	}
+	next := 0
+	for idx := 0; idx <= a2AlacarteMaxIndex; idx++ {
+		id, ok := fixed[idx]
+		if !ok {
+			if next >= len(pool) {
+				continue
+			}
+			id = pool[next]
+			next++
 		}
-		out = append(out, a2Offer{Key: "Alacarte:" + id, Name: id, Display: "Alacarte", Index: i,
+		out = append(out, a2Offer{Key: "Alacarte:" + id, Name: id, Display: "Alacarte", Index: idx,
 			Credits: []a2Credit{{id, "DURABLE", 1}}, Debits: []a2Credit{{a2DriftiumId, "CURRENCY", a2AlacartePrice}}})
-		i++
 	}
 	for k := range out {
 		out[k].Sku = a2SkuForOffer(out[k].Key)
