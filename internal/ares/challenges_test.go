@@ -40,8 +40,12 @@ func TestChallengeRecords(t *testing.T) {
 	}
 	add("k2", "u2", 30)
 	add("k3", "u3", 55)
-	if w := a2Do(t, st, "POST", "/v1/fleets/global/challenges/C1/add", `{"user_id":"u2","record":1}`, map[string]string{"x-api-key": "k1"}); w.Code != 403 {
-		t.Fatalf("a player key must not post another player's record, got %d %s", w.Code, w.Body.String())
+	// A player key posting another id is stored under the key's own user (u1), never under u2.
+	if b := a2Do(t, st, "POST", "/v1/fleets/global/challenges/C2/add", `{"user_id":"u2","record":7}`, map[string]string{"x-api-key": "k1"}).Body.String(); !strings.Contains(b, `"stored":true`) {
+		t.Fatal(b)
+	}
+	if b := a2Do(t, st, "POST", "/v1/fleets/global/challenges/C2/list?limit=5", `{"user_id":"u2"}`, nil).Body.String(); !strings.Contains(b, `"top":[{"user_id":"u1"`) || strings.Contains(b, `"me":{"user_id":"u2","userName":"Bravo","record":7`) {
+		t.Fatal(b)
 	}
 	if w := a2Do(t, st, "POST", "/v1/fleets/global/challenges/C1/add", `{"user_id":"u1","record":1}`, nil); w.Code == 200 {
 		t.Fatal("add must need a key")

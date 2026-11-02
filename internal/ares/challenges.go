@@ -113,10 +113,15 @@ func (s *A2StationDbServer) AddChallengeRecord(c *hosting.Context) hosting.Resul
 	if math.IsNaN(record) || math.IsInf(record, 0) || record <= 0 || record > 1e7 {
 		return hosting.BadRequest(stj.O("error", "record must be a positive time"))
 	}
-	// A player's own key may only post that player's record; game servers (trusted) may post for anyone.
+	// Game servers (trusted) may post for anyone. A player's own key always posts for that player: the record is
+	// stored under the authenticated user, whatever id the body carried (so a format mismatch can't drop records,
+	// and a player can't post for someone else). Any other issued key (e.g. a deployment key) is refused.
 	cred := a2Credential(c, "A2StationDb Solara/AddChallengeRecord", a2ServerToken(c))
-	if !cred.trusted && !(cred.user != nil && cred.user.UserId != nil && strings.EqualFold(*cred.user.UserId, userId)) {
-		return a2Forbidden()
+	if !cred.trusted {
+		if cred.user == nil || cred.user.UserId == nil || *cred.user.UserId == "" {
+			return a2Forbidden()
+		}
+		userId = *cred.user.UserId
 	}
 	col := a2ChallengeRecords()
 	if col == nil {
