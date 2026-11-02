@@ -278,6 +278,7 @@ func (s *MothershipServer) PostUserDataClient(c *hosting.Context) hosting.Result
 		existing.Generation = existing.Generation + 1
 		cl.Update(existing)
 		authLog(fmt.Sprintf("[USERDATA] %s SAVED %s gen=%d bytes=%d", userId, keyName, existing.Generation, utf16Len(*existing.Value)))
+		grantQuestRewardsOnSave(userId, keyName, *existing.Value)
 		return userDataResult(existing)
 	}
 
@@ -289,6 +290,7 @@ func (s *MothershipServer) PostUserDataClient(c *hosting.Context) hosting.Result
 	data.Generation = 1
 	cl.Insert(data)
 	authLog(fmt.Sprintf("[USERDATA] %s CREATED %s bytes=%d (first ever save of this key)", userId, keyName, utf16Len(*data.Value)))
+	grantQuestRewardsOnSave(userId, keyName, *data.Value)
 	return userDataResult(data)
 }
 
@@ -357,4 +359,14 @@ func userDataResult(d *models.MothershipUserDataDbObject) hosting.Result {
 		"created_by", sv(d.UserId),
 		"last_written_by", sv(d.UserId),
 	), 200)
+}
+
+// grantQuestRewardsOnSave pays out newly completed quests' rewards when a player_quests save comes in.
+func grantQuestRewardsOnSave(userId, keyName, value string) {
+	if keyName != "player_quests" && keyName != "player_quests_v2" {
+		return
+	}
+	if n := GrantCompletedQuestRewards(userId, value); n > 0 {
+		authLog(fmt.Sprintf("[QUEST-REWARD] %s: %d reward transaction(s) granted from saved quest progress", userId, n))
+	}
 }

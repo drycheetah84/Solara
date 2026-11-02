@@ -119,3 +119,34 @@ func TestRefreshIapPaysOutMetaPurchases(t *testing.T) {
 		t.Fatalf("paid out twice: %+v", got)
 	}
 }
+
+func TestQuestRewardsFromSavedProgress(t *testing.T) {
+	t.Setenv("SOLARA_FULL_INVENTORY_IDS", "someone-else")
+	s := newTestServer(t)
+	tok := tokenFor("quester", time.Now().Add(time.Hour).Unix())
+	// CB4871AC... pays C1FD8E97... = 250 Driftium (Quests.quests -> KnownRewards); 908277... pays 9E69AE06... = 5 Hypercubes.
+	save := func(quests string) {
+		blob := encodeQuestBlob(`{"lastUpdate":"0001.01.01-00.00.00","quests":[` + quests + `],"savedQuestProgressionVersion":3}`)
+		do(t, s, "POST", "/v1/userdata/client", `{"key_name":"player_quests","value":"`+blob+`"}`, "x-mothership-token", tok)
+	}
+	owned := func() map[string]int {
+		m := map[string]int{}
+		for _, it := range OwnedItems("quester") {
+			m[it.Id] = it.Quantity
+		}
+		return m
+	}
+	save(`{"iD":"CB4871AC41992398F12F968C3BEA70FE","progress":3,"completedVersion":0}`) // in progress: nothing
+	if got := owned(); got[a2DriftiumId] != 0 {
+		t.Fatalf("uncompleted quest paid out: %+v", got)
+	}
+	save(`{"iD":"CB4871AC41992398F12F968C3BEA70FE","progress":255,"completedVersion":1},` +
+		`{"iD":"908277524E7EB291814D229BF63C715A","progress":255,"completedVersion":1}`)
+	if got := owned(); got[a2DriftiumId] != 250 || got[a2HypercubeId] != 5 {
+		t.Fatalf("after completion: %+v", got)
+	}
+	save(`{"iD":"CB4871AC41992398F12F968C3BEA70FE","progress":255,"completedVersion":1}`) // saved again: no double pay
+	if got := owned(); got[a2DriftiumId] != 250 {
+		t.Fatalf("paid twice: %+v", got)
+	}
+}

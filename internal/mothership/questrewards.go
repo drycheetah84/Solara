@@ -14,12 +14,15 @@ package mothership
 
 import (
 	_ "embed"
+	"encoding/json"
+	"fmt"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
 
 	"solara/internal/docdb"
+	"solara/internal/mothership/models"
 )
 
 //go:embed a2_50451_known_rewards.tsv
@@ -138,4 +141,94 @@ func ApplyQuestReward(playerId, transactionId, questId, rewardVersion string) ([
 		GrantedAt: time.Now().UnixMilli()})
 	authLog("[QUEST-REWARD] " + playerId + ": transaction " + txn + " (quest " + quest + " v" + rewardVersion + ") granted")
 	return changes, ""
+}
+
+// ── Rewards from saved quest progress ──────────────────────────────────────────────────────────────────────────────
+//
+// The event path above never fires on our server: ProcessReward (0x5706BB0) only runs from a delegate bound by the
+// player's server-side Mothership binder, which our server never creates (verified 2026-11-02: completions and turn-ins
+// reach the server, ProcessReward is never called). So rewards are granted from what IS saved: every player_quests
+// write (the server DLL's flush, or the client) is scanned, and each completed quest (completedVersion > 0) pays out
+// its permanent reward transactions -- /Game/LevelDefinitions/Quests.quests QuestRewards[].TransactionIDs, embedded as
+// a2_50451_quest_rewards.tsv -- through ApplyQuestReward, once per (player, quest, version, transaction).
+
+//go:embed a2_50451_quest_rewards.tsv
+var a2QuestRewardsTsv string
+
+var (
+	a2QuestTxnOnce sync.Once
+	a2QuestTxns    map[string][]string
+)
+
+func questTransactions() map[string][]string {
+	a2QuestTxnOnce.Do(func() {
+		a2QuestTxns = map[string][]string{}
+		for _, line := range strings.Split(a2QuestRewardsTsv, "\n") {
+			line = strings.TrimSpace(line)
+			if line == "" || line[0] == '#' {
+				continue
+			}
+			if f := strings.Split(line, "\t"); len(f) == 2 {
+				q := normTxn(f[0])
+				a2QuestTxns[q] = append(a2QuestTxns[q], normTxn(f[1]))
+			}
+		}
+	})
+	return a2QuestTxns
+}
+
+// GrantCompletedQuestRewards pays out the rewards of every completed quest in a saved player_quests value (base64,
+// each byte stored -1). Returns how many reward transactions were newly granted.
+func GrantCompletedQuestRewards(playerId, storedValue string) (granted int) {
+	defer func() {
+		if p := recover(); p != nil {
+			authLog(fmt.Sprintf("[QUEST-REWARD] %s: could not read player_quests: %v", playerId, p))
+		}
+	}()
+	raw := fromBase64String(storedValue)
+	for i := range raw {
+		raw[i]++
+	}
+	var blob struct {
+		Quests []struct {
+			ID               string `json:"iD"`
+			CompletedVersion int    `json:"completedVersion"`
+		} `json:"quests"`
+	}
+	if err := json.Unmarshal(raw, &blob); err != nil {
+		return 0
+	}
+	txns := questTransactions()
+	for _, q := range blob.Quests {
+		if q.CompletedVersion <= 0 {
+			continue
+		}
+		id := normTxn(q.ID)
+		for _, t := range txns[id] {
+			changes, errMsg := ApplyQuestReward(playerId, t, id, strconv.Itoa(q.CompletedVersion))
+			if errMsg == "" && len(changes) > 0 {
+				granted++
+			}
+		}
+	}
+	return granted
+}
+
+// backfillQuestRewards pays out every stored completed quest once at startup (quests finished before quest rewards
+// worked); ApplyQuestReward's per-(player, quest, version, transaction) record makes repeats a no-op.
+func backfillQuestRewards() {
+	defer func() { _ = recover() }()
+	total, players := 0, 0
+	for _, row := range userData().Find(func(d *models.MothershipUserDataDbObject) bool {
+		return dbEq(d.KeyName, "player_quests") || dbEq(d.KeyName, "player_quests_v2")
+	}) {
+		if row.UserId == nil || row.Value == nil {
+			continue
+		}
+		if n := GrantCompletedQuestRewards(*row.UserId, *row.Value); n > 0 {
+			total += n
+			players++
+		}
+	}
+	authLog(fmt.Sprintf("[QUEST-REWARD] startup backfill: %d reward transaction(s) granted to %d player(s)", total, players))
 }
