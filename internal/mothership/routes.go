@@ -30,6 +30,7 @@ func (s *MothershipServer) register() {
 	h.Handle("GET", "/v1/purchase/client/refresh-iap", "Solara/ClientRefreshIapGet", s.ClientRefreshIap)
 	h.Handle("GET", "/v1/progression/client", "Solara/ClientGetProgression", s.ClientGetProgression)
 	h.Handle("GET", "/v1/progression-tree/client", "Solara/ClientGetProgressionTrees", s.ClientGetProgressionTrees)
+	h.Handle("POST", "/v1/progression-tree/{scope}/{tree_id}/node/{action}", "Solara/TreeNodeAction", s.TreeNodeAction)
 	h.Handle("POST", "/v1/purchase", "ServerPurchase", s.ServerPurchase)
 	h.Handle("POST", "/v1/entitlement-catalog/automation", "AutomationCreateEntitlement", s.AutomationCreateEntitlement)
 	h.Handle("GET", "/v1/entitlement-catalog/automation", "AutomationGetEntitlements", s.AutomationGetEntitlements)

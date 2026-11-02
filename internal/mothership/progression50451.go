@@ -24,10 +24,3 @@ func (s *MothershipServer) ClientGetProgression(c *hosting.Context) hosting.Resu
 	}
 	return jsonAnon(stj.O("Results", []any{}), 200)
 }
-
-func (s *MothershipServer) ClientGetProgressionTrees(c *hosting.Context) hosting.Result {
-	if !isClient(c.Request) && !isAdmin(c.Request) {
-		return jsonError(401, "Unauthorized", "Missing or invalid session token", "", nil)
-	}
-	return jsonAnon(stj.O("Results", []any{}), 200)
-}
