@@ -61,6 +61,8 @@ const (
 
 // a2RouteAuth assigns a level to each state-changing route (by C# method name).
 var a2RouteAuth = map[string]a2AuthLevel{
+	// Solara: challenge records -- any issued key; the handler limits a player key to its own user_id
+	"Solara/AddChallengeRecord": a2Writer,
 	// account / privilege management
 	"CreateUserApiKey":           a2Admin,
 	"CreateOrUpdateUser":         a2Admin,

@@ -116,7 +116,9 @@ func TestA2StationDbServerRouteTable(t *testing.T) {
 		got = append(got, e.Method+"\t"+e.RouteUri+"\t"+e.Name)
 	}
 	// The 86 original routes come first and in order; Solara additions follow.
-	extra := []string{"POST\t/v1/deployments/{deployment_id}/gaia/events\tSolara/PostGaiaEvents", "GET\t/v1/deployments/{deployment_id}/gaia/next\tSolara/GetGaiaNext"}
+	extra := []string{"POST\t/v1/deployments/{deployment_id}/gaia/events\tSolara/PostGaiaEvents", "GET\t/v1/deployments/{deployment_id}/gaia/next\tSolara/GetGaiaNext",
+		"POST\t/v1/fleets/{fleet_id}/challenges/{challenge_id}/add\tSolara/AddChallengeRecord",
+		"POST\t/v1/fleets/{fleet_id}/challenges/{challenge_id}/list\tSolara/ListChallengeRecords"}
 	if len(got) != len(want)+len(extra) || len(want) != 86 || strings.Join(got[len(want):], "\n") != strings.Join(extra, "\n") {
 		t.Fatalf("endpoint count: got %d want %d (86) + %v: %v", len(got), len(want), extra, got[len(want):])
 	}

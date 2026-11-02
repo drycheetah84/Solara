@@ -133,4 +133,6 @@ func (s *A2StationDbServer) registerEndpoints() {
 	// -- Solara additions, registered after every original route --
 	s.HTTP.Handle("POST", "/v1/deployments/{deployment_id}/gaia/events", "Solara/PostGaiaEvents", a2Guard("Solara/PostGaiaEvents", s.PostGaiaEvents))
 	s.HTTP.Handle("GET", "/v1/deployments/{deployment_id}/gaia/next", "Solara/GetGaiaNext", a2Guard("Solara/GetGaiaNext", s.GetGaiaNext))
+	s.HTTP.Handle("POST", "/v1/fleets/{fleet_id}/challenges/{challenge_id}/add", "Solara/AddChallengeRecord", a2Guard("Solara/AddChallengeRecord", s.AddChallengeRecord))
+	s.HTTP.Handle("POST", "/v1/fleets/{fleet_id}/challenges/{challenge_id}/list", "Solara/ListChallengeRecords", a2Guard("Solara/ListChallengeRecords", s.ListChallengeRecords))
 }
