@@ -1,4 +1,4 @@
-// Brute-force protection for POST /dash-login (Solara). Mirrors the Go dashboard's own lockout
+// Brute-force protection for the Discord sign-in callback (Solara). Mirrors the Go dashboard's own lockout
 // (internal/ares/dashboard_hardening.go): 10 failed attempts per client in 5 minutes -> 429 for 15 minutes.
 // In-memory and per-process, which matches a single `next start` behind the tunnel.
 const WINDOW_MS = 5 * 60 * 1000;

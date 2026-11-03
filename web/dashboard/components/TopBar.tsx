@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 const nav = [
   { href: "/",            label: "Stations"    },
@@ -11,8 +12,31 @@ const nav = [
   { href: "/events",      label: "Events"      },
 ];
 
+export type Me = {
+  id: string; name: string; avatar: string | null; roles: string[]; admin: boolean;
+  permissions: string[]; stations: string[]; expires_at: string;
+};
+
 export function TopBar() {
   const path = usePathname();
+  const [me, setMe] = useState<Me | null>(null);
+
+  useEffect(() => {
+    if (path === "/login") return;
+    let alive = true;
+    fetch("/me", { cache: "no-store" })
+      .then(r => (r.ok ? r.json() : null))
+      .then(m => { if (alive) setMe(m); })
+      .catch(() => {});
+    return () => { alive = false; };
+  }, [path]);
+
+  async function logout() {
+    await fetch("/logout", { method: "POST" }).catch(() => null);
+    window.location.assign("/login");
+  }
+
+  if (path === "/login") return null;
 
   return (
     <header className="flex items-center gap-4 px-4 py-3"
@@ -46,21 +70,24 @@ export function TopBar() {
         })}
       </nav>
 
-      {/* Trail: live badge + server */}
-      <div className="flex items-center gap-3 shrink-0">
-        <span className="text-xs px-2 py-0.5 rounded-full font-medium hidden sm:inline-block"
-          style={{ background: "#1a3a2a", color: "var(--green)" }}>
-          LIVE
-        </span>
-        <span className="text-xs hidden md:block" style={{ color: "var(--muted)" }}>
-          localhost:8080
-        </span>
-        <a href="/login"
-          className="px-3 py-1.5 rounded-md text-sm whitespace-nowrap transition-colors hover:opacity-80 active:opacity-50"
-          style={{ background: "var(--surface2)", color: "var(--text)", fontWeight: 500 }}>
-          Admin login
-        </a>
-      </div>
+      {/* Trail: the signed-in Discord user */}
+      {me && (
+        <div className="flex items-center gap-2 shrink-0">
+          <Link href="/profile"
+            className="flex items-center gap-2 px-2 py-1 rounded-md transition-colors hover:opacity-90"
+            style={{ background: path.startsWith("/profile") ? "var(--surface2)" : "transparent" }}>
+            {me.avatar && (
+              // eslint-disable-next-line @next/next/no-img-element -- Discord CDN avatar, no image optimisation needed
+              <img src={me.avatar} alt="" width={26} height={26} className="rounded-full" referrerPolicy="no-referrer" />
+            )}
+            <span className="text-sm hidden sm:inline" style={{ color: "var(--text)" }}>{me.name}</span>
+          </Link>
+          <button onClick={logout} className="px-2.5 py-1 rounded-md text-xs"
+            style={{ border: "1px solid var(--border)", color: "var(--muted)" }}>
+            Log out
+          </button>
+        </div>
+      )}
     </header>
   );
 }

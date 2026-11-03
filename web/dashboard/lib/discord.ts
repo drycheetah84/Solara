@@ -8,6 +8,7 @@
 //   DISCORD_ROLE_MAP                           JSON: { "<role id>": "admin" | { "permissions": [...], "stations": [...] } }
 //                                              a station entry "@owned" means "the fleets this Discord user owns" (below)
 //   DISCORD_FLEET_OWNERS                       JSON: { "<discord user id>": ["<station id>", ...] }  (community captains)
+//   DISCORD_ROLE_NAMES                         JSON: { "<role id>": "Developer", ... }  (shown on the profile page)
 //   DASHBOARD_PUBLIC_URL                       default https://dash.halcy0n.net (the OAuth redirect is <url>/auth/discord/callback)
 import { createHash } from "node:crypto";
 
@@ -23,8 +24,10 @@ export function discordConfig() {
   try { roleMap = JSON.parse(process.env.DISCORD_ROLE_MAP ?? "{}"); } catch { roleMap = {}; }
   let owners: Record<string, string[]> = {};
   try { owners = JSON.parse(process.env.DISCORD_FLEET_OWNERS ?? "{}"); } catch { owners = {}; }
+  let roleNames: Record<string, string> = {};
+  try { roleNames = JSON.parse(process.env.DISCORD_ROLE_NAMES ?? "{}"); } catch { roleNames = {}; }
   const base = (process.env.DASHBOARD_PUBLIC_URL ?? "https://dash.halcy0n.net").replace(/\/+$/, "");
-  return { clientId, clientSecret, guildId, roleMap, owners, redirectUri: `${base}/auth/discord/callback` };
+  return { clientId, clientSecret, guildId, roleMap, owners, roleNames, redirectUri: `${base}/auth/discord/callback` };
 }
 
 /** An absolute URL on the dashboard's public origin (the server itself may only see its internal address). */
@@ -55,7 +58,7 @@ export function stateHash(state: string): string {
   return createHash("sha256").update(state).digest("hex");
 }
 
-export type DiscordMember = { userId: string; name: string; roles: string[] };
+export type DiscordMember = { userId: string; name: string; roles: string[]; avatar: string };
 
 async function discordFetch(url: string, init: RequestInit): Promise<Response> {
   return fetch(url, { ...init, cache: "no-store", redirect: "manual", signal: AbortSignal.timeout(8000) });
@@ -80,12 +83,23 @@ export async function discordMember(code: string, cfg: NonNullable<ReturnType<ty
   if (m.status === 404) return "not-member";
   if (!m.ok) return null;
   const body = await m.json().catch(() => null) as {
-    roles?: string[]; nick?: string | null; user?: { id?: string; username?: string; global_name?: string | null };
+    roles?: string[]; nick?: string | null; avatar?: string | null;
+    user?: { id?: string; username?: string; global_name?: string | null; avatar?: string | null };
   } | null;
   if (!body?.user?.id) return null;
+  const uid = body.user.id;
+  const safe = (h?: string | null) => (h && /^(a_)?[a-f0-9]{32}$/.test(h) ? h : null);
+  // server avatar > account avatar > Discord's default avatar
+  const guildAvatar = safe(body.avatar), userAvatar = safe(body.user.avatar);
+  const avatar = guildAvatar
+    ? `https://cdn.discordapp.com/guilds/${cfg.guildId}/users/${uid}/avatars/${guildAvatar}.png?size=128`
+    : userAvatar
+      ? `https://cdn.discordapp.com/avatars/${uid}/${userAvatar}.png?size=128`
+      : `https://cdn.discordapp.com/embed/avatars/${Number((BigInt(uid) >> BigInt(22)) % BigInt(6))}.png`;
   return {
-    userId: body.user.id,
-    name: body.nick || body.user.global_name || body.user.username || body.user.id,
+    userId: uid,
+    name: body.nick || body.user.global_name || body.user.username || uid,
     roles: Array.isArray(body.roles) ? body.roles : [],
+    avatar,
   };
 }

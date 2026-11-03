@@ -31,9 +31,9 @@ export function proxy(req: NextRequest) {
   }
   if (
     pathname === "/login" ||
-    pathname === "/dash-login" ||
     pathname === "/auth/discord" ||
     pathname === "/auth/discord/callback" ||
+    pathname === "/logout" ||
     pathname.startsWith("/_next/") ||
     pathname === "/favicon.ico" ||
     pathname === "/logo.webp"
@@ -42,7 +42,7 @@ export function proxy(req: NextRequest) {
   }
 
   if (!validSession(req.cookies.get(SESSION_COOKIE)?.value)) {
-    if (pathname.startsWith("/api") || pathname.startsWith("/game")) {
+    if (pathname.startsWith("/api") || pathname.startsWith("/game") || pathname === "/me") {
       return NextResponse.json({ error: "unauthorized" }, { status: 401 });
     }
     const url = req.nextUrl.clone();

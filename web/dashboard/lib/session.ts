@@ -10,18 +10,8 @@ export function authConfig() {
   return { adminKey, sessionSecret };
 }
 
-export function validAdminKey(key: unknown): boolean {
-  const config = authConfig();
-  if (!config || typeof key !== "string" || !key || key.length > 4096) return false;
-  // Equal-length hashes keep arbitrary input lengths away from timingSafeEqual.
-  return timingSafeEqual(
-    createHash("sha256").update(key).digest(),
-    createHash("sha256").update(config.adminKey).digest(),
-  );
-}
-
 /** Solara scoped dashboard tokens (backend /api/scoped-tokens) look like sdt1_<64 hex>. */
-export function looksLikeScopedToken(key: unknown): key is string {
+function looksLikeScopedToken(key: unknown): key is string {
   return typeof key === "string" && /^sdt1_[a-f0-9]{64}$/.test(key);
 }
 
@@ -58,41 +48,52 @@ function openToken(sealed: string, config: NonNullable<ReturnType<typeof authCon
   }
 }
 
-/** A master session (the admin key). */
-export function createSession(): string {
+/** The Discord identity a session belongs to (signed into the cookie with the rest of the session). */
+export type SessionProfile = { id: string; name: string; avatar: string | null; roles: string[]; admin: boolean };
+
+function encodeProfile(p: SessionProfile): string {
+  return Buffer.from(JSON.stringify(p), "utf8").toString("base64url");
+}
+function decodeProfile(s: string): SessionProfile | null {
+  try {
+    const p = JSON.parse(Buffer.from(s, "base64url").toString("utf8"));
+    if (!p || typeof p.id !== "string" || typeof p.name !== "string") return null;
+    return { id: p.id, name: p.name, avatar: typeof p.avatar === "string" ? p.avatar : null,
+      roles: Array.isArray(p.roles) ? p.roles.filter((r: unknown) => typeof r === "string") : [], admin: !!p.admin };
+  } catch {
+    return null;
+  }
+}
+
+/** A Discord session: master (admin role) when token is null, otherwise acting with that scoped token.
+ *  Format v3: v3.<exp>.<nonce>.<sealed token | "-">.<profile>.<hmac> */
+export function createSession(profile: SessionProfile, token: string | null = null): string {
   const config = authConfig();
   if (!config) throw new Error("Dashboard authentication is not configured");
   const expires = Math.floor(Date.now() / 1000) + SESSION_MAX_AGE;
-  const payload = `v1.${expires}.${randomBytes(16).toString("hex")}`;
+  const payload = `v3.${expires}.${randomBytes(16).toString("hex")}.${token ? sealToken(token, config) : "-"}.${encodeProfile(profile)}`;
   return `${payload}.${signature(payload, config)}`;
 }
 
-/** A session that acts with a scoped dashboard token (already checked against the backend). */
-export function createScopedSession(token: string): string {
-  const config = authConfig();
-  if (!config) throw new Error("Dashboard authentication is not configured");
-  const expires = Math.floor(Date.now() / 1000) + SESSION_MAX_AGE;
-  const payload = `v2.${expires}.${randomBytes(16).toString("hex")}.${sealToken(token, config)}`;
-  return `${payload}.${signature(payload, config)}`;
-}
+export type SessionCredential = { kind: "master" | "scoped"; key: string; profile: SessionProfile; expires: number };
 
-export type SessionCredential = { kind: "master"; key: string } | { kind: "scoped"; key: string };
-
-/** The credential a session acts with, or null when the cookie is missing, forged or expired. */
+/** The credential a session acts with, or null when the cookie is missing, forged, expired or from an older format
+ *  (key-login sessions v1 / v2 are no longer accepted: the dashboard signs in with Discord only). */
 export function sessionCredential(value: string | undefined): SessionCredential | null {
   const config = authConfig();
-  if (!config || !value) return null;
-  const match = /^(v([12])\.(\d{10})\.[a-f0-9]{32}(?:\.([A-Za-z0-9_-]{40,200}))?)\.([a-f0-9]{64})$/.exec(value);
+  if (!config || !value || value.length > 4096) return null;
+  const match = /^(v3\.(\d{10})\.[a-f0-9]{32}\.(-|[A-Za-z0-9_-]{40,200})\.([A-Za-z0-9_-]{2,2000}))\.([a-f0-9]{64})$/.exec(value);
   if (!match) return null;
-  const [, payload, version, exp, sealed, sig] = match;
-  if ((version === "1") !== (sealed === undefined)) return null;
+  const [, payload, exp, sealed, prof, sig] = match;
   const expires = Number(exp);
   const now = Math.floor(Date.now() / 1000);
   if (expires <= now || expires > now + SESSION_MAX_AGE) return null;
   if (!timingSafeEqual(Buffer.from(sig, "hex"), Buffer.from(signature(payload, config), "hex"))) return null;
-  if (version === "1") return { kind: "master", key: config.adminKey };
-  const token = openToken(sealed as string, config);
-  return token ? { kind: "scoped", key: token } : null;
+  const profile = decodeProfile(prof);
+  if (!profile) return null;
+  if (sealed === "-") return profile.admin ? { kind: "master", key: config.adminKey, profile, expires } : null;
+  const token = openToken(sealed, config);
+  return token ? { kind: "scoped", key: token, profile, expires } : null;
 }
 
 export function validSession(value: string | undefined): boolean {

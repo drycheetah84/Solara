@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { timingSafeEqual } from "node:crypto";
 import { accessForRoles, discordConfig, discordMember, publicUrl, stateHash } from "@/lib/discord";
-import { authConfig, createScopedSession, createSession, SESSION_COOKIE, SESSION_MAX_AGE } from "@/lib/session";
+import { authConfig, createSession, SESSION_COOKIE, SESSION_MAX_AGE, type SessionProfile } from "@/lib/session";
 import { clientKey, lockedFor, recordFailure, recordSuccess } from "@/lib/login-limit";
 
 const STATE_COOKIE = "halcyon_dstate";
@@ -62,13 +62,17 @@ export async function GET(req: NextRequest) {
   const access = accessForRoles(member.roles, cfg.roleMap, member.userId, cfg.owners);
   if (!access) return back(req, "no-dashboard-role");
 
+  const profile: SessionProfile = {
+    id: member.userId, name: member.name, avatar: member.avatar, admin: access.admin,
+    roles: member.roles.filter(r => cfg.roleMap[r] !== undefined).map(r => cfg.roleNames[r] ?? r),
+  };
   let session: string;
   if (access.admin) {
-    session = createSession();
+    session = createSession(profile);
   } else {
     const token = await mintToken(auth.adminKey, `discord:${member.userId} (${member.name})`, access.permissions, access.stations);
     if (!token) return back(req, "token-failed");
-    session = createScopedSession(token);
+    session = createSession(profile, token);
   }
   recordSuccess(client);
   console.log(`[dash-login] discord ${member.userId} (${member.name}) -> ${access.admin ? "admin" : access.permissions.join(",")}`);

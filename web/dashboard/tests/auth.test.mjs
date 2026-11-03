@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { createHmac, randomBytes } from "node:crypto";
+import { createCipheriv, createHash, createHmac, randomBytes } from "node:crypto";
 import { once } from "node:events";
 import http from "node:http";
 import net from "node:net";
@@ -71,19 +71,29 @@ async function startDashboard(upstreamPort, overrides = {}) {
   }
 }
 
-function login(request, body, headers = {}) {
-  return request("/dash-login", {
-    method: "POST",
-    headers: { "content-type": "application/json", ...headers },
-    body: JSON.stringify(body),
-  });
+function sign(payload) {
+  return createHmac("sha256", sessionSecret).update(JSON.stringify(["halcyon-dashboard", adminKey, payload])).digest("hex");
 }
 
-function signedCookie(expires) {
+// A v3 (Discord) session exactly as /auth/discord/callback mints it.
+function discordCookie({ admin = true, token = null, expires = Math.floor(Date.now() / 1000) + 3600 } = {}) {
+  let sealed = "-";
+  if (token) {
+    const key = createHash("sha256").update(JSON.stringify(["halcyon-dashboard-token", sessionSecret])).digest();
+    const iv = randomBytes(12);
+    const c = createCipheriv("aes-256-gcm", key, iv);
+    const enc = Buffer.concat([c.update(token, "utf8"), c.final()]);
+    sealed = Buffer.concat([iv, c.getAuthTag(), enc]).toString("base64url");
+  }
+  const profile = Buffer.from(JSON.stringify({ id: "1234", name: "Tester", avatar: null, roles: ["Developer"], admin }))
+    .toString("base64url");
+  const payload = `v3.${expires}.${randomBytes(16).toString("hex")}.${sealed}.${profile}`;
+  return `halcyon_dash=${payload}.${sign(payload)}`;
+}
+
+function legacyKeyCookie(expires) {
   const payload = `v1.${expires}.${randomBytes(16).toString("hex")}`;
-  const signature = createHmac("sha256", sessionSecret)
-    .update(JSON.stringify(["halcyon-dashboard", adminKey, payload])).digest("hex");
-  return `halcyon_dash=${payload}.${signature}`;
+  return `halcyon_dash=${payload}.${sign(payload)}`;
 }
 
 test("production dashboard authentication", async t => {
@@ -133,25 +143,18 @@ test("production dashboard authentication", async t => {
     assert.equal(upstreamRequests, 0);
   });
 
-  await t.test("wrong keys and malformed login bodies are rejected cleanly", async () => {
-    for (const body of [null, [], {}, { key: null }, { key: 123 }, { key: [] }, { key: {} }, { key: "wrong" }]) {
-      const response = await login(request, body);
-      assert.equal(response.status, 401);
-      assert.equal(response.headers.get("set-cookie"), null);
-    }
-    assert.equal((await request("/dash-login", { method: "POST", body: "{" })).status, 400);
+  await t.test("key login is gone", async () => {
+    const response = await request("/dash-login", {
+      method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ key: adminKey }),
+    });
+    assert.notEqual(response.status, 200);
+    assert.equal(response.headers.get("set-cookie"), null);
+    const now = Math.floor(Date.now() / 1000);
+    assert.equal((await request("/api/stats", { headers: { cookie: legacyKeyCookie(now + 3600) } })).status, 401);
   });
 
-  await t.test("valid login unlocks pages and authenticated API/game forwarding", async () => {
-    const response = await login(request, { key: adminKey });
-    assert.equal(response.status, 200);
-    const setCookie = response.headers.get("set-cookie");
-    assert.match(setCookie, /HttpOnly/i);
-    assert.match(setCookie, /SameSite=lax/i);
-    assert.match(setCookie, /Max-Age=43200/i);
-    assert.ok(!setCookie.includes(adminKey));
-    assert.ok(!setCookie.includes(sessionSecret));
-    cookie = setCookie.split(";")[0];
+  await t.test("an admin Discord session unlocks pages and authenticated API/game forwarding", async () => {
+    cookie = discordCookie();
     assert.equal((await request("/", { headers: { cookie } })).status, 200);
     const api = await request("/api/stats?limit=1", { headers: { cookie } });
     assert.equal(api.status, 200);
@@ -167,22 +170,26 @@ test("production dashboard authentication", async t => {
       path: "/stations/create?test=1", method: "POST", body: '{"station_name":"test"}',
       correctKey: true, scopedKey: false, forwardedCookie: false,
     });
+    const me = await request("/me", { headers: { cookie } });
+    assert.equal(me.status, 200);
+    const body = await me.json();
+    assert.equal(body.name, "Tester");
+    assert.equal(body.admin, true);
+    assert.equal((await request("/me")).status, 401);
   });
 
-  await t.test("a scoped token logs in and the proxy forwards that token, not the admin key", async () => {
-    const unknown = await login(request, { key: "sdt1_" + "0".repeat(64) });
-    assert.equal(unknown.status, 401);
-    assert.equal(unknown.headers.get("set-cookie"), null);
-    const response = await login(request, { key: scopedToken });
-    assert.equal(response.status, 200);
-    const setCookie = response.headers.get("set-cookie");
-    assert.ok(!setCookie.includes(scopedToken), "the token must not sit in the cookie in the clear");
-    const scopedCookie = setCookie.split(";")[0];
+  await t.test("a non-admin Discord session forwards its scoped token, not the admin key", async () => {
+    const scopedCookie = discordCookie({ admin: false, token: scopedToken });
     assert.equal((await request("/", { headers: { cookie: scopedCookie } })).status, 200);
     const api = await request("/api/stats", { headers: { cookie: scopedCookie } });
     assert.deepEqual(await api.json(), {
       path: "/api/stats", method: "GET", body: "", correctKey: false, scopedKey: true, forwardedCookie: false,
     });
+    const me = await (await request("/me", { headers: { cookie: scopedCookie } })).json();
+    assert.equal(me.admin, false);
+    assert.deepEqual(me.permissions, ["stations.read"]);
+    // a non-admin profile without a token must never act as the master key
+    assert.equal((await request("/api/stats", { headers: { cookie: discordCookie({ admin: false }) } })).status, 401);
   });
 
   await t.test("expired, future-dated, tampered and legacy sessions are rejected", async () => {
@@ -191,7 +198,8 @@ test("production dashboard authentication", async t => {
     const legacy = createHmac("sha256", sessionSecret).update("halcyon-dashboard-v1").digest("hex");
     const tampered = cookie.slice(0, -1) + (cookie.endsWith("a") ? "b" : "a");
     for (const invalid of [
-      signedCookie(now - 1), signedCookie(now + 86400), tampered, `halcyon_dash=${legacy}`,
+      discordCookie({ expires: now - 1 }), discordCookie({ expires: now + 86400 }), tampered, `halcyon_dash=${legacy}`,
+      legacyKeyCookie(now + 3600),
     ]) {
       for (const url of ["/api/stats", "/game/stations"]) {
         assert.equal((await request(url, { headers: { cookie: invalid } })).status, 401);
@@ -199,12 +207,6 @@ test("production dashboard authentication", async t => {
       assert.equal((await request("/", { headers: { cookie: invalid } })).status, 307);
     }
     assert.equal(upstreamRequests, before);
-  });
-
-  await t.test("HTTPS forwarding sets a secure cookie", async () => {
-    const response = await login(request, { key: adminKey }, { "x-forwarded-proto": "https" });
-    assert.equal(response.status, 200);
-    assert.match(response.headers.get("set-cookie"), /; Secure/i);
   });
 
   await t.test("security headers are set on every response", async () => {
@@ -230,25 +232,14 @@ test("production dashboard authentication", async t => {
     assert.equal((await request("/api/stats", { headers: { cookie, origin: "https://evil.example" } })).status, 200);
   });
 
-  await t.test("login is locked out after 10 failed attempts", async () => {
-    const who = { "cf-connecting-ip": "203.0.113.9" };
-    for (let i = 0; i < 10; i++) assert.equal((await login(request, { key: "wrong" }, who)).status, 401);
-    const locked = await login(request, { key: adminKey }, who);
-    assert.equal(locked.status, 429);
-    assert.ok(Number(locked.headers.get("retry-after")) > 0);
-    assert.equal(locked.headers.get("set-cookie"), null);
-    // other clients are unaffected
-    assert.equal((await login(request, { key: adminKey }, { "cf-connecting-ip": "203.0.113.10" })).status, 200);
-  });
-
   await dashboard.stop();
   for (const missing of ["DASHBOARD_ADMIN_KEY", "DASHBOARD_SESSION_SECRET"]) {
     await t.test(`missing ${missing} fails closed`, async () => {
       const unconfigured = await startDashboard(upstreamPort, { [missing]: "" });
       try {
-        const response = await login(unconfigured.request, { key: adminKey });
-        assert.equal(response.status, 503);
-        assert.equal(response.headers.get("set-cookie"), null);
+        const response = await unconfigured.request("/auth/discord/callback?code=x&state=y");
+        assert.match(response.headers.get("location") ?? "", /err=discord-not-configured/);
+        assert.equal(response.headers.get("set-cookie")?.includes("halcyon_dash=") ?? false, false);
         for (const url of ["/api/stats", "/game/stations"]) {
           assert.equal((await unconfigured.request(url, { headers: { cookie } })).status, 401);
         }
