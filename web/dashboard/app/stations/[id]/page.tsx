@@ -751,7 +751,8 @@ function EventsTab({ stationId }: { stationId: string }) {
       await api.createEvent(stationId, {
         title:         form.title,
         description:   form.description,
-        start_time:    form.start_time || new Date().toISOString(),
+        // datetime-local is the browser's LOCAL time with no zone; send real UTC (the backend reads a bare time as UTC)
+        start_time:    form.start_time ? new Date(form.start_time).toISOString() : new Date().toISOString(),
         duration:      parseInt(form.duration, 10) || 3600,
         deployment_id: form.deployment_id || undefined,
         public:        form.public,
