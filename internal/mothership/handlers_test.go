@@ -536,6 +536,17 @@ func TestSteamAndRift(t *testing.T) {
 	if r["ExternalProviderId"] != "4649330831842445" || !isActiveSession("4322323827863641") || !isActiveSession(r["PlayerId"].(string)) {
 		t.Fatal(r)
 	}
+	// each PC client gets its own player, keyed on the Meta UserId it sends (not one shared RIFT account)
+	a1 := decode(t, do(t, s, "POST", "/v1/client/player/auth/RIFT", `{"UserId":"28019295557747332","Nonce":"x"}`))
+	a2 := decode(t, do(t, s, "POST", "/v1/client/player/auth/RIFT", `{"UserId":"10000000000000001","Nonce":"x"}`))
+	a1b := decode(t, do(t, s, "POST", "/v1/client/player/auth/RIFT", `{"UserId":"28019295557747332","Nonce":"y"}`))
+	if a1["PlayerId"] == a2["PlayerId"] || a1["PlayerId"] == r["PlayerId"] || a1b["PlayerId"] != a1["PlayerId"] ||
+		a1["ExternalProviderId"] != "28019295557747332" || !isActiveSession("28019295557747332") {
+		t.Fatal(a1, a2, a1b, r)
+	}
+	if r2 := decode(t, do(t, s, "POST", "/v1/client/player/auth/RIFT", `{"UserId":"not-a-meta-id"}`)); r2["PlayerId"] != r["PlayerId"] {
+		t.Fatal("a body without a usable UserId keeps the shared account", r2)
+	}
 	if n := decode(t, do(t, s, "GET", "/v2/player/client/auth/begin/STEAM", "")); len(n["Nonce"].(string)) != 22 {
 		t.Fatal(n)
 	}

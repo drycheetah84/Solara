@@ -128,24 +128,29 @@ func (s *MothershipServer) ClientAuthRift(c *hosting.Context) hosting.Result {
 		}
 	}
 
-	// Solara diagnostic (2026-11-03): every PC client is folded into ONE player (the fixed RIFT_EXTERNAL_ID), so
-	// they share an inventory and a Vivox identity. Log what each client sends (field names + its user id; never
-	// the nonce) to key PC players on their own account.
+	// Solara (2026-11-03): every PC client used to be folded into ONE player (the fixed RIFT_EXTERNAL_ID), so all PC
+	// players shared an inventory, quests, a name and one Vivox identity -- a second spectator signing in kicked
+	// the others out of voice. The client sends its own Meta UserId (body {UserId, Nonce}); key the player on it.
+	// A body without a usable UserId keeps the old shared account.
+	extId, orgId := RIFT_EXTERNAL_ID, RIFT_ORG_SCOPED_ID
 	{
 		b := parseBody(request)
-		uid := ""
-		for _, k := range []string{"UserId", "user_id", "AccountId", "accountId", "platform_id", "PlatformId", "OrgScopedId", "org_scoped_id"} {
+		uid := str(b, "UserId")
+		for _, k := range []string{"user_id", "AccountId", "accountId", "platform_id"} {
 			if uid == "" {
 				uid = str(b, k)
 			}
 		}
-		logConsole(fmt.Sprintf("[RIFT-BODY] keys=[%s] uid='%s'", strings.Join(b.Keys(), ","), uid))
+		if riftUserIdOk(uid) {
+			extId, orgId = uid, uid
+		}
+		logConsole(fmt.Sprintf("[RIFT-AUTH] uid='%s' -> externalId=%s", uid, extId))
 	}
 
 	cl := v2Players()
 	var existing *models.MothershipV2PlayerDbObject
 	for _, p := range cl.FindAll() {
-		if eqS(p.ExternalProviderId, RIFT_EXTERNAL_ID) && eqS(p.ExternalService, "RIFT") {
+		if eqS(p.ExternalProviderId, extId) && eqS(p.ExternalService, "RIFT") {
 			existing = p
 			break
 		}
@@ -164,10 +169,10 @@ func (s *MothershipServer) ClientAuthRift(c *hosting.Context) hosting.Result {
 		"did", newId(),
 		"env", ENVIRONMENT_ID,
 		"externalService", "RIFT",
-		"externalServiceId", RIFT_EXTERNAL_ID,
+		"externalServiceId", extId,
 		"tid", TENANT_ID,
 		"tags", nil,
-		"orgScopedExternalServiceId", RIFT_ORG_SCOPED_ID,
+		"orgScopedExternalServiceId", orgId,
 		"nbf", now.Unix(),
 		"exp", expSec,
 		"iat", now.Unix(),
@@ -177,7 +182,7 @@ func (s *MothershipServer) ClientAuthRift(c *hosting.Context) hosting.Result {
 	if player == nil {
 		player = models.NewMothershipV2PlayerDbObject()
 	}
-	player.ExternalProviderId = strp(RIFT_EXTERNAL_ID)
+	player.ExternalProviderId = strp(extId)
 	var prevName *string
 	if existing != nil {
 		prevName = existing.ExternalProviderUsername
@@ -196,7 +201,7 @@ func (s *MothershipServer) ClientAuthRift(c *hosting.Context) hosting.Result {
 	}
 
 	// Tier 1 join gate: mark the RIFT ids active so RIFT players aren't kicked.
-	markActiveSession(12, RIFT_EXTERNAL_ID, RIFT_ORG_SCOPED_ID, playerId)
+	markActiveSession(12, extId, orgId, playerId)
 	return jsonT(player, 201)
 }
 
@@ -520,4 +525,17 @@ func containsStr(list []string, x string) bool {
 		}
 	}
 	return false
+}
+
+// riftUserIdOk: a Meta user id as the PC client sends it (decimal digits, 5..20 long).
+func riftUserIdOk(uid string) bool {
+	if len(uid) < 5 || len(uid) > 20 {
+		return false
+	}
+	for _, c := range uid {
+		if c < '0' || c > '9' {
+			return false
+		}
+	}
+	return true
 }
