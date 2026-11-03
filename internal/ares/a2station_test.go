@@ -18,6 +18,7 @@ import (
 	"solara/internal/docdb"
 	"solara/internal/dotnet"
 	"solara/internal/eos"
+	"solara/internal/halcyonsocket"
 	"solara/internal/secrets"
 	"solara/internal/stj"
 )
@@ -722,5 +723,23 @@ func TestA2PublicHostBoardUrl(t *testing.T) {
 	w = a2Do(t, s, "GET", "/deployments/x/config", "", nil)
 	if got := a2Json(t, w).GetProperty("SignArenaPrime").Str(); got != "https://cdn.example/board/_default.png" {
 		t.Fatalf("BOARD_PUBLIC_BASE: %s", got)
+	}
+}
+
+// A deployment spun up from the dashboard FOR a station registers under that station (not a new, empty one).
+func TestA2RegisterJoinsPendingStation(t *testing.T) {
+	s, _ := a2TestEnv(t)
+	w := a2Do(t, s, "POST", "/register_server", `{"ip":"1.2.3.4","port":"7777","deployment_id":"dep-a","server_name":"A"}`, nil)
+	home := a2Json(t, w).GetProperty("station_id").Str()
+	halcyonsocket.PendingStations.Set("dep-b", home)
+	w = a2Do(t, s, "POST", "/register_server", `{"ip":"5.6.7.8","port":"7778","deployment_id":"dep-b","server_name":"B"}`, nil)
+	if got := a2Json(t, w).GetProperty("station_id").Str(); got != home {
+		t.Fatalf("dep-b registered under %q, want the pending station %q", got, home)
+	}
+	// A pending station that does not exist is ignored (a fresh station, as before).
+	halcyonsocket.PendingStations.Set("dep-c", "no-such-station")
+	w = a2Do(t, s, "POST", "/register_server", `{"ip":"9.9.9.9","port":"7779","deployment_id":"dep-c","server_name":"C"}`, nil)
+	if got := a2Json(t, w).GetProperty("station_id").Str(); got == home || got == "no-such-station" {
+		t.Fatalf("dep-c station %q", got)
 	}
 }

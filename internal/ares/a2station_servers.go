@@ -164,6 +164,8 @@ func (s *A2StationDbServer) RegisterServer(c *hosting.Context) hosting.Result {
 	var stationId string
 	if existingDep != nil && existingDep.StationId != nil {
 		stationId = *existingDep.StationId
+	} else if st, ok := halcyonsocket.PendingStations.TryRemove(deploymentId); ok && !a2IsBlank(st) && a2FindStation(st) != nil {
+		stationId = st // [Solara] spun up for an existing station from the dashboard: join it
 	} else {
 		stationId = a2GenerateId()
 	}

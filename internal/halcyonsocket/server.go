@@ -34,6 +34,11 @@ var Instance *HalcyonSocketServer
 // deployment's DeploymentName. Survives until the server registers.
 var PendingNames = NewConcurrentDictionary[string, string]()
 
+// PendingStations (Solara) holds the station a dashboard spin-up was requested FOR, keyed by the deployment id
+// minted at spin-up. register_server reads (TryRemove) it so a fresh deployment joins that station instead of
+// register_server inventing a new, empty one (which lost the station's boards, roles, drafters and netvars).
+var PendingStations = NewConcurrentDictionary[string, string]()
+
 // HalcyonSocketServer mirrors the C# class (an AstraHttpServer).
 type HalcyonSocketServer struct {
 	HTTP *hosting.Server
@@ -182,6 +187,9 @@ func (s *HalcyonSocketServer) requestSpinUp(stationId string, box, mp, region, a
 	}
 	if !isNullOrWhiteSpaceP(name) {
 		PendingNames.Set(deploymentId, trim(*name))
+	}
+	if trim(stationId) != "" {
+		PendingStations.Set(deploymentId, trim(stationId))
 	}
 
 	// The game receives the token both as -ServerApiKey (Mothership,
