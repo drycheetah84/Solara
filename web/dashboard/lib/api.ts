@@ -422,6 +422,17 @@ export const api = {
   // Solara: per-server identity tokens (docs/SERVER_IDENTITY.md). Issued on the CLI only; listed
   // here without the secret, revocable by id or display prefix.
   // Solara scoped dashboard tokens (master key only, except scopedSelf).
+  titleData: () => get<TitleDataList>("titledata"),
+  /** Not via put(): a 400 carries the reason (e.g. invalid JSON), which the editor shows. */
+  setTitleData: async (key: string, value: string) => {
+    const res = await fetch(`/api/titledata/${encodeURIComponent(key)}`, {
+      method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ value }),
+    });
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(body.error ?? `save failed (${res.status})`);
+    return body as TitleDataRow;
+  },
+  deleteTitleData: (key: string) => del<{ deleted: string }>(`titledata/${encodeURIComponent(key)}`),
   scopedTokenPerms: () => get<{ permissions: ScopedPermission[] }>("scoped-tokens/permissions"),
   scopedTokens: () => get<{ tokens: ScopedToken[] }>("scoped-tokens"),
   scopedSelf: () => get<{ master: boolean } & Partial<ScopedToken>>("scoped-tokens/self"),
@@ -489,3 +500,7 @@ export type ScopedToken = {
   revoked_at: string | null;
   last_used: string | null;
 };
+
+export type TitleDataRow = { key: string; value: string; updated_at: string };
+export type TitleDataKnown = { key: string; reader: string; purpose: string; format: "text" | "url" | "json"; template: string };
+export type TitleDataList = { known: TitleDataKnown[]; stored: TitleDataRow[]; generated: Record<string, string> };

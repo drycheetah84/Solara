@@ -254,3 +254,56 @@ func (s *MothershipServer) AutomationGetTitleData(c *hosting.Context) hosting.Re
 func (s *MothershipServer) AutomationDeleteTitleData(c *hosting.Context) hosting.Result {
 	return deleteTitleData(c)
 }
+
+// ---- Solara: dashboard title-data editor -------------------------------------
+
+// TitleDataRow is one stored title-data entry as the dashboard sees it.
+type TitleDataRow struct {
+	Key       string `json:"key"`
+	Value     string `json:"value"`
+	UpdatedAt string `json:"updated_at"`
+}
+
+// ListTitleData returns every stored title-data row, sorted by key.
+func ListTitleData() []TitleDataRow {
+	out := []TitleDataRow{}
+	for _, it := range titleData().FindAll() {
+		out = append(out, TitleDataRow{Key: sv(it.Key), Value: sv(it.Value), UpdatedAt: sv(it.UpdatedAt)})
+	}
+	sort.Slice(out, func(i, j int) bool { return out[i].Key < out[j].Key })
+	return out
+}
+
+// GeneratedTitleData returns the entries the client gets that are not stored rows (the main fleet's boards).
+func GeneratedTitleData() map[string]string {
+	if TitleDataExtra == nil {
+		return map[string]string{}
+	}
+	return TitleDataExtra()
+}
+
+// SetTitleDataValue stores (creates or replaces) a title-data row; a stored row wins over a generated one.
+func SetTitleDataValue(key, value string) TitleDataRow {
+	cl := titleData()
+	now := utcNowO()
+	if item := findTitleData(cl, key); item != nil {
+		item.Value, item.UpdatedAt = strp(value), strp(now)
+		cl.Update(item)
+	} else {
+		n := models.NewMothershipTitleDataDbObject()
+		n.Key, n.Value, n.UpdatedAt = strp(key), strp(value), strp(now)
+		cl.Insert(n)
+	}
+	return TitleDataRow{Key: key, Value: value, UpdatedAt: now}
+}
+
+// DeleteTitleDataKey removes a stored row; false when there was none.
+func DeleteTitleDataKey(key string) bool {
+	cl := titleData()
+	item := findTitleData(cl, key)
+	if item == nil {
+		return false
+	}
+	cl.Delete(item.Id)
+	return true
+}

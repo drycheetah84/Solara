@@ -19,6 +19,7 @@ func TestScopedTokenRouteCoverage(t *testing.T) {
 		"GET /api/server-tokens": true, "DELETE /api/server-tokens/{id}": true,
 		"GET /api/scoped-tokens/permissions": true, "GET /api/scoped-tokens/self": true, "GET /api/scoped-tokens": true,
 		"POST /api/scoped-tokens": true, "DELETE /api/scoped-tokens/{id}": true,
+		"GET /api/titledata": true, "PUT /api/titledata/{key}": true, "DELETE /api/titledata/{key}": true,
 	}
 	inTable := map[string]bool{}
 	for _, r := range dashScopedRoutes {

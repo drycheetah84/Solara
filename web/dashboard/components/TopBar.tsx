@@ -52,7 +52,7 @@ export function TopBar() {
 
       {/* Nav */}
       <nav className="flex items-center gap-1 flex-1 overflow-x-auto">
-        {nav.map(({ href, label }) => {
+        {[...nav, ...(me?.admin ? [{ href: "/titledata", label: "Title data" }] : [])].map(({ href, label }) => {
           const active = href === "/"
             ? (path === "/" || path.startsWith("/stations"))
             : path.startsWith(href);
