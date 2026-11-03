@@ -189,7 +189,9 @@ func TestKioskItems(t *testing.T) {
 func TestElfKioskRotation(t *testing.T) {
 	day := func(d int) time.Time { return time.Date(2026, 11, 3+d, 12, 0, 0, 0, time.UTC) }
 	want := []string{"WearableHelmetCircuitSpryte", "WearableHelmetCircuitSpryte", "WearableChestCircuitSpryte", "WearableChestCircuitSpryte",
-		"WearableShoulderCircuitSpryte", "WearableShoulderCircuitSpryte", "WearableArmsCircuitSpryte", "WearableArmsCircuitSpryte", "WearableHelmetCircuitSpryte"}
+		"WearableShoulderCircuitSpryte", "WearableShoulderCircuitSpryte", "WearableArmsCircuitSpryte", "WearableArmsCircuitSpryte",
+		"PatternPepperMatrix", "PatternPepperMatrix", "ColorPresetPeppermatrix", "ColorPresetPeppermatrix",
+		"BadgeCircuitSpryte", "BadgeCircuitSpryte", "WearableHelmetCircuitSpryte"}
 	for d, w := range want {
 		if got := a2ElfPiece(day(d)); got != w {
 			t.Fatalf("day %d: %s, want %s", d, got, w)
@@ -201,7 +203,10 @@ func TestElfKioskRotation(t *testing.T) {
 		if o.Display != "Alacarte" {
 			continue
 		}
-		isElf := strings.Contains(o.Name, "CircuitSpryte")
+		isElf := false
+		for _, e := range a2ElfRotation {
+			isElf = isElf || o.Name == e
+		}
 		if o.Index == a2ElfKioskIndex && (o.Name != piece || len(o.Debits) != 0) {
 			t.Fatalf("kiosk 42: %+v", o)
 		}

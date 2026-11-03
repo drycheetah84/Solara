@@ -192,11 +192,15 @@ func buildA2Offers() []a2Offer {
 }
 
 // The CLB Christmas kiosk (CLB_Christmas BP_SharedIAPKiosk_C_0, OfferDisplayIndex 42) stands beside the Circuit Spryte
-// mannequin. It gives one piece of the set away free, a new piece every 2 days: helmet, chest, shoulders, arms, then
-// around again. The rotation starts 2026-11-03 00:00 UTC; SOLARA_ELF_START (RFC 3339) moves it.
+// mannequin. It gives one piece of the set away free, a new piece every 2 days: helmet, chest, shoulders, arms, pattern,
+// colour, badge, then around again. The rotation starts 2026-11-03 00:00 UTC; SOLARA_ELF_START (RFC 3339) moves it.
 const a2ElfKioskIndex = 42
 
-var a2ElfRotation = []string{"WearableHelmetCircuitSpryte", "WearableChestCircuitSpryte", "WearableShoulderCircuitSpryte", "WearableArmsCircuitSpryte"}
+// The mannequin's full look (SM_A2RobotD_Mannequin_CircuitSpryte: Circuit Spryte helmet / chest / shoulder pads / forearms;
+// body MI_A2RobotD_Mannequin_CircuitSpryte: Mask Index 60 = PatternPepperMatrix, green/red colours = ColorPresetPeppermatrix)
+// plus the set's badge.
+var a2ElfRotation = []string{"WearableHelmetCircuitSpryte", "WearableChestCircuitSpryte", "WearableShoulderCircuitSpryte",
+	"WearableArmsCircuitSpryte", "PatternPepperMatrix", "ColorPresetPeppermatrix", "BadgeCircuitSpryte"}
 
 func a2ElfPiece(now time.Time) string {
 	start := time.Date(2026, 11, 3, 0, 0, 0, 0, time.UTC)
