@@ -2,7 +2,7 @@
 
 // Solara: station boards -- the in-game billboard / plaza sign images. Each slot (board key) holds an
 // image URL in the station config; uploading stores the file on the backend and points the slot at it.
-// Game servers pick the change up on their next station-config poll.
+// Game servers read the station config once at startup, so a change shows in-game after the next restart.
 import { useCallback, useEffect, useState } from "react";
 import { api } from "../../../lib/api";
 
@@ -50,8 +50,8 @@ export default function BoardsTab({ stationId }: { stationId: string }) {
   return (
     <div>
       <p className="text-xs mb-4" style={{ color: "var(--muted)" }}>
-        In-game boards and signs for this station. PNG, JPG, GIF or WebP, up to 8 MB. Servers apply changes on
-        their next config poll.
+        In-game boards and signs for this station. PNG, JPG, GIF or WebP, up to 8 MB. Game servers read these when
+        they start, so a new image shows up in-game after this fleet&apos;s server next restarts.
       </p>
       {err && (
         <div className="mb-4 px-4 py-3 rounded-md text-sm"
