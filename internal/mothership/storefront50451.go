@@ -23,9 +23,11 @@ package mothership
 import (
 	_ "embed"
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 
 	"solara/internal/stj"
 )
@@ -166,6 +168,12 @@ func buildA2Offers() []a2Offer {
 	}
 	next := 0
 	for idx := 0; idx <= a2AlacarteMaxIndex; idx++ {
+		if idx == a2ElfKioskIndex { // the CLB Christmas kiosk: one free Circuit Spryte piece, rotating every 2 days
+			id := a2ElfPiece(time.Now())
+			out = append(out, a2Offer{Key: "Alacarte:" + id, Name: id, Display: "Alacarte", Index: idx,
+				Credits: []a2Credit{{id, "DURABLE", 1}}})
+			continue
+		}
 		id, ok := fixed[idx]
 		if !ok {
 			if next >= len(pool) {
@@ -181,6 +189,27 @@ func buildA2Offers() []a2Offer {
 		out[k].Sku = a2SkuForOffer(out[k].Key)
 	}
 	return out
+}
+
+// The CLB Christmas kiosk (CLB_Christmas BP_SharedIAPKiosk_C_0, OfferDisplayIndex 42) stands beside the Circuit Spryte
+// mannequin. It gives one piece of the set away free, a new piece every 2 days: helmet, chest, shoulders, arms, then
+// around again. The rotation starts 2026-11-03 00:00 UTC; SOLARA_ELF_START (RFC 3339) moves it.
+const a2ElfKioskIndex = 42
+
+var a2ElfRotation = []string{"WearableHelmetCircuitSpryte", "WearableChestCircuitSpryte", "WearableShoulderCircuitSpryte", "WearableArmsCircuitSpryte"}
+
+func a2ElfPiece(now time.Time) string {
+	start := time.Date(2026, 11, 3, 0, 0, 0, 0, time.UTC)
+	if v := strings.TrimSpace(os.Getenv("SOLARA_ELF_START")); v != "" {
+		if t, err := time.Parse(time.RFC3339, v); err == nil {
+			start = t
+		}
+	}
+	n := 0
+	if d := now.Sub(start); d > 0 {
+		n = int(d / (48 * time.Hour))
+	}
+	return a2ElfRotation[n%len(a2ElfRotation)]
 }
 
 // a2KlausBreakerItems is the Klaus Breaker Bundle's contents (the shop bundle kiosk, IAP display index 16).

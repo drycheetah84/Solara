@@ -28,7 +28,7 @@
 123	WieldablePeppermintPunisher
 # --- INFERRED (no item display next to these kiosks; assigned from the shop's layout and the unsold winter-season items) ---
 # CLB_Christmas: the kiosk stands beside a Circuit Spryte full-body mannequin (SM_A2RobotD_Mannequin_CircuitSpryte).
-42	WearableChestCircuitSpryte
+# 42 is the free Circuit Spryte rotation (storefront50451.go a2ElfRotation), not a fixed pin.
 # Wall row (x=-4014): the six winter chassis looks, colour presets.
 126	ColorPresetGingerglaze
 127	ColorPresetIcelock
@@ -49,8 +49,7 @@
 18	EyesBlinkIcelock
 23	EyesBlinkSnowmageddon
 89	EyesBlinkFlannelfied
-# Singles: the Flames look; 124 gets the second Circuit Spryte piece.
+# Singles: the Flames look. (124 no longer pins a Circuit Spryte piece: the set is only at the CLB kiosk 42 rotation.)
 48	ColorPresetFlamesEmissive
 90	PatternFlamesEmissive
 100	EyesBlinkFlame
-124	WearableHelmetCircuitSpryte

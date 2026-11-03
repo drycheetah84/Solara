@@ -185,3 +185,43 @@ func TestKioskItems(t *testing.T) {
 		t.Fatalf("placed kiosks 132/149 have no item")
 	}
 }
+
+func TestElfKioskRotation(t *testing.T) {
+	day := func(d int) time.Time { return time.Date(2026, 11, 3+d, 12, 0, 0, 0, time.UTC) }
+	want := []string{"WearableHelmetCircuitSpryte", "WearableHelmetCircuitSpryte", "WearableChestCircuitSpryte", "WearableChestCircuitSpryte",
+		"WearableShoulderCircuitSpryte", "WearableShoulderCircuitSpryte", "WearableArmsCircuitSpryte", "WearableArmsCircuitSpryte", "WearableHelmetCircuitSpryte"}
+	for d, w := range want {
+		if got := a2ElfPiece(day(d)); got != w {
+			t.Fatalf("day %d: %s, want %s", d, got, w)
+		}
+	}
+	// Kiosk 42 sells today's piece for free; no other kiosk sells a Circuit Spryte piece.
+	piece := a2ElfPiece(time.Now())
+	for _, o := range a2Offers() {
+		if o.Display != "Alacarte" {
+			continue
+		}
+		isElf := strings.Contains(o.Name, "CircuitSpryte")
+		if o.Index == a2ElfKioskIndex && (o.Name != piece || len(o.Debits) != 0) {
+			t.Fatalf("kiosk 42: %+v", o)
+		}
+		if o.Index != a2ElfKioskIndex && isElf {
+			t.Fatalf("Circuit Spryte piece at kiosk %d: %s", o.Index, o.Name)
+		}
+	}
+	t.Setenv("SOLARA_FULL_INVENTORY_IDS", "someone-else")
+	s := newTestServer(t)
+	tok := tokenFor("elf", time.Now().Add(time.Hour).Unix())
+	GrantItem("elf", a2DriftiumId, 300)
+	w := do(t, s, "POST", "/v1/purchase/client", `{"OfferId":"`+stableId("offer:Alacarte:"+piece)+`"}`, "x-mothership-token", tok)
+	if w.Code != 200 {
+		t.Fatalf("free purchase: %d %s", w.Code, w.Body.String())
+	}
+	got := map[string]int{}
+	for _, it := range OwnedItems("elf") {
+		got[it.Id] = it.Quantity
+	}
+	if got[piece] != 1 || got[a2DriftiumId] != 300 {
+		t.Fatalf("owned after free purchase: %+v", got)
+	}
+}
