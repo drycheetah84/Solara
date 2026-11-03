@@ -6,6 +6,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { api, type ServerToken } from "../../lib/api";
 import { fmt, ago } from "../../lib/utils";
+import DashboardTokens from "./DashboardTokens";
 
 function status(t: ServerToken): { label: string; color: string } {
   if (t.revoked_at) return { label: "Revoked", color: "var(--red)" };
@@ -52,6 +53,7 @@ export default function TokensPage() {
 
   return (
     <div>
+      <DashboardTokens />
       <div className="flex items-center justify-between mb-2">
         <h1 className="text-lg font-semibold" style={{ color: "var(--text)" }}>Server Tokens</h1>
         <label className="flex items-center gap-2 text-xs" style={{ color: "var(--muted)" }}>

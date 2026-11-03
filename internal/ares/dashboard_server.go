@@ -126,6 +126,7 @@ func newAresDashboardServer() *AresDashboardServer {
 	h.Handle("GET", "/api/stations/{station_id}/gaia", "Solara/GetGaia", s.GetGaia)
 	h.Handle("POST", "/api/stations/{station_id}/gaia/play", "Solara/PlayGaia", s.PlayGaia)
 	h.Handle("GET", "/api/scoped-tokens/permissions", "Solara/ListScopedTokenPerms", s.ListScopedTokenPerms)
+	h.Handle("GET", "/api/scoped-tokens/self", "Solara/ScopedTokenSelf", s.ScopedTokenSelf)
 	h.Handle("GET", "/api/scoped-tokens", "Solara/ListScopedTokens", s.ListScopedTokens)
 	h.Handle("POST", "/api/scoped-tokens", "Solara/CreateScopedToken", s.CreateScopedToken)
 	h.Handle("DELETE", "/api/scoped-tokens/{id}", "Solara/RevokeScopedToken", s.RevokeScopedToken)

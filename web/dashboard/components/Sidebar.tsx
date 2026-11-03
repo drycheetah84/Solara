@@ -23,7 +23,7 @@ const nav = [
   { href: "/events",       label: "Events",      icon: Activity },
   { href: "/telemetry",    label: "Telemetry",   icon: Zap },
   { href: "/ws",           label: "WS Monitor",  icon: Cable },
-  { href: "/tokens",       label: "Server Tokens", icon: KeyRound },
+  { href: "/tokens",       label: "Tokens", icon: KeyRound },
 ];
 
 export function Sidebar() {

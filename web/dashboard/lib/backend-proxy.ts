@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { authConfig, SESSION_COOKIE, validSession } from "./session";
+import { authConfig, SESSION_COOKIE, sessionCredential } from "./session";
 
 export async function proxyBackend(req: NextRequest, path: string[], service: "dashboard" | "station") {
   // Check again at the privileged operation, even if the outer Proxy matcher changes.
   const config = authConfig();
-  if (!config || !validSession(req.cookies.get(SESSION_COOKIE)?.value)) {
+  const cred = config ? sessionCredential(req.cookies.get(SESSION_COOKIE)?.value) : null;
+  if (!config || !cred) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
@@ -20,7 +21,9 @@ export async function proxyBackend(req: NextRequest, path: string[], service: "d
   // Solara: the station API (:78) also guards its routes (KNOWN_ISSUES SEC-F2) and accepts the dashboard
   // admin key in x-dashboard-key as an admin credential, so /game needs it too -- without it every
   // stations/create, deployments and event call came back 401 from the Go server.
-  headers.set("x-dashboard-key", config.adminKey);
+  // Solara scoped tokens: a session opened with a scoped dashboard token forwards THAT token, so the backend
+  // enforces its permissions and station / fleet scope (the station API on :78 does not accept it at all).
+  headers.set("x-dashboard-key", cred.key);
 
   const method = req.method.toUpperCase();
   const body = method === "GET" || method === "HEAD" ? undefined : Buffer.from(await req.arrayBuffer());

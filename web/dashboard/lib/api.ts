@@ -421,6 +421,21 @@ export const api = {
 
   // Solara: per-server identity tokens (docs/SERVER_IDENTITY.md). Issued on the CLI only; listed
   // here without the secret, revocable by id or display prefix.
+  // Solara scoped dashboard tokens (master key only, except scopedSelf).
+  scopedTokenPerms: () => get<{ permissions: ScopedPermission[] }>("scoped-tokens/permissions"),
+  scopedTokens: () => get<{ tokens: ScopedToken[] }>("scoped-tokens"),
+  scopedSelf: () => get<{ master: boolean } & Partial<ScopedToken>>("scoped-tokens/self"),
+  revokeScopedToken: (id: string) =>
+    del<{ success: boolean; error?: string }>(`scoped-tokens/${encodeURIComponent(id)}`),
+  /** Not via post(): a 400 carries the reason, which the form shows. */
+  createScopedToken: async (body: { name: string; permissions: string[]; stations: string[]; expires_in_days?: number }) => {
+    const res = await fetch("/api/scoped-tokens", {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
+    });
+    const out = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(out.error ?? `API error ${res.status}`);
+    return out as ScopedToken & { token: string };
+  },
   serverTokens: () => get<{ tokens: ServerToken[] }>("server-tokens"),
   revokeServerToken: (id: string) =>
     del<{ success: boolean; error?: string; token?: ServerToken }>(`server-tokens/${encodeURIComponent(id)}`),
@@ -459,4 +474,18 @@ export type ServerToken = {
   absolute_expiry: string | null;
   revoked_at: string | null;
   revoke_reason: string | null;
+};
+
+export type ScopedPermission = { name: string; description: string };
+
+export type ScopedToken = {
+  id: string;
+  name: string;
+  prefix: string;
+  permissions: string[];
+  stations: string[];
+  created_at: string | null;
+  expires_at: string | null;
+  revoked_at: string | null;
+  last_used: string | null;
 };

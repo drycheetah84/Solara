@@ -12,6 +12,7 @@ import { setTimeout as delay } from "node:timers/promises";
 const cwd = fileURLToPath(new URL("..", import.meta.url));
 const adminKey = randomBytes(32).toString("hex");
 const sessionSecret = randomBytes(32).toString("hex");
+const scopedToken = "sdt1_" + randomBytes(32).toString("hex");
 
 async function freePort() {
   const listener = net.createServer();
@@ -91,12 +92,20 @@ test("production dashboard authentication", async t => {
     upstreamRequests++;
     const chunks = [];
     for await (const chunk of req) chunks.push(chunk);
+    if (req.url === "/api/scoped-tokens/self") {
+      // Solara: the backend recognises exactly one scoped token.
+      const ok = req.headers["x-dashboard-key"] === scopedToken;
+      res.writeHead(ok ? 200 : 401, { "content-type": "application/json" });
+      res.end(JSON.stringify(ok ? { master: false, permissions: ["stations.read"], stations: ["st1"] } : { error: "unauthorized" }));
+      return;
+    }
     res.writeHead(200, { "content-type": "application/json" });
     res.end(JSON.stringify({
       path: req.url,
       method: req.method,
       body: Buffer.concat(chunks).toString(),
       correctKey: req.headers["x-dashboard-key"] === adminKey,
+      scopedKey: req.headers["x-dashboard-key"] === scopedToken,
       forwardedCookie: Boolean(req.headers.cookie),
     }));
   });
@@ -147,7 +156,7 @@ test("production dashboard authentication", async t => {
     const api = await request("/api/stats?limit=1", { headers: { cookie } });
     assert.equal(api.status, 200);
     assert.deepEqual(await api.json(), {
-      path: "/api/stats?limit=1", method: "GET", body: "", correctKey: true, forwardedCookie: false,
+      path: "/api/stats?limit=1", method: "GET", body: "", correctKey: true, scopedKey: false, forwardedCookie: false,
     });
     const game = await request("/game/stations/create?test=1", {
       method: "POST", headers: { cookie, "content-type": "application/json" }, body: '{"station_name":"test"}',
@@ -156,7 +165,23 @@ test("production dashboard authentication", async t => {
     assert.deepEqual(await game.json(), {
       // Solara: the Go station API (:78) needs the admin key too (x-dashboard-key), so /game sends it.
       path: "/stations/create?test=1", method: "POST", body: '{"station_name":"test"}',
-      correctKey: true, forwardedCookie: false,
+      correctKey: true, scopedKey: false, forwardedCookie: false,
+    });
+  });
+
+  await t.test("a scoped token logs in and the proxy forwards that token, not the admin key", async () => {
+    const unknown = await login(request, { key: "sdt1_" + "0".repeat(64) });
+    assert.equal(unknown.status, 401);
+    assert.equal(unknown.headers.get("set-cookie"), null);
+    const response = await login(request, { key: scopedToken });
+    assert.equal(response.status, 200);
+    const setCookie = response.headers.get("set-cookie");
+    assert.ok(!setCookie.includes(scopedToken), "the token must not sit in the cookie in the clear");
+    const scopedCookie = setCookie.split(";")[0];
+    assert.equal((await request("/", { headers: { cookie: scopedCookie } })).status, 200);
+    const api = await request("/api/stats", { headers: { cookie: scopedCookie } });
+    assert.deepEqual(await api.json(), {
+      path: "/api/stats", method: "GET", body: "", correctKey: false, scopedKey: true, forwardedCookie: false,
     });
   });
 

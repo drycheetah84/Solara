@@ -44,14 +44,14 @@ export default function Login() {
       >
         <h1 className="mb-1 text-lg font-semibold text-neutral-100">Halcyon dashboard</h1>
         <p className="mb-5 text-sm leading-relaxed text-neutral-400">
-          This controls the live fleet. Enter the admin key to continue.
+          This controls the live fleet. Enter the admin key, or a dashboard token, to continue.
         </p>
 
         <input
           type="password"
           value={key}
           onChange={(e) => setKey(e.target.value)}
-          placeholder="dashboard admin key"
+          placeholder="admin key or dashboard token"
           autoComplete="off"
           autoFocus
           className="w-full rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2.5 font-mono text-sm text-neutral-100 outline-none focus:border-blue-500"

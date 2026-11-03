@@ -8,6 +8,7 @@
 //	POST   /api/scoped-tokens              -> {"token":"sdt1_...", ...view}          (master; the secret is shown once)
 //	       body {name, permissions:[...], stations:[...], fleets:[...], expires_in_days?}
 //	DELETE /api/scoped-tokens/{id}         -> {"success":true}                       (master)
+//	GET    /api/scoped-tokens/self         -> {"master":bool, ...token view}           (any valid credential)
 //
 // A scoped token is presented like the admin key (x-dashboard-key or x-api-key). Every /api route maps to one
 // permission (dashScopedRoutes); a route that names a station ({station_id}, or a drafters {scope} that is not
@@ -232,6 +233,9 @@ func (t *DashScopedTokenDbObject) AllowsStation(id string) bool {
 
 // dashScopedDecision authorizes a scoped token for one request: "" = allowed, else the refusal reason.
 func dashScopedDecision(t *DashScopedTokenDbObject, method, path string) string {
+	if strings.EqualFold(method, "GET") && strings.EqualFold(strings.TrimSuffix(strings.SplitN(path, "?", 2)[0], "/"), "/api/scoped-tokens/self") {
+		return "" // any live token may read its own permissions / scope
+	}
 	r, params := dashMatchRoute(method, path)
 	if r == nil {
 		return "route is master-key only"
@@ -290,6 +294,20 @@ func dashMasterOnly(c *hosting.Context) hosting.Result {
 		return dashJson(403, stj.O("error", "only the master dashboard key can manage scoped tokens"))
 	}
 	return nil
+}
+
+// ScopedTokenSelf is GET /api/scoped-tokens/self: what the caller's credential may do. The master key (or an admin
+// session) -> {"master":true}; a scoped token -> {"master":false, ...its view}. The Next.js dashboard uses it to
+// validate a token at login and to show the session's access.
+func (s *AresDashboardServer) ScopedTokenSelf(c *hosting.Context) hosting.Result {
+	if DashboardAuthPreprocessorHasValidAdminKey(c.Request) || dashboardHasValidSession(c.Request) {
+		return dashJson(200, stj.O("master", true))
+	}
+	t := dashScopedTokenFor(c.Request)
+	if t == nil {
+		return dashJson(401, stj.O("error", "unauthorized"))
+	}
+	return dashJson(200, append(stj.O("master", false), dashScopedView(t)...))
 }
 
 // ListScopedTokenPerms is GET /api/scoped-tokens/permissions.

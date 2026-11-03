@@ -17,7 +17,7 @@ func TestScopedTokenRouteCoverage(t *testing.T) {
 	masterOnly := map[string]bool{
 		"POST /api/users/{user_id}/grant_admin": true, "DELETE /api/users/{user_id}/grant_admin": true,
 		"GET /api/server-tokens": true, "DELETE /api/server-tokens/{id}": true,
-		"GET /api/scoped-tokens/permissions": true, "GET /api/scoped-tokens": true,
+		"GET /api/scoped-tokens/permissions": true, "GET /api/scoped-tokens/self": true, "GET /api/scoped-tokens": true,
 		"POST /api/scoped-tokens": true, "DELETE /api/scoped-tokens/{id}": true,
 	}
 	inTable := map[string]bool{}
@@ -94,7 +94,14 @@ func TestScopedTokens(t *testing.T) {
 	check("GET", "/api/stats", 403)                // station-less route needs "*"
 	check("GET", "/api/server-tokens", 403)        // master-only
 	check("GET", "/api/drafters/stA", 200)         // drafters.read on its own station
-	check("GET", "/api/drafters/global", 403)      // global drafters need "*"
+	check("GET", "/api/drafters/global", 403)
+	if w := do(t, s, "GET", "/api/scoped-tokens/self", "", th); w.Code != 200 || !strings.Contains(w.Body.String(), `"master":false`) ||
+		!strings.Contains(w.Body.String(), `"stations":["stA"]`) {
+		t.Fatalf("self: %d %s", w.Code, w.Body.String())
+	}
+	if w := do(t, s, "GET", "/api/scoped-tokens/self", "", adminHdr); !strings.Contains(w.Body.String(), `"master":true`) {
+		t.Fatalf("self (master): %s", w.Body.String())
+	} // global drafters need "*"
 	// GET /api/stations lists only the token's stations.
 	w := do(t, s, "GET", "/api/stations", "", th)
 	if w.Code != 200 || !strings.Contains(w.Body.String(), `"stA"`) || strings.Contains(w.Body.String(), `"stB"`) {
