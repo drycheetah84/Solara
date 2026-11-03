@@ -11,14 +11,19 @@ package ares
 //   dashboard   -> GET  /api/stations/{id}/gaia            {deployment_id, events:[...], queued}
 //   dashboard   -> POST /api/stations/{id}/gaia/play       {event}
 //
-// State is in memory: the server re-reports its events after every start, and queued plays are transient.
+// The reported event lists are also kept in the database (one row per deployment, older deployments of the same
+// station pruned), so a backend restart no longer forgets them: the game server only reports at its own boot and
+// when its loaded-event count changes. Queued plays stay in memory (transient). When the backend has no list for a
+// polling deployment that asks with ?report=1, gaia/next answers "!report" and the DLL re-reports its list.
 
 import (
 	"sort"
 	"strings"
 	"sync"
+	"time"
 
 	"solara/internal/ares/models"
+	"solara/internal/docdb"
 	"solara/internal/hosting"
 	"solara/internal/stj"
 )
@@ -29,7 +34,67 @@ var (
 	gaiaMu     sync.Mutex
 	gaiaEvents = map[string][]string{} // deployment id -> event names (sorted)
 	gaiaQueue  = map[string][]string{} // deployment id -> pending plays (FIFO)
+	gaiaLoaded bool                    // gaiaEvents seeded from the database
 )
+
+// GaiaEventsDbObject is one deployment's reported event list.
+type GaiaEventsDbObject struct {
+	docdb.AstraDbObject
+	DeploymentId string   `json:"deployment_id"`
+	StationId    string   `json:"station_id"`
+	Events       []string `json:"events"`
+	ReportedAt   int64    `json:"reported_at"`
+}
+
+func NewGaiaEventsDbObject() *GaiaEventsDbObject { return &GaiaEventsDbObject{} }
+
+func gaiaStore() *docdb.Collection[GaiaEventsDbObject] {
+	return docdb.GetCollection(Database, true, NewGaiaEventsDbObject)
+}
+
+// gaiaLoadLocked seeds the in-memory lists from the database once (caller holds gaiaMu).
+func gaiaLoadLocked() {
+	if gaiaLoaded {
+		return
+	}
+	gaiaLoaded = true
+	if col := gaiaStore(); col != nil {
+		for _, r := range col.FindAll() {
+			if r.DeploymentId != "" {
+				if _, has := gaiaEvents[r.DeploymentId]; !has {
+					gaiaEvents[r.DeploymentId] = r.Events
+				}
+			}
+		}
+	}
+}
+
+// gaiaPersist saves a deployment's list and drops the stored lists of the station's other deployments.
+func gaiaPersist(dep string, list []string) {
+	col := gaiaStore()
+	if col == nil {
+		return
+	}
+	station := ""
+	if d := a2FindDeployment(dep); d != nil && d.StationId != nil {
+		station = *d.StationId
+	}
+	if row := col.FindOne(func(r *GaiaEventsDbObject) bool { return r.DeploymentId == dep }); row != nil {
+		row.Events, row.StationId, row.ReportedAt = list, station, time.Now().UnixMilli()
+		col.Update(row)
+	} else {
+		col.Insert(&GaiaEventsDbObject{DeploymentId: dep, StationId: station, Events: list, ReportedAt: time.Now().UnixMilli()})
+	}
+	if station == "" {
+		return
+	}
+	for _, r := range col.Find(func(r *GaiaEventsDbObject) bool { return r.StationId == station && r.DeploymentId != dep }) {
+		col.Delete(r.Id)
+		gaiaMu.Lock()
+		delete(gaiaEvents, r.DeploymentId)
+		gaiaMu.Unlock()
+	}
+}
 
 // PostGaiaEvents stores the event list a game server reports.
 func (s *A2StationDbServer) PostGaiaEvents(c *hosting.Context) hosting.Result {
@@ -52,8 +117,10 @@ func (s *A2StationDbServer) PostGaiaEvents(c *hosting.Context) hosting.Result {
 	}
 	sort.Strings(list)
 	gaiaMu.Lock()
+	gaiaLoadLocked()
 	gaiaEvents[dep] = list
 	gaiaMu.Unlock()
+	gaiaPersist(dep, list)
 	return hosting.Ok(stj.O("stored", len(list)))
 }
 
@@ -61,9 +128,14 @@ func (s *A2StationDbServer) PostGaiaEvents(c *hosting.Context) hosting.Result {
 func (s *A2StationDbServer) GetGaiaNext(c *hosting.Context) hosting.Result {
 	dep := c.Param("deployment_id")
 	gaiaMu.Lock()
+	gaiaLoadLocked()
 	next := ""
 	if q := gaiaQueue[dep]; len(q) > 0 {
 		next, gaiaQueue[dep] = q[0], q[1:]
+	} else if _, has := gaiaEvents[dep]; !has && dep != "" && gaiaWantsReportSignal(c) {
+		// We hold no event list for this server: ask it to report again. Only for a DLL that polls with ?report=1;
+		// an older DLL would treat "!report" as an event name and re-poll without waiting.
+		next = "!report"
 	}
 	gaiaMu.Unlock()
 	return hosting.Configurable(200, "text/plain; charset=utf-8", []byte(next))
@@ -75,6 +147,7 @@ func gaiaDeploymentFor(stationId string) string {
 	var best *models.DeploymentDbObject
 	gaiaMu.Lock()
 	defer gaiaMu.Unlock()
+	gaiaLoadLocked()
 	for _, d := range a2DeploymentsOfStation(&stationId) {
 		if d == nil || d.DeploymentId == nil || d.LastEvent == nil {
 			continue
@@ -132,4 +205,9 @@ func (s *AresDashboardServer) PlayGaia(c *hosting.Context) hosting.Result {
 	}
 	gaiaQueue[dep] = append(gaiaQueue[dep], ev)
 	return hosting.Ok(&DashboardActionResult{Success: true, Id: dashStrPtr(ev)})
+}
+
+func gaiaWantsReportSignal(c *hosting.Context) bool {
+	v, ok := c.Request.Query("report")
+	return ok && v == "1"
 }
