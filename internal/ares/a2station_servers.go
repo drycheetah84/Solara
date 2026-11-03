@@ -202,6 +202,8 @@ func (s *A2StationDbServer) RegisterServer(c *hosting.Context) hosting.Result {
 			st.LastOnline = &now
 			st.Config = map[string]*string{}
 			stationCol0.Insert(st)
+		} else {
+			a2MarkStationOnline(&stationId) // [Solara] e.g. a station created on the dashboard (starts offline)
 		}
 	}
 
@@ -321,6 +323,7 @@ func (s *A2StationDbServer) ServerHeartbeat(c *hosting.Context) hosting.Result {
 				now := dotnet.Now()
 				d.LastEvent = &now
 				depCol.Update(d)
+				a2MarkStationOnline(d.StationId) // [Solara] a heartbeating server's station is online
 				break
 			}
 		}
@@ -408,4 +411,25 @@ func (s *A2StationDbServer) PruneSessions(c *hosting.Context) hosting.Result {
 
 	s.HTTP.Logger.Warning(fmt.Sprintf("PRUNE sessions: kept %d live deployment(s), dropped %d ghost session(s), offlined %d row(s)", keepCount, dropped, offlined))
 	return hosting.Ok(&models.SuccessBoolean{Success: true})
+}
+
+// a2MarkStationOnline flips a station to online when one of its servers registers or heartbeats. A station made on
+// the dashboard starts offline, and only a posted deployment event used to set it online, so a live "Ranked" fleet
+// stayed offline in /v2/fleets and the station browser. Writes only when the flag actually changes.
+func a2MarkStationOnline(stationId *string) {
+	if stationId == nil || a2IsBlank(*stationId) {
+		return
+	}
+	col := a2Stations()
+	if col == nil {
+		return
+	}
+	st := col.FindOne(func(x *models.StationDbObject) bool { return a2EqFoldPtr(x.StationId, stationId) })
+	if st == nil || st.Online {
+		return
+	}
+	now := dotnet.Now()
+	st.Online = true
+	st.LastOnline = &now
+	col.Update(st)
 }

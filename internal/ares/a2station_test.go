@@ -743,3 +743,24 @@ func TestA2RegisterJoinsPendingStation(t *testing.T) {
 		t.Fatalf("dep-c station %q", got)
 	}
 }
+
+// A station created offline (e.g. on the dashboard) goes online when a server registers onto it or heartbeats.
+func TestA2StationGoesOnlineWithItsServer(t *testing.T) {
+	s, _ := a2TestEnv(t)
+	st := models.NewStationDbObject()
+	st.StationId, st.StationName, st.Online = a2Str("st-ranked"), a2Str("Ranked"), false
+	st.Config = map[string]*string{}
+	a2Stations().Insert(st)
+	halcyonsocket.PendingStations.Set("dep-r", "st-ranked")
+	a2Do(t, s, "POST", "/register_server", `{"ip":"1.2.3.4","port":"7778","deployment_id":"dep-r","server_name":"Ranked"}`, nil)
+	if got := a2FindStation("st-ranked"); got == nil || !got.Online {
+		t.Fatal("station still offline after its server registered")
+	}
+	got := a2FindStation("st-ranked")
+	got.Online = false
+	a2Stations().Update(got)
+	a2Do(t, s, "POST", "/server_heartbeat", `{"deployment_id":"dep-r","pid":1,"seq":1}`, nil)
+	if got := a2FindStation("st-ranked"); !got.Online {
+		t.Fatal("station still offline after a heartbeat")
+	}
+}
