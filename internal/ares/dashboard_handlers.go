@@ -29,7 +29,11 @@ func (s *AresDashboardServer) GetStations(c *hosting.Context) hosting.Result {
 
 	list := []*DashboardStation{}
 	if stations != nil {
+		scope := dashRequestScope(c.Request) // a scoped token sees only its stations
 		for _, st := range stations.FindAll() {
+			if scope != nil && (st.StationId == nil || !scope.AllowsStation(*st.StationId)) {
+				continue
+			}
 			deps := []*models.DeploymentDbObject{}
 			if deployments != nil {
 				deps = deployments.Find(func(d *models.DeploymentDbObject) bool { return dashLiteEqPP(d.StationId, st.StationId) })
@@ -151,6 +155,15 @@ func (s *AresDashboardServer) GetDeployments(c *hosting.Context) hosting.Result 
 	list := []*DashboardDeployment{}
 	if deployments != nil {
 		all := deployments.FindAll()
+		if scope := dashRequestScope(c.Request); scope != nil { // a scoped token sees only its stations' deployments
+			kept := all[:0]
+			for _, d := range all {
+				if d.StationId != nil && scope.AllowsStation(*d.StationId) {
+					kept = append(kept, d)
+				}
+			}
+			all = kept
+		}
 		lastEvent := func(d *models.DeploymentDbObject) dotnet.DateTime {
 			if d.LastEvent == nil {
 				return dotnet.MinValue

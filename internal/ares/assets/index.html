@@ -74,6 +74,7 @@
     <button class="tab" onclick="switchTab('deployments')">Deployments</button>
     <button class="tab" onclick="switchTab('events')">Events</button>
     <button class="tab" onclick="switchTab('boards')">Boards</button>
+    <button class="tab" onclick="switchTab('tokens')">Tokens</button>
   </div>
 
   <!-- Users -->
@@ -148,6 +149,37 @@
       PNG / JPG / GIF / WebP, up to 8&nbsp;MB. The image is stored on this server and served from the
       public station URL, so there is no external image host that can expire or go down.
       The board updates on the game server's next config fetch &mdash; a blank slot leaves that board empty.
+    </p>
+  </div>
+
+  <!-- Tokens: scoped dashboard tokens. Only the master dashboard key can create, list or revoke them. -->
+  <div class="panel" id="panel-tokens">
+    <div id="tok-msg" style="font-size:13px;opacity:.85;margin:0 0 12px"></div>
+    <div id="tok-form" style="display:flex;flex-direction:column;gap:12px;margin:0 0 18px">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <input id="tok-name" placeholder="Name (who / what it is for)" maxlength="80"
+               style="padding:7px 10px;border-radius:6px;border:1px solid #333;background:#141414;color:inherit;min-width:260px">
+        <label for="tok-days" style="font-size:13px;opacity:.75">Expires in days (blank = never)</label>
+        <input id="tok-days" type="number" min="1" max="3650"
+               style="width:90px;padding:7px 10px;border-radius:6px;border:1px solid #333;background:#141414;color:inherit">
+      </div>
+      <div><div style="font-size:13px;opacity:.75;margin-bottom:6px">Permissions</div>
+        <div id="tok-perms" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:4px 16px;font-size:13px"></div></div>
+      <div><div style="font-size:13px;opacity:.75;margin-bottom:6px">Stations / fleets</div>
+        <div id="tok-stations" style="display:flex;flex-wrap:wrap;gap:4px 16px;font-size:13px"></div></div>
+      <div><button class="btn" onclick="createToken()">Create token</button></div>
+      <div id="tok-new" style="display:none;padding:10px;border:1px solid #2ea043;border-radius:6px;font-size:13px;word-break:break-all"></div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Name</th><th>Prefix</th><th>Permissions</th><th>Stations</th><th>Created</th><th>Expires</th><th>Last used</th><th style="width:90px"></th></tr></thead>
+        <tbody id="tbl-tokens"><tr><td colspan="8" class="empty">Loading...</td></tr></tbody>
+      </table>
+    </div>
+    <p style="font-size:12px;opacity:.6;margin-top:12px;line-height:1.6">
+      A token is used like the master key (x-dashboard-key). It can only call the routes its permissions cover, only for
+      the stations / fleets you pick; routes that are not about one station need &ldquo;All stations&rdquo;. The token is
+      shown once &mdash; copy it then. Revoking stops it immediately.
     </p>
   </div>
 </main>
@@ -239,8 +271,9 @@ let activeTab = 'users';
 function switchTab(name) {
   activeTab = name;
   if (name === 'boards') { loadBoardStations().then(loadBoards); }
+  if (name === 'tokens') { loadTokenForm().then(loadTokens); }
   document.querySelectorAll('.tab').forEach((t, i) => {
-    const tabs = ['users','stations','deployments','events'];
+    const tabs = ['users','stations','deployments','events','boards','tokens'];
     t.classList.toggle('active', tabs[i] === name);
   });
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
@@ -415,6 +448,65 @@ async function setAdmin(userId, grant) {
   } catch (e) {
     alert('Failed to update admin status');
   }
+}
+
+// --- Scoped tokens (master key only) ---------------------------------------------------
+let tokFormLoaded = false;
+async function loadTokenForm() {
+  if (tokFormLoaded) return;
+  const msg = document.getElementById('tok-msg');
+  const pr = await fetch('/api/scoped-tokens/permissions');
+  if (pr.status === 403) {
+    msg.textContent = 'Only the master dashboard key can manage tokens.';
+    document.getElementById('tok-form').style.display = 'none';
+    return;
+  }
+  const perms = (await pr.json().catch(() => ({}))).permissions || [];
+  document.getElementById('tok-perms').innerHTML = perms.map(p =>
+    `<label><input type="checkbox" class="tok-perm" value="${esc(p.name)}"> <b>${esc(p.name)}</b> <span style="opacity:.65">${esc(p.description)}</span></label>`).join('');
+  const st = await fetch('/api/stations').then(r => r.json()).catch(() => []);
+  const list = Array.isArray(st) ? st : (st.value || st.stations || []);
+  document.getElementById('tok-stations').innerHTML =
+    `<label><input type="checkbox" class="tok-st" value="*"> <b>All stations (*)</b></label>` +
+    list.map(s => {
+      const id = s.station_id || s.StationId || s.id;
+      const nm = s.station_name || s.name || id;
+      return `<label><input type="checkbox" class="tok-st" value="${esc(id)}"> ${esc(nm)} <span style="opacity:.6">${esc(id)}</span></label>`;
+    }).join('');
+  tokFormLoaded = true;
+}
+async function loadTokens() {
+  const body = document.getElementById('tbl-tokens');
+  const r = await fetch('/api/scoped-tokens');
+  if (!r.ok) { body.innerHTML = '<tr><td colspan="8" class="empty">Master key required</td></tr>'; return; }
+  const toks = (await r.json().catch(() => ({}))).tokens || [];
+  body.innerHTML = toks.map(t => `<tr${t.revoked_at ? ' style="opacity:.45"' : ''}>
+    <td>${esc(t.name || '—')}</td><td><code>${esc(t.prefix)}</code></td>
+    <td style="font-size:12px">${(t.permissions || []).map(esc).join(', ')}</td>
+    <td style="font-size:12px">${(t.stations || []).map(esc).join(', ')}</td>
+    <td>${fmt(t.created_at)}</td><td>${t.expires_at ? fmt(t.expires_at) : 'never'}</td><td>${fmt(t.last_used)}</td>
+    <td>${t.revoked_at ? 'revoked' : `<button class="btn" onclick="revokeToken(${jsArg(t.id)})">Revoke</button>`}</td></tr>`).join('')
+    || '<tr><td colspan="8" class="empty">No scoped tokens yet</td></tr>';
+}
+async function createToken() {
+  const perms = [...document.querySelectorAll('.tok-perm:checked')].map(c => c.value);
+  const stations = [...document.querySelectorAll('.tok-st:checked')].map(c => c.value);
+  const days = parseInt(document.getElementById('tok-days').value, 10);
+  const body = { name: document.getElementById('tok-name').value, permissions: perms, stations };
+  if (days > 0) body.expires_in_days = days;
+  const r = await fetch('/api/scoped-tokens', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  const out = await r.json().catch(() => ({}));
+  const box = document.getElementById('tok-new');
+  box.style.display = 'block';
+  if (!r.ok) { box.style.borderColor = '#da3633'; box.textContent = 'Not created: ' + (out.error || r.status); return; }
+  box.style.borderColor = '#2ea043';
+  box.innerHTML = 'Token created — copy it now, it will not be shown again:<br><code>' + esc(out.token) + '</code>';
+  loadTokens();
+}
+async function revokeToken(id) {
+  if (!confirm('Revoke this token? Anything using it stops working immediately.')) return;
+  await fetch('/api/scoped-tokens/' + seg(id), { method: 'DELETE' });
+  loadTokens();
 }
 
 refresh();

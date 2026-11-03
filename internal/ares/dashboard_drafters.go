@@ -19,7 +19,8 @@ func dashboardDrafterError(status int, err string) hosting.Result {
 
 func (s *AresDashboardServer) GetDrafters(c *hosting.Context) hosting.Result {
 	scope := c.Param("scope")
-	if !DashboardAuthPreprocessorHasValidAdminKey(c.Request) {
+	// [Solara] or a scoped token the auth preprocessor already authorized for this route + scope
+	if !DashboardAuthPreprocessorHasValidAdminKey(c.Request) && dashRequestScope(c.Request) == nil {
 		return dashboardDrafterError(403, "Dashboard administrator required")
 	}
 	if !DrafterPermissionsValidId(scope) || !DrafterPermissionsScopeExists(scope) {
@@ -55,7 +56,8 @@ func (s *AresDashboardServer) RevokeDrafter(c *hosting.Context) hosting.Result {
 
 // dashboardChangeDrafter mirrors the private static ChangeDrafter.
 func dashboardChangeDrafter(request *hosting.Request, scope, user string, enabled bool) hosting.Result {
-	if !DashboardAuthPreprocessorHasValidAdminKey(request) {
+	// [Solara] or a scoped token the auth preprocessor already authorized for this route + scope
+	if !DashboardAuthPreprocessorHasValidAdminKey(request) && dashRequestScope(request) == nil {
 		return dashboardDrafterError(403, "Dashboard administrator required")
 	}
 	if !DrafterPermissionsValidId(scope) || !DrafterPermissionsScopeExists(scope) {

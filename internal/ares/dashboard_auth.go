@@ -116,6 +116,18 @@ func (p *DashboardAuthPreprocessor) TryPreprocessRequest(request *hosting.Reques
 		dashboardRecordSuccess(peer)
 		return nil, hosting.PreOK
 	}
+	// [Solara] scoped dashboard tokens (dashboard_scoped_tokens.go): a live token passes only for routes its
+	// permissions and station / fleet scope cover; anything else is a 403 (the credential itself was valid).
+	if t := dashScopedTokenFor(request); t != nil {
+		dashboardRecordSuccess(peer)
+		if why := dashScopedDecision(t, request.Method(), path); why != "" {
+			logging.Console("[DASH-AUTH] 403 scoped token " + t.Prefix + " " + request.Method() + " " + path + ": " + why)
+			return hosting.Configurable(403, "application/json", stj.MarshalString(stj.O("error", "forbidden", "reason", why))),
+				hosting.PreFail | hosting.PreStopAfter
+		}
+		dashScopedTouch(t)
+		return nil, hosting.PreOK
+	}
 	if dashboardPresentedCredential(request) {
 		dashboardRecordFailure(peer, now)
 	}
