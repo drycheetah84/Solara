@@ -1,9 +1,12 @@
 package ares
 
 import (
+	"os"
+	"sort"
 	"strconv"
 	"strings"
 
+	"solara/internal/ares/models"
 	"solara/internal/mothership"
 )
 
@@ -16,28 +19,62 @@ func init() {
 	mothership.TitleDataExtra = boardTitleData
 }
 
-func boardTitleData() (out map[string]string) {
-	out = map[string]string{}
-	defer func() { _ = recover() }() // a missing DB or collection just means no extras
-	all := a2Deployments().FindAll()
-	dep := a2LatestOnlineDeployment(all)
-	if dep == nil {
-		// The watchdog can leave a live, heartbeating deployment flagged offline after a restart (seen
-		// 2026-11-01): fall back to the deployment that reported most recently.
-		for _, d := range all {
-			if a2IsNullOrEmpty(d.StationId) || d.LastEvent == nil {
-				continue
+// boardTitleDataStation picks the station whose boards go into the (global) client title data:
+//  1. SOLARA_TITLEDATA_STATION, when it names a station with at least one board value (the main fleet);
+//  2. otherwise the newest online deployment's station that has board values;
+//  3. otherwise the deployment that reported most recently (the watchdog can leave a live, heartbeating
+//     deployment flagged offline after a restart, seen 2026-11-01), again only one with board values.
+//
+// Before, it was simply the newest online deployment, so a fleet without boards booting last (Freerunners,
+// 2026-11-03) blanked every client's boards.
+func boardTitleDataStation() *models.StationDbObject {
+	hasBoards := func(st *models.StationDbObject) bool {
+		if st == nil || st.Config == nil {
+			return false
+		}
+		for _, k := range AllBoardImageKeys {
+			if v, ok := st.Config[k]; ok && v != nil && strings.TrimSpace(*v) != "" {
+				return true
 			}
-			if dep == nil || d.LastEvent.After(*dep.LastEvent) {
-				dep = d
+		}
+		return false
+	}
+	if id := strings.TrimSpace(os.Getenv("SOLARA_TITLEDATA_STATION")); id != "" {
+		if st := a2FindStation(id); hasBoards(st) {
+			return st
+		}
+	}
+	all := a2Deployments().FindAll()
+	online := []*models.DeploymentDbObject{}
+	recent := []*models.DeploymentDbObject{}
+	for _, d := range all {
+		if a2IsNullOrEmpty(d.StationId) {
+			continue
+		}
+		if d.Online {
+			online = append(online, d)
+		}
+		if d.LastEvent != nil {
+			recent = append(recent, d)
+		}
+	}
+	sort.SliceStable(online, func(i, j int) bool { return online[i].CreatedAt.After(online[j].CreatedAt) })
+	sort.SliceStable(recent, func(i, j int) bool { return recent[i].LastEvent.After(*recent[j].LastEvent) })
+	for _, list := range [][]*models.DeploymentDbObject{online, recent} {
+		for _, d := range list {
+			if st := a2FindStation(a2Deref(d.StationId)); hasBoards(st) {
+				return st
 			}
 		}
 	}
-	if dep == nil {
-		return out
-	}
-	st := a2FindStation(a2Deref(dep.StationId))
-	if st == nil || st.Config == nil {
+	return nil
+}
+
+func boardTitleData() (out map[string]string) {
+	out = map[string]string{}
+	defer func() { _ = recover() }() // a missing DB or collection just means no extras
+	st := boardTitleDataStation()
+	if st == nil {
 		return out
 	}
 	for _, k := range append([]string{"StationAnnouncement"}, AllBoardImageKeys...) {
