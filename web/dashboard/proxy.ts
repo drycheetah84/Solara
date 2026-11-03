@@ -32,6 +32,8 @@ export function proxy(req: NextRequest) {
   if (
     pathname === "/login" ||
     pathname === "/dash-login" ||
+    pathname === "/auth/discord" ||
+    pathname === "/auth/discord/callback" ||
     pathname.startsWith("/_next/") ||
     pathname === "/favicon.ico" ||
     pathname === "/logo.webp"

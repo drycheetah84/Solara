@@ -23,8 +23,10 @@ func TestScopedTokenRouteCoverage(t *testing.T) {
 	inTable := map[string]bool{}
 	for _, r := range dashScopedRoutes {
 		inTable[r.Method+" "+r.Pattern] = true
-		if !dashKnownPerm(r.Perm) {
-			t.Fatalf("route %s %s uses unknown permission %s", r.Method, r.Pattern, r.Perm)
+		for _, p := range strings.Split(r.Perm, "|") {
+			if !dashKnownPerm(p) {
+				t.Fatalf("route %s %s uses unknown permission %s", r.Method, r.Pattern, p)
+			}
 		}
 	}
 	for _, e := range s.HTTP.Endpoints() {
@@ -70,6 +72,9 @@ func TestScopedTokens(t *testing.T) {
 	}
 	code, out := create(adminHdr, `{"name":"stA mod","permissions":["stations.read","drafters.read"],"fleets":["stA"]}`)
 	tok, _ := out["token"].(string)
+	if code, o := create(adminHdr, `{"name":"short","permissions":["stations.read"],"stations":["stA"],"expires_in_minutes":30}`); code != 200 || o["expires_at"] == nil {
+		t.Fatalf("expires_in_minutes: %d %v", code, o)
+	}
 	if code != 200 || !strings.HasPrefix(tok, "sdt1_") {
 		t.Fatalf("create: %d %v", code, out)
 	}
@@ -125,5 +130,63 @@ func TestScopedTokens(t *testing.T) {
 		if strings.Contains(r.Hash, tok) || r.Prefix == tok {
 			t.Fatal("secret stored")
 		}
+	}
+}
+
+// fleets.view sees the fleet list (names, player counts) and nothing else.
+func TestScopedTokenFleetsView(t *testing.T) {
+	resetDashAuth(t, nil)
+	withTempDB(t)
+	s := newAresDashboardServer()
+	st := models.NewStationDbObject()
+	st.StationId, st.StationName = dashStrPtr("stV"), dashStrPtr("Viewable")
+	docdb.GetCollection(Database, true, models.NewStationDbObject).Insert(st)
+	w := do(t, s, "POST", "/api/scoped-tokens", `{"name":"viewer","permissions":["fleets.view"],"stations":["*"]}`, adminHdr)
+	var out map[string]any
+	_ = json.Unmarshal(w.Body.Bytes(), &out)
+	th := map[string]string{"x-dashboard-key": out["token"].(string)}
+	if w := do(t, s, "GET", "/api/stations", "", th); w.Code != 200 || !strings.Contains(w.Body.String(), "Viewable") {
+		t.Fatalf("fleet list: %d %s", w.Code, w.Body.String())
+	}
+	if w := do(t, s, "GET", "/api/deployments", "", th); w.Code != 200 {
+		t.Fatalf("deployments: %d", w.Code)
+	}
+	for _, p := range []string{"/api/stations/stV/config", "/api/stations/stV/members", "/api/users", "/api/stats"} {
+		if w := do(t, s, "GET", p, "", th); w.Code != 403 {
+			t.Fatalf("%s should be refused: %d", p, w.Code)
+		}
+	}
+}
+
+// Per-permission station scoping: "view every fleet" + "configure fleet A" must not configure fleet B.
+func TestScopedTokenPerPermissionStations(t *testing.T) {
+	resetDashAuth(t, nil)
+	withTempDB(t)
+	s := newAresDashboardServer()
+	for _, id := range []string{"stA", "stB"} {
+		st := models.NewStationDbObject()
+		st.StationId, st.StationName = dashStrPtr(id), dashStrPtr("Station "+id)
+		st.Config = map[string]*string{}
+		docdb.GetCollection(Database, true, models.NewStationDbObject).Insert(st)
+	}
+	w := do(t, s, "POST", "/api/scoped-tokens", `{"name":"captain+member","permissions":["fleets.view@*","stations.read@stA","stations.config@stA"]}`, adminHdr)
+	var out map[string]any
+	_ = json.Unmarshal(w.Body.Bytes(), &out)
+	tok, _ := out["token"].(string)
+	if tok == "" {
+		t.Fatalf("create: %d %s", w.Code, w.Body.String())
+	}
+	th := map[string]string{"x-dashboard-key": tok}
+	if w := do(t, s, "GET", "/api/stations", "", th); w.Code != 200 || !strings.Contains(w.Body.String(), "stB") {
+		t.Fatalf("fleet list should show every fleet: %d %s", w.Code, w.Body.String())
+	}
+	if w := do(t, s, "PATCH", "/api/stations/stA/config", `{"k":"v"}`, th); w.Code != 200 {
+		t.Fatalf("own fleet config: %d %s", w.Code, w.Body.String())
+	}
+	if w := do(t, s, "PATCH", "/api/stations/stB/config", `{"k":"v"}`, th); w.Code != 403 {
+		t.Fatalf("other fleet config must be refused: %d", w.Code)
+	}
+	if w := do(t, s, "GET", "/api/stations/stB/config", "", th); w.Code != 403 {
+		t.Fatalf("other fleet read must be refused: %d", w.Code)
 	}
 }

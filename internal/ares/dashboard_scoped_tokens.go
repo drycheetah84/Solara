@@ -6,7 +6,7 @@
 //	GET    /api/scoped-tokens/permissions  -> {"permissions":[{name, description}]}  (master)
 //	GET    /api/scoped-tokens              -> {"tokens":[view]}                      (master)
 //	POST   /api/scoped-tokens              -> {"token":"sdt1_...", ...view}          (master; the secret is shown once)
-//	       body {name, permissions:[...], stations:[...], fleets:[...], expires_in_days?}
+//	       body {name, permissions:[...], stations:[...], fleets:[...], expires_in_days?, expires_in_minutes?}
 //	DELETE /api/scoped-tokens/{id}         -> {"success":true}                       (master)
 //	GET    /api/scoped-tokens/self         -> {"master":bool, ...token view}           (any valid credential)
 //
@@ -56,6 +56,7 @@ func dashScopedTokens() *docdb.Collection[DashScopedTokenDbObject] {
 
 // dashScopedPerms is the permission catalogue (name -> what it allows).
 var dashScopedPerms = []struct{ Name, Desc string }{
+	{"fleets.view", "view the fleet list only: station names and player counts"},
 	{"stats.read", "server stats, telemetry, events, agents, netvar dumps, websocket clients"},
 	{"users.read", "list users and view inventories"},
 	{"users.ban", "ban / unban users and lift game bans"},
@@ -99,8 +100,8 @@ var dashScopedRoutes = []dashScopedRoute{
 	{"DELETE", "/api/users/{user_id}/inventory/{item_id}", "users.inventory", false},
 	{"GET", "/api/catalog/items", "catalog.read", false},
 	{"GET", "/api/board/keys", "stations.read", false},
-	{"GET", "/api/stations", "stations.read", true},
-	{"GET", "/api/deployments", "stations.read", true},
+	{"GET", "/api/stations", "stations.read|fleets.view", true},
+	{"GET", "/api/deployments", "stations.read|fleets.view", true},
 	{"GET", "/api/stations/{station_id}/config", "stations.read", false},
 	{"GET", "/api/stations/{station_id}/whitelist", "stations.read", false},
 	{"GET", "/api/stations/{station_id}/members", "stations.read", false},
@@ -212,19 +213,61 @@ func dashScopedTokenFor(req *hosting.Request) *DashScopedTokenDbObject {
 	return t
 }
 
-func (t *DashScopedTokenDbObject) has(perm string) bool {
+// allows: the token grants perm for station ("" = a station-less route, which needs the "*" scope). A permission
+// entry is either "perm" (valid for the token's Stations) or "perm@<station>" / "perm@*" (valid for that station only),
+// so a token built from several Discord roles keeps each role's permissions on that role's stations.
+func (t *DashScopedTokenDbObject) allows(perm, station string) bool {
 	for _, p := range t.Permissions {
-		if p == perm {
+		name, at, scoped := strings.Cut(p, "@")
+		if name != perm {
+			continue
+		}
+		if !scoped {
+			if station == "" {
+				if t.hasGlobal() {
+					return true
+				}
+			} else if t.AllowsStation(station) {
+				return true
+			}
+			continue
+		}
+		if at == "*" || (station != "" && strings.EqualFold(at, station)) {
 			return true
 		}
 	}
 	return false
 }
 
-// AllowsStation: the token's scope includes this station / fleet ("*" = every station).
+func (t *DashScopedTokenDbObject) hasGlobal() bool {
+	for _, s := range t.Stations {
+		if s == "*" {
+			return true
+		}
+	}
+	return false
+}
+
+// hasAny: the token holds perm for at least one station (used by list routes, which filter per station).
+func (t *DashScopedTokenDbObject) hasAny(perm string) bool {
+	for _, p := range t.Permissions {
+		if name, _, _ := strings.Cut(p, "@"); name == perm {
+			return true
+		}
+	}
+	return false
+}
+
+// AllowsStation: the token's scope includes this station / fleet ("*" = every station), either through its Stations
+// list or through a station-scoped permission entry ("perm@<station>" / "perm@*").
 func (t *DashScopedTokenDbObject) AllowsStation(id string) bool {
 	for _, s := range t.Stations {
 		if s == "*" || strings.EqualFold(s, id) {
+			return true
+		}
+	}
+	for _, p := range t.Permissions {
+		if _, at, scoped := strings.Cut(p, "@"); scoped && (at == "*" || strings.EqualFold(at, id)) {
 			return true
 		}
 	}
@@ -240,29 +283,36 @@ func dashScopedDecision(t *DashScopedTokenDbObject, method, path string) string 
 	if r == nil {
 		return "route is master-key only"
 	}
-	if !t.has(r.Perm) {
-		return "missing permission " + r.Perm
-	}
 	station := params["station_id"]
 	if s, ok := params["scope"]; ok && !strings.EqualFold(s, "global") {
 		station = s
 	}
-	switch {
-	case station != "":
-		if !t.AllowsStation(station) {
-			return "station " + station + " is outside this token's scope"
+	perms := strings.Split(r.Perm, "|") // a route may accept any of several permissions
+	if r.ListFiltered && station == "" {
+		for _, p := range perms {
+			if t.hasAny(p) {
+				return "" // the handler lists only the token's stations
+			}
 		}
-	case r.ListFiltered:
-	default:
-		hasGlobal := false
-		for _, s := range t.Stations {
-			hasGlobal = hasGlobal || s == "*"
-		}
-		if !hasGlobal {
-			return "route is not station-specific: needs the \"*\" scope"
+		return "missing permission " + r.Perm
+	}
+	for _, p := range perms {
+		if t.allows(p, station) {
+			return ""
 		}
 	}
-	return ""
+	held := false
+	for _, p := range perms {
+		held = held || t.hasAny(p)
+	}
+	switch {
+	case !held:
+		return "missing permission " + r.Perm
+	case station != "":
+		return "station " + station + " is outside this token's scope"
+	default:
+		return "route is not station-specific: needs the \"*\" scope"
+	}
 }
 
 // dashRequestScope is the scoped token behind a request that the preprocessor let through, or nil for the master
@@ -370,9 +420,15 @@ func (s *AresDashboardServer) CreateScopedToken(c *hosting.Context) hosting.Resu
 	}
 	seen := map[string]bool{}
 	uniq := []string{}
+	allScoped := true
 	for _, p := range perms {
-		if !dashKnownPerm(p) {
-			return dashJson(400, stj.O("error", "unknown permission "+p))
+		name, at, scoped := strings.Cut(p, "@")
+		allScoped = allScoped && scoped
+		if !dashKnownPerm(name) {
+			return dashJson(400, stj.O("error", "unknown permission "+name))
+		}
+		if scoped && at != "*" && a2FindStation(at) == nil {
+			return dashJson(400, stj.O("error", "unknown station / fleet "+at+" in "+p))
 		}
 		if !seen[p] {
 			seen[p] = true
@@ -380,7 +436,7 @@ func (s *AresDashboardServer) CreateScopedToken(c *hosting.Context) hosting.Resu
 		}
 	}
 	scope := append(strs("stations"), strs("fleets")...) // a fleet id is a station id in Solara
-	if len(scope) == 0 {
+	if len(scope) == 0 && !allScoped {
 		return dashJson(400, stj.O("error", "stations / fleets: name at least one (or \"*\" for every station)"))
 	}
 	stSeen := map[string]bool{}
@@ -399,6 +455,12 @@ func (s *AresDashboardServer) CreateScopedToken(c *hosting.Context) hosting.Resu
 	if v, ok := doc.TryGetProperty("expires_in_days"); ok {
 		if d, ok := v.TryGetInt64(); ok && d > 0 {
 			expires = time.Now().Add(time.Duration(d) * 24 * time.Hour).UnixMilli()
+		}
+	}
+	// expires_in_minutes (Solara, Discord sign-in): short-lived per-session tokens; wins over expires_in_days.
+	if v, ok := doc.TryGetProperty("expires_in_minutes"); ok {
+		if m, ok := v.TryGetInt64(); ok && m > 0 {
+			expires = time.Now().Add(time.Duration(m) * time.Minute).UnixMilli()
 		}
 	}
 	raw := make([]byte, 32)

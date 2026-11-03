@@ -1,19 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
-// Key gate for the dashboard UI.
-//
-// The SSO path (/auth/meta -> a2dash_session) needs its redirect_uri registered with Meta against
-// this hostname, which is not done yet, so middleware's AUTH_ENFORCE would have redirected forever
-// with no cookie ever minted. This is the key-based route instead: paste the admin key once, the
-// server checks it and sets an httpOnly cookie. The key itself is never stored in the browser and
-// never appears in a URL — only the opaque cookie is, and /api/* proxying happens server-side.
+// Dashboard sign-in. The normal path is Discord (/auth/discord): members of the Halcyon Discord server get the access
+// their roles map to. The admin key / dashboard token form stays as a break-glass fallback: the key is checked
+// server-side and only an opaque httpOnly cookie is ever stored; /api/* proxying happens server-side.
 
-export default function Login() {
+const ERRORS: Record<string, string> = {
+  "discord-not-configured": "Discord sign-in is not set up on this server yet.",
+  "discord-cancelled": "Discord sign-in was cancelled.",
+  "discord-state": "That sign-in link expired. Try again.",
+  "discord-failed": "Discord did not answer. Try again in a moment.",
+  "not-in-server": "Your Discord account is not in the Halcyon server.",
+  "no-dashboard-role": "Your Discord roles do not include dashboard access.",
+  "token-failed": "Signed in, but the backend did not issue your access. Try again.",
+  "too-many-attempts": "Too many attempts. Wait a few minutes.",
+};
+
+function LoginInner() {
+  const params = useSearchParams();
+  const urlErr = params.get("err");
   const [key, setKey] = useState("");
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
+  const [showKey, setShowKey] = useState(false);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -38,35 +49,52 @@ export default function Login() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-neutral-950 p-6">
-      <form
-        onSubmit={submit}
-        className="w-full max-w-md rounded-xl border border-neutral-800 bg-neutral-900 p-7 shadow-xl"
-      >
+      <div className="w-full max-w-md rounded-xl border border-neutral-800 bg-neutral-900 p-7 shadow-xl">
         <h1 className="mb-1 text-lg font-semibold text-neutral-100">Halcyon dashboard</h1>
         <p className="mb-5 text-sm leading-relaxed text-neutral-400">
-          This controls the live fleet. Enter the admin key, or a dashboard token, to continue.
+          This controls the live fleet. Sign in with the Discord account that has your staff role.
         </p>
 
-        <input
-          type="password"
-          value={key}
-          onChange={(e) => setKey(e.target.value)}
-          placeholder="admin key or dashboard token"
-          autoComplete="off"
-          autoFocus
-          className="w-full rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2.5 font-mono text-sm text-neutral-100 outline-none focus:border-blue-500"
-        />
+        <a href="/auth/discord"
+          className="block w-full rounded-lg py-2.5 text-center text-sm font-medium text-white transition hover:opacity-90"
+          style={{ background: "#5865F2" }}>
+          Log in with Discord
+        </a>
+        {urlErr && <div className="mt-3 text-xs text-red-400">{ERRORS[urlErr] ?? "Sign-in failed."}</div>}
 
-        <div className="mt-2 min-h-[18px] text-xs text-red-400">{err}</div>
-
-        <button
-          type="submit"
-          disabled={busy || !key.trim()}
-          className="mt-3 w-full rounded-lg bg-blue-600 py-2.5 text-sm font-medium text-white transition hover:bg-blue-500 disabled:opacity-40"
-        >
-          {busy ? "Checking…" : "Unlock"}
+        <button type="button" onClick={() => setShowKey(v => !v)}
+          className="mt-6 text-xs text-neutral-500 underline-offset-2 hover:underline">
+          {showKey ? "Hide" : "Use an admin key or dashboard token instead"}
         </button>
-      </form>
+        {showKey && (
+          <form onSubmit={submit} className="mt-3">
+            <input
+              type="password"
+              value={key}
+              onChange={(e) => setKey(e.target.value)}
+              placeholder="admin key or dashboard token"
+              autoComplete="off"
+              className="w-full rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2.5 font-mono text-sm text-neutral-100 outline-none focus:border-blue-500"
+            />
+            <div className="mt-2 min-h-[18px] text-xs text-red-400">{err}</div>
+            <button
+              type="submit"
+              disabled={busy || !key.trim()}
+              className="mt-1 w-full rounded-lg bg-neutral-700 py-2 text-sm font-medium text-white transition hover:bg-neutral-600 disabled:opacity-40"
+            >
+              {busy ? "Checking…" : "Unlock"}
+            </button>
+          </form>
+        )}
+      </div>
     </div>
+  );
+}
+
+export default function Login() {
+  return (
+    <Suspense fallback={null}>
+      <LoginInner />
+    </Suspense>
   );
 }
