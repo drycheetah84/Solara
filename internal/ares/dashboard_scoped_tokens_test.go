@@ -190,3 +190,23 @@ func TestScopedTokenPerPermissionStations(t *testing.T) {
 		t.Fatalf("other fleet read must be refused: %d", w.Code)
 	}
 }
+
+// stations.manage (captains) must not delete a station; only stations.delete (or the master key) can.
+func TestScopedTokenManageCannotDelete(t *testing.T) {
+	resetDashAuth(t, nil)
+	withTempDB(t)
+	s := newAresDashboardServer()
+	st := models.NewStationDbObject()
+	st.StationId, st.StationName = dashStrPtr("stC"), dashStrPtr("Captained")
+	docdb.GetCollection(Database, true, models.NewStationDbObject).Insert(st)
+	w := do(t, s, "POST", "/api/scoped-tokens", `{"name":"captain","permissions":["stations.manage@stC","stations.read@stC"]}`, adminHdr)
+	var out map[string]any
+	_ = json.Unmarshal(w.Body.Bytes(), &out)
+	th := map[string]string{"x-dashboard-key": out["token"].(string)}
+	if w := do(t, s, "DELETE", "/api/stations/stC", "", th); w.Code != 403 {
+		t.Fatalf("captain delete must be refused: %d %s", w.Code, w.Body.String())
+	}
+	if w := do(t, s, "GET", "/api/stations/stC/config", "", th); w.Code == 403 {
+		t.Fatalf("captain read refused")
+	}
+}
