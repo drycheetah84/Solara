@@ -2,7 +2,7 @@
 
 // Solara: station boards -- the in-game billboard / plaza sign images. Each slot (board key) holds an
 // image URL in the station config; uploading stores the file on the backend and points the slot at it.
-// Game servers read the station config once at startup, so a change shows in-game after the next restart.
+// Most keys reach this fleet's servers as world netvars (re-polled ~60 s); the title-data keys are global (main fleet).
 import { useCallback, useEffect, useState } from "react";
 import { api } from "../../../lib/api";
 
@@ -50,8 +50,10 @@ export default function BoardsTab({ stationId }: { stationId: string }) {
   return (
     <div>
       <p className="text-xs mb-4" style={{ color: "var(--muted)" }}>
-        In-game boards and signs for this station. PNG, JPG, GIF or WebP, up to 8 MB. Game servers read these when
-        they start, so a new image shows up in-game after this fleet&apos;s server next restarts.
+        In-game boards and signs for this station. PNG, JPG, GIF or WebP, up to 8 MB. Most boards go to this
+        fleet&apos;s own server (it re-reads them about once a minute). BoardTextureUrl1, BoardTextureUrl2 and the
+        shuttle posters come from title data, which every player shares and downloads when their game starts; those
+        use the main fleet&apos;s images.
       </p>
       {err && (
         <div className="mb-4 px-4 py-3 rounded-md text-sm"
