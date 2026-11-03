@@ -91,7 +91,7 @@ var dashScopedRoutes = []dashScopedRoute{
 	{"GET", "/api/netvars/dump", "stats.read", false},
 	{"GET", "/api/ws-clients", "stats.read", false},
 	{"GET", "/api/ws-clients/{session_id}/messages", "stats.read", false},
-	{"GET", "/api/users", "users.read", false},
+	{"GET", "/api/users", "users.read|stations.roles|stations.config", true}, // player picker for roles / arena whitelists
 	{"GET", "/api/users/{user_id}/inventory", "users.read", false},
 	{"POST", "/api/users/{user_id}/ban", "users.ban", false},
 	{"PATCH", "/api/users/{user_id}/unban", "users.ban", false},
@@ -100,7 +100,7 @@ var dashScopedRoutes = []dashScopedRoute{
 	{"POST", "/api/users/{user_id}/inventory", "users.inventory", false},
 	{"DELETE", "/api/users/{user_id}/inventory/{item_id}", "users.inventory", false},
 	{"GET", "/api/catalog/items", "catalog.read", false},
-	{"GET", "/api/board/keys", "stations.read", false},
+	{"GET", "/api/board/keys", "stations.read", true}, // the fixed slot list, not station data
 	{"GET", "/api/stations", "stations.read|fleets.view", true},
 	{"GET", "/api/deployments", "stations.read|fleets.view", true},
 	{"GET", "/api/stations/{station_id}/config", "stations.read", false},

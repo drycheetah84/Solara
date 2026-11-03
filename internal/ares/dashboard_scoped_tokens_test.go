@@ -210,3 +210,25 @@ func TestScopedTokenManageCannotDelete(t *testing.T) {
 		t.Fatalf("captain read refused")
 	}
 }
+
+// A captain (station-scoped perms only) can load the board slots, the player picker and (with spec.read@*) levels.
+func TestScopedTokenCaptainTabs(t *testing.T) {
+	resetDashAuth(t, nil)
+	withTempDB(t)
+	s := newAresDashboardServer()
+	st := models.NewStationDbObject()
+	st.StationId, st.StationName = dashStrPtr("stC"), dashStrPtr("Captained")
+	docdb.GetCollection(Database, true, models.NewStationDbObject).Insert(st)
+	w := do(t, s, "POST", "/api/scoped-tokens", `{"name":"captain","permissions":["stations.read@stC","stations.roles@stC","spec.read@*"]}`, adminHdr)
+	var out map[string]any
+	_ = json.Unmarshal(w.Body.Bytes(), &out)
+	th := map[string]string{"x-dashboard-key": out["token"].(string)}
+	for _, p := range []string{"/api/board/keys", "/api/users", "/api/stations/stC/members", "/api/stations/stC/board", "/api/spec/levels"} {
+		if w := do(t, s, "GET", p, "", th); w.Code == 403 {
+			t.Fatalf("%s refused: %s", p, w.Body.String())
+		}
+	}
+	if w := do(t, s, "GET", "/api/stats", "", th); w.Code != 403 {
+		t.Fatalf("stats should stay refused: %d", w.Code)
+	}
+}

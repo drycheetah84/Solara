@@ -12,7 +12,8 @@
 //   DASHBOARD_PUBLIC_URL                       default https://dash.halcy0n.net (the OAuth redirect is <url>/auth/discord/callback)
 import { createHash } from "node:crypto";
 
-export type RoleGrant = "admin" | { permissions: string[]; stations: string[] };
+type Grant = { permissions: string[]; stations: string[] };
+export type RoleGrant = "admin" | Grant | Grant[];   // an array = several grants (e.g. own fleet + every fleet)
 export type Access = { admin: true } | { admin: false; permissions: string[]; stations: string[] };
 
 export function discordConfig() {
@@ -45,9 +46,11 @@ export function accessForRoles(roles: string[], roleMap: Record<string, RoleGran
     const g = roleMap[r];
     if (!g) continue;
     if (g === "admin") return { admin: true };
-    // "@owned" -> this user's own fleets; a grant whose stations resolve to nothing grants nothing
-    const st = (g.stations ?? []).flatMap(s => s === "@owned" ? (owners[userId] ?? []) : [s]);
-    for (const p of g.permissions ?? []) for (const s of st) entries.add(`${p}@${s}`);
+    for (const one of Array.isArray(g) ? g : [g]) {
+      // "@owned" -> this user's own fleets; a grant whose stations resolve to nothing grants nothing
+      const st = (one.stations ?? []).flatMap(s => s === "@owned" ? (owners[userId] ?? []) : [s]);
+      for (const p of one.permissions ?? []) for (const s of st) entries.add(`${p}@${s}`);
+    }
   }
   if (entries.size === 0) return null;
   return { admin: false, permissions: [...entries].sort(), stations: [] };
