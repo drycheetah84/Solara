@@ -3512,6 +3512,86 @@ void ScriptOp(const Snapshot& snap, const std::string& line)
         Log("[script] FAIL %s: no quest component on the local controller", op);
         return;
     }
+    if (!strcmp(op, "events"))                // events -- the client's replicated StationDashboardManager::StationEvents
+    {
+        SDK::UClass* mc = SDK::UObject::FindClassFast("StationDashboardManager");
+        if (!mc) { Log("[script] FAIL events: class not loaded"); return; }
+        int found = 0;
+        for (int i = 0; i < SDK::UObject::GObjects->Num(); ++i)
+        {
+            auto* o2 = SDK::UObject::GObjects->GetByIndex(i);
+            if (!o2 || o2->IsDefaultObject() || !o2->IsA(mc)) continue;
+            ++found;
+            const uint8_t* r = reinterpret_cast<const uint8_t*>(o2) + 0x2D0;
+            const uint8_t* arr = *reinterpret_cast<uint8_t* const*>(r);
+            const int n = *reinterpret_cast<const int32_t*>(r + 8);
+            std::string titles;
+            for (int k = 0; arr && k < n && k < 4; ++k)
+            {
+                const wchar_t* w = *reinterpret_cast<wchar_t* const*>(arr + k * 0x80 + 0x10);
+                const int len = *reinterpret_cast<const int32_t*>(arr + k * 0x80 + 0x18);
+                std::string t; for (int c = 0; w && c < len - 1 && c < 60; ++c) t += static_cast<char>(w[c]);
+                char b[160]; snprintf(b, sizeof b, "'%s' %.0fmin; ", t.c_str(), *reinterpret_cast<const float*>(arr + k * 0x80 + 0x38));
+                titles += b;
+            }
+            Log("[script] events: %s count=%d [%s]", o2->GetName().c_str(), n, titles.c_str());
+        }
+        if (!found) Log("[script] events: no StationDashboardManager on this client");
+        return;
+    }
+    if (!strcmp(op, "traps"))                 // traps -- ScrapRun trap descriptors: replicated Breaking + root visibility
+    {
+        SDK::UClass* tc = SDK::UObject::FindClassFast("BP_Scraprun_TrapDescriptor_C");
+        if (!tc) { Log("[script] FAIL traps: class not loaded"); return; }
+        int32_t off = -1;
+        for (SDK::UStruct* s = tc; s && off < 0; s = s->SuperStruct)
+            for (SDK::FField* p = s->ChildProperties; p; p = p->Next)
+                if (p->Name.ToString() == "Breaking") { off = *reinterpret_cast<const int32_t*>(reinterpret_cast<const uint8_t*>(p) + 0x44); break; }
+        int n = 0, broken = 0;
+        std::string line;
+        for (int i = 0; i < SDK::UObject::GObjects->Num(); ++i)
+        {
+            auto* o2 = SDK::UObject::GObjects->GetByIndex(i);
+            if (!o2 || o2->IsDefaultObject() || !o2->IsA(tc)) continue;
+            const int b = off > 0 ? *(reinterpret_cast<const uint8_t*>(o2) + off) : -1;
+            ++n; broken += b == 1;
+            char t[64]; snprintf(t, sizeof t, "%d", b);
+            line += t;
+        }
+        Log("[script] traps: %d descriptor(s), Breaking@0x%X, broken=%d  [%s]", n, off, broken, line.c_str());
+        return;
+    }
+    if (!strcmp(op, "tree"))                  // tree -- UA2TechTreeSystem: loaded flag (+65) and the trees it holds (map +72, 328-B entries)
+    {
+        SDK::UObject* ts = nullptr;
+        for (int i = 0; i < SDK::UObject::GObjects->Num() && !ts; ++i)
+        {
+            auto* o2 = SDK::UObject::GObjects->GetByIndex(i);
+            if (o2 && !o2->IsDefaultObject() && o2->Class && o2->Class->GetName() == "A2TechTreeSystem") ts = o2;
+        }
+        if (!ts) { Log("[script] FAIL tree: no A2TechTreeSystem"); return; }
+        const uint8_t* t = reinterpret_cast<const uint8_t*>(ts);
+        const uint8_t* data = *reinterpret_cast<uint8_t* const*>(t + 72);
+        const int n = *reinterpret_cast<const int32_t*>(t + 80);
+        auto fs = [](const uint8_t* p) -> std::string {
+            const wchar_t* w = *reinterpret_cast<wchar_t* const*>(p);
+            const int len = *reinterpret_cast<const int32_t*>(p + 8);
+            std::string s;
+            for (int k = 0; w && k < len - 1 && k < 120; ++k) s += static_cast<char>(w[k]);
+            return s;
+        };
+        Log("[script] tree system %s loaded(+65)=%d trees=%d", ts->GetName().c_str(), t[65], n);
+        for (int i = 0; data && i < n && i < 16; ++i)
+        {
+            const uint8_t* e = data + static_cast<size_t>(i) * 328;
+            const uint8_t* nodes = *reinterpret_cast<uint8_t* const*>(e + 96);
+            const int nn = *reinterpret_cast<const int32_t*>(e + 104);
+            std::string first;
+            for (int k = 0; nodes && k < nn && k < 3; ++k) first += fs(nodes + static_cast<size_t>(k) * 344 + 56) + ",";
+            Log("[script]   tree key='%s' nodes=%d first=[%s]", fs(e).c_str(), nn, first.c_str());
+        }
+        return;
+    }
     if (!strcmp(op, "store"))                 // store [load] -- UA2StoreSubsystem: (re)load, or dump parsed inventory currencies + offers
     {
         SDK::UObject* ss = nullptr;
