@@ -128,6 +128,20 @@ func (s *MothershipServer) ClientAuthRift(c *hosting.Context) hosting.Result {
 		}
 	}
 
+	// Solara diagnostic (2026-11-03): every PC client is folded into ONE player (the fixed RIFT_EXTERNAL_ID), so
+	// they share an inventory and a Vivox identity. Log what each client sends (field names + its user id; never
+	// the nonce) to key PC players on their own account.
+	{
+		b := parseBody(request)
+		uid := ""
+		for _, k := range []string{"UserId", "user_id", "AccountId", "accountId", "platform_id", "PlatformId", "OrgScopedId", "org_scoped_id"} {
+			if uid == "" {
+				uid = str(b, k)
+			}
+		}
+		logConsole(fmt.Sprintf("[RIFT-BODY] keys=[%s] uid='%s'", strings.Join(b.Keys(), ","), uid))
+	}
+
 	cl := v2Players()
 	var existing *models.MothershipV2PlayerDbObject
 	for _, p := range cl.FindAll() {
