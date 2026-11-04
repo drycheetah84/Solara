@@ -133,6 +133,10 @@ export type UserInventory = { player_id: string; full_catalogue: boolean; items:
 // GET /api/stations/{id}/gaia -- events the live game server can play through GAIA
 export type GaiaInfo = { deployment_id: string; events: string[]; queued: number };
 
+// GET /api/stations/{id}/notify -- players on the live game server who can be sent a notification board
+export type NotifyPlayer = { id: string; name: string };
+export type NotifyInfo = { deployment_id: string; players: NotifyPlayer[]; queued: number };
+
 export type ActionResult = {
   success: boolean;
   error?: string;
@@ -301,6 +305,9 @@ export const api = {
   // GAIA announcer: force a Wwise event to play for everyone on the station's live game server
   gaia:     (stationId: string)                => get<GaiaInfo>(`stations/${encodeURIComponent(stationId)}/gaia`),
   gaiaPlay: (stationId: string, event: string) => post<ActionResult>(`stations/${encodeURIComponent(stationId)}/gaia/play`, { event }),
+  // In-game notification board for chosen players ("all" = everyone on the station's live game server)
+  notify:     (stationId: string)                                  => get<NotifyInfo>(`stations/${encodeURIComponent(stationId)}/notify`),
+  notifySend: (stationId: string, to: "all" | string[], message: string) => post<ActionResult>(`stations/${encodeURIComponent(stationId)}/notify`, { to, message }),
 
   // Role management
   createRole: (stationId: string, roleName: string, roleDescription: string) =>

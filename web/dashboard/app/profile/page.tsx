@@ -20,6 +20,7 @@ const PERM_TEXT: Record<string, string> = {
   "stations.events": "Create and delete events",
   "stations.roles": "Manage roles and who has them",
   "stations.gaia": "Play GAIA announcements",
+  "stations.notify": "Send in-game notifications to players",
   "spec.read": "View saved editor levels",
   "spec.write": "Edit and delete saved editor levels",
   "drafters.read": "See who can use the level editor",

@@ -125,6 +125,8 @@ func newAresDashboardServer() *AresDashboardServer {
 	h.Handle("DELETE", "/api/users/{user_id}/inventory/{item_id}", "Solara/RevokeUserItem", s.RevokeUserItem)
 	h.Handle("GET", "/api/stations/{station_id}/gaia", "Solara/GetGaia", s.GetGaia)
 	h.Handle("POST", "/api/stations/{station_id}/gaia/play", "Solara/PlayGaia", s.PlayGaia)
+	h.Handle("GET", "/api/stations/{station_id}/notify", "Solara/GetNotify", s.GetNotify)
+	h.Handle("POST", "/api/stations/{station_id}/notify", "Solara/SendNotify", s.SendNotify)
 	h.Handle("GET", "/api/titledata", "Solara/GetTitleDataAdmin", s.GetTitleDataAdmin)
 	h.Handle("PUT", "/api/titledata/{key}", "Solara/PutTitleDataAdmin", s.PutTitleDataAdmin)
 	h.Handle("DELETE", "/api/titledata/{key}", "Solara/DeleteTitleDataAdmin", s.DeleteTitleDataAdmin)

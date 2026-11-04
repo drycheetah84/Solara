@@ -13,10 +13,11 @@ import NetvarsTab from "./NetvarsTab";
 import LevelsTab from "./LevelsTab";
 import BoardsTab from "./BoardsTab";
 import GaiaTab from "./GaiaTab";
+import NotifyTab from "./NotifyTab";
 import ArenaWhitelistTab from "./ArenaWhitelistTab";
 import DraftersPanel from "@/components/DraftersPanel";
 
-type Tab = "bans" | "roles" | "members" | "deployments" | "events" | "sessions" | "netvars" | "levels" | "whitelist" | "drafters" | "boards" | "gaia" | "arenas";
+type Tab = "bans" | "roles" | "members" | "deployments" | "events" | "sessions" | "netvars" | "levels" | "whitelist" | "drafters" | "boards" | "gaia" | "notify" | "arenas";
 
 // ── Shared UI ────────────────────────────────────────────────────────────────
 
@@ -1132,6 +1133,7 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "arenas",      label: "Arena whitelists" },
   { id: "boards",      label: "Boards"      },
   { id: "gaia",        label: "GAIA"        },
+  { id: "notify",      label: "Notify"      },
 ];
 
 export default function StationDetailPage() {
@@ -1219,6 +1221,7 @@ export default function StationDetailPage() {
       {tab === "whitelist"   && <WhitelistTab   stationId={stationId} />}
       {tab === "boards"      && <BoardsTab      stationId={stationId} />}
       {tab === "gaia"        && <GaiaTab        stationId={stationId} />}
+      {tab === "notify"      && <NotifyTab      stationId={stationId} />}
       {tab === "arenas"      && <ArenaWhitelistTab stationId={stationId} />}
     </div>
   );
