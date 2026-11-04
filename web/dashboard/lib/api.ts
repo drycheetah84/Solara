@@ -411,6 +411,9 @@ export const api = {
   wsMessages:     (sessionId: string) => get<WsMessage[]>(`ws-clients/${sessionId}/messages`),
 
   // Global admin
+  /** Solara: every user, a page at a time, filtered by name/id (GET /api/users stays the 50 newest). */
+  searchUsers: (q: string, page: number, pageSize: number) =>
+    get<UserSearchPage>(`users/search?q=${encodeURIComponent(q)}&page=${page}&page_size=${pageSize}`),
   grantAdmin:  (userId: string) => post<ActionResult>(`users/${userId}/grant_admin`),
   revokeAdmin: (userId: string) => del<ActionResult>(`users/${userId}/grant_admin`),
 
@@ -527,6 +530,10 @@ export type ScopedToken = {
 export type TitleDataRow = { key: string; value: string; updated_at: string };
 export type TitleDataKnown = { key: string; reader: string; purpose: string; format: "text" | "url" | "json"; template: string };
 export type TitleDataList = { known: TitleDataKnown[]; stored: TitleDataRow[]; generated: Record<string, string> };
+export type SearchUser = User;
+export type UserSearchPage = {
+  users: SearchUser[]; total: number; page: number; page_size: number; pages: number;
+};
 export type AnonNameSettings ={ adjectives: string[]; nouns: string[]; number_min: number; number_max: number };
 export type AnonNamePreview = { seed: number; name: string };
 export type AnonNameState = {

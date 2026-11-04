@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { api, type User, type Station } from "../../lib/api";
+import { useCallback, useEffect, useState } from "react";
+import { api, type User, type Station, type SearchUser, type UserSearchPage } from "../../lib/api";
 import { fmt, ago } from "../../lib/utils";
 import { X } from "lucide-react";
 import GameBans from "./GameBans";
@@ -27,10 +27,19 @@ function Modal({ title, onClose, children }: { title: string; onClose: () => voi
 const inputCls = "w-full px-3 py-2 rounded-md text-sm outline-none";
 const inputStyle = { background: "var(--surface2)", border: "1px solid var(--border)", color: "var(--text)" };
 
+const PAGE_SIZES = [25, 50, 100, 200];
+
 export default function UsersPage() {
-  const [users, setUsers]       = useState<User[] | null>(null);
+  const [users, setUsers]       = useState<SearchUser[] | null>(null);
+  const [pageInfo, setPageInfo] = useState<UserSearchPage | null>(null);
   const [stations, setStations] = useState<Station[]>([]);
   const [err, setErr]           = useState<string | null>(null);
+
+  // Paging + search (server-side over EVERY user; GET /api/users alone stops at the 50 newest)
+  const [query, setQuery]       = useState("");
+  const [q, setQ]               = useState("");   // debounced query actually sent
+  const [page, setPage]         = useState(1);
+  const [pageSize, setPageSize] = useState(50);
 
   // Ban modal state
   const [banTarget, setBanTarget]   = useState<User | null>(null);
@@ -41,11 +50,19 @@ export default function UsersPage() {
   const [actionErr, setActionErr]   = useState<string | null>(null);
   const [itemsFor, setItemsFor] = useState<User | null>(null);
 
-  useEffect(() => {
-    Promise.all([api.users(), api.stations()])
-      .then(([u, s]) => { setUsers(u); setStations(s); })
+  const load = useCallback(() => {
+    api.searchUsers(q, page, pageSize)
+      .then(p => { setUsers(p.users); setPageInfo(p); if (p.page !== page) setPage(p.page); setErr(null); })
       .catch(e => setErr(e.message));
-  }, []);
+  }, [q, page, pageSize]);
+
+  useEffect(() => { api.stations().then(setStations).catch(e => setErr(e.message)); }, []);
+  useEffect(() => { load(); }, [load]);
+  // typing waits 300 ms, then searches from page 1
+  useEffect(() => {
+    const t = setTimeout(() => { setQ(query.trim()); setPage(1); }, 300);
+    return () => clearTimeout(t);
+  }, [query]);
 
   function openBan(user: User) {
     setBanTarget(user);
@@ -64,7 +81,7 @@ export default function UsersPage() {
       if (!res.success) { setActionErr(res.error ?? "Ban failed"); return; }
       setBanTarget(null);
       // Refresh users
-      api.users().then(setUsers).catch(() => {});
+      load();
     } catch (e: unknown) {
       setActionErr(e instanceof Error ? e.message : "Unknown error");
     } finally {
@@ -76,7 +93,7 @@ export default function UsersPage() {
     const stationId = prompt("Station ID to unban from:");
     if (!stationId) return;
     await api.unbanUser(user.user_id, stationId);
-    api.users().then(setUsers).catch(() => {});
+    load();
   }
 
   async function toggleAdmin(user: User) {
@@ -85,17 +102,17 @@ export default function UsersPage() {
     } else {
       await api.grantAdmin(user.user_id);
     }
-    api.users().then(setUsers).catch(() => {});
+    load();
   }
 
   return (
     <div>
       <div className="flex items-center justify-between mb-5">
         <h1 className="text-lg font-semibold" style={{ color: "var(--text)" }}>Users</h1>
-        {users && (
+        {pageInfo && (
           <span className="text-xs px-2 py-1 rounded-full"
             style={{ background: "var(--surface2)", color: "var(--muted)" }}>
-            {users.length} total
+            {pageInfo.total} {q ? "matching" : "total"}
           </span>
         )}
       </div>
@@ -108,6 +125,27 @@ export default function UsersPage() {
       )}
 
       <GameBans />
+
+      {/* Search + pager */}
+      <div className="flex flex-wrap items-center gap-2 mb-3">
+        <input className={inputCls} style={{ ...inputStyle, maxWidth: 320 }} value={query}
+          placeholder="Search by username or user ID…" onChange={e => setQuery(e.target.value)} />
+        <div className="flex items-center gap-2 ml-auto text-xs" style={{ color: "var(--muted)" }}>
+          <select className="px-2 py-1.5 rounded-md text-xs outline-none" style={inputStyle} value={pageSize}
+            onChange={e => { setPageSize(Number(e.target.value)); setPage(1); }}>
+            {PAGE_SIZES.map(n => <option key={n} value={n}>{n} per page</option>)}
+          </select>
+          <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={!pageInfo || page <= 1}
+            className="px-2.5 py-1.5 rounded-md disabled:opacity-40" style={{ border: "1px solid var(--border)", color: "var(--text)" }}>
+            ← Prev
+          </button>
+          <span>Page {pageInfo?.page ?? page} of {pageInfo?.pages ?? 1}</span>
+          <button onClick={() => setPage(p => p + 1)} disabled={!pageInfo || page >= pageInfo.pages}
+            className="px-2.5 py-1.5 rounded-md disabled:opacity-40" style={{ border: "1px solid var(--border)", color: "var(--text)" }}>
+            Next →
+          </button>
+        </div>
+      </div>
 
       <div className="rounded-lg overflow-hidden" style={{ border: "1px solid var(--border)" }}>
         <table className="w-full text-sm">
@@ -128,7 +166,7 @@ export default function UsersPage() {
             ) : users.length === 0 ? (
               <tr>
                 <td colSpan={8} className="px-4 py-8 text-center text-sm"
-                  style={{ color: "var(--muted)" }}>No users</td>
+                  style={{ color: "var(--muted)" }}>{q ? `No users match “${q}”` : "No users"}</td>
               </tr>
             ) : users.map((u, i) => (
               <tr key={u.user_id || `row-${i}`}

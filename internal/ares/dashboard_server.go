@@ -140,6 +140,8 @@ func newAresDashboardServer() *AresDashboardServer {
 	h.Handle("PUT", "/api/anonymous-names", "Solara/PutAnonymousNamesAdmin", s.PutAnonymousNamesAdmin)
 	h.Handle("DELETE", "/api/anonymous-names", "Solara/DeleteAnonymousNamesAdmin", s.DeleteAnonymousNamesAdmin)
 	h.Handle("POST", "/api/anonymous-names/preview", "Solara/PreviewAnonymousNamesAdmin", s.PreviewAnonymousNamesAdmin)
+	// Users tab: paged search over every user (see dashboard_users_admin.go).
+	h.Handle("GET", "/api/users/search", "Solara/SearchUsers", s.SearchUsers)
 	return s
 }
 
@@ -287,32 +289,37 @@ func (s *AresDashboardServer) GetUsers(c *hosting.Context) hosting.Result {
 			all = all[:50]
 		}
 		for _, u := range all {
-			du := NewDashboardUser()
-			du.UserId = dashDeref(u.UserId)
-			if dashIsNullOrWhiteSpaceP(u.Username) {
-				du.Username = "(unknown)"
-			} else {
-				du.Username = *u.Username
-			}
-			du.Platform = u.Platform
-			du.LastLogin = u.LastLogin
-			du.CreatedAt = u.CreatedAt
-			du.RoleCount = len(u.Roles)
-			// `b.Expiration == null` is always false for a DateTime (kept as written).
-			if u.Bans != nil {
-				now := dotnet.UtcNow()
-				for _, b := range u.Bans {
-					if !b.Revoked && b.Expiration.After(now) {
-						du.Banned = true
-						break
-					}
-				}
-			}
-			du.IsAdmin = u.Roles != nil && dashListContains(u.Roles, dashboardGlobalAdminRoleId)
-			list = append(list, du)
+			list = append(list, dashToDashboardUser(u))
 		}
 	}
 	return hosting.Ok(list)
+}
+
+// dashToDashboardUser is GetUsers' per-user projection (shared with the Solara paged search).
+func dashToDashboardUser(u *models.UserDataResponse) *DashboardUser {
+	du := NewDashboardUser()
+	du.UserId = dashDeref(u.UserId)
+	if dashIsNullOrWhiteSpaceP(u.Username) {
+		du.Username = "(unknown)"
+	} else {
+		du.Username = *u.Username
+	}
+	du.Platform = u.Platform
+	du.LastLogin = u.LastLogin
+	du.CreatedAt = u.CreatedAt
+	du.RoleCount = len(u.Roles)
+	// `b.Expiration == null` is always false for a DateTime (kept as written).
+	if u.Bans != nil {
+		now := dotnet.UtcNow()
+		for _, b := range u.Bans {
+			if !b.Revoked && b.Expiration.After(now) {
+				du.Banned = true
+				break
+			}
+		}
+	}
+	du.IsAdmin = u.Roles != nil && dashListContains(u.Roles, dashboardGlobalAdminRoleId)
+	return du
 }
 
 func (s *AresDashboardServer) GrantAdmin(c *hosting.Context) hosting.Result {
