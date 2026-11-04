@@ -93,6 +93,7 @@ var dashScopedRoutes = []dashScopedRoute{
 	{"GET", "/api/ws-clients", "stats.read", false},
 	{"GET", "/api/ws-clients/{session_id}/messages", "stats.read", false},
 	{"GET", "/api/users", "users.read|stations.roles|stations.config", true}, // player picker for roles / arena whitelists
+	{"GET", "/api/users/search", "users.read|stations.roles|stations.config", true}, // Solara: paged/searchable GET /api/users
 	{"GET", "/api/users/{user_id}/inventory", "users.read", false},
 	{"POST", "/api/users/{user_id}/ban", "users.ban", false},
 	{"PATCH", "/api/users/{user_id}/unban", "users.ban", false},

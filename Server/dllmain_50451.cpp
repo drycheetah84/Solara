@@ -19759,25 +19759,37 @@ static void Main(HMODULE)
         if (wcsstr(GetCommandLineW(), L"-NoTeamClearGuard")) { g_teamClearGuard = false; HxLog("[HalcyonA2] -NoTeamClearGuard: ScrapRun team-clear suppression OFF (a death will take the runner off the team again)\n"); }
         if (wcsstr(GetCommandLineW(), L"-SeatRound")) { g_seatRound = true; HxLog("[HalcyonA2] -SeatRound: round-start team seating back ON\n"); }
         if (wcsstr(GetCommandLineW(), L"-PkrGlyphs")) { g_pkrGlyphs = true; HxLog("[HalcyonA2] -PkrGlyphs: streaming the missing parkour glyph level (server-side only -- clients do NOT get it)\n"); }
-        // Spec Editor: OFF unless asked for, and even then only for ids listed in spec_editors.txt
-        // next to the exe. With no such file nobody is authorised, so -SpecEdit alone does nothing.
-        if (wcsstr(GetCommandLineW(), L"-SpecEdit"))
+        // Spec Editor: ON by default, and so is sandbox placement, so a launch config cannot forget them (without
+        // -SpecEditSandbox placed objects have no Game data at all). -NoSpecEdit / -NoSpecEditSandbox turn them off;
+        // -SpecEdit / -SpecEditSandbox are still accepted and change nothing. Editing still needs a dashboard Drafter
+        // grant for the caller (SeAuthorised) -- except under -SpecEditLocalTest, which stays opt-in.
+        // Whole-flag match: a plain wcsstr("-NoSpecEdit") would also hit "-NoSpecEditSandbox".
+        auto hasFlag = [](const wchar_t* f) -> bool
         {
-            g_specEdit = true;
-            HxLog("[HalcyonA2][SPECEDIT] -SpecEdit: editor commands ENABLED; %zu cached dashboard Drafter grant(s) "
-                "(dashboard Drafter grants are fetched after registration)\n", SeEditors().size());
-        }
+            const wchar_t* cl = GetCommandLineW();
+            const size_t n = wcslen(f);
+            for (const wchar_t* p = wcsstr(cl, f); p; p = wcsstr(p + 1, f))
+                if ((p == cl || p[-1] == L' ' || p[-1] == L'\t' || p[-1] == L'"') &&
+                    (p[n] == 0 || p[n] == L' ' || p[n] == L'\t' || p[n] == L'"' || p[n] == L'='))
+                    return true;
+            return false;
+        };
+        g_specEdit = !hasFlag(L"-NoSpecEdit");
+        if (g_specEdit)
+            HxLog("[HalcyonA2][SPECEDIT] editor commands ENABLED (default; -NoSpecEdit turns it off); %zu cached dashboard "
+                "Drafter grant(s) (dashboard Drafter grants are fetched after registration)\n", SeEditors().size());
+        else
+            HxLog("[HalcyonA2][SPECEDIT] -NoSpecEdit: editor commands DISABLED\n");
         if (wcsstr(GetCommandLineW(), L"-SpecEditLocalTest"))
         {
             g_seLocalTest = true;
             HxLog("[HalcyonA2][SPECEDIT] -SpecEditLocalTest: org-less callers ADMITTED -- LOCAL TESTING ONLY, "
                 "never on a server real players can reach\n");
         }
-        if (wcsstr(GetCommandLineW(), L"-SpecEditSandbox"))
-        {
-            g_seSandbox = true;
-            HxLog("[HalcyonA2][SPECEDIT] -SpecEditSandbox: placements go through the sandbox's own object system\n");
-        }
+        g_seSandbox = !hasFlag(L"-NoSpecEditSandbox");
+        HxLog(g_seSandbox
+            ? "[HalcyonA2][SPECEDIT] placements go through the sandbox's own object system (default; -NoSpecEditSandbox turns it off)\n"
+            : "[HalcyonA2][SPECEDIT] -NoSpecEditSandbox: placements are plain actors (no Game data)\n");
         if (wcsstr(GetCommandLineW(), L"-TeamOverlap")) { g_teamOverlap = true; HxLog("[HalcyonA2] -TeamOverlap: geometrically fire the runner team-changer overlap so ScrapRun rosters fill\n"); }
         if (wcsstr(GetCommandLineW(), L"-NoNetScale")) { g_netScale = false; HxLog("[HalcyonA2] -NoNetScale: player relevancy/rate stays maxed regardless of population\n"); }
         if (const wchar_t* a = wcsstr(GetCommandLineW(), L"-NetCrowd=")) { int v = _wtoi(a + 11); if (v > 0 && v < 200)  g_netCrowd = v; }
