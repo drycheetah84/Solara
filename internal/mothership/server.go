@@ -188,6 +188,7 @@ func (s *MothershipServer) afterStart() {
 	fileLog.Store(s.HTTP.Logger)
 	authLog(fmt.Sprintf("[AUTH] server api key loaded from %s (len=%d)", serverKeySource, utf16Len(SERVER_API_KEY)))
 	go backfillQuestRewards()
+	go backfillPlayerNames()
 }
 
 // ---- active-session allowlist (Tier 1 join gate) ---------------------------

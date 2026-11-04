@@ -313,9 +313,22 @@ func (s *A2StationDbServer) LogInWithKeyV1(c *hosting.Context) hosting.Result {
 	return v1LoginFrom(s.LogInWithKey(c))
 }
 
+// Solara: Mothership player records take their name from the station login (see mothership/playername.go).
+func init() {
+	mothership.UsernameLookup = func(externalId string) string {
+		if u := a2FindUser(&externalId); u != nil && u.Username != nil {
+			return *u.Username
+		}
+		return ""
+	}
+}
+
 // a2UpsertLoginUser is the user upsert shared verbatim by the v0 and v2
 // player-login handlers.
 func a2UpsertLoginUser(userId *string, body *models.ClientLoginRequest) {
+	if userId != nil && body != nil && body.Username != nil {
+		defer mothership.SyncPlayerName(*userId, *body.Username) // Solara: real name onto the Mothership player
+	}
 	userCollection := a2Users()
 	user := a2FindUser(userId)
 	if user == nil {

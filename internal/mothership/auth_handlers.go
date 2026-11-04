@@ -187,7 +187,7 @@ func (s *MothershipServer) ClientAuthRift(c *hosting.Context) hosting.Result {
 	if existing != nil {
 		prevName = existing.ExternalProviderUsername
 	}
-	player.ExternalProviderUsername = strp(orStr(prevName, ""))
+	player.ExternalProviderUsername = strp(resolvePlayerName(extId, prevName, "")) // Solara: station-login name; see playername.go
 	player.IsPrimaryId = true
 	player.PlayerId = strp(playerId)
 	player.Tags = nil
@@ -373,7 +373,12 @@ func (s *MothershipServer) CompleteQuestAuth(c *hosting.Context) hosting.Result 
 		player = models.NewMothershipV2PlayerDbObject()
 	}
 	player.ExternalProviderId = strp(userId)
-	player.ExternalProviderUsername = strp("Player_" + leftUTF16(userId, 8))
+	var prevQuestName *string
+	if existing != nil {
+		prevQuestName = existing.ExternalProviderUsername
+	}
+	// Solara: the real name (station login) instead of rewriting "Player_<id>" on every sign-in; see playername.go.
+	player.ExternalProviderUsername = strp(resolvePlayerName(userId, prevQuestName, "Player_"+leftUTF16(userId, 8)))
 	player.IsPrimaryId = true
 	player.PlayerId = strp(playerId)
 	player.Tags = nil
