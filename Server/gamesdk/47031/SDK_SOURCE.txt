@@ -1,0 +1,3 @@
+Dumper-7 dump : C:\Dumper-7.5.3-47031+++A2+hotfix-A2
+Game binary   : 32586841537580874\A2\Binaries\Win64\A2-Win64-Shipping.exe (184,868,864 bytes)
+Copied        : 2026-10-25T23:43:23-07:00

@@ -12,7 +12,10 @@ server_api_key.txt
 /snapshots/
 
 /web/pak-editor/node_modules/
-/Server/
+# Game-server DLL (HalcyonA2) source is tracked; build output, local backups and VS user files are not.
+/Server/build/
+/Server/**/*.bak
+/Server/*.vcxproj.user
 /port/
 /ThirdParty/
 
