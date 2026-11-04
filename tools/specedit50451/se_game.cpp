@@ -2756,6 +2756,35 @@ void ScriptOp(const Snapshot& snap, const std::string& line)
         Log("[script] camlook pitch=%.1f yaw=%.1f", p, y);
         return;
     }
+    // pawnto x y z / pawnwalk x y z [steps] -- move THIS client's own pawn (A2 movement is client-authoritative, the
+    // server mirrors it via FrequentData). Each step is an unswept move, which still runs UpdateOverlaps, so trigger
+    // boxes (A2 BP_Teleporter, objective volumes) see the pawn ENTER exactly as if the player walked in. EREBUS tests.
+    if (!strcmp(op, "pawnto") || !strcmp(op, "pawnwalk"))
+    {
+        double x = 0, y = 0, z = 0; int steps = 1;
+        const int got = sscanf_s(rest.c_str(), "%lf %lf %lf %d", &x, &y, &z, &steps);
+        if (got < 3) { Log("[script] FAIL %s: want x y z [steps]", op); return; }
+        if (!strcmp(op, "pawnto")) steps = 1; else if (got < 4) steps = 20;
+        if (steps < 1) steps = 1; if (steps > 400) steps = 400;
+        if (!g_pc) { Log("[script] FAIL %s: no player controller", op); return; }
+        SDK::UObject* pawn = *reinterpret_cast<SDK::UObject**>(reinterpret_cast<uintptr_t>(g_pc) + 0x360);
+        if (!pawn) pawn = *reinterpret_cast<SDK::UObject**>(reinterpret_cast<uintptr_t>(g_pc) + 0x2F8);
+        if (!ObjectAlive(pawn)) { Log("[script] FAIL %s: no pawn", op); return; }
+        const SDK::FVector a = GetVec(pawn, "Actor", "K2_GetActorLocation");
+        for (int i = 1; i <= steps; ++i)
+        {
+            const double u = double(i) / steps;
+            SDK::Params::Actor_K2_SetActorLocation p{};
+            p.NewLocation = SDK::FVector{ a.X + (x - a.X) * u, a.Y + (y - a.Y) * u, a.Z + (z - a.Z) * u };
+            p.bSweep = false;
+            p.bTeleport = true;
+            CallNative(pawn, "Actor", "K2_SetActorLocation", p);
+        }
+        const SDK::FVector b = GetVec(pawn, "Actor", "K2_GetActorLocation");
+        Log("[script] %s %s (%.0f,%.0f,%.0f) -> (%.0f,%.0f,%.0f) in %d steps; now at (%.0f,%.0f,%.0f)", op, pawn->GetName().c_str(),
+            a.X, a.Y, a.Z, x, y, z, steps, b.X, b.Y, b.Z);
+        return;
+    }
     if (!strcmp(op, "camto"))                 // camto x y z -- put the editor camera there
     {
         double x = 0, y = 0, z = 0;
@@ -3028,14 +3057,19 @@ void ScriptOp(const Snapshot& snap, const std::string& line)
         auto* act = SDK::UObject::FindClassFast("Actor");
         const int32_t n = SDK::UObject::GObjects->Num();
         int shown = 0;
-        for (int32_t i = 0; act && i < n && shown < 60; ++i)
+        for (int32_t i = 0; act && i < n && shown < 200; ++i)
         {
             auto* o = SDK::UObject::GObjects->GetByIndex(i);
             if (!o || o->IsDefaultObject() || !o->IsA(act)) continue;
             const std::string nm = o->GetName();
-            if (!rest.empty() && nm.find(rest) == std::string::npos) continue;
+            const auto* ta = static_cast<SDK::AActor*>(o);
+            const std::string t0 = ta->Tags.Num() > 0 ? ta->Tags[0].GetRawString() : std::string();   // match name OR first tag
+            if (!rest.empty() && nm.find(rest) == std::string::npos && t0.find(rest) == std::string::npos) continue;
             const SDK::FVector p = GetVec(o, "Actor", "K2_GetActorLocation");
-            Log("[script] actor %s (%.0f, %.0f, %.0f)", nm.c_str(), p.X, p.Y, p.Z);
+            const auto* aa = static_cast<SDK::AActor*>(o);
+            std::string tag = aa->Tags.Num() > 0 ? aa->Tags[0].GetRawString() : std::string();
+            if (tag.size() > 40) tag.resize(40);
+            Log("[script] actor %s (%.0f, %.0f, %.0f) hidden=%d tag=%s", nm.c_str(), p.X, p.Y, p.Z, aa->bHidden ? 1 : 0, tag.c_str());
             ++shown;
         }
         Log("[script] actors '%s': %d shown", rest.c_str(), shown);
