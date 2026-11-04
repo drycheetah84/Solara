@@ -50,7 +50,7 @@ func TestGaia(t *testing.T) {
 	}
 }
 
-// The reported list survives a backend restart, a newer deployment replaces the station's old list, and "!report"
+// The reported list survives a backend restart, a dead deployment's list is pruned when a newer one reports, and "!report"
 // only goes to a poller that asks for it (an old DLL would play it as an event and spin).
 func TestGaiaPersistsAcrossRestart(t *testing.T) {
 	resetDashAuth(t, nil)
@@ -64,9 +64,10 @@ func TestGaiaPersistsAcrossRestart(t *testing.T) {
 	st := newA2StationDbServer()
 	dash := newAresDashboardServer()
 	now := dotnet.UtcNow()
-	for _, id := range []string{"dep-old", "dep-new"} {
+	gone := now.AddMinutes(-10) // dep-old stopped heartbeating: a dead server's list is pruned
+	for id, at := range map[string]*dotnet.DateTime{"dep-old": &gone, "dep-new": &now} {
 		d := models.NewDeploymentDbObject()
-		d.DeploymentId, d.StationId, d.LastEvent = dashStrPtr(id), dashStrPtr("st-p"), &now
+		d.DeploymentId, d.StationId, d.LastEvent = dashStrPtr(id), dashStrPtr("st-p"), at
 		docdb.GetCollection(Database, true, models.NewDeploymentDbObject).Insert(d)
 	}
 	a2Do(t, st, "POST", "/v1/deployments/dep-old/gaia/events", "Play_Old\n", nil)
@@ -88,5 +89,61 @@ func TestGaiaPersistsAcrossRestart(t *testing.T) {
 	}
 	if b := a2Do(t, st, "GET", "/v1/deployments/dep-new/gaia/next?report=1", "", nil).Body.String(); b != "" {
 		t.Fatalf("known deployment asked to re-report: %q", b)
+	}
+}
+
+// Fleet-wide: a station running two live servers keeps both lists (no "!report" ping-pong), the dashboard lists the
+// union of every live server's events, and a play is queued on each live server that has the event -- across stations.
+func TestGaiaFleetWide(t *testing.T) {
+	resetDashAuth(t, nil)
+	withTempDB(t)
+	gaiaMu.Lock()
+	gaiaEvents, gaiaQueue, gaiaLoaded = map[string][]string{}, map[string][]string{}, false
+	gaiaMu.Unlock()
+	st := newA2StationDbServer()
+	dash := newAresDashboardServer()
+	now := dotnet.UtcNow()
+	gone := now.AddMinutes(-10)
+	for _, r := range []struct {
+		id, station string
+		at          *dotnet.DateTime
+	}{{"dep-h1", "st-h", &now}, {"dep-h2", "st-h", &now}, {"dep-club", "st-c", &now}, {"dep-dead", "st-c", &gone}} {
+		d := models.NewDeploymentDbObject()
+		d.DeploymentId, d.StationId, d.LastEvent, d.DeploymentName = dashStrPtr(r.id), dashStrPtr(r.station), r.at, dashStrPtr(r.id)
+		docdb.GetCollection(Database, true, models.NewDeploymentDbObject).Insert(d)
+	}
+	a2Do(t, st, "POST", "/v1/deployments/dep-dead/gaia/events", "Play_A\n", nil)
+	a2Do(t, st, "POST", "/v1/deployments/dep-h1/gaia/events", "Play_A\nPlay_B\n", nil)
+	a2Do(t, st, "POST", "/v1/deployments/dep-h2/gaia/events", "Play_A\nPlay_B\n", nil)
+	a2Do(t, st, "POST", "/v1/deployments/dep-club/gaia/events", "Play_A\nPlay_C\n", nil)
+	for _, dep := range []string{"dep-h1", "dep-h2", "dep-club"} {
+		if b := a2Do(t, st, "GET", "/v1/deployments/"+dep+"/gaia/next?report=1", "", nil).Body.String(); b != "" {
+			t.Fatalf("%s asked to re-report (%q): a live server's list was dropped", dep, b)
+		}
+	}
+	// any station page shows the whole fleet
+	b := do(t, dash, "GET", "/api/stations/st-c/gaia", "", adminHdr).Body.String()
+	if !strings.Contains(b, `"events":["Play_A","Play_B","Play_C"]`) || strings.Contains(b, "dep-dead") {
+		t.Fatal(b)
+	}
+	if b := do(t, dash, "POST", "/api/stations/st-c/gaia/play", `{"event":"Play_A"}`, adminHdr).Body.String(); !strings.Contains(b, `"success":true`) {
+		t.Fatal(b)
+	}
+	if b := do(t, dash, "POST", "/api/stations/st-c/gaia/play", `{"event":"Play_B"}`, adminHdr).Body.String(); !strings.Contains(b, `"success":true`) {
+		t.Fatal(b)
+	}
+	want := map[string]string{"dep-h1": "Play_A,Play_B", "dep-h2": "Play_A,Play_B", "dep-club": "Play_A", "dep-dead": ""}
+	for dep, w := range want {
+		got := []string{}
+		for {
+			n := a2Do(t, st, "GET", "/v1/deployments/"+dep+"/gaia/next", "", nil).Body.String()
+			if n == "" {
+				break
+			}
+			got = append(got, n)
+		}
+		if strings.Join(got, ",") != w {
+			t.Fatalf("%s played %v, want %q", dep, got, w)
+		}
 	}
 }

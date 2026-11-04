@@ -1,6 +1,7 @@
 "use client";
 
-// Notify: put a notification board with your own text in front of chosen players (or everyone) on this station.
+// Notify: put a notification board with your own text in front of chosen players (or everyone) -- fleet-wide: every
+// live game server, whatever station this page is on.
 // The game server reports who is connected (every ~10 s) and polls for queued notifications; it then calls the
 // game's own UA2NotificationComponent::Client_ShowNotification RPC, so the board appears within ~2 s.
 
@@ -36,7 +37,7 @@ export default function NotifyTab({ stationId }: { stationId: string }) {
     const q = query.trim().toLowerCase();
     return [...(info?.players ?? [])]
       .sort((a, b) => (a.name || a.id).localeCompare(b.name || b.id))
-      .filter(p => !q || p.name.toLowerCase().includes(q) || p.id.toLowerCase().includes(q));
+      .filter(p => !q || p.name.toLowerCase().includes(q) || p.id.toLowerCase().includes(q) || (p.server ?? "").toLowerCase().includes(q));
   }, [info, query]);
 
   const online = useMemo(() => new Set((info?.players ?? []).map(p => p.id)), [info]);
@@ -56,7 +57,7 @@ export default function NotifyTab({ stationId }: { stationId: string }) {
       if (!r.success) setErr(r.error ?? "Send failed");
       else {
         setErr(null);
-        setNote(everyone ? "Sent to everyone on the station" : `Sent to ${chosen.length} player${chosen.length === 1 ? "" : "s"}`);
+        setNote(everyone ? `Sent to everyone on ${servers} server${servers === 1 ? "" : "s"}` : `Sent to ${chosen.length} player${chosen.length === 1 ? "" : "s"}`);
         setMessage("");
       }
       load();
@@ -65,10 +66,12 @@ export default function NotifyTab({ stationId }: { stationId: string }) {
   }
 
   const left = MAX - message.length;
+  const servers = info?.deployments?.length ?? (info?.deployment_id ? 1 : 0);
   return (
     <div>
       <p className="text-xs mb-3" style={{ color: "var(--muted)" }}>
-        Shows a notification board with your text in front of the players you pick (or everyone on this station).
+        Shows a notification board with your text in front of the players you pick (or everyone). Fleet-wide: covers
+        every live game server{servers ? ` (${servers} online: ${(info?.deployments ?? []).map(d => d.name || d.id.slice(0, 8)).join(", ")})` : ""}.
         It appears within a couple of seconds.
       </p>
 
@@ -95,12 +98,13 @@ export default function NotifyTab({ stationId }: { stationId: string }) {
               {!info ? (
                 <div className="px-3 py-4 text-xs" style={{ color: "var(--muted)" }}>Loading…</div>
               ) : players.length === 0 ? (
-                <div className="px-3 py-4 text-xs" style={{ color: "var(--muted)" }}>{info.players.length ? "No player matches." : "Nobody is on the server right now."}</div>
+                <div className="px-3 py-4 text-xs" style={{ color: "var(--muted)" }}>{info.players.length ? "No player matches." : "Nobody is on any server right now."}</div>
               ) : players.map((p, i) => (
                 <label key={p.id} className="px-3 py-1.5 flex items-center gap-2 text-xs cursor-pointer"
                   style={{ background: i % 2 ? "var(--surface2)" : "transparent" }}>
                   <input type="checkbox" disabled={everyone} checked={picked.has(p.id)} onChange={() => toggle(p.id)} />
                   <span className="truncate">{p.name || "(no name)"}</span>
+                  {p.server && servers > 1 && <span className="shrink-0 px-1.5 rounded" style={{ border: "1px solid var(--border)", color: "var(--muted)" }}>{p.server}</span>}
                   <span className="font-mono ml-auto truncate" style={{ color: "var(--muted)", maxWidth: "55%" }}>{p.id}</span>
                 </label>
               ))}

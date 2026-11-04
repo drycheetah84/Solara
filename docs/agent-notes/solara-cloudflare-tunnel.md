@@ -48,3 +48,5 @@ Board images (2026-11-01): Ubuntu solara needs BOARD_PUBLIC_BASE=https://station
 /etc/systemd/system/solara.service.d/board.conf) -- without it board URLs default to the dead old IP
 http://209.126.2.136:78 and boards never change. Station config (board URLs) is read by the game server only at
 dashboard init, so new boards need a game-server restart.
+
+**TWO game boxes (2026-11-04):** win-gamebox-1 = 172.31.37.84 (`python3 ~/wr.py`, 1 server) and **win-gamebox-2** = public 98.92.201.29 (`python3 ~/wr2.py`, 4 servers, most players). A DLL deploy must hit BOTH. Box 2 cannot reach the hub private IP: fetch the bundle via the hub public IP `http://18.222.37.52:8000/HalcyonA2.dll`, and download BEFORE killing A2-Win64-Shipping (then Move-Item into C:\Halcyon\HalcyonA2.dll). After a kill the watchdog relaunches each server once heartbeats go quiet (~2-3 min); check `GET 127.0.0.1:9095/watchdog` (x-dashboard-key from /etc/halcyon/dashboard.env).

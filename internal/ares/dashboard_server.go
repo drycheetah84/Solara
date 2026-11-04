@@ -565,15 +565,29 @@ func (s *AresDashboardServer) PatchStationConfig(c *hosting.Context) hosting.Res
 	if station.Config == nil {
 		station.Config = map[string]*string{}
 	}
-	for _, k := range keys {
-		if dashIsNullOrWhiteSpace(k) {
-			continue
+	targets := []*models.StationDbObject{station}
+	if dashFleetScope(c) { // Solara: ?fleet=1 applies the same keys to every station (fleet.go)
+		targets = []*models.StationDbObject{station}
+		for _, st := range stations.FindAll() { // FindAll returns fresh copies: keep `station` as the page's own
+			if !dashLiteEq(st.StationId, stationId) {
+				targets = append(targets, st)
+			}
 		}
-		station.Config[dashTrim(k)] = dashStrPtr(dashDeref(data[k])) // kv.Value ?? ""
 	}
-	stations.Update(station)
-	OnStationConfigChanged(&stationId) // push to co-located game servers
-	Push(&stationId)                   // push the station browser whitelist
+	for _, st := range targets {
+		if st.Config == nil {
+			st.Config = map[string]*string{}
+		}
+		for _, k := range keys {
+			if dashIsNullOrWhiteSpace(k) {
+				continue
+			}
+			st.Config[dashTrim(k)] = dashStrPtr(dashDeref(data[k])) // kv.Value ?? ""
+		}
+		stations.Update(st)
+		OnStationConfigChanged(st.StationId) // push to co-located game servers
+		Push(st.StationId)                   // push the station browser whitelist
+	}
 	return hosting.Ok(station.Config)
 }
 
@@ -770,17 +784,22 @@ func (s *AresDashboardServer) DeleteStationConfigKey(c *hosting.Context) hosting
 	if station == nil {
 		return hosting.NotFound(stj.O("error", "no such station", "station_id", stationId))
 	}
-	removed := false
-	if station.Config != nil {
-		if _, ok := station.Config[key]; ok {
-			delete(station.Config, key)
-			removed = true
-		}
+	targets := []*models.StationDbObject{station}
+	if dashFleetScope(c) { // Solara: ?fleet=1 removes the key from every station (fleet.go)
+		targets = stations.FindAll()
 	}
-	if removed {
-		stations.Update(station)
-		OnStationConfigChanged(&stationId)
-		Push(&stationId)
+	removed := false
+	for _, st := range targets {
+		if st.Config == nil {
+			continue
+		}
+		if _, ok := st.Config[key]; ok {
+			delete(st.Config, key)
+			removed = true
+			stations.Update(st)
+			OnStationConfigChanged(st.StationId)
+			Push(st.StationId)
+		}
 	}
 	return hosting.Ok(stj.O("success", removed, "key", key))
 }

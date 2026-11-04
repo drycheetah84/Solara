@@ -130,12 +130,15 @@ export type OwnedItem = { id: string; quantity: number; currency: boolean };
 // GET /api/users/{id}/inventory
 export type UserInventory = { player_id: string; full_catalogue: boolean; items: OwnedItem[] };
 
-// GET /api/stations/{id}/gaia -- events the live game server can play through GAIA
-export type GaiaInfo = { deployment_id: string; events: string[]; queued: number };
+// Fleet-wide (every live game server, whatever station the page is on)
+export type FleetServer = { id: string; name: string; players?: number };
 
-// GET /api/stations/{id}/notify -- players on the live game server who can be sent a notification board
-export type NotifyPlayer = { id: string; name: string };
-export type NotifyInfo = { deployment_id: string; players: NotifyPlayer[]; queued: number };
+// GET /api/stations/{id}/gaia -- events the live game servers can play through GAIA (union across the fleet)
+export type GaiaInfo = { deployment_id: string; deployments?: FleetServer[]; events: string[]; queued: number };
+
+// GET /api/stations/{id}/notify -- players on every live game server who can be sent a notification board
+export type NotifyPlayer = { id: string; name: string; server?: string };
+export type NotifyInfo = { deployment_id: string; deployments?: FleetServer[]; players: NotifyPlayer[]; queued: number };
 
 export type ActionResult = {
   success: boolean;
@@ -408,10 +411,11 @@ export const api = {
   netvarDump: (deploymentId?: string, type: string = "netvars") =>
     get<unknown>(`netvars/dump?type=${encodeURIComponent(type)}${deploymentId ? `&deployment_id=${encodeURIComponent(deploymentId)}` : ""}`),
   stationConfig: (stationId: string) => get<Record<string, string>>(`stations/${stationId}/config`),
-  patchStationConfig: (stationId: string, kv: Record<string, string>) =>
-    patch<Record<string, string>>(`stations/${stationId}/config`, kv),
-  deleteStationConfigKey: (stationId: string, key: string) =>
-    del<{ success: boolean; key: string }>(`stations/${stationId}/config?key=${encodeURIComponent(key)}`),
+  // fleet = true applies the change to every station (all game servers), not just this one
+  patchStationConfig: (stationId: string, kv: Record<string, string>, fleet = false) =>
+    patch<Record<string, string>>(`stations/${stationId}/config${fleet ? "?fleet=1" : ""}`, kv),
+  deleteStationConfigKey: (stationId: string, key: string, fleet = false) =>
+    del<{ success: boolean; key: string }>(`stations/${stationId}/config?key=${encodeURIComponent(key)}${fleet ? "&fleet=1" : ""}`),
 
   // Station whitelist: which accounts may SEE the station in the browser.
   stationWhitelist: (stationId: string) => get<Whitelist>(`stations/${stationId}/whitelist`),

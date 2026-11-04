@@ -1,6 +1,6 @@
 "use client";
 
-// GAIA: make the station announcer play any Wwise event for everyone on this station, right now.
+// GAIA: make the station announcer play any Wwise event for everyone, right now -- fleet-wide: every live game server.
 // The game server reports which events it has loaded; Play queues one, and the server broadcasts it through the
 // GAIA speakers within ~2 s. Players who turned "Play GAIA" off in their settings won't hear it.
 
@@ -38,12 +38,14 @@ export default function GaiaTab({ stationId }: { stationId: string }) {
       (!q || n.toLowerCase().includes(q))).slice(0, 300);
   }, [info, query, filter]);
 
+  const servers = info?.deployments?.length ?? (info?.deployment_id ? 1 : 0);
+
   async function play(ev: string) {
     setBusy(ev); setNote(null);
     try {
       const r = await api.gaiaPlay(stationId, ev);
       if (!r.success) setErr(r.error ?? "Play failed");
-      else { setErr(null); setNote(`Playing ${ev} for everyone on the station`); }
+      else { setErr(null); setNote(`Playing ${ev} on ${servers} server${servers === 1 ? "" : "s"}`); }
       load();
     } catch (e: unknown) { setErr(e instanceof Error ? e.message : "Play failed"); }
     finally { setBusy(null); }
@@ -53,7 +55,8 @@ export default function GaiaTab({ stationId }: { stationId: string }) {
   return (
     <div>
       <p className="text-xs mb-3" style={{ color: "var(--muted)" }}>
-        Plays a sound through the GAIA announcer speakers for every player on this station. Players who turned
+        Plays a sound through the GAIA announcer speakers for every player on every live game server
+        {servers ? ` (${servers} online: ${(info?.deployments ?? []).map(d => d.name || d.id.slice(0, 8)).join(", ")})` : ""}. Players who turned
         &ldquo;Play GAIA&rdquo; off in their settings won&rsquo;t hear it.
       </p>
 

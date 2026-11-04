@@ -59,6 +59,8 @@ function useStationConfig(stationId: string) {
   const [cfg, setCfg] = useState<Record<string, string>>({});
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
+  // Fleet-wide by default: a change goes to every station, so every live game server picks it up.
+  const [fleet, setFleet] = useState(true);
 
   const load = useCallback(() => {
     api.stationConfig(stationId).then(c => { setCfg(c); setErr(""); }).catch(e => setErr(e.message));
@@ -67,19 +69,19 @@ function useStationConfig(stationId: string) {
 
   const save = useCallback(async (kv: Record<string, string>) => {
     setBusy(true);
-    try { setCfg(await api.patchStationConfig(stationId, kv)); setErr(""); }
+    try { setCfg(await api.patchStationConfig(stationId, kv, fleet)); setErr(""); }
     catch (e) { setErr((e as Error).message); }
     finally { setBusy(false); }
-  }, [stationId]);
+  }, [stationId, fleet]);
 
   const remove = useCallback(async (key: string) => {
     setBusy(true);
-    try { await api.deleteStationConfigKey(stationId, key); setCfg(c => { const n = { ...c }; delete n[key]; return n; }); setErr(""); }
+    try { await api.deleteStationConfigKey(stationId, key, fleet); setCfg(c => { const n = { ...c }; delete n[key]; return n; }); setErr(""); }
     catch (e) { setErr((e as Error).message); }
     finally { setBusy(false); }
-  }, [stationId]);
+  }, [stationId, fleet]);
 
-  return { cfg, err, busy, load, save, remove };
+  return { cfg, err, busy, load, save, remove, fleet, setFleet };
 }
 type StationCfg = ReturnType<typeof useStationConfig>;
 
@@ -441,6 +443,12 @@ export default function NetvarsTab({ stationId }: { stationId: string }) {
   const sc = useStationConfig(stationId);
   return (
     <div>
+      <label className="mb-3 px-3 py-2 rounded-md text-xs flex items-center gap-2 cursor-pointer"
+        style={{ border: "1px solid var(--border)", color: "var(--text)" }}>
+        <input type="checkbox" checked={sc.fleet} onChange={e => sc.setFleet(e.target.checked)} />
+        <span><b>Fleet-wide</b> &mdash; changes apply to every station and every live game server.</span>
+        {!sc.fleet && <span className="ml-auto" style={{ color: "var(--muted)" }}>Only this station&rsquo;s servers</span>}
+      </label>
       <CatalogView sc={sc} />
       <StationConfigEditor sc={sc} />
       <LiveNetvars />

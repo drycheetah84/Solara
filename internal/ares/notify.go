@@ -10,8 +10,9 @@ package ares
 //   game server -> POST /v1/deployments/{id}/notify/players  text/plain, one "<player id>\t<name>" per line (replaces)
 //   game server -> GET  /v1/deployments/{id}/notify/next     text/plain: "<targets>\n<message>" or empty;
 //                                                             targets = "*" (everyone) or comma-separated player ids
-//   dashboard   -> GET  /api/stations/{id}/notify            {deployment_id, players:[{id,name}], queued}
+//   dashboard   -> GET  /api/stations/{id}/notify            {deployment_id, deployments, players:[{id,name,server}], queued}
 //   dashboard   -> POST /api/stations/{id}/notify            {to: "all" | ["<player id>", ...], message}
+//   Both are fleet-wide (fleet.go): every live game server, whatever station the page is on.
 //
 // Everything is in memory: the player list is re-reported every few seconds and queued notifications are transient.
 
@@ -32,8 +33,9 @@ const (
 
 // NotifyPlayer is one connected player as reported by the game server.
 type NotifyPlayer struct {
-	Id   string `json:"id"`
-	Name string `json:"name"`
+	Id     string `json:"id"`
+	Name   string `json:"name"`
+	Server string `json:"server"` // deployment name, set in fleet listings
 }
 
 type notifyReport struct {
@@ -89,37 +91,43 @@ func (s *A2StationDbServer) GetNotifyNext(c *hosting.Context) hosting.Result {
 	return hosting.Configurable(200, "text/plain; charset=utf-8", []byte(next))
 }
 
-// notifyDeploymentFor picks the station's deployment with the freshest player report (caller holds notifyMu).
-func notifyDeploymentForLocked(stationId string) string {
-	best, bestAt := "", time.Time{}
-	for _, d := range a2DeploymentsOfStation(&stationId) {
-		if d == nil || d.DeploymentId == nil {
-			continue
-		}
-		r, ok := notifyPlayers[*d.DeploymentId]
-		if !ok || time.Since(r.at) > notifyStaleAfter {
-			continue
-		}
-		if best == "" || r.at.After(bestAt) {
-			best, bestAt = *d.DeploymentId, r.at
+// notifyFleetLocked lists the live deployments with a fresh player report (caller holds notifyMu).
+func notifyFleetLocked() []fleetDeployment {
+	out := []fleetDeployment{}
+	for _, d := range fleetLiveDeployments() {
+		if r, ok := notifyPlayers[d.Id]; ok && time.Since(r.at) <= notifyStaleAfter {
+			out = append(out, d)
 		}
 	}
-	return best
+	return out
 }
 
-// GetNotify lists who is on the station's live game server right now.
+// GetNotify lists who is on every live game server in the fleet right now (each player tagged with its server).
+// deployment_id is the most recently heartbeating server (kept for older dashboards).
 func (s *AresDashboardServer) GetNotify(c *hosting.Context) hosting.Result {
 	notifyMu.Lock()
 	defer notifyMu.Unlock()
-	dep := notifyDeploymentForLocked(c.Param("station_id"))
+	fleet := notifyFleetLocked()
 	players := []NotifyPlayer{}
-	if dep != "" {
-		players = append(players, notifyPlayers[dep].players...)
+	deps := []stj.Obj{}
+	queued := 0
+	for _, d := range fleet {
+		for _, p := range notifyPlayers[d.Id].players {
+			p.Server = d.Name
+			players = append(players, p)
+		}
+		queued += len(notifyQueue[d.Id])
+		deps = append(deps, stj.O("id", d.Id, "name", d.Name, "players", len(notifyPlayers[d.Id].players)))
 	}
-	return hosting.Ok(stj.O("deployment_id", dep, "players", players, "queued", len(notifyQueue[dep])))
+	dep := ""
+	if len(fleet) > 0 {
+		dep = fleet[0].Id
+	}
+	return hosting.Ok(stj.O("deployment_id", dep, "deployments", deps, "players", players, "queued", queued))
 }
 
-// SendNotify queues a notification for chosen players (or everyone) on the station's live game server.
+// SendNotify queues a notification for chosen players (on whichever servers they are on) or for everyone on every
+// live game server in the fleet.
 func (s *AresDashboardServer) SendNotify(c *hosting.Context) hosting.Result {
 	body, err := stj.Parse(c.Request.Body())
 	if err != nil {
@@ -144,7 +152,7 @@ func (s *AresDashboardServer) SendNotify(c *hosting.Context) hosting.Result {
 		case stj.Array:
 			for _, e := range v.EnumerateArray() {
 				if e.ValueKind() == stj.String {
-					if id := strings.TrimSpace(*e.GetString()); id != "" {
+					if id := strings.TrimSpace(*e.GetString()); id != "" && !strings.ContainsAny(id, ",\n") {
 						ids = append(ids, id)
 					}
 				}
@@ -156,30 +164,47 @@ func (s *AresDashboardServer) SendNotify(c *hosting.Context) hosting.Result {
 	}
 	notifyMu.Lock()
 	defer notifyMu.Unlock()
-	dep := notifyDeploymentForLocked(c.Param("station_id"))
-	if dep == "" {
+	fleet := notifyFleetLocked()
+	if len(fleet) == 0 {
 		return hosting.Ok(dashActionError("no live game server has reported its players yet"))
 	}
-	targets := "*"
-	if !all {
-		online := map[string]bool{}
-		for _, p := range notifyPlayers[dep].players {
-			online[p.Id] = true
-		}
-		keep := []string{}
-		for _, id := range ids {
-			if online[id] && !strings.ContainsAny(id, ",\n") {
-				keep = append(keep, id)
+	plan := map[string]string{} // deployment -> targets
+	order := []string{}
+	for _, d := range fleet {
+		targets := "*"
+		if !all {
+			online := map[string]bool{}
+			for _, p := range notifyPlayers[d.Id].players {
+				online[p.Id] = true
 			}
+			keep := []string{}
+			for _, id := range ids {
+				if online[id] {
+					keep = append(keep, id)
+				}
+			}
+			if len(keep) == 0 {
+				continue
+			}
+			targets = strings.Join(keep, ",")
 		}
-		if len(keep) == 0 {
-			return hosting.Ok(dashActionError("none of the chosen players are on the server any more"))
+		plan[d.Id] = targets
+		order = append(order, d.Id)
+	}
+	if len(order) == 0 {
+		return hosting.Ok(dashActionError("none of the chosen players are on a server any more"))
+	}
+	for _, dep := range order {
+		if len(notifyQueue[dep]) >= notifyMaxQueue {
+			return hosting.Ok(dashActionError("too many notifications queued; wait a few seconds"))
 		}
-		targets = strings.Join(keep, ",")
 	}
-	if len(notifyQueue[dep]) >= notifyMaxQueue {
-		return hosting.Ok(dashActionError("too many notifications queued; wait a few seconds"))
+	for _, dep := range order {
+		notifyQueue[dep] = append(notifyQueue[dep], plan[dep]+"\n"+msg)
 	}
-	notifyQueue[dep] = append(notifyQueue[dep], targets+"\n"+msg)
-	return hosting.Ok(&DashboardActionResult{Success: true, Id: dashStrPtr(targets)})
+	sent := "*"
+	if !all {
+		sent = strings.Join(ids, ",")
+	}
+	return hosting.Ok(&DashboardActionResult{Success: true, Id: dashStrPtr(sent)})
 }

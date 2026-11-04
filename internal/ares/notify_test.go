@@ -32,13 +32,13 @@ func TestNotify(t *testing.T) {
 		t.Fatal(b)
 	}
 	if b := do(t, dash, "GET", "/api/stations/st-n/notify", "", adminHdr).Body.String(); !strings.Contains(b, `"deployment_id":"dep-n"`) ||
-		!strings.Contains(b, `{"id":"p1","name":"Alice"}`) || !strings.Contains(b, `{"id":"p3","name":""}`) {
+		!strings.Contains(b, `{"id":"p1","name":"Alice","server":""}`) || !strings.Contains(b, `{"id":"p3","name":"","server":""}`) {
 		t.Fatal(b)
 	}
 	for body, want := range map[string]string{
 		`{"to":"all","message":"   "}`:                              "message is empty",
 		`{"to":[],"message":"hi"}`:                                  "pick at least one player",
-		`{"to":["ghost"],"message":"hi"}`:                           "none of the chosen players",
+		`{"to":["ghost"],"message":"hi"}`:                           "none of the chosen players are on a server",
 		`{"to":"all","message":"` + strings.Repeat("x", 401) + `"}`: "too long",
 	} {
 		if b := do(t, dash, "POST", "/api/stations/st-n/notify", body, adminHdr).Body.String(); !strings.Contains(b, want) {
@@ -63,5 +63,65 @@ func TestNotify(t *testing.T) {
 	}
 	if w := do(t, dash, "POST", "/api/stations/st-n/notify", `{"to":"all","message":"x"}`, nil); w.Code == 200 && strings.Contains(w.Body.String(), `"success":true`) {
 		t.Fatal("sending must need the dashboard key")
+	}
+}
+
+// Fleet-wide: the list covers every live server (tagged with its name), "everyone" reaches every live server, and a
+// chosen player is sent to whichever server they are on -- even another station's.
+func TestNotifyFleetWide(t *testing.T) {
+	resetDashAuth(t, nil)
+	withTempDB(t)
+	notifyMu.Lock()
+	notifyPlayers, notifyQueue = map[string]notifyReport{}, map[string][]string{}
+	notifyMu.Unlock()
+	st := newA2StationDbServer()
+	dash := newAresDashboardServer()
+	now := dotnet.UtcNow()
+	gone := now.AddMinutes(-10)
+	for _, r := range []struct {
+		id, name, station string
+		at                *dotnet.DateTime
+	}{{"dep-h1", "Halcyon", "st-h", &now}, {"dep-h2", "Halcyon 2", "st-h", &now}, {"dep-club", "Clubhouse", "st-c", &now}, {"dep-dead", "Old", "st-c", &gone}} {
+		d := models.NewDeploymentDbObject()
+		d.DeploymentId, d.StationId, d.LastEvent, d.DeploymentName = dashStrPtr(r.id), dashStrPtr(r.station), r.at, dashStrPtr(r.name)
+		docdb.GetCollection(Database, true, models.NewDeploymentDbObject).Insert(d)
+	}
+	a2Do(t, st, "POST", "/v1/deployments/dep-h1/notify/players", "a\tAlice\n", nil)
+	a2Do(t, st, "POST", "/v1/deployments/dep-h2/notify/players", "b\tBob\n", nil)
+	a2Do(t, st, "POST", "/v1/deployments/dep-club/notify/players", "c\tCara\n", nil)
+	a2Do(t, st, "POST", "/v1/deployments/dep-dead/notify/players", "z\tZed\n", nil)
+	b := do(t, dash, "GET", "/api/stations/st-h/notify", "", adminHdr).Body.String()
+	for _, w := range []string{`{"id":"a","name":"Alice","server":"Halcyon"}`, `{"id":"b","name":"Bob","server":"Halcyon 2"}`, `{"id":"c","name":"Cara","server":"Clubhouse"}`} {
+		if !strings.Contains(b, w) {
+			t.Fatalf("missing %s in %s", w, b)
+		}
+	}
+	if strings.Contains(b, "Zed") {
+		t.Fatalf("dead server listed: %s", b)
+	}
+	if b := do(t, dash, "POST", "/api/stations/st-h/notify", `{"to":["b","c"],"message":"hey"}`, adminHdr).Body.String(); !strings.Contains(b, `"success":true`) {
+		t.Fatal(b)
+	}
+	if b := do(t, dash, "POST", "/api/stations/st-h/notify", `{"to":"all","message":"restart"}`, adminHdr).Body.String(); !strings.Contains(b, `"success":true`) {
+		t.Fatal(b)
+	}
+	want := map[string]string{
+		"dep-h1":   "*\nrestart|",
+		"dep-h2":   "b\nhey|*\nrestart|",
+		"dep-club": "c\nhey|*\nrestart|",
+		"dep-dead": "",
+	}
+	for dep, w := range want {
+		got := ""
+		for {
+			n := a2Do(t, st, "GET", "/v1/deployments/"+dep+"/notify/next", "", nil).Body.String()
+			if n == "" {
+				break
+			}
+			got += n + "|"
+		}
+		if got != w {
+			t.Fatalf("%s got %q, want %q", dep, got, w)
+		}
 	}
 }

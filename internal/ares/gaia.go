@@ -8,11 +8,12 @@ package ares
 //
 //   game server -> POST /v1/deployments/{id}/gaia/events   text/plain, one event name per line (replaces the list)
 //   game server -> GET  /v1/deployments/{id}/gaia/next     text/plain: the next queued event name, or empty
-//   dashboard   -> GET  /api/stations/{id}/gaia            {deployment_id, events:[...], queued}
-//   dashboard   -> POST /api/stations/{id}/gaia/play       {event}
+//   dashboard   -> GET  /api/stations/{id}/gaia            {deployment_id, deployments:[{id,name}], events:[...], queued}
+//                                                          fleet-wide: every live server, events = union of their lists
+//   dashboard   -> POST /api/stations/{id}/gaia/play       {event} -> queued on every live server that has it (fleet.go)
 //
 // The reported event lists are also kept in the database (one row per deployment, older deployments of the same
-// station pruned), so a backend restart no longer forgets them: the game server only reports at its own boot and
+// station pruned once they stop heartbeating), so a backend restart no longer forgets them: the game server only reports at its own boot and
 // when its loaded-event count changes. Queued plays stay in memory (transient). When the backend has no list for a
 // polling deployment that asks with ?report=1, gaia/next answers "!report" and the DLL re-reports its list.
 
@@ -22,7 +23,6 @@ import (
 	"sync"
 	"time"
 
-	"solara/internal/ares/models"
 	"solara/internal/docdb"
 	"solara/internal/hosting"
 	"solara/internal/stj"
@@ -88,7 +88,11 @@ func gaiaPersist(dep string, list []string) {
 	if station == "" {
 		return
 	}
-	for _, r := range col.Find(func(r *GaiaEventsDbObject) bool { return r.StationId == station && r.DeploymentId != dep }) {
+	// Only prune the station's dead deployments: a station can run several live servers at once, and dropping a live
+	// one's list made it re-report ("!report"), which then dropped this one's -- the two kept knocking each other out.
+	for _, r := range col.Find(func(r *GaiaEventsDbObject) bool {
+		return r.StationId == station && r.DeploymentId != dep && !fleetIsLive(r.DeploymentId)
+	}) {
 		col.Delete(r.Id)
 		gaiaMu.Lock()
 		delete(gaiaEvents, r.DeploymentId)
@@ -141,46 +145,48 @@ func (s *A2StationDbServer) GetGaiaNext(c *hosting.Context) hosting.Result {
 	return hosting.Configurable(200, "text/plain; charset=utf-8", []byte(next))
 }
 
-// gaiaDeploymentFor picks the station's deployment that reported events most recently-alive: the newest
-// LastEvent among its deployments that have an event list (falls back to the newest deployment).
-func gaiaDeploymentFor(stationId string) string {
-	var best *models.DeploymentDbObject
+// gaiaFleetLocked lists the live deployments that have reported an event list (caller holds gaiaMu).
+func gaiaFleetLocked() []fleetDeployment {
+	gaiaLoadLocked()
+	out := []fleetDeployment{}
+	for _, d := range fleetLiveDeployments() {
+		if _, has := gaiaEvents[d.Id]; has {
+			out = append(out, d)
+		}
+	}
+	return out
+}
+
+// GetGaia lists the GAIA-playable events across every live game server in the fleet (the union of their lists).
+// deployment_id is the most recently heartbeating one (kept for older dashboards); deployments lists them all.
+func (s *AresDashboardServer) GetGaia(c *hosting.Context) hosting.Result {
 	gaiaMu.Lock()
 	defer gaiaMu.Unlock()
-	gaiaLoadLocked()
-	for _, d := range a2DeploymentsOfStation(&stationId) {
-		if d == nil || d.DeploymentId == nil || d.LastEvent == nil {
-			continue
+	fleet := gaiaFleetLocked()
+	seen := map[string]bool{}
+	ev := []string{}
+	queued := 0
+	deps := []stj.Obj{}
+	for _, d := range fleet {
+		for _, n := range gaiaEvents[d.Id] {
+			if !seen[n] {
+				seen[n] = true
+				ev = append(ev, n)
+			}
 		}
-		if _, has := gaiaEvents[*d.DeploymentId]; !has {
-			continue
-		}
-		if best == nil || d.LastEvent.After(*best.LastEvent) {
-			best = d
-		}
+		queued += len(gaiaQueue[d.Id])
+		deps = append(deps, stj.O("id", d.Id, "name", d.Name))
 	}
-	if best == nil {
-		return ""
+	sort.Strings(ev)
+	dep := ""
+	if len(fleet) > 0 {
+		dep = fleet[0].Id
 	}
-	return *best.DeploymentId
+	return hosting.Ok(stj.O("deployment_id", dep, "deployments", deps, "events", ev, "queued", queued))
 }
 
-// GetGaia lists the GAIA-playable events of a station's live game server.
-func (s *AresDashboardServer) GetGaia(c *hosting.Context) hosting.Result {
-	dep := gaiaDeploymentFor(c.Param("station_id"))
-	gaiaMu.Lock()
-	ev := append([]string{}, gaiaEvents[dep]...)
-	queued := len(gaiaQueue[dep])
-	gaiaMu.Unlock()
-	return hosting.Ok(stj.O("deployment_id", dep, "events", ev, "queued", queued))
-}
-
-// PlayGaia queues an event for the station's live game server.
+// PlayGaia queues an event on every live game server in the fleet that has it loaded.
 func (s *AresDashboardServer) PlayGaia(c *hosting.Context) hosting.Result {
-	dep := gaiaDeploymentFor(c.Param("station_id"))
-	if dep == "" {
-		return hosting.Ok(dashActionError("no live game server has reported its GAIA events yet"))
-	}
 	body, err := stj.Parse(c.Request.Body())
 	ev := ""
 	if err == nil {
@@ -190,20 +196,38 @@ func (s *AresDashboardServer) PlayGaia(c *hosting.Context) hosting.Result {
 	}
 	gaiaMu.Lock()
 	defer gaiaMu.Unlock()
-	known := false
-	for _, n := range gaiaEvents[dep] {
-		if n == ev {
-			known = true
-			break
-		}
+	fleet := gaiaFleetLocked()
+	if len(fleet) == 0 {
+		return hosting.Ok(dashActionError("no live game server has reported its GAIA events yet"))
 	}
-	if !known {
+	var targets []string
+	full := 0
+	for _, d := range fleet {
+		known := false
+		for _, n := range gaiaEvents[d.Id] {
+			if n == ev {
+				known = true
+				break
+			}
+		}
+		if !known {
+			continue
+		}
+		if len(gaiaQueue[d.Id]) >= gaiaMaxQueue {
+			full++
+			continue
+		}
+		targets = append(targets, d.Id)
+	}
+	if len(targets) == 0 {
+		if full > 0 {
+			return hosting.Ok(dashActionError("too many plays queued; wait a few seconds"))
+		}
 		return hosting.Ok(dashActionError("unknown event (not reported by the game server)"))
 	}
-	if len(gaiaQueue[dep]) >= gaiaMaxQueue {
-		return hosting.Ok(dashActionError("too many plays queued; wait a few seconds"))
+	for _, dep := range targets {
+		gaiaQueue[dep] = append(gaiaQueue[dep], ev)
 	}
-	gaiaQueue[dep] = append(gaiaQueue[dep], ev)
 	return hosting.Ok(&DashboardActionResult{Success: true, Id: dashStrPtr(ev)})
 }
 
