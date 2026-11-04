@@ -10,9 +10,25 @@
 // HTTPS:443 at the Cloudflare edge; the tunnel forwards to the local Solara ports). Cloudflare
 // presents a valid *.halcy0n.net cert, so TLS verifies -> BYPASS_SSL can stay false.
 // Contains() suffix-match on the game's original host decides which backend:
-constexpr const char* EPIC_BACKEND       = "https://epicgames.halcy0n.net";       // *epicgames*     -> :50 (EOS)
-constexpr const char* MOTHERSHIP_BACKEND = "https://mothership-prod.halcy0n.net";  // *aa-mothership* -> :90
-constexpr const char* ORION_BACKEND      = "https://station.halcy0n.net";          // *oriondrift*    -> :78 (A2StationDb)
+//
+// Personal test builds: create opts.local.h next to this file (git-ignored) and #define
+// A2_EPIC_BACKEND / A2_MOTHERSHIP_BACKEND / A2_ORION_BACKEND there to point the APK at your
+// own server. Without that file the values below (production) are used unchanged.
+#if __has_include("opts.local.h")
+#include "opts.local.h"
+#endif
+#ifndef A2_EPIC_BACKEND
+#define A2_EPIC_BACKEND       "https://epicgames.halcy0n.net"
+#endif
+#ifndef A2_MOTHERSHIP_BACKEND
+#define A2_MOTHERSHIP_BACKEND "https://mothership-prod.halcy0n.net"
+#endif
+#ifndef A2_ORION_BACKEND
+#define A2_ORION_BACKEND      "https://station.halcy0n.net"
+#endif
+constexpr const char* EPIC_BACKEND       = A2_EPIC_BACKEND;       // *epicgames*     -> :50 (EOS)
+constexpr const char* MOTHERSHIP_BACKEND = A2_MOTHERSHIP_BACKEND; // *aa-mothership* -> :90
+constexpr const char* ORION_BACKEND      = A2_ORION_BACKEND;      // *oriondrift*    -> :78 (A2StationDb)
 // (Raw VPS fallback, if the tunnel is down: http://209.126.2.136:50 / :90 / :78 respectively.)
 constexpr const char* BACKEND_URL = ORION_BACKEND; // legacy single-target (unused by the per-domain path)
 

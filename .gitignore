@@ -1,4 +1,7 @@
 /reference/
+# Personal test-server setup (own domain, own secrets, own DB) - never committed.
+/local/
+/tools/midnight-android/includes/opts.local.h
 /graphify-out/cache/
 /bin/
 *.db

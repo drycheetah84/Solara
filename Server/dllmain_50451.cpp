@@ -20123,6 +20123,20 @@ static void Main(HMODULE)
     }
     printf("[HalcyonA2] detected game listen port = %d -> server_name = %s\n", gamePort, nameStr);
     char portStr[16]; sprintf_s(portStr, "%d", gamePort);
+    // -RegisterPort=<n>: advertise a DIFFERENT port than the one we listen on, for when clients reach
+    // this box through a UDP relay / tunnel (e.g. playit.gg) whose public port is not the local 7777.
+    // Only changes what /register_server publishes; the listen port and server_name are untouched.
+    // Absent (default) -> the detected listen port, exactly as before.
+    if (const wchar_t* rp = wcsstr(GetCommandLineW(), L"-RegisterPort="))
+    {
+        const int v = _wtoi(rp + wcslen(L"-RegisterPort="));
+        if (v > 0 && v < 65536)
+        {
+            sprintf_s(portStr, "%d", v);
+            printf("[HalcyonA2] -RegisterPort=%d (listening on %d)\n", v, gamePort);
+            HxLog("[HalcyonA2][REGISTER] -RegisterPort=%d overrides advertised port (listen port %d)\n", v, gamePort);
+        }
+    }
 
     // Deployment id chosen by the allocator/socket BEFORE launch and handed to the game as
     // -DashboardDeploymentId (the same arg the game's native config fetch reads). Register under it
