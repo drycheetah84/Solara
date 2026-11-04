@@ -153,7 +153,7 @@ static void* SeQuestCompOf(const void* pawn)
 #include <algorithm>
 
 // ---- state ---------------------------------------------------------------------------------
-static bool       g_specEdit = false;          // -SpecEdit turns it on; see the note above
+static bool       g_specEdit = false;          // 50451: on by default, -NoSpecEdit turns it off; older builds: -SpecEdit (dllmain parses it)
 static bool       g_seLocalTest = false;       // -SpecEditLocalTest: admit org-less callers. LOCAL ONLY.
 static SDK::FName g_seLockFnName{};
 static bool       g_seLockFnResolved = false;
@@ -385,7 +385,8 @@ static SDK::UClass* SeResolveEditorClass(const std::string& path)
 
 // ---- operations ----------------------------------------------------------------------------
 static void SeReplicateTransform(SDK::AActor* a);   // below
-static bool g_seSandbox;   // -SpecEditSandbox: place through the sandbox's own object system
+static bool g_seSandbox = false;  // place through the sandbox's own object system. 50451: on by default (-NoSpecEditSandbox
+                                  // turns it off); older builds: -SpecEditSandbox. Set by dllmain's argument parsing.
 static std::vector<std::array<std::string, 3>> g_sbPendingProps;   // {comp, key, value} for the next sandbox spawn
 static std::string SbTypeFor(const std::string& className);   // below
 static std::string SeSandboxSpawn(const std::string& uniqueId, const double* loc, const double* rot, const double* scl);   // below
