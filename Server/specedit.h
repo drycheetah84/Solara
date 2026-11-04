@@ -147,7 +147,13 @@ static void* SeQuestCompOf(const void* pawn)
 #endif
 #pragma once
 
-#include "../../SpecEditor/mod/se_reflect.h"   // property reflection shared with the client mod
+// Property reflection shared with the client mod. Prefer the SpecEditor checkout next to the repo (the
+// original layout); otherwise use the in-repo copy, so a fresh clone builds on its own.
+#if __has_include("../../SpecEditor/mod/se_reflect.h")
+#include "../../SpecEditor/mod/se_reflect.h"
+#else
+#include "../tools/specedit50451/se_reflect.h"
+#endif
 #include <deque>
 #include <array>
 #include <algorithm>

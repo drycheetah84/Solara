@@ -20,21 +20,27 @@ param(
   [string]$Tool       = "C:\Users\drych\Downloads\APK.Easy.Tool.v1.60.Portable",
   [string]$Jdk        = "C:\Program Files\Java\jdk-17",
   [string]$StorePass  = "midnight123",
-  [switch]$SkipLibBuild
+  [switch]$SkipLibBuild,
+  # Optional explicit tool paths (default: the APK Easy Tool layout under -Tool, as before).
+  [string]$Apktool    = "",
+  [string]$Apksigner  = "",
+  [string]$Zipalign   = "",
+  [string]$OutName    = "A2-midnight-50451"
 )
 $ErrorActionPreference = "Stop"
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 $java      = Join-Path $Jdk "bin\java.exe"
 $keytool   = Join-Path $Jdk "bin\keytool.exe"
-$apktool   = Join-Path $Tool "Apktool\apktool_2.6.1.jar"
-$apksigner = Join-Path $Tool "Resources\apksigner.jar"
-$zipalign  = Join-Path $Tool "Resources\zipalign.exe"
+$apktool   = if ($Apktool)   { $Apktool }   else { Join-Path $Tool "Apktool\apktool_2.6.1.jar" }
+$apksigner = if ($Apksigner) { $Apksigner } else { Join-Path $Tool "Resources\apksigner.jar" }
+$zipalign  = if ($Zipalign)  { $Zipalign }  else { Join-Path $Tool "Resources\zipalign.exe" }
 
 # 1) build the lib (unless told to reuse the existing one)
 if (-not $SkipLibBuild) {
   Write-Host "[1/6] building libmidnight.so"
   & (Join-Path $here "build.bat") | Out-Null
+  if ($LASTEXITCODE -ne 0) { throw "build.bat (libmidnight.so) failed" }
 }
 $so = Join-Path $here "libs\arm64-v8a\libmidnight.so"
 if (-not (Test-Path $so)) { throw "libmidnight.so not found: $so" }
@@ -67,17 +73,25 @@ if ($txt -notmatch '"midnight"') {
   $idx = $txt.IndexOf($anchor)
   if ($idx -lt 0) { throw "anchor (Unreal loadLibrary) not found in GameActivity.smali" }
   $txt = $txt.Substring(0,$idx) + $inject + $txt.Substring($idx + $anchor.Length)
-  Set-Content -Path $ga -Value $txt -Encoding utf8 -NoNewline
+  # UTF-8 WITHOUT a BOM: Windows PowerShell 5.1's `Set-Content -Encoding utf8` writes one, and smali then fails
+  # with "[1,0] required (...)+ loop did not match anything at input '?'" (pwsh 7 writes no BOM; this works in both).
+  [System.IO.File]::WriteAllText($ga, $txt, (New-Object System.Text.UTF8Encoding($false)))
 } else { Write-Host "    already injected, skipping" }
 
 # 4) build apk
 New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
-$unsigned = Join-Path $OutDir "A2-midnight-50451-unsigned.apk"
-$aligned  = Join-Path $OutDir "A2-midnight-50451-aligned.apk"
-$signed   = Join-Path $OutDir "A2-midnight-50451.apk"
+$unsigned = Join-Path $OutDir "$OutName-unsigned.apk"
+$aligned  = Join-Path $OutDir "$OutName-aligned.apk"
+$signed   = Join-Path $OutDir "$OutName.apk"
 $ks       = Join-Path $OutDir "midnight.keystore"   # NOTE: debug key; not committed
 Write-Host "[4/6] apktool b"
-& $java -jar $apktool b "$Decompiled" -o "$unsigned" --use-aapt2 | Out-Null
+# From here on only native tools run, each checked by exit code. Windows PowerShell 5.1 would otherwise turn their
+# harmless stderr output (java warnings, apktool progress) into a terminating error under "Stop".
+$ErrorActionPreference = "Continue"
+# apktool 2.x needs --use-aapt2; 3.x always uses aapt2 and no longer has the flag.
+$apktoolVer = (& $java -jar $apktool --version 2>$null | Select-Object -Last 1)
+$aaptFlag = if ("$apktoolVer" -match '^[012]\.') { @('--use-aapt2') } else { @() }
+& $java -jar $apktool b "$Decompiled" -o "$unsigned" @aaptFlag | Out-Null
 if ($LASTEXITCODE -ne 0) { throw "apktool build failed" }
 
 # 5) zipalign (extractNativeLibs=true -> plain 4-byte align, no -p needed)
@@ -96,6 +110,7 @@ if (-not (Test-Path $ks)) {
   --v2-signing-enabled true --v3-signing-enabled true --out "$signed" "$aligned"
 if ($LASTEXITCODE -ne 0) { throw "apksigner sign failed" }
 & $java -jar $apksigner verify --verbose "$signed"
+if ($LASTEXITCODE -ne 0) { throw "apksigner verify failed" }
 
 Write-Host ""
 Write-Host "DONE -> $signed"

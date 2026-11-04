@@ -8,8 +8,8 @@
 // The temporary FunctionFlags |= 0x400 is FUNC_Native, and it is what the generated SDK does too: it
 // makes ProcessEvent dispatch straight to the native implementation rather than walking bytecode.
 
-#include "C:/Users/drych/ProjectDrift/Solara/Server/gamesdk/50451/SDK.hpp"
-#include "C:/Users/drych/ProjectDrift/Solara/Server/gamesdk/50451/SDK/Engine_parameters.hpp"
+#include "../../Server/gamesdk/50451/SDK.hpp"
+#include "../../Server/gamesdk/50451/SDK/Engine_parameters.hpp"
 
 namespace SDK
 {

@@ -27,8 +27,8 @@
 // sent through the Vivox RPC, where it would genuinely become the player's voice participant id.
 
 #include "se_core.h"
-#include "C:/Users/drych/ProjectDrift/Solara/Server/gamesdk/50451/SDK.hpp"
-#include "C:/Users/drych/ProjectDrift/Solara/Server/gamesdk/50451/SDK/Engine_parameters.hpp"
+#include "../../Server/gamesdk/50451/SDK.hpp"
+#include "../../Server/gamesdk/50451/SDK/Engine_parameters.hpp"
 #include "se_reflect.h"
 #include "MinHook.h"
 
