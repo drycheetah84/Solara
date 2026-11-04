@@ -769,6 +769,7 @@ static void SeProxyWantTick(ULONGLONG now)
     for (SDK::UObject* o : ClassObjects(pcCls))
     {
         if (!o || o->IsDefaultObject() || !o->Outer) continue;
+        if (!o->IsA(pcCls)) continue;                     // a reused slot+address can hold another class (see SbPrefabOf)
         auto* act = static_cast<SDK::AActor*>(o->Outer);
         if (*(reinterpret_cast<const uint8_t*>(act) + 0x69) & 0x01) continue;
         live[SbPrefabIdx(o)] = act;
@@ -2257,6 +2258,11 @@ static uint8_t* GamemodeHandle(const void* l)
 static bool SbPrefabLive(SDK::AActor* a, SDK::UObject* pc)
 {
     if (!a || !pc || !SeAlive(a) || !SeAlive(pc) || pc->Outer != a) return false;
+    {   // still a PrefabComponent? (a cached pointer whose address was reused by another object must not pass)
+        static SDK::UClass* pcCls = nullptr;
+        if (!pcCls) pcCls = SDK::UObject::FindClassFast("PrefabComponent");
+        if (!pcCls || !pc->IsA(pcCls)) return false;
+    }
     if (*(reinterpret_cast<const uint8_t*>(a) + 0x69) & 0x01) return false;          // bActorIsBeingDestroyed
     SDK::UObject* lgm = *reinterpret_cast<SDK::UObject**>(reinterpret_cast<uintptr_t>(pc) + 0x310);   // [47031] GameMode 0x440->0x310
     return lgm && SeAlive(lgm);
@@ -2279,6 +2285,11 @@ static SDK::UObject* SbPrefabOf(SDK::AActor* a)
     auto take = [&](SDK::UObject* o)
     {
         if (found || !o || o->Outer != a) return;
+        // The shared class index runs ~1 s behind: an entry can be a freed PrefabComponent whose address another of
+        // this actor's objects now uses (a placement / rebuild recreates components). Without the class check that
+        // object was taken as the prefab component, and its +0xB8 (an FString there) read as the NetworkGUID gave a
+        // garbage idx -- so Game data edits of editor-placed objects missed their owned record and FAILED.
+        if (!SeAlive(o) || !o->IsA(pcCls)) return;
         const uintptr_t pc = reinterpret_cast<uintptr_t>(o);
         if (*reinterpret_cast<void**>(pc + 0x310) && SbPrefabIdxSet(o)) found = o;
     };
@@ -2791,6 +2802,20 @@ static std::string SbPrefabIdx(const void* pc)
 #else
     const uint32_t* g = reinterpret_cast<const uint32_t*>(reinterpret_cast<uintptr_t>(pc) + 0xB8);
     if (!(g[0] | g[1] | g[2] | g[3])) return std::string();
+    // Objects WE place through the sandbox: SeSandboxSpawn's descriptor still carries the id as an FString at +16 (the
+    // 22284 layout) and the game copies those 16 bytes into NetworkGUID, so the field holds {FString data, Num, Max}
+    // -- seen live on 50451: "....-0000-0264-0000-002500000028" (Num 0x25 = a 36-char id + NUL, Max 0x28). That printed
+    // as a GUID is garbage, so Game data edits missed the object's owned record and FAILED. Such an actor is named
+    // after its id (the descriptor's name), so use that. A real GUID essentially never has this {len, cap} shape.
+    if (g[2] >= 2 && g[2] <= 64 && g[3] >= g[2] && g[3] <= 256)
+    {
+        const SDK::UObject* comp = static_cast<const SDK::UObject*>(pc);
+        if (comp->Outer)
+        {
+            const std::string n = comp->Outer->GetName();
+            if (n.size() == 36 && n[8] == '-' && n[13] == '-' && n[18] == '-' && n[23] == '-') return n;
+        }
+    }
     char b[48];
     snprintf(b, sizeof(b), "%08X-%04X-%04X-%04X-%04X%08X", g[0], g[1] >> 16, g[1] & 0xFFFF, g[2] >> 16, g[2] & 0xFFFF, g[3]);
     return b;
@@ -2813,6 +2838,7 @@ static SDK::AActor* SbActorForIdx(const std::string& idx, bool indexOnly)
     auto match = [&](SDK::UObject* o) -> SDK::AActor*
     {
         if (!o || o->IsDefaultObject()) return nullptr;
+        if (!SeAlive(o) || !o->IsA(pcCls)) return nullptr;   // a stale index entry (reused address): see SbPrefabOf
         if (SbPrefabIdx(o) != idx) return nullptr;
         auto* act = static_cast<SDK::AActor*>(o->Outer);
         if (!act || (*(reinterpret_cast<const uint8_t*>(act) + 0x69) & 0x01)) return nullptr;   // being destroyed
@@ -4407,6 +4433,7 @@ static SDK::UObject* SbHostGamemode(const std::string& uniqueId, const double* l
     for (SDK::UObject* o : ClassObjects(pcCls))           // [PERF] shared index: this runs for every placed object
     {
         if (!o || o->IsDefaultObject()) continue;
+        if (!o->IsA(pcCls)) continue;                     // +0x310 is only a GameMode on a real PrefabComponent
         SDK::UObject* lgm = *reinterpret_cast<SDK::UObject**>(reinterpret_cast<uintptr_t>(o) + 0x310);
         if (lgm && seen.insert(lgm).second) cands.push_back(lgm);
     }
