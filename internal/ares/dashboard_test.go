@@ -117,7 +117,8 @@ func TestDashboardRouteTable(t *testing.T) {
 		"POST /api/scoped-tokens Solara/CreateScopedToken", "DELETE /api/scoped-tokens/{id} Solara/RevokeScopedToken",
 		"GET /api/anonymous-names Solara/GetAnonymousNamesAdmin", "PUT /api/anonymous-names Solara/PutAnonymousNamesAdmin",
 		"DELETE /api/anonymous-names Solara/DeleteAnonymousNamesAdmin", "POST /api/anonymous-names/preview Solara/PreviewAnonymousNamesAdmin",
-		"GET /api/users/search Solara/SearchUsers"}
+		"GET /api/users/search Solara/SearchUsers", "GET /api/users/{user_id}/global_permissions Solara/GetUserGlobalPermissions",
+		"PUT /api/users/{user_id}/global_permissions Solara/PutUserGlobalPermissions"}
 	if len(got) != len(want)+len(extra) || strings.Join(got[:len(want)], "\n") != strings.Join(want, "\n") ||
 		strings.Join(got[len(want):], "\n") != strings.Join(extra, "\n") {
 		t.Fatalf("route table mismatch:\n got %v\nwant %v + %v", got, want, extra)

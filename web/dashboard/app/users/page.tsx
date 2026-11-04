@@ -40,6 +40,7 @@ export default function UsersPage() {
   const [q, setQ]               = useState("");   // debounced query actually sent
   const [page, setPage]         = useState(1);
   const [pageSize, setPageSize] = useState(50);
+  const [busyId, setBusyId]     = useState<string | null>(null);
 
   // Ban modal state
   const [banTarget, setBanTarget]   = useState<User | null>(null);
@@ -63,6 +64,40 @@ export default function UsersPage() {
     const t = setTimeout(() => { setQ(query.trim()); setPage(1); }, 300);
     return () => clearTimeout(t);
   }, [query]);
+
+  // Global permissions modal (a per-user role on station "global" = applies on every server)
+  const [gpUser, setGpUser]     = useState<SearchUser | null>(null);
+  const [gpText, setGpText]     = useState("");
+  const [gpCurrent, setGpCurrent] = useState<string[]>([]);
+  const [gpKnown, setGpKnown]   = useState<string[]>([]);
+  const [gpErr, setGpErr]       = useState<string | null>(null);
+
+  async function openGlobalPerms(u: SearchUser) {
+    setGpUser(u); setGpErr(null); setGpText(""); setGpCurrent([]);
+    try {
+      const g = await api.userGlobalPerms(u.user_id);
+      setGpKnown(g.known); setGpCurrent(g.permissions); setGpText(g.permissions.join(", "));
+    } catch (e: unknown) {
+      setGpErr(e instanceof Error ? e.message : "Unknown error");
+    }
+  }
+  const gpList = gpText.split(",").map(s => s.trim()).filter(Boolean);
+  function gpToggle(p: string) {
+    setGpText((gpList.includes(p) ? gpList.filter(x => x !== p) : [...gpList, p]).join(", "));
+  }
+  async function saveGlobalPerms(perms: string[]) {
+    if (!gpUser) return;
+    setBusyId(gpUser.user_id); setGpErr(null);
+    try {
+      await api.setUserGlobalPerms(gpUser.user_id, perms);
+      setGpUser(null);
+      load();
+    } catch (e: unknown) {
+      setGpErr(e instanceof Error ? e.message : "Unknown error");
+    } finally {
+      setBusyId(null);
+    }
+  }
 
   function openBan(user: User) {
     setBanTarget(user);
@@ -225,6 +260,12 @@ export default function UsersPage() {
                       style={{ color: u.is_admin ? "#f0883e" : "var(--muted)", border: "1px solid var(--border)" }}>
                       {u.is_admin ? "Revoke Admin" : "Grant Admin"}
                     </button>
+                    <button onClick={() => openGlobalPerms(u)} disabled={busyId === u.user_id}
+                      title="Permissions this user has on every server"
+                      className="text-xs px-2 py-1 rounded whitespace-nowrap disabled:opacity-40"
+                      style={{ color: u.global_permissions > 0 ? "#f0883e" : "var(--muted)", border: "1px solid var(--border)" }}>
+                      {busyId === u.user_id ? "…" : `Global perms${u.global_permissions > 0 ? ` (${u.global_permissions})` : ""}`}
+                    </button>
                   </div>
                 </td>
               </tr>
@@ -235,6 +276,60 @@ export default function UsersPage() {
 
       {itemsFor && (
         <ItemsModal userId={itemsFor.user_id} username={itemsFor.username || itemsFor.user_id} onClose={() => setItemsFor(null)} />
+      )}
+
+      {/* Global permissions modal */}
+      {gpUser && (
+        <Modal title={`Global permissions — ${gpUser.username}`} onClose={() => setGpUser(null)}>
+          {gpErr && (
+            <div className="mb-4 px-3 py-2 rounded text-xs"
+              style={{ background: "#2d1a1a", color: "var(--red)" }}>{gpErr}</div>
+          )}
+          <p className="text-xs mb-3" style={{ color: "var(--muted)" }}>
+            These apply on <b>every server</b> (a role on station &quot;global&quot;), on top of the user&apos;s
+            station roles. Players see changes the next time they log in.
+          </p>
+          <label className="block text-xs mb-1.5" style={{ color: "var(--muted)" }}>Permissions (comma-separated)</label>
+          <textarea className={inputCls} style={{ ...inputStyle, resize: "vertical", minHeight: 80 }}
+            value={gpText} onChange={e => setGpText(e.target.value)} placeholder="user_kick, user_mute, level_editor" />
+          <div className="text-xs mt-1 mb-3" style={{ color: "var(--muted)" }}>
+            Current: {gpCurrent.join(", ") || "none"}
+          </div>
+          {gpKnown.length > 0 && (
+            <div className="mb-4">
+              <div className="text-xs mb-1.5" style={{ color: "var(--muted)" }}>Click to add / remove:</div>
+              <div className="flex flex-wrap gap-1 max-h-40 overflow-y-auto">
+                {gpKnown.map(p => (
+                  <button key={p} type="button" onClick={() => gpToggle(p)}
+                    className="text-xs px-1.5 py-0.5 rounded font-mono"
+                    style={{
+                      border: "1px solid var(--border)",
+                      background: gpList.includes(p) ? "var(--surface2)" : "transparent",
+                      color: gpList.includes(p) ? "#f0883e" : "var(--muted)",
+                    }}>{p}</button>
+                ))}
+              </div>
+            </div>
+          )}
+          <div className="flex gap-2 justify-end">
+            {gpCurrent.length > 0 && (
+              <button onClick={() => { if (confirm(`Remove all of ${gpUser.username}'s global permissions?`)) saveGlobalPerms([]); }}
+                disabled={busyId === gpUser.user_id}
+                className="px-4 py-2 rounded-md text-xs mr-auto"
+                style={{ color: "var(--red)", border: "1px solid var(--border)" }}>Clear all</button>
+            )}
+            <button onClick={() => setGpUser(null)}
+              className="px-4 py-2 rounded-md text-xs"
+              style={{ background: "transparent", color: "var(--muted)", border: "1px solid var(--border)" }}>
+              Cancel
+            </button>
+            <button onClick={() => saveGlobalPerms(gpList)} disabled={busyId === gpUser.user_id}
+              className="px-4 py-2 rounded-md text-xs font-medium"
+              style={{ background: "var(--accent)", color: "#fff", opacity: busyId === gpUser.user_id ? 0.5 : 1 }}>
+              {busyId === gpUser.user_id ? "Saving…" : "Save"}
+            </button>
+          </div>
+        </Modal>
       )}
 
       {/* Ban modal */}
