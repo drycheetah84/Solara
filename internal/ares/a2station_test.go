@@ -118,6 +118,7 @@ func TestA2StationDbServerRouteTable(t *testing.T) {
 	}
 	// The 86 original routes come first and in order; Solara additions follow.
 	extra := []string{"POST\t/v1/deployments/{deployment_id}/gaia/events\tSolara/PostGaiaEvents", "GET\t/v1/deployments/{deployment_id}/gaia/next\tSolara/GetGaiaNext",
+		"POST\t/v1/deployments/{deployment_id}/notify/players\tSolara/PostNotifyPlayers", "GET\t/v1/deployments/{deployment_id}/notify/next\tSolara/GetNotifyNext",
 		"POST\t/v1/deployments/{deployment_id}/quest_reward\tSolara/PostQuestReward",
 		"POST\t/v1/fleets/{fleet_id}/challenges/{challenge_id}/add\tSolara/AddChallengeRecord",
 		"POST\t/v1/fleets/{fleet_id}/challenges/{challenge_id}/list\tSolara/ListChallengeRecords"}

@@ -111,6 +111,7 @@ func TestDashboardRouteTable(t *testing.T) {
 		"GET /api/catalog/items Solara/GetGrantableItems", "GET /api/users/{user_id}/inventory Solara/GetUserInventory",
 		"POST /api/users/{user_id}/inventory Solara/GrantUserItem", "DELETE /api/users/{user_id}/inventory/{item_id} Solara/RevokeUserItem",
 		"GET /api/stations/{station_id}/gaia Solara/GetGaia", "POST /api/stations/{station_id}/gaia/play Solara/PlayGaia",
+		"GET /api/stations/{station_id}/notify Solara/GetNotify", "POST /api/stations/{station_id}/notify Solara/SendNotify",
 		"GET /api/titledata Solara/GetTitleDataAdmin", "PUT /api/titledata/{key} Solara/PutTitleDataAdmin", "DELETE /api/titledata/{key} Solara/DeleteTitleDataAdmin",
 		"GET /api/scoped-tokens/permissions Solara/ListScopedTokenPerms", "GET /api/scoped-tokens/self Solara/ScopedTokenSelf", "GET /api/scoped-tokens Solara/ListScopedTokens",
 		"POST /api/scoped-tokens Solara/CreateScopedToken", "DELETE /api/scoped-tokens/{id} Solara/RevokeScopedToken"}
