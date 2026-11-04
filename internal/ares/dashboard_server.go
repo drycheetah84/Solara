@@ -135,6 +135,11 @@ func newAresDashboardServer() *AresDashboardServer {
 	h.Handle("GET", "/api/scoped-tokens", "Solara/ListScopedTokens", s.ListScopedTokens)
 	h.Handle("POST", "/api/scoped-tokens", "Solara/CreateScopedToken", s.CreateScopedToken)
 	h.Handle("DELETE", "/api/scoped-tokens/{id}", "Solara/RevokeScopedToken", s.RevokeScopedToken)
+	// Anonymous-mode name generator (master key only; see dashboard_anonymous_names.go).
+	h.Handle("GET", "/api/anonymous-names", "Solara/GetAnonymousNamesAdmin", s.GetAnonymousNamesAdmin)
+	h.Handle("PUT", "/api/anonymous-names", "Solara/PutAnonymousNamesAdmin", s.PutAnonymousNamesAdmin)
+	h.Handle("DELETE", "/api/anonymous-names", "Solara/DeleteAnonymousNamesAdmin", s.DeleteAnonymousNamesAdmin)
+	h.Handle("POST", "/api/anonymous-names/preview", "Solara/PreviewAnonymousNamesAdmin", s.PreviewAnonymousNamesAdmin)
 	return s
 }
 

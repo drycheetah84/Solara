@@ -121,7 +121,8 @@ func TestA2StationDbServerRouteTable(t *testing.T) {
 		"POST\t/v1/deployments/{deployment_id}/notify/players\tSolara/PostNotifyPlayers", "GET\t/v1/deployments/{deployment_id}/notify/next\tSolara/GetNotifyNext",
 		"POST\t/v1/deployments/{deployment_id}/quest_reward\tSolara/PostQuestReward",
 		"POST\t/v1/fleets/{fleet_id}/challenges/{challenge_id}/add\tSolara/AddChallengeRecord",
-		"POST\t/v1/fleets/{fleet_id}/challenges/{challenge_id}/list\tSolara/ListChallengeRecords"}
+		"POST\t/v1/fleets/{fleet_id}/challenges/{challenge_id}/list\tSolara/ListChallengeRecords",
+		"GET\t/v1/anonymous_name\tSolara/GetAnonymousName"}
 	if len(got) != len(want)+len(extra) || len(want) != 86 || strings.Join(got[len(want):], "\n") != strings.Join(extra, "\n") {
 		t.Fatalf("endpoint count: got %d want %d (86) + %v: %v", len(got), len(want), extra, got[len(want):])
 	}

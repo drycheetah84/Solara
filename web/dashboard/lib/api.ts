@@ -255,6 +255,17 @@ async function del<T>(path: string): Promise<T> {
   return res.json();
 }
 
+/** Like put()/post(), but a non-2xx answer throws the backend's {error} text (validation messages). */
+async function sendJson<T>(method: string, path: string, body: unknown): Promise<T> {
+  const res = await fetch(`/api/${path}`, {
+    method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (res.status === 401) { window.location.href = "/login"; throw new Error("unauthorized"); }
+  if (!res.ok) throw new Error((data as { error?: string }).error ?? `request failed (${res.status})`);
+  return data as T;
+}
+
 async function gamePost<T>(path: string, body?: unknown): Promise<T> {
   const res = await fetch(`/game/${path}`, {
     method: "POST",
@@ -440,6 +451,11 @@ export const api = {
     return body as TitleDataRow;
   },
   deleteTitleData: (key: string) => del<{ deleted: string }>(`titledata/${encodeURIComponent(key)}`),
+  // Anonymous-mode name generator (master key only). Not via put()/post(): a 400 carries the reason.
+  anonymousNames: () => get<AnonNameState>("anonymous-names"),
+  saveAnonymousNames: (s: AnonNameSettings) => sendJson<AnonNameState>("PUT", "anonymous-names", s),
+  previewAnonymousNames: (s: AnonNameSettings) => sendJson<{ preview: AnonNamePreview[] }>("POST", "anonymous-names/preview", s),
+  resetAnonymousNames: () => del<AnonNameState>("anonymous-names"),
   scopedTokenPerms: () => get<{ permissions: ScopedPermission[] }>("scoped-tokens/permissions"),
   scopedTokens: () => get<{ tokens: ScopedToken[] }>("scoped-tokens"),
   scopedSelf: () => get<{ master: boolean } & Partial<ScopedToken>>("scoped-tokens/self"),
@@ -511,3 +527,8 @@ export type ScopedToken = {
 export type TitleDataRow = { key: string; value: string; updated_at: string };
 export type TitleDataKnown = { key: string; reader: string; purpose: string; format: "text" | "url" | "json"; template: string };
 export type TitleDataList = { known: TitleDataKnown[]; stored: TitleDataRow[]; generated: Record<string, string> };
+export type AnonNameSettings ={ adjectives: string[]; nouns: string[]; number_min: number; number_max: number };
+export type AnonNamePreview = { seed: number; name: string };
+export type AnonNameState = {
+  settings: AnonNameSettings; defaults: AnonNameSettings; is_default: boolean; updated_at: string; preview: AnonNamePreview[];
+};

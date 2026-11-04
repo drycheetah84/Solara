@@ -138,4 +138,6 @@ func (s *A2StationDbServer) registerEndpoints() {
 	s.HTTP.Handle("POST", "/v1/deployments/{deployment_id}/quest_reward", "Solara/PostQuestReward", a2Guard("Solara/PostQuestReward", s.PostQuestReward))
 	s.HTTP.Handle("POST", "/v1/fleets/{fleet_id}/challenges/{challenge_id}/add", "Solara/AddChallengeRecord", a2Guard("Solara/AddChallengeRecord", s.AddChallengeRecord))
 	s.HTTP.Handle("POST", "/v1/fleets/{fleet_id}/challenges/{challenge_id}/list", "Solara/ListChallengeRecords", a2Guard("Solara/ListChallengeRecords", s.ListChallengeRecords))
+	// Anonymous-mode name tag (Server_SetAnonymousMode asks the station dashboard; the original had no route).
+	s.HTTP.Handle("GET", "/v1/anonymous_name", "Solara/GetAnonymousName", a2Guard("Solara/GetAnonymousName", s.GetAnonymousName))
 }
