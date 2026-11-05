@@ -16,8 +16,12 @@ acceptable. It gets worse with the server's population, not with how many are se
 
 Measured on the local rig: the sim-results sender (`0x54FC0F0`, `Client_NewSendServerSimResults`) runs up to once per
 **engine tick**, not once per 90 Hz sim frame. With one seated PC client the server sent 233 results/s, of which ~144
-were byte-identical to the previous send (same frame, same ball and player states). Prod runs uncapped at ~550 fps,
-so there it is ~6x the needed traffic per seated player. Both that RPC and `Client_NewSendOtherPlayerInputs` (the
+were byte-identical to the previous send (same frame, same ball and player states), because the rig ticks ~233/s.
+**Prod does not tick that fast:** its step driver runs ~86–89 ticks/s (`[RBSTAT] ticks/s=88`; the earlier "~550 fps"
+counted `[PROF]` hook calls, not frames), so on prod results already go out about once per sim frame and the dedupe
+probably skips little there. It is cheap and safe to ship, but **probably not the main cause on prod**; `dup` in
+`[RBSTAT]` on a busy prod server settles it within minutes (near 0 rules the repeat theory out). Both that RPC and
+`Client_NewSendOtherPlayerInputs` (the
 `RBFWD` relay) are **unreliable**; a busy server's pose traffic fills every connection, and UE drops unreliable RPCs on a
 full connection, so the duplicates crowd out exactly what seated players need (leading explanation for the
 population scaling; the drops themselves are not measured).
@@ -76,7 +80,8 @@ functions with `idautils.Functions()`: a hand-rolled `get_func`/`end_ea` walk lo
 ## Evidence from the 40-player session (prod logs, read-only)
 
 - **Not CPU bound.** The game loop never dropped below ~520 fps (per-frame hooks in `[PROF]`), even at 40 players.
-  Servers run **uncapped** (~550+ fps); fine for the accumulator math, but frame-time spread feeds the sim.
+  Correction: those were `[PROF]` hook-call counts, not frames. `[RBSTAT]` shows the step driver (the engine tick
+  that runs the sim and sends results) at ~86–89 ticks/s on prod.
 - **Input buffer** (`[RBINPUT] NewInputBuffer.Num`): median 51, p90 55, max 64. Probably mostly history (nothing prunes
   it to near zero), **not proven** to be a backlog.
 - **Iris spam:** ~720/s `LogIrisReferences ... Failed to resolve clientassigned ref ... BP_RemoteControlBall /
@@ -161,6 +166,6 @@ clumsy on one client's UDP 7777 traffic and compare `corr/s` / `late`.
 2. Add 30–80 ms jitter to one client. If `late` and `corr/s` jump together → hypothesis 1. Try a larger rebase lead
    (`serverF + 2` → `+6`) and/or 22284-style pacing (cap `+0x338` by the slowest seated player's newest input − 2).
 3. If `corr/s` is high with no late inputs → look at `RBFWD` relay and `RbBallPush` (hypothesis 2).
-4. Optional, separate: cap the server frame rate (it runs ~550 fps uncapped) and look into the Iris client-assigned ball
-   reference failures.
+4. Optional, separate: look into the Iris client-assigned ball reference failures. (Capping the server frame rate is
+   moot: prod already ticks ~88/s, see above.)
 5. Only after a local fix holds: deploy the `[RBSTAT]` build to prod for one busy session to confirm with real players.

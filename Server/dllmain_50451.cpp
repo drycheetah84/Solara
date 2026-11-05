@@ -3872,9 +3872,10 @@ static void SafeRbForwardInputs(SDK::UObject* nic, const uint8_t* in, int32_t n)
 }
 // [RBDEDUPE 2026-11-05] The sim-results sender (0x54FC0F0) runs up to once per ENGINE tick (measured: sends/s = ticks/s
 // while a seated client streams inputs), but the sim only steps at 90 Hz,
-// so most sends repeat the frame the client already got. A real dedicated server ticks near 90 Hz, so it barely
-// repeats; ours runs uncapped (~230 fps on the local rig, ~550 on prod), so every seated player gets 2.5-6x the
-// result traffic for nothing (measured locally: 146 of 236 sends/s were byte-identical repeats). The RPC is
+// so a server ticking faster than 90 Hz repeats frames the client already has. The local rig ticks ~230/s: 146 of 236
+// sends/s there were byte-identical repeats. PROD ticks only ~86-89/s ([RBSTAT] ticks/s=88; an earlier "~550 fps"
+// figure counted [PROF] hook calls, not frames), so on prod results already go out about once per sim frame and this
+// likely skips little -- `dup` in [RBSTAT] on a busy prod server says how much. The RPC is
 // UNRELIABLE, and so is Client_NewSendOtherPlayerInputs; when a connection is full (a busy server's pose traffic adds
 // to every connection) UE drops unreliable RPCs, so the repeats crowd out the results and relayed inputs seated
 // players need -> mispredictions -> server corrections -> snapping that grows with server population (the leading
