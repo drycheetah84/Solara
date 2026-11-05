@@ -32,20 +32,23 @@ Local rig only: `%TEMP%\rbtest_equip.txt` = item id equips it (slot 9) on every 
 Logs: `[COSGUARD] ... tried to wear item(s) they do not own -> removed: ...`.
 Limit: the exploiter still SEES the items on their own client; nobody else does, and nothing is saved.
 
-## 2026-11-05 regression: guard stripped BOUGHT cosmetics for everyone (fixed in the backend, a79b553)
+## 2026-11-05 regression: guard stripped BOUGHT cosmetics for everyone (fixed in the backend, 718dd90)
 
 Symptom: other players saw everyone in defaults; the log said `inventory http=200, 4 owned id(s)` (= only the
 currencies) and `tried to wear item(s) they do not own -> removed: WearableChestCircuitSpryte` for players whose
 backend log shows `[STORE] ... purchased Alacarte:WearableChestCircuitSpryte`.
 
 Cause: `MothershipLogin(uid)` in the DLL signs in through `/v2/player/client/auth/complete/QUEST` with the player's
-**Mothership player id**. That endpoint treats `UserId` as a **Meta** user id, so it minted a new empty player
-(and a junk V2 record with ExternalProviderId = the Mothership id) on every guard fetch. The token was for that
-empty player -> no owned items. The same applies to CosSaveWorker / CosLoadWorker (`player_cosmetics` was being
-saved under the junk players). Quests and currency pass the Meta org id and were not affected.
+**Mothership player id** as the "Meta" UserId. That lands on a separate **server-login record** (ExternalService
+QUEST, ExternalProviderId = the real PlayerId, its own PlayerId). The guard then read that record's (empty) inventory.
 
-Fix (backend only, no game-server restart): `trustedlogin.go` -- a trusted-server QUEST login whose UserId is an
-existing PlayerId gets that player's token; nothing is written. Verify with the server key on the hub: the
-player's `/v1/inventory/client` must list their bought items. Junk records from before are left alone (never
-matched now). Players stripped before the fix get their look back when they re-equip or rejoin (the guard cache
-refreshes within 60 s).
+**That server-login record is ALSO the DLL's private store**: CosSaveWorker / CosLoadWorker save `player_inventory`
+there. Do NOT "fix" the login to return the real player (a79b553 did, for 7 minutes): the DLL then loaded the
+client's own `player_inventory` and saved over it (3 accounts, 23:41-23:48 UTC; the client re-saves on its next
+look change). Fix kept: logins unchanged; only `GET /v1/inventory/client` from a trusted server maps a
+server-login record to the real player (`internal/mothership/serverlogin.go`).
+
+Verify (hub, server key from a file, never printed): begin+complete QUEST with the Mothership id, then GET
+/v1/inventory/client with both the token and the server key -> must list the player's bought items, while the
+login's PlayerId stays the server-login record. Players stripped before the fix get their look back when they
+re-equip or rejoin (the guard cache refreshes within 60 s).
