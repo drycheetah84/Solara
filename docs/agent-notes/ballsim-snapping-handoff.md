@@ -6,6 +6,20 @@
 > [a2-50451-rollback-sim-internals](a2-50451-rollback-sim-internals.md) and
 > [a2-rollback-netmode-fix](a2-rollback-netmode-fix.md) first. Never test on the live servers; use the local rig.
 
+## CORRECTION (2026-11-05 night): server corr/s and plcorr/s are always 0 -- they measure nothing
+
+The "correction check" `0x5757260` is the CLIENT's reconciliation, not a server check. `Step` (`0x57339E0`) runs it
+over a queue of RECEIVED server results ({ball states @0, player states @16, frame @32}, 40 B entries); a client fills
+that queue from `Client_NewSendServerSimResults`, compares each result with its own predicted history, and on a
+difference >= 1 cm pushes the correction (`0x5747AE0` balls, RollbackPlayer vtbl+1216 = `0x5747980` players) = the
+visible snap. 50451 has NO client->server state report (the only client->server rollback RPC is
+`Server_NewSubmitInputs`), so on the server the queue is always empty, the function returns early (`v7 <= 0`), and
+`[RBSTAT] corr/s` / `plcorr/s` are 0 by construction. Every "0 corrections" conclusion below is void. Snaps can only
+be measured on a client: hook those two functions in a client (e.g. the specedit50451 dsound tool) and count per
+second while seated in a sim. Live 2026-11-05 with ~4 players in one sim, players reported it laggy and snappy while
+the server showed: tick 88-90, late inputs ~0 (adaptive lead raised two players to +4/+6), relay ~1720/s to the
+right sim, one player at 29 poses/s vs ~92 for the rest.
+
 ## Deployed 2026-11-05 evening (DLL 6e0178e6): all three follow-ups below are live
 
 - `[RBSTAT]` gained `plcorr/s` (player corrections: the correction check's call to `RollbackPlayer` vtbl slot +1216,
