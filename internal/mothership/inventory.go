@@ -261,6 +261,12 @@ func (s *MothershipServer) GetInventoryClient(c *hosting.Context) hosting.Result
 	if userId == "" {
 		return jsonError(400, "BadRequest", "Missing token subject", "", nil)
 	}
+	// Solara: our game-server DLL reads a player's inventory (the cosmetic guard) by signing in with their
+	// Mothership player id, which the QUEST login files under a separate "server-login" record. Read the real
+	// player's inventory for it, or the guard sees nobody owning anything and strips bought cosmetics.
+	if isTrustedServer(request) {
+		userId = serverLoginRealPlayer(userId)
+	}
 
 	entitlements := []any{}
 	have := map[string]bool{}
