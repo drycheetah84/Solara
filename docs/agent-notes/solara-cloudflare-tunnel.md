@@ -66,5 +66,5 @@ D-series quota needs MFA login, a request was throttled -- retry for D8as_v5 the
   before; agent task HalcyonAgent -HubHost 10.10.1.4 -Box win-gamebox-1 -Capacity 5. 5 servers ~1.3 GB RAM each.
 - DLL deploy now: scp DLL to hub /opt/halcyon-dist, then on game1 iwr http://10.10.1.4:8000/HalcyonA2.dll.
 - DB was seeded from the repo production.solara.db (2026-10-31): Nov 1-4 AWS data lost; stations Ranked/Clubhouse/
-  Freerunners recreated (new ids), their station config lost. Discord login needs a NEW client secret +
+  Freerunners recreated (new ids), their station config lost. Discord login RESTORED 2026-11-05 (new client secret; role map, role names and fleet owners rebuilt from history; owners remapped to the new station ids) -- was: needed a new client secret +
   DISCORD_ROLE_MAP/FLEET_OWNERS/ROLE_NAMES (client id + guild id restored in dashboard.env).
