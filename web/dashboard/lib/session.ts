@@ -99,3 +99,14 @@ export function sessionCredential(value: string | undefined): SessionCredential 
 export function validSession(value: string | undefined): boolean {
   return sessionCredential(value) !== null;
 }
+
+/** Solara API keys: a scoped dashboard token sent by a program (a Discord bot...) instead of a browser session, as
+ *  `Authorization: Bearer sdt1_...` or `x-api-key: sdt1_...`. Only scoped tokens: the master admin key is never
+ *  accepted from a header, so a leaked bot key carries only the permissions and stations an admin gave it. Only the
+ *  shape is checked here; the backend checks the token itself (unknown, revoked, expired -> 401) and its scope. */
+export function headerScopedToken(headers: Headers): string | null {
+  const auth = headers.get("authorization");
+  const bearer = auth && /^Bearer\s+(\S+)$/i.exec(auth.trim());
+  const key = bearer ? bearer[1] : headers.get("x-api-key")?.trim();
+  return looksLikeScopedToken(key) ? key : null;
+}

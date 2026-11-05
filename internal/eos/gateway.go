@@ -508,11 +508,15 @@ func SetSessionPlayerCount(deploymentId string, count int) bool {
 		sessionLock.Unlock()
 		return false
 	}
+	trimmed := false
 	for len(s.PublicPlayers) > count {
 		s.PublicPlayers = append(s.PublicPlayers[:0:0], s.PublicPlayers[1:]...)
+		trimmed = true
 	}
 	sessionLock.Unlock()
-	PersistSessions()
+	if trimmed { // [Solara] the 5 s heartbeat calls this too: only write the sessions file when something changed
+		PersistSessions()
+	}
 	return true
 }
 

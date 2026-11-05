@@ -18,6 +18,7 @@ const nav = [
 const adminNav = [
   { href: "/titledata",       label: "Title data"      },
   { href: "/anonymous-names", label: "Anonymous names" },
+  { href: "/tokens",          label: "API keys"        },
 ];
 
 export type Me = {

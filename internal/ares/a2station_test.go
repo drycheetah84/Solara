@@ -361,16 +361,20 @@ func TestA2RegisterServerAndPlayerCount(t *testing.T) {
 		t.Fatalf("eos session: %+v", sess)
 	}
 
-	// re-register under the same id: station reused, one session; the row
-	// keeps its old name (preserved bug: Update with a fresh ObjectId).
-	w = a2Do(t, s, "POST", "/register_server", `{"ip":"5.6.7.8","deployment_id":"dep-1","server_name":"Renamed"}`, nil)
+	// re-register under the same id (a watchdog restart): station reused, one session; the row follows the server's
+	// NEW address [Solara fix: the original never updated it], keeps its name and station, and its count restarts.
+	a2Do(t, s, "POST", "/update_player_count", `{"deployment_id":"dep-1","player_count":7}`, nil)
+	w = a2Do(t, s, "POST", "/register_server", `{"ip":"5.6.7.8","port":"7781","deployment_id":"dep-1","server_name":"Renamed"}`, nil)
 	if a2Json(t, w).GetProperty("station_id").Str() != stationId {
 		t.Fatal("station not reused")
 	}
 	deps = a2Deployments().FindAll()
-	if len(deps) != 1 || *deps[0].IpAddress != "1.2.3.4:7777" || *deps[0].DeploymentName != "My Server" {
-		t.Fatalf("re-register must not update the row: %+v", deps[0])
+	if len(deps) != 1 || *deps[0].IpAddress != "5.6.7.8:7781" || *deps[0].DeploymentName != "My Server" ||
+		*deps[0].StationId != stationId || *deps[0].Region != "NAE" || deps[0].PlayerCount != 0 || !deps[0].Online {
+		t.Fatalf("re-register must move the row to the new address: %+v", deps[0])
 	}
+	// back to the original address for the checks below
+	a2Do(t, s, "POST", "/register_server", `{"ip":"5.6.7.8","deployment_id":"dep-1","server_name":"Renamed"}`, nil)
 	if sess = eos.SessionsSnapshot(); len(sess) != 1 || sess[0].ServerName != "My Server" || sess[0].IpAddress != "5.6.7.8" || sess[0].Port != "7777" {
 		t.Fatalf("eos session after re-register: %+v", sess)
 	}
@@ -396,6 +400,22 @@ func TestA2RegisterServerAndPlayerCount(t *testing.T) {
 	if w.Body.String() != `{"success":true}` {
 		t.Fatalf("heartbeat: %s", w.Body.String())
 	}
+
+	// [Solara] the heartbeat's player count drives the station list; a missing or unmeasured (-1) count changes nothing
+	a2Do(t, s, "POST", "/update_player_count", `{"deployment_id":"dep-1","player_count":5}`, nil)
+	a2Do(t, s, "POST", "/server_heartbeat", `{"deployment_id":"dep-1","pid":1,"seq":3}`, nil)
+	if d := a2Deployments().FindAll()[0]; d.PlayerCount != 5 {
+		t.Fatalf("heartbeat without players changed the count: %d", d.PlayerCount)
+	}
+	a2Do(t, s, "POST", "/server_heartbeat", `{"deployment_id":"dep-1","pid":1,"seq":4,"players":-1}`, nil)
+	if d := a2Deployments().FindAll()[0]; d.PlayerCount != 5 {
+		t.Fatalf("unmeasured heartbeat changed the count: %d", d.PlayerCount)
+	}
+	a2Do(t, s, "POST", "/server_heartbeat", `{"deployment_id":"dep-1","pid":1,"seq":5,"players":2}`, nil)
+	if d := a2Deployments().FindAll()[0]; d.PlayerCount != 2 {
+		t.Fatalf("heartbeat count not applied: %d", d.PlayerCount)
+	}
+	a2Do(t, s, "POST", "/update_player_count", `{"deployment_id":"dep-1","player_count":0}`, nil) // back to the state below
 
 	// player count totals (also via the station route)
 	w = a2Do(t, s, "GET", "/stations/player_count", "", nil)

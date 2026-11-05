@@ -40,11 +40,8 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND, UINT, WPARAM,
 namespace se {
 std::atomic<unsigned> g_presentCount{ 0 };
 
-#ifdef HALCYON_EOS
-bool g_uiVisible = false;   // published Rift build: hidden until F12, so ordinary spectators never see it
-#else
-bool g_uiVisible = true;
-#endif
+// Hidden until F12 in every build (the editor opened by itself at launch before; F12 / Insert toggles it).
+bool g_uiVisible = false;
 
 namespace {
 

@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { authConfig, SESSION_COOKIE, sessionCredential } from "./session";
+import { authConfig, headerScopedToken, SESSION_COOKIE, sessionCredential } from "./session";
 
 export async function proxyBackend(req: NextRequest, path: string[], service: "dashboard" | "station") {
   // Check again at the privileged operation, even if the outer Proxy matcher changes.
   const config = authConfig();
-  const cred = config ? sessionCredential(req.cookies.get(SESSION_COOKIE)?.value) : null;
+  const session = config ? sessionCredential(req.cookies.get(SESSION_COOKIE)?.value) : null;
+  // Solara API keys: no browser session, but a scoped token in Authorization: Bearer / x-api-key (a Discord bot...).
+  // Dashboard API only -- the station API (:78) does not accept scoped tokens.
+  const apiKey = !session && service === "dashboard" ? headerScopedToken(req.headers) : null;
+  const cred = session ?? (apiKey ? { key: apiKey } : null);
   if (!config || !cred) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }

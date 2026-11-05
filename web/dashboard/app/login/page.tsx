@@ -4,8 +4,9 @@ import { Suspense } from "react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 
-// Dashboard sign-in: Discord only (/auth/discord). Members of the Halcyon Discord server get the access their roles
-// map to; the session is an httpOnly cookie and /api/* proxying happens server-side.
+// Dashboard sign-in: Discord (/auth/discord) -- members of the Halcyon Discord server get the access their roles
+// map to -- or the dashboard admin key (/auth/key, full access). Either way the session is an httpOnly cookie and
+// /api/* proxying happens server-side.
 
 const ERRORS: Record<string, string> = {
   "discord-not-configured": "Discord sign-in is not set up on this server yet.",
@@ -16,6 +17,8 @@ const ERRORS: Record<string, string> = {
   "no-dashboard-role": "Your Discord roles do not include dashboard access.",
   "token-failed": "Signed in, but the backend did not issue your access. Try again.",
   "too-many-attempts": "Too many attempts. Wait a few minutes.",
+  "bad-key": "That admin key is not right.",
+  "key-not-configured": "Admin key sign-in is not set up on this server.",
 };
 
 function LoginInner() {
@@ -45,6 +48,24 @@ function LoginInner() {
             style={{ background: "#5865F2", color: "#fff" }}>
             Log in with Discord
           </a>
+
+          <div className="flex items-center gap-3 my-5 text-xs" style={{ color: "var(--muted)" }}>
+            <div className="flex-1 h-px" style={{ background: "var(--border)" }} />
+            or
+            <div className="flex-1 h-px" style={{ background: "var(--border)" }} />
+          </div>
+
+          {/* Admin key sign-in: a plain POST to /auth/key, so the key goes only in the request body to this
+              dashboard's own server -- never in the URL, never stored by the page. */}
+          <form method="post" action="/auth/key" className="flex flex-col gap-2">
+            <label htmlFor="admin-key" className="text-xs" style={{ color: "var(--muted)" }}>Admin key</label>
+            <input id="admin-key" name="key" type="password" required autoComplete="off" spellCheck={false}
+              maxLength={512} className="w-full px-3 py-2.5 rounded-md text-sm"
+              style={{ background: "var(--surface2)", border: "1px solid var(--border)", color: "var(--text)" }} />
+            <button type="submit" className="btn-outline w-full py-2.5! text-sm justify-center">
+              Log in with admin key
+            </button>
+          </form>
         </div>
       </div>
     </div>

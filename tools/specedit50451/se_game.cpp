@@ -79,6 +79,7 @@ SDK::UClass* g_leSubsysClass = nullptr;
 bool         g_paletteDirty = true;
 ULONGLONG    g_lastPump = 0;
 bool         g_editorMode = false;   // client-side "Enter Level Editor" state
+SDK::UObject* g_camPrevView = nullptr; // what the player viewed through before the editor camera took over
 SDK::UFunction* g_setQuestsFn = nullptr;   // A2PlayerQuestComponent::Client_SetQuests (see LogIncomingQuests)
 std::vector<Snapshot::GameScript> g_gameScripts;   // ScanScripts result
 std::string g_dumpScriptsTo;                       // test op: also write the scan to this folder
@@ -1658,6 +1659,15 @@ void CameraActivate(const Snapshot& snap)
     CameraGravityUp(g_cam.up);                                   // start already the right way up
     CameraFrame();
     CameraApply();
+    // [2026-11-05] Remember what the player was viewing through, so Stop Editing / F12 can give exactly that back.
+    // A spectator views through the game's spectator camera, not a pawn: restoring "the pawn" (below) left a PC
+    // spectator on the wrong view target after editing, with broken spectator controls.
+    {
+        SDK::Params::Controller_GetViewTarget vt{};
+        SDK::UObject* prev = CallNative(g_pc, "Controller", "GetViewTarget", vt) ? vt.ReturnValue : nullptr;
+        if (prev && prev != g_cam.actor) g_camPrevView = prev;
+        Log("[cam] editor camera on (was viewing %s)", g_camPrevView && ObjectAlive(g_camPrevView) ? g_camPrevView->GetName().c_str() : "?");
+    }
     SetViewTarget(g_cam.actor);
     Cam().active = true;
 }
@@ -1667,10 +1677,20 @@ void CameraDeactivate()
     Cam().active = false;
     Cam().looking = false;
     if (!g_pc) return;
-    // Back to the player's own pawn (APlayerController.AcknowledgedPawn @0x340, else Controller.Pawn @0x2D8).
+    // Back to what the player viewed before editing (a spectator's camera, or their pawn).
+    if (g_camPrevView && ObjectAlive(g_camPrevView) && g_camPrevView != g_cam.actor)
+    {
+        SetViewTarget(g_camPrevView);
+        Log("[cam] editor camera off: view back to %s", g_camPrevView->GetName().c_str());
+        g_camPrevView = nullptr;
+        return;
+    }
+    g_camPrevView = nullptr;
+    // Fallback: the player's own pawn (APlayerController.AcknowledgedPawn @0x340, else Controller.Pawn @0x2D8).
     SDK::UObject* pawn = *reinterpret_cast<SDK::UObject**>(reinterpret_cast<uintptr_t>(g_pc) + 0x360);
     if (!pawn) pawn = *reinterpret_cast<SDK::UObject**>(reinterpret_cast<uintptr_t>(g_pc) + 0x2F8);
     SetViewTarget(pawn ? pawn : g_pc);
+    Log("[cam] editor camera off: view back to %s (fallback)", pawn ? pawn->GetName().c_str() : "the controller");
 }
 
 CamReport CamPose() { return { g_cam.x, g_cam.y, g_cam.z, g_cam.rp, g_cam.ry, g_cam.rr }; }
@@ -2468,6 +2488,52 @@ static void Get(const std::string& path)
 }
 }  // namespace nvc
 
+// ---- coinprobe: which coin class / coin types the 50451 red coin quest uses (probing) --------------------------
+// URedCoinTimedQuestComponent (50451): RedcoinBlueprint TSubclassOf<AA2RedCoinActor> @0x470, CoinTypes
+// TMap<FName, FCoinType> @0x4A0. A TMap's TSparseArray: Data @+0, Num @+8 (free slots included), AllocationFlags
+// inline bits @+0x10; element = FName key (8) + FCoinType (0x18: OverrideBlueprint, StaticMeshes, Material) +
+// HashNextId/HashIndex (8) = 0x28.
+struct CoinProbeComp { SDK::UObject* rcb = nullptr; int n = 0; SDK::FName key[16]{}; SDK::UObject* ovr[16]{}; SDK::UObject* mesh[16]{}; };
+static bool CoinProbeRead(SDK::UObject* comp, CoinProbeComp* out)
+{
+    __try
+    {
+        const uint8_t* c = reinterpret_cast<const uint8_t*>(comp);
+        out->rcb = *reinterpret_cast<SDK::UObject* const*>(c + 0x470);
+        const uint8_t* data = *reinterpret_cast<const uint8_t* const*>(c + 0x4A0);
+        const int32_t num = *reinterpret_cast<const int32_t*>(c + 0x4A0 + 8);
+        // TBitArray<TInlineAllocator<4>>: 4 inline uint32 words @+0x10, then the heap pointer @+0x20 (null = inline)
+        const uint32_t* inl = reinterpret_cast<const uint32_t*>(c + 0x4A0 + 0x10);
+        const uint32_t* heap = *reinterpret_cast<const uint32_t* const*>(c + 0x4A0 + 0x20);
+        const uint32_t* flags = heap ? heap : inl;
+        for (int32_t i = 0; data && i < num && i < 128 && out->n < 16; ++i)
+        {
+            const uint32_t word = flags[i / 32];
+            if (!(word & (1u << (i % 32)))) continue;   // free slot
+            const uint8_t* e = data + 0x28ull * i;
+            out->key[out->n] = *reinterpret_cast<const SDK::FName*>(e);
+            out->ovr[out->n] = *reinterpret_cast<SDK::UObject* const*>(e + 0x8);
+            out->mesh[out->n] = *reinterpret_cast<SDK::UObject* const*>(e + 0x10);
+            ++out->n;
+        }
+        return true;
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER) { return false; }
+}
+static SDK::UClass* CoinProbeLoadClass(const std::wstring& path)
+{
+    SDK::Params::KismetSystemLibrary_MakeSoftClassPath mk{};
+    mk.PathString = SDK::FString(path.c_str());
+    SDK::Params::KismetSystemLibrary_Conv_SoftClassPathToSoftClassRef cv{};
+    SDK::Params::KismetSystemLibrary_LoadClassAsset_Blocking ld{};
+    if (!CallStatic("KismetSystemLibrary", "MakeSoftClassPath", mk)) return nullptr;
+    cv.SoftClassPath = mk.ReturnValue;
+    if (!CallStatic("KismetSystemLibrary", "Conv_SoftClassPathToSoftClassRef", cv)) return nullptr;
+    ld.AssetClass = cv.ReturnValue;
+    if (!CallStatic("KismetSystemLibrary", "LoadClassAsset_Blocking", ld)) return nullptr;
+    return ld.ReturnValue;
+}
+
 // One editor op (a test-script line), run now. The script runner above feeds it one line per frame; the MCP
 // bridge (se_mcp) runs single ops through it too, capturing what they log.
 void ScriptOp(const Snapshot& snap, const std::string& line)
@@ -2480,7 +2546,7 @@ void ScriptOp(const Snapshot& snap, const std::string& line)
 
     if (!strcmp(op, "wait"))       { g_scriptNext = now + (ULONGLONG)(atof(rest.c_str()) * 1000.0); return; }
     if (!strcmp(op, "log"))        { Log("[script] %s", rest.c_str()); return; }
-    if (!strcmp(op, "enter"))      { State().Push({ CmdType::EnterEditor }); return; }
+    if (!strcmp(op, "enter"))      { g_uiVisible = true; State().Push({ CmdType::EnterEditor }); return; }   // scripts/bridge: the camera needs the UI up
     if (!strcmp(op, "exit"))       { State().Push({ CmdType::ExitEditor }); return; }
 
     if (!strcmp(op, "spawn") || !strcmp(op, "spawnat"))   // spawnat <Class> x y z yaw -- at a fixed spot
@@ -2923,8 +2989,12 @@ void ScriptOp(const Snapshot& snap, const std::string& line)
             double l[3] = { 0, 0, 0 };
             if (void* root = *reinterpret_cast<void**>(b + 0x1C8))
             { const double* t = reinterpret_cast<const double*>(reinterpret_cast<uintptr_t>(root) + 0x1E0 + 0x20); l[0] = t[0]; l[1] = t[1]; l[2] = t[2]; }
-            Log("[script] SLOT '%s' %s at (%.0f,%.0f,%.0f) gm=%s tm=%s", id.c_str(), s->GetName().c_str(), l[0], l[1], l[2],
-                lgm ? lgm->GetName().c_str() : "-", tm ? tm->GetName().c_str() : "-");
+            // DefaultGamemodePath @0x478 (FString): on 50451 a project link ("1;b:0:c;g;<guid>;..."), not a path
+            const wchar_t* dp = *reinterpret_cast<const wchar_t**>(b + 0x478);
+            std::string path;
+            if (dp) for (const wchar_t* w = dp; *w && path.size() < 160; ++w) path += static_cast<char>(*w < 128 ? *w : '?');
+            Log("[script] SLOT '%s' %s at (%.0f,%.0f,%.0f) gm=%s tm=%s path='%s'", id.c_str(), s->GetName().c_str(), l[0], l[1], l[2],
+                lgm ? lgm->GetName().c_str() : "-", tm ? tm->GetName().c_str() : "-", path.c_str());
         }
         return;
     }
@@ -3448,6 +3518,63 @@ void ScriptOp(const Snapshot& snap, const std::string& line)
             ++shown;
         }
         Log("[script] near: %d actor(s)", shown);
+        return;
+    }
+    if (!strcmp(op, "coinprobe"))             // coinprobe [class path ...] -- PROBING: coin classes + the red coin quest's coin types
+    {
+        std::vector<std::wstring> paths = {
+            L"/Game/A2/Prefabs/Quests/LE_BP_New_RedCoinTimedQuest.LE_BP_New_RedCoinTimedQuest_C",
+            L"/Game/A2/Progression/TimedQuest/LE_BP_RedCoin.LE_BP_RedCoin_C",
+            L"/Game/A2/Progression/TimedQuest/BP_RedCoin.BP_RedCoin_C" };
+        for (size_t b = 0; b < rest.size(); )
+        {
+            size_t e = rest.find(' ', b); if (e == std::string::npos) e = rest.size();
+            if (e > b) paths.push_back(std::wstring(rest.begin() + b, rest.begin() + e));
+            b = e + 1;
+        }
+        for (const std::wstring& p : paths)
+        {
+            SDK::UClass* c = CoinProbeLoadClass(p);
+            Log("[script] coinprobe load %ls: %s", p.c_str(), c ? c->GetFullName().c_str() : "NOT FOUND");
+        }
+        auto* clsCls = SDK::UObject::FindClassFast("Class");
+        auto* bpgc = SDK::UObject::FindClassFast("BlueprintGeneratedClass");
+        auto* rcqc = SDK::UObject::FindClassFast("RedCoinTimedQuestComponent");
+        auto* coinBase = SDK::UObject::FindClassFast("A2RedCoinActor");
+        const int32_t n = SDK::UObject::GObjects->Num();
+        int classes = 0, comps = 0;
+        for (int32_t i = 0; i < n; ++i)
+        {
+            SDK::UObject* o = SDK::UObject::GObjects->GetByIndex(i);
+            if (!o) continue;
+            const bool isClass = (clsCls && o->Class == clsCls) || (bpgc && o->Class == bpgc);
+            if (isClass && classes < 60)
+            {
+                auto* uc = static_cast<SDK::UClass*>(o);
+                const std::string nm = o->GetName();
+                bool coinChild = false;
+                for (SDK::UStruct* s = uc; s && coinBase; s = s->SuperStruct) if (s == coinBase) { coinChild = true; break; }
+                if (coinChild || nm.find("Coin") != std::string::npos)
+                {
+                    Log("[script] coinprobe class %s%s", o->GetFullName().c_str(), coinChild ? "  (an A2RedCoinActor)" : "");
+                    ++classes;
+                }
+                continue;
+            }
+            if (rcqc && o->IsA(rcqc) && comps < 20)
+            {
+                CoinProbeComp cp;
+                if (!CoinProbeRead(o, &cp)) { Log("[script] coinprobe comp %s: read fault", o->GetFullName().c_str()); continue; }
+                Log("[script] coinprobe comp %s  RedcoinBlueprint=%s  CoinTypes=%d", o->GetFullName().c_str(),
+                    cp.rcb && ObjectAlive(cp.rcb) ? cp.rcb->GetFullName().c_str() : "null", cp.n);
+                for (int k = 0; k < cp.n; ++k)
+                    Log("[script] coinprobe   type '%s' override=%s mesh=%s", cp.key[k].ToString().c_str(),
+                        cp.ovr[k] && ObjectAlive(cp.ovr[k]) ? cp.ovr[k]->GetName().c_str() : "null",
+                        cp.mesh[k] && ObjectAlive(cp.mesh[k]) ? cp.mesh[k]->GetName().c_str() : "null");
+                ++comps;
+            }
+        }
+        Log("[script] coinprobe: %d coin class(es), %d quest component(s)", classes, comps);
         return;
     }
     if (!strcmp(op, "classchain"))            // classchain <Class> -- its parent chain, and a live instance's root collision
@@ -4784,7 +4911,7 @@ void PumpImpl()
 }
 
 // Evidence that authored quests reach this client: A2PlayerQuestComponent::Client_SetQuests(
-// FAAQuestBundle FullTable @0x00, bool IsRemoving @0x40) runs through ProcessEvent when it arrives.
+// FAAQuestBundle FullTable @0x00, bool IsRemoving @0x70 on 50451) runs through ProcessEvent when it arrives.
 // (g_setQuestsFn is declared with the other globals at the top; the pump resolves it.)
 
 void LogIncomingQuests(const void* parms)
@@ -4793,16 +4920,16 @@ void LogIncomingQuests(const void* parms)
     const wchar_t* uid = *reinterpret_cast<const wchar_t* const*>(b);
     const uint8_t* rows = *reinterpret_cast<const uint8_t* const*>(b + 0x20);
     const int n = *reinterpret_cast<const int32_t*>(b + 0x28);
-    Log("[quests] Client_SetQuests arrived: bundle '%ls', %d row(s)%s", uid ? uid : L"", n, b[0x40] ? " (removing)" : "");
-    for (int i = 0; rows && i < n && i < 1024; ++i)             // GlyphID FName @0x100 of each FAAQuestEntry
+    Log("[quests] Client_SetQuests arrived: bundle '%ls', %d row(s)%s", uid ? uid : L"", n, b[0x70] ? " (removing)" : "");
+    for (int i = 0; rows && i < n && i < 1024; ++i)             // [50451] FAAQuestEntry 0x1D0: GlyphID @0x1A8, Title @0x178
     {
-        const std::string g = reinterpret_cast<const SDK::FName*>(rows + static_cast<size_t>(i) * 0x120 + 0x100)->ToString();
+        const std::string g = reinterpret_cast<const SDK::FName*>(rows + static_cast<size_t>(i) * 0x1D0 + 0x1A8)->ToString();
         if (!g.empty() && g != "None" && std::find(g_glyphs.begin(), g_glyphs.end(), g) == g_glyphs.end()) g_glyphs.push_back(g);
-        const uint8_t* r = rows + static_cast<size_t>(i) * 0x120;
+        const uint8_t* r = rows + static_cast<size_t>(i) * 0x1D0;
         const uint32_t* id = reinterpret_cast<const uint32_t*>(r);
         char hx[40];
         snprintf(hx, sizeof(hx), "%08X%08X%08X%08X", id[0], id[1], id[2], id[3]);
-        const wchar_t* t = *reinterpret_cast<const wchar_t* const*>(r + 0xF0);
+        const wchar_t* t = *reinterpret_cast<const wchar_t* const*>(r + 0x178);
         std::string title;
         for (int k = 0; t && t[k] && k < 80; ++k) title.push_back(t[k] < 128 ? static_cast<char>(t[k]) : '?');
         bool known = false;
@@ -4813,9 +4940,9 @@ void LogIncomingQuests(const void* parms)
     if (!uid || wcscmp(uid, L"SpecEditorQuests") != 0 || !rows) return;
     for (int i = 0; i < n && i < 32; ++i)
     {
-        const uint8_t* r = rows + static_cast<size_t>(i) * 0x120;
+        const uint8_t* r = rows + static_cast<size_t>(i) * 0x1D0;
         const uint32_t* g = reinterpret_cast<const uint32_t*>(r);
-        const wchar_t* t = *reinterpret_cast<const wchar_t* const*>(r + 0xF0);
+        const wchar_t* t = *reinterpret_cast<const wchar_t* const*>(r + 0x178);
         Log("[quests]   authored quest '%ls' id=%08X%08X%08X%08X prereqs=%d", t ? t : L"?",
             g[0], g[1], g[2], g[3], *reinterpret_cast<const int32_t*>(r + 0x58));
     }

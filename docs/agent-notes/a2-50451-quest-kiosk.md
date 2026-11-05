@@ -73,6 +73,13 @@ BP NewHitEvent on server) doesn't count -- awaiting [GOLFHIT] data.
   is always empty; the CLIENT's copy is authoritative. Never try to set balances server-side.
 - Quest rewards: ProcessReward (0x5706BB0) never runs on our server (delegate bound by a server-side Mothership binder
   that never exists). Solara grants from saved player_quests (completedVersion>0) via a2_50451_quest_rewards.tsv.
+- TRAP (2026-11-05): any hook at `HX_UNRES(0x...)` is DEAD on 50451 -- the macro is `0`, so MinHook hooks the image
+  base, prints MH_OK, never fires, and its `_Orig` trampoline runs the PE header. QSendSet_Hook (Client_SetQuests
+  sender) was one: the Spec Editor never saw a quest bundle and could not send its own. Fixed by observing
+  Client_SetQuests in ProcessEvent and sending via the RPC (`[QSEND]`, SendQuestBundleRpc). Editor quests also need:
+  a template (50451 has no "Subquest_PKR_Climber"; now Sub_FTUE_Tour_Mainframe) and Name/Location (+0x188/+0x198,
+  new in 50451's FAAQuestEntry) set, or the RPC serialises dangling strings and silently never arrives.
+  Verified on the local rig: button -> Server_OnQuestStarted -> 4x Server_OnCoinCollected -> Server_OnCompleteQuest.
 - TRAP: production ALSO runs -SpecEditLocalTest -> g_seLocalTest is true live. Gate test-only code on IsLocalRig()
   (-ServerName=HalcyonLocalTest), never on g_seLocalTest.
 - TRAP: interrupting an idat run corrupts the IDB (shard5/6 died) -> copy shard3 to a new shardN; current = shard7.

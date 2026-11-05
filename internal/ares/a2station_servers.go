@@ -231,9 +231,22 @@ func (s *A2StationDbServer) RegisterServer(c *hosting.Context) hosting.Result {
 	depRow.Config = map[string]*string{}
 	if depCol != nil {
 		if existingDep != nil {
-			// Preserved bug: depRow carries a NEW ObjectId, so Update matches no
-			// document and the existing row is left unchanged.
-			depCol.Update(depRow)
+			// [Solara 2026-11-05] FIXED preserved bug: the original handed Update a row with a NEW ObjectId, so it matched
+			// no document and the existing row was never updated -- above all its ip:port. The watchdog restarts a server
+			// under the SAME deployment id, and the new process can come up on a different game port (UE takes the next
+			// free one), so the station list kept advertising the old port. After a restart of several servers on one box
+			// their ports could swap: everyone who picked Clubhouse landed on the Freerunners process (both are Station
+			// Prime), and the list showed Freerunners ~40 / Clubhouse ~2 while players believed they were in Clubhouse.
+			// Update the existing row in place: address, version, online, count; keep its station, name and config.
+			existingDep.IpAddress = depRow.IpAddress
+			existingDep.DeploymentName = depRow.DeploymentName
+			if !a2IsNullOrWhiteSpace(body.Region) || a2IsNullOrWhiteSpace(existingDep.Region) {
+				existingDep.Region = depRow.Region
+			}
+			existingDep.Version = depRow.Version
+			existingDep.Online = true
+			existingDep.PlayerCount = 0
+			depCol.Update(existingDep)
 		} else {
 			depCol.Insert(depRow)
 		}
@@ -315,6 +328,20 @@ func (s *A2StationDbServer) ServerHeartbeat(c *hosting.Context) hosting.Result {
 			body.UptimeMs, body.Players, nil)
 	}
 
+	// [Solara 2026-11-05] The heartbeat (every 5 s) carries the server's connected-player count. Apply it, so the
+	// station list follows players within seconds when they move between servers; /update_player_count alone came
+	// every ~3 minutes and left them listed on the old server meanwhile. Only a count the server actually sent (and
+	// measured: -1 = not yet) is applied: a missing field would deserialize as 0 and wipe a real count.
+	players, hasPlayers := 0, false
+	if el, err := stj.Parse(c.Request.Body()); err == nil && el.ValueKind() == stj.Object {
+		if _, ok := el.TryGetProperty("players"); ok && body.Players >= 0 {
+			players, hasPlayers = body.Players, true
+		}
+	}
+	if hasPlayers {
+		eos.SetSessionPlayerCount(*body.DeploymentId, players)
+	}
+
 	// Keep the deployment row's freshness stamp moving too.
 	depCol := a2Deployments()
 	if depCol != nil {
@@ -322,6 +349,9 @@ func (s *A2StationDbServer) ServerHeartbeat(c *hosting.Context) hosting.Result {
 			if a2EqPtr(d.DeploymentId, body.DeploymentId) {
 				now := dotnet.Now()
 				d.LastEvent = &now
+				if hasPlayers {
+					d.PlayerCount = players
+				}
 				depCol.Update(d)
 				a2MarkStationOnline(d.StationId) // [Solara] a heartbeating server's station is online
 				break

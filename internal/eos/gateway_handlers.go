@@ -866,7 +866,11 @@ func (s *EosGatewayServer) JoinSession(c *hosting.Context) hosting.Result {
 			if !containsString(x.PublicPlayers, productUserID) {
 				x.PublicPlayers = append(x.PublicPlayers, productUserID)
 			}
-			break
+		} else if containsString(x.PublicPlayers, productUserID) {
+			// [Solara 2026-11-05] A player is on one game server at a time. When they move servers the client does not
+			// always send the leave for the old session, so they stayed listed there too (the station list then
+			// showed e.g. Freerunners full of players who had gone to Clubhouse). Joining a session ends any other.
+			x.PublicPlayers = removeFirst(x.PublicPlayers, productUserID)
 		}
 	}
 	sessionLock.Unlock()

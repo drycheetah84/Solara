@@ -143,7 +143,7 @@ test("production dashboard authentication", async t => {
     assert.equal(upstreamRequests, 0);
   });
 
-  await t.test("key login is gone", async () => {
+  await t.test("the old /dash-login key login is gone (admin keys sign in at /auth/key)", async () => {
     const response = await request("/dash-login", {
       method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ key: adminKey }),
     });
@@ -192,6 +192,29 @@ test("production dashboard authentication", async t => {
     assert.equal((await request("/api/stats", { headers: { cookie: discordCookie({ admin: false }) } })).status, 401);
   });
 
+  await t.test("an API key (scoped token in a header) calls the dashboard API as itself", async () => {
+    // Authorization: Bearer and x-api-key both work, and forward THAT token (the backend enforces its scope).
+    for (const headers of [{ authorization: `Bearer ${scopedToken}` }, { "x-api-key": scopedToken }]) {
+      const api = await request("/api/users", { headers });
+      assert.equal(api.status, 200);
+      assert.deepEqual(await api.json(), {
+        path: "/api/users", method: "GET", body: "", correctKey: false, scopedKey: true, forwardedCookie: false,
+      });
+    }
+    const before = upstreamRequests;
+    // the master key is never accepted from a header, nor anything that is not a scoped token
+    for (const value of [`Bearer ${adminKey}`, "Bearer sdt1_short", "Basic abc", `Bearer ${scopedToken}x`]) {
+      assert.equal((await request("/api/users", { headers: { authorization: value } })).status, 401);
+    }
+    assert.equal((await request("/api/users", { headers: { "x-api-key": adminKey } })).status, 401);
+    // an API key does not open the station API (:78) or the dashboard pages
+    assert.equal((await request("/game/stations/create", {
+      method: "POST", headers: { authorization: `Bearer ${scopedToken}` }, body: "{}" })).status, 401);
+    const page = await request("/", { headers: { authorization: `Bearer ${scopedToken}` } });
+    assert.equal(page.status, 307);
+    assert.equal(upstreamRequests, before);
+  });
+
   await t.test("expired, future-dated, tampered and legacy sessions are rejected", async () => {
     const before = upstreamRequests;
     const now = Math.floor(Date.now() / 1000);
@@ -232,6 +255,45 @@ test("production dashboard authentication", async t => {
     assert.equal((await request("/api/stats", { headers: { cookie, origin: "https://evil.example" } })).status, 200);
   });
 
+  // Last against this server: it ends by tripping the shared sign-in lockout.
+  await t.test("admin key sign-in: body only, constant-time, rate limited, httpOnly session", async () => {
+    const form = key => ({ method: "POST", headers: { "content-type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ key }).toString() });
+    const sessionOf = res => (res.headers.get("set-cookie") ?? "").match(/halcyon_dash=([^;]+)/)?.[1] ?? null;
+    // wrong key: back to /login with an error, no session
+    const bad = await request("/auth/key", form("not-the-key"));
+    assert.equal(bad.status, 303);
+    assert.match(bad.headers.get("location") ?? "", /\/login\?err=bad-key/);
+    assert.equal(sessionOf(bad), null);
+    // the key in the URL is never read; GET is not a sign-in
+    const inUrl = await request(`/auth/key?key=${adminKey}`, form(""));
+    assert.match(inUrl.headers.get("location") ?? "", /err=bad-key/);
+    assert.equal(sessionOf(inUrl), null);
+    const get = await request(`/auth/key?key=${adminKey}`);
+    assert.notEqual(get.status, 303);
+    assert.equal(sessionOf(get), null);
+    // a cross-site post is refused before the key is looked at
+    assert.equal((await request("/auth/key", { ...form(adminKey),
+      headers: { ...form(adminKey).headers, origin: "https://evil.example" } })).status, 403);
+    // the right key: a normal signed admin session (httpOnly, SameSite=Lax), never containing the key
+    const ok = await request("/auth/key", form(adminKey));
+    assert.equal(ok.status, 303);
+    assert.equal(new URL(ok.headers.get("location"), ok.url).pathname, "/");
+    const setCookie = ok.headers.get("set-cookie") ?? "";
+    assert.match(setCookie, /HttpOnly/i);
+    assert.match(setCookie, /SameSite=lax/i);
+    assert.equal(setCookie.includes(adminKey), false);
+    const keyCookie = `halcyon_dash=${sessionOf(ok)}`;
+    const api = await request("/api/stats", { headers: { cookie: keyCookie } });
+    assert.equal((await api.json()).correctKey, true);
+    assert.equal((await (await request("/me", { headers: { cookie: keyCookie } })).json()).admin, true);
+    // ten failures lock the client out -- even the right key is refused then
+    for (let i = 0; i < 10; i++) await request("/auth/key", form("wrong-" + i));
+    const locked = await request("/auth/key", form(adminKey));
+    assert.match(locked.headers.get("location") ?? "", /err=too-many-attempts/);
+    assert.equal(sessionOf(locked), null);
+  });
+
   await dashboard.stop();
   for (const missing of ["DASHBOARD_ADMIN_KEY", "DASHBOARD_SESSION_SECRET"]) {
     await t.test(`missing ${missing} fails closed`, async () => {
@@ -240,6 +302,10 @@ test("production dashboard authentication", async t => {
         const response = await unconfigured.request("/auth/discord/callback?code=x&state=y");
         assert.match(response.headers.get("location") ?? "", /err=discord-not-configured/);
         assert.equal(response.headers.get("set-cookie")?.includes("halcyon_dash=") ?? false, false);
+        const keyLogin = await unconfigured.request("/auth/key", { method: "POST",
+          headers: { "content-type": "application/x-www-form-urlencoded" }, body: `key=${adminKey}` });
+        assert.match(keyLogin.headers.get("location") ?? "", /err=key-not-configured/);
+        assert.equal(keyLogin.headers.get("set-cookie")?.includes("halcyon_dash=") ?? false, false);
         for (const url of ["/api/stats", "/game/stations"]) {
           assert.equal((await unconfigured.request(url, { headers: { cookie } })).status, 401);
         }

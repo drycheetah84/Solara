@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { SESSION_COOKIE, validSession } from "./lib/session";
+import { SESSION_COOKIE, headerScopedToken, validSession } from "./lib/session";
 
 // Next 16 Proxy runs in Node.js, so verify the signature and expiry here. Presence of an
 // httpOnly cookie alone proves nothing: an HTTP client can send any cookie value it wants.
@@ -33,6 +33,7 @@ export function proxy(req: NextRequest) {
     pathname === "/login" ||
     pathname === "/auth/discord" ||
     pathname === "/auth/discord/callback" ||
+    pathname === "/auth/key" ||                 // admin-key sign-in (POST, same-origin only -- checked above)
     pathname === "/logout" ||
     pathname.startsWith("/_next/") ||
     pathname === "/favicon.ico" ||
@@ -42,6 +43,8 @@ export function proxy(req: NextRequest) {
   }
 
   if (!validSession(req.cookies.get(SESSION_COOKIE)?.value)) {
+    // An API key (scoped token in Authorization / x-api-key) may call the dashboard API; the backend checks it.
+    if (pathname.startsWith("/api/") && headerScopedToken(req.headers)) return NextResponse.next();
     if (pathname.startsWith("/api") || pathname.startsWith("/game") || pathname === "/me") {
       return NextResponse.json({ error: "unauthorized" }, { status: 401 });
     }

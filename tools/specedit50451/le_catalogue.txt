@@ -246,6 +246,7 @@ Quests|/Game/A2/Prefabs/Quests/LE_BP_ProgressionButton.LE_BP_ProgressionButton_C
 Quests|/Game/A2/Prefabs/Quests/LE_BP_ProgressionStartingLine.LE_BP_ProgressionStartingLine_C
 Quests|/Game/A2/Prefabs/Quests/LE_BP_QuestDisplayKiosk.LE_BP_QuestDisplayKiosk_C
 Quests|/Game/A2/Prefabs/Quests/LE_BP_RockWallQuestManager.LE_BP_RockWallQuestManager_C
+Quests|/Game/A2/Progression/TimedQuest/LE_BP_RedCoin.LE_BP_RedCoin_C
 TackleBall|/Game/A2/Prefabs/TackleBall/LE_BP_ArenaModerationPanel.LE_BP_ArenaModerationPanel_C
 TackleBall|/Game/A2/Prefabs/TackleBall/LE_BP_ScoreboardA_Sideboard.LE_BP_ScoreboardA_Sideboard_C
 TackleBall|/Game/A2/Prefabs/TackleBall/LE_BP_VFX_TackleBallGoal01a.LE_BP_VFX_TackleBallGoal01a_C

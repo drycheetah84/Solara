@@ -12,6 +12,10 @@ for d, _, files in os.walk(root):
         sub = "" if rel == "." else rel + "/"
         cat = "General" if rel == "." else " / ".join(rel.split("/"))
         rows.append(f"{cat}|/Game/A2/Prefabs/{sub}{name}.{name}_C")
+# LE prefabs that live OUTSIDE Content/A2/Prefabs. The red coin is one: 50451 keeps it in Progression/TimedQuest
+# (verified live with the coinprobe op: it loads, and LE_BP_New_RedCoinTimedQuest's RedcoinBlueprint is this class).
+# Without it in the palette the editor's red coin quest builder cannot place or preview coins.
+rows.append("Quests|/Game/A2/Progression/TimedQuest/LE_BP_RedCoin.LE_BP_RedCoin_C")
 rows.sort()
 with open(out, "w", encoding="utf-8", newline="\n") as fh:
     fh.write("# Generated from the 50451 prefab dump (Content/A2/Prefabs). <category>|<class path>.\n")
