@@ -13509,6 +13509,79 @@ static __int64 __fastcall QSendSet_Hook(void* comp, void* bundle, char removing)
     return r;
 }
 
+// [2026-11-05 QSEND 50451] QSendSet_Hook above NEVER runs on 50451: its RVA is HX_UNRES(0x4689030) = 0 (a 22284
+// address nobody re-found), so MinHook "hooks" the image base, reports MH_OK, and the game's real sender is never
+// intercepted -- and QSendSet_Orig is the trampoline of that non-hook, so calling it executes the PE header. Result:
+// the Spec Editor never saw a quest bundle (no template -> its quests stayed "WAITING FOR TEMPLATE", no station
+// catalogue) and could not send its own quests either, so an editor quest's start button had nothing to start.
+// The same Client_SetQuests does pass through ProcessEvent (the [QRPC] trace sees it), so observe it there, and send
+// the editor's bundles the way the game does: by calling that RPC.
+// A2PlayerQuestComponent::Client_SetQuests(FAAQuestBundle FullTable @0, bool IsRemoving @0x70), parms 0x78.
+static SDK::UFunction* g_fnClientSetQuests = nullptr;
+static bool g_qSelfSend = false;     // our own send re-enters ProcessEvent: don't observe it as a game bundle
+static SDK::UFunction* ClientSetQuestsFn()
+{
+    if (g_fnClientSetQuests) return g_fnClientSetQuests;
+    static ULONGLONG s_try = 0;                                   // ProcessEvent calls this: resolve rarely
+    if (GetTickCount64() - s_try < 5000) return nullptr;
+    s_try = GetTickCount64();
+    if (auto* c = SDK::UObject::FindClassFast("A2PlayerQuestComponent"))
+        g_fnClientSetQuests = c->GetFunction("A2PlayerQuestComponent", "Client_SetQuests");
+    return g_fnClientSetQuests;
+}
+// Send one quest bundle to one player's A2PlayerQuestComponent. The RPC serialises the bundle and never frees it.
+static bool SendQuestBundleRpc(void* comp, const void* bundle, bool removing)
+{
+    SDK::UFunction* fn = g_fnClientSetQuests ? g_fnClientSetQuests : ClientSetQuestsFn();
+    if (!comp || !bundle || !fn) return false;
+    alignas(8) uint8_t parms[0x78] = {};
+    memcpy(parms, bundle, 0x70);
+    parms[0x70] = removing ? 1 : 0;
+    g_qSelfSend = true;
+    __try { static_cast<SDK::UObject*>(comp)->ProcessEvent(fn, parms); }
+    __except (EXCEPTION_EXECUTE_HANDLER) { g_qSelfSend = false; return false; }
+    g_qSelfSend = false;
+    return true;
+}
+static bool IsLocalRig();
+// LOCAL RIG diagnostic: the bundle id and every row's id + title, for the first player that gets quests.
+static void QuestTitlesToLog(void* comp, void* bundle)
+{
+    static void* s_comp = nullptr;
+    if (!s_comp) s_comp = comp;
+    if (comp != s_comp) return;
+    const uintptr_t b = reinterpret_cast<uintptr_t>(bundle);
+    const wchar_t* id = *reinterpret_cast<wchar_t**>(b);
+    const uintptr_t rows = *reinterpret_cast<uintptr_t*>(b + 0x20);
+    const int n = *reinterpret_cast<int*>(b + 0x28);
+    HxLog("[HalcyonA2][QTITLES] bundle '%ls' rows=%d\n", id ? id : L"", n);
+    for (int i = 0; rows && i < n && i < 400; ++i)
+    {
+        const uintptr_t r = rows + static_cast<uintptr_t>(i) * 0x1D0;   // [50451] FAAQuestEntry
+        const uint32_t* g = reinterpret_cast<const uint32_t*>(r);
+        const wchar_t* t = *reinterpret_cast<wchar_t**>(r + 0x178);    // Title [50451 offs]
+        HxLog("[HalcyonA2][QTITLES]   %08X%08X%08X%08X  %ls\n", g[0], g[1], g[2], g[3], t ? t : L"(null)");
+    }
+}
+static void QuestSendObserve(SDK::UObject* Context, SDK::UFunction* Function, void* Parms)
+{
+    if (g_qSelfSend || !Function || !Context || !Parms) return;
+    SDK::UFunction* fn = g_fnClientSetQuests ? g_fnClientSetQuests : ClientSetQuestsFn();
+    if (!fn || Function != fn) return;                            // one pointer compare per dispatch
+    const bool removing = static_cast<const uint8_t*>(Parms)[0x70] != 0;
+    static volatile long s_seen = 0;
+    if (InterlockedIncrement(&s_seen) <= 40)
+        HxLog("[HalcyonA2][QSEND] Client_SetQuests to comp=%p rows=%d removing=%d (seen in ProcessEvent)\n",
+            static_cast<void*>(Context), SafeBundleRows(Parms), removing ? 1 : 0);
+    DumpQuestDefsOnce(Parms);   // %TEMP%\HalcyonA2-questdefs.txt, the first big bundle (was only wired to the dead hook)
+    if (IsLocalRig()) QuestTitlesToLog(Context, Parms);   // LOCAL RIG: every bundle of the first player, titles only
+    if (g_specEditOn() && !removing) SeOnQuestsSent(Context, Parms);
+}
+static void SafeQuestSendObserve(SDK::UObject* Context, SDK::UFunction* Function, void* Parms)
+{
+    __try { QuestSendObserve(Context, Function, Parms); } __except (EXCEPTION_EXECUTE_HANDLER) {}
+}
+
 // Texture-streaming thunk sub_54ABCC0(a1): this = *(a1+0x890); return (*this->vtable[0x600/8])(this).
 // On -nullrhi that render/streaming resource is NULL => original null-derefs (the long-standing
 // random crash). Guard it: skip when null, otherwise pass through.
@@ -17412,6 +17485,7 @@ static void ProcessEvent_Hook(SDK::UObject* Context, SDK::UFunction* Function, v
     }
 
     QuestRpcTrace(Context, Function);   // [2026-09-11 QRPC] (helper: this function has SEH, so no C++ temporaries here)
+    SafeQuestSendObserve(Context, Function, Parms);   // [2026-11-05 QSEND] hand the game's quest bundles to the Spec Editor
 
     // [22284] Drop OVRPlatform BP-library calls on the headless server (see g_neuterQuestPlatform). A VR
     // player's kiosk init dispatches User_GetOrgScopedID etc. into the Oculus Platform SDK, which

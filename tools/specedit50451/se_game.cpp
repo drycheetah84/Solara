@@ -4887,7 +4887,7 @@ void PumpImpl()
 }
 
 // Evidence that authored quests reach this client: A2PlayerQuestComponent::Client_SetQuests(
-// FAAQuestBundle FullTable @0x00, bool IsRemoving @0x40) runs through ProcessEvent when it arrives.
+// FAAQuestBundle FullTable @0x00, bool IsRemoving @0x70 on 50451) runs through ProcessEvent when it arrives.
 // (g_setQuestsFn is declared with the other globals at the top; the pump resolves it.)
 
 void LogIncomingQuests(const void* parms)
@@ -4896,16 +4896,16 @@ void LogIncomingQuests(const void* parms)
     const wchar_t* uid = *reinterpret_cast<const wchar_t* const*>(b);
     const uint8_t* rows = *reinterpret_cast<const uint8_t* const*>(b + 0x20);
     const int n = *reinterpret_cast<const int32_t*>(b + 0x28);
-    Log("[quests] Client_SetQuests arrived: bundle '%ls', %d row(s)%s", uid ? uid : L"", n, b[0x40] ? " (removing)" : "");
-    for (int i = 0; rows && i < n && i < 1024; ++i)             // GlyphID FName @0x100 of each FAAQuestEntry
+    Log("[quests] Client_SetQuests arrived: bundle '%ls', %d row(s)%s", uid ? uid : L"", n, b[0x70] ? " (removing)" : "");
+    for (int i = 0; rows && i < n && i < 1024; ++i)             // [50451] FAAQuestEntry 0x1D0: GlyphID @0x1A8, Title @0x178
     {
-        const std::string g = reinterpret_cast<const SDK::FName*>(rows + static_cast<size_t>(i) * 0x120 + 0x100)->ToString();
+        const std::string g = reinterpret_cast<const SDK::FName*>(rows + static_cast<size_t>(i) * 0x1D0 + 0x1A8)->ToString();
         if (!g.empty() && g != "None" && std::find(g_glyphs.begin(), g_glyphs.end(), g) == g_glyphs.end()) g_glyphs.push_back(g);
-        const uint8_t* r = rows + static_cast<size_t>(i) * 0x120;
+        const uint8_t* r = rows + static_cast<size_t>(i) * 0x1D0;
         const uint32_t* id = reinterpret_cast<const uint32_t*>(r);
         char hx[40];
         snprintf(hx, sizeof(hx), "%08X%08X%08X%08X", id[0], id[1], id[2], id[3]);
-        const wchar_t* t = *reinterpret_cast<const wchar_t* const*>(r + 0xF0);
+        const wchar_t* t = *reinterpret_cast<const wchar_t* const*>(r + 0x178);
         std::string title;
         for (int k = 0; t && t[k] && k < 80; ++k) title.push_back(t[k] < 128 ? static_cast<char>(t[k]) : '?');
         bool known = false;
@@ -4916,9 +4916,9 @@ void LogIncomingQuests(const void* parms)
     if (!uid || wcscmp(uid, L"SpecEditorQuests") != 0 || !rows) return;
     for (int i = 0; i < n && i < 32; ++i)
     {
-        const uint8_t* r = rows + static_cast<size_t>(i) * 0x120;
+        const uint8_t* r = rows + static_cast<size_t>(i) * 0x1D0;
         const uint32_t* g = reinterpret_cast<const uint32_t*>(r);
-        const wchar_t* t = *reinterpret_cast<const wchar_t* const*>(r + 0xF0);
+        const wchar_t* t = *reinterpret_cast<const wchar_t* const*>(r + 0x178);
         Log("[quests]   authored quest '%ls' id=%08X%08X%08X%08X prereqs=%d", t ? t : L"?",
             g[0], g[1], g[2], g[3], *reinterpret_cast<const int32_t*>(r + 0x58));
     }

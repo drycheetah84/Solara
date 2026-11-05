@@ -798,6 +798,9 @@ static void SeDropProxies(SDK::AActor* a)
 static void SeQuestTick();   // below
 
 static void SeTextTick();   // below (text from scripts)
+#if HALCYON_GAME_BUILD == 50451
+static void SeFlushSendQueue();   // below (authored quests to players who just got theirs)
+#endif
 static void SbDeferredSetsTick();   // below (Game data writes that had to wait)
 static std::unordered_map<std::string, ULONGLONG> g_sbSpawnAt;   // sandbox idx -> when its node was created (see SbDeferredSet)
 static void SeLvTick();   // below (saved levels)
@@ -805,6 +808,9 @@ static void SeCamMarkersTick(ULONGLONG now);   // below (editor camera markers)
 static void SpecEditTick()
 {
     if (!g_specEdit) return;
+#if HALCYON_GAME_BUILD == 50451
+    SeFlushSendQueue();
+#endif
     SeStartPermissionPoller();
     SeQuestTick();
     SeLvTick();
@@ -1031,6 +1037,7 @@ static uint8_t  g_seTemplate[0x120];
 #endif
 static bool     g_seHaveTemplate = false;
 static std::vector<SDK::UObject*> g_seQuestComps;    // every player quest component quests went to
+static std::vector<SDK::UObject*> g_seSendQueue;     // [50451] components to follow with the authored bundle next tick
 static std::vector<uint8_t> g_seRowsBuf;
 static std::vector<uint8_t> g_seFoldersBuf;
 #if HALCYON_GAME_BUILD == 50451
@@ -1064,6 +1071,44 @@ static void SeCaptureTemplate(void* bundle)
     const uint8_t* rows = *reinterpret_cast<uint8_t* const*>(reinterpret_cast<uint8_t*>(bundle) + 0x20);
     const int n = *reinterpret_cast<const int32_t*>(reinterpret_cast<uint8_t*>(bundle) + 0x28);
     if (!rows || n <= 0 || n > 4096) return;
+#if HALCYON_GAME_BUILD == 50451
+    // [2026-11-05] 50451 renamed the parkour quests: there is no "Subquest_PKR_Climber" row any more (they are
+    // Sub_PKR_GrabClimb_*), so no template was ever captured and every editor quest stayed "WAITING FOR TEMPLATE".
+    // Prefer the quest the station's own start button starts (Sub_FTUE_Tour_Mainframe, the Mainframe
+    // ProgressionButton's TargetQuest), then any parkour sub-quest. SeBuildRow replaces the id, title, text, icon,
+    // repeat and clears prerequisites + children, so the template only supplies the quest type and defaults.
+    {
+        static const wchar_t* const kPrefer[] = { L"Sub_FTUE_Tour_Mainframe", L"Sub_PKR_", L"Subquest_PKR_Climber" };
+        for (const wchar_t* want : kPrefer)
+            for (int i = 0; i < n; ++i)
+            {
+                const uint8_t* r = rows + static_cast<size_t>(i) * 0x1D0;
+                const wchar_t* t = *reinterpret_cast<const wchar_t* const*>(r + 0x178);
+                if (t && wcsncmp(t, want, wcslen(want)) == 0)
+                {
+                    memcpy(g_seTemplate, r, 0x1D0);
+                    // Own the quest-type tag arrays now: the row points into the game's bundle, which is freed once
+                    // its send returns, and SeBuildRow reads them much later (when a quest is published).
+                    static std::vector<uint64_t> s_tags, s_parentTags;
+                    auto own = [&](size_t at, std::vector<uint64_t>& dst) {
+                        const uint64_t* d = *reinterpret_cast<const uint64_t* const*>(r + at);
+                        const int c = *reinterpret_cast<const int32_t*>(r + at + 8);
+                        dst.assign(d && c > 0 && c < 64 ? d : nullptr, d && c > 0 && c < 64 ? d + c : nullptr);
+                        SetTArray(g_seTemplate + at, dst.data(), static_cast<int>(dst.size()));
+                    };
+                    own(0x10, s_tags);
+                    own(0x20, s_parentTags);
+                    memset(g_seTemplate + 0x50, 0, 0x174 - 0x50);   // prerequisites, rewards, children: never borrowed
+                    memset(g_seTemplate + 0x178, 0, 0x30);          // Title, Name, Location
+                    memset(g_seTemplate + 0x1B8, 0, 0x10);          // Description
+                    g_seHaveTemplate = true;
+                    HxLog("[HalcyonA2][SPECEDIT] quest template captured from row %d (%ls)\n", i, t);
+                    return;
+                }
+            }
+        return;
+    }
+#endif
     for (int i = 0; i < n; ++i)
     {
 #if HALCYON_GAME_BUILD == 50451
@@ -1146,6 +1191,11 @@ static bool SeBuildRow(SeAuthoredQuest& q, const std::string& glyph, int repetit
 #endif
 #if HALCYON_GAME_BUILD == 50451
     SetFString(q.row + 0x1B8, q.desc);  // [50451 offs]
+    // [2026-11-05] 50451's FAAQuestEntry also has Name (+0x188) and Location (+0x198) FStrings, which the 47031-era
+    // code never set: they kept the TEMPLATE's pointers into the game's own bundle, freed once that send returned,
+    // so the RPC serialised dangling strings and our bundle never reached a player. Name = the title; no Location.
+    SetFString(q.row + 0x188, q.title);
+    memset(q.row + 0x198, 0, 0x10);
 #else
     SetFString(q.row + 0x108, q.desc);
 #endif
@@ -1165,7 +1215,11 @@ static bool SeBuildRow(SeAuthoredQuest& q, const std::string& glyph, int repetit
 // Send every authored quest to one player's quest component, as its own bundle.
 static void SeSendAuthored(void* comp)
 {
+#if HALCYON_GAME_BUILD == 50451
+    if (!comp || g_seAuthored.empty()) return;   // sent through the Client_SetQuests RPC (QSEND, dllmain_50451.cpp)
+#else
     if (!comp || g_seAuthored.empty() || !QSendSet_Orig) return;
+#endif
     bool anyDeleted = false;
     for (const auto& q : g_seAuthored) anyDeleted |= q.deleted;
 #if HALCYON_GAME_BUILD == 50451
@@ -1204,8 +1258,12 @@ static void SeSendAuthored(void* comp)
     *reinterpret_cast<int32_t*>(g_seBundle + 12) = static_cast<int32_t>(wcslen(kSeBundleId) + 1);
     SetTArray(g_seBundle + 0x20, g_seRowsBuf.data(), n);
     SetTArray(g_seBundle + 0x30, g_seFoldersBuf.data(), nf);
+#if HALCYON_GAME_BUILD == 50451
+    if (!SendQuestBundleRpc(comp, g_seBundle, false)) { HxLog("[HalcyonA2][SPECEDIT] quest send FAILED\n"); return; }
+#else
     __try { QSendSet_Orig(comp, g_seBundle, 0); }
     __except (EXCEPTION_EXECUTE_HANDLER) { HxLog("[HalcyonA2][SPECEDIT] quest send FAULTED\n"); return; }
+#endif
     HxLog("[HalcyonA2][SPECEDIT] sent %d authored quest(s) to comp=%p\n", n, comp);
 }
 
@@ -1349,9 +1407,25 @@ static void SeOnQuestsSent(void* comp, void* bundle)
     auto* c = static_cast<SDK::UObject*>(comp);
     if (std::find(g_seQuestComps.begin(), g_seQuestComps.end(), c) != g_seQuestComps.end()) return;
     if (g_seQuestComps.size() < 256) g_seQuestComps.push_back(c);
+#if HALCYON_GAME_BUILD == 50451
+    // Seen BEFORE the game's own Client_SetQuests goes out (ProcessEvent pre-dispatch): follow it on the next tick,
+    // so the player gets the game's bundle first, as with the old native hook.
+    g_seSendQueue.push_back(c);
+#else
     SeSendAuthored(comp);
     if (!g_seSrvLast && !g_seAuthored.empty()) SeRegisterOnServer();
+#endif
 }
+#if HALCYON_GAME_BUILD == 50451
+static void SeFlushSendQueue()
+{
+    if (g_seSendQueue.empty()) return;
+    std::vector<SDK::UObject*> q;
+    q.swap(g_seSendQueue);
+    for (SDK::UObject* c : q) if (SeAlive(c)) SeSendAuthored(c);
+    if (!g_seSrvLast && !g_seAuthored.empty()) SeRegisterOnServer();
+}
+#endif
 
 // Point every A2QuestProgressComponent on `actor` at the authored quest.
 static int SeBindStep(SDK::AActor* actor, const SeAuthoredQuest& q)
@@ -1491,7 +1565,11 @@ static void SeQuestRemove(SeAuthoredQuest& q)
 // (seen on the wire as removing=1). The remaining quests are re-sent afterwards either way.
 static void SeSendRemoval(void* comp, const std::vector<const SeAuthoredQuest*>& gone)
 {
+#if HALCYON_GAME_BUILD == 50451
+    if (!comp || gone.empty()) return;
+#else
     if (!comp || gone.empty() || !QSendSet_Orig) return;
+#endif
     static std::vector<uint8_t> rows, folders;
 #if HALCYON_GAME_BUILD == 50451
     static uint8_t bundle[0x70];  // [50451 offs]
@@ -1521,8 +1599,12 @@ static void SeSendRemoval(void* comp, const std::vector<const SeAuthoredQuest*>&
     *reinterpret_cast<int32_t*>(bundle + 12) = static_cast<int32_t>(wcslen(kSeBundleId) + 1);
     SetTArray(bundle + 0x20, rows.data(), n);
     SetTArray(bundle + 0x30, folders.data(), nf);
+#if HALCYON_GAME_BUILD == 50451
+    if (!SendQuestBundleRpc(comp, bundle, true)) HxLog("[HalcyonA2][SPECEDIT] quest removal FAILED\n");
+#else
     __try { QSendSet_Orig(comp, bundle, 1); }
     __except (EXCEPTION_EXECUTE_HANDLER) { HxLog("[HalcyonA2][SPECEDIT] quest removal FAULTED\n"); }
+#endif
 }
 static int SeQuestResendAll(const std::vector<const SeAuthoredQuest*>& gone = {})
 {
