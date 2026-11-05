@@ -442,6 +442,16 @@ func TestSessionsAndMatchmakingFilter(t *testing.T) {
 		t.Error("SetSessionPlayerCount unknown deployment")
 	}
 
+	// [Solara] moving servers: joining sB without leaving sA takes p3 off sA (one server at a time)
+	do(t, gw.HTTP, "POST", "/matchmaking/v1/x/sessions/sB/publicplayers/p3", "", "", nil)
+	if a, b := SessionsSnapshot()[1].PublicPlayers, SessionsSnapshot()[0].PublicPlayers; len(a) != 0 || strings.Join(b, ",") != "p3" {
+		t.Errorf("join elsewhere: sA=%v sB=%v", a, b)
+	}
+	do(t, gw.HTTP, "POST", "/matchmaking/v1/x/sessions/sB/publicplayers/p3", "", "", nil) // re-join: still listed once
+	if b := SessionsSnapshot()[0].PublicPlayers; strings.Join(b, ",") != "p3" {
+		t.Errorf("re-join: sB=%v", b)
+	}
+
 	// prune keeps the newest session of each live deployment
 	a2 := models.NewEosSessionInfo()
 	a2.Id, a2.DeploymentId = "sA2", s("depA")

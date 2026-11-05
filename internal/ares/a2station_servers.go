@@ -315,6 +315,20 @@ func (s *A2StationDbServer) ServerHeartbeat(c *hosting.Context) hosting.Result {
 			body.UptimeMs, body.Players, nil)
 	}
 
+	// [Solara 2026-11-05] The heartbeat (every 5 s) carries the server's connected-player count. Apply it, so the
+	// station list follows players within seconds when they move between servers; /update_player_count alone came
+	// every ~3 minutes and left them listed on the old server meanwhile. Only a count the server actually sent (and
+	// measured: -1 = not yet) is applied: a missing field would deserialize as 0 and wipe a real count.
+	players, hasPlayers := 0, false
+	if el, err := stj.Parse(c.Request.Body()); err == nil && el.ValueKind() == stj.Object {
+		if _, ok := el.TryGetProperty("players"); ok && body.Players >= 0 {
+			players, hasPlayers = body.Players, true
+		}
+	}
+	if hasPlayers {
+		eos.SetSessionPlayerCount(*body.DeploymentId, players)
+	}
+
 	// Keep the deployment row's freshness stamp moving too.
 	depCol := a2Deployments()
 	if depCol != nil {
@@ -322,6 +336,9 @@ func (s *A2StationDbServer) ServerHeartbeat(c *hosting.Context) hosting.Result {
 			if a2EqPtr(d.DeploymentId, body.DeploymentId) {
 				now := dotnet.Now()
 				d.LastEvent = &now
+				if hasPlayers {
+					d.PlayerCount = players
+				}
 				depCol.Update(d)
 				a2MarkStationOnline(d.StationId) // [Solara] a heartbeating server's station is online
 				break

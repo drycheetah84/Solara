@@ -397,6 +397,22 @@ func TestA2RegisterServerAndPlayerCount(t *testing.T) {
 		t.Fatalf("heartbeat: %s", w.Body.String())
 	}
 
+	// [Solara] the heartbeat's player count drives the station list; a missing or unmeasured (-1) count changes nothing
+	a2Do(t, s, "POST", "/update_player_count", `{"deployment_id":"dep-1","player_count":5}`, nil)
+	a2Do(t, s, "POST", "/server_heartbeat", `{"deployment_id":"dep-1","pid":1,"seq":3}`, nil)
+	if d := a2Deployments().FindAll()[0]; d.PlayerCount != 5 {
+		t.Fatalf("heartbeat without players changed the count: %d", d.PlayerCount)
+	}
+	a2Do(t, s, "POST", "/server_heartbeat", `{"deployment_id":"dep-1","pid":1,"seq":4,"players":-1}`, nil)
+	if d := a2Deployments().FindAll()[0]; d.PlayerCount != 5 {
+		t.Fatalf("unmeasured heartbeat changed the count: %d", d.PlayerCount)
+	}
+	a2Do(t, s, "POST", "/server_heartbeat", `{"deployment_id":"dep-1","pid":1,"seq":5,"players":2}`, nil)
+	if d := a2Deployments().FindAll()[0]; d.PlayerCount != 2 {
+		t.Fatalf("heartbeat count not applied: %d", d.PlayerCount)
+	}
+	a2Do(t, s, "POST", "/update_player_count", `{"deployment_id":"dep-1","player_count":0}`, nil) // back to the state below
+
 	// player count totals (also via the station route)
 	w = a2Do(t, s, "GET", "/stations/player_count", "", nil)
 	if w.Body.String() != "0" || w.Header().Get("Content-Type") != "text/plain" {

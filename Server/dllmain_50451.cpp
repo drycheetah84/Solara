@@ -11039,6 +11039,31 @@ static bool g_gateDiscover = false;  // optional per-connection id dump (org@0xA
 // actually connected is this gameserver's netdriver — ClientConnections.Num() drops the instant UE
 // tears down a closed connection. So periodically report the real count to the backend, which
 // reconciles the session's player count down to it. ~3-minute cadence (the count is not time-critical).
+// [PLAYERCOUNT 2026-11-05] Measure the connected count every ~2 s (a cheap read) so the 5 s /server_heartbeat carries
+// a CURRENT number; the backend applies it to the station list. Before, g_hbPlayers was only refreshed by the 3-minute
+// report below, so when players moved between servers (e.g. Freerunners -> Clubhouse) the list showed them on the old
+// server for up to 3 minutes.
+static int MeasureConnectedPlayers()   // -1 = no live netdriver yet
+{
+    auto* world = SDK::UWorld::GetWorld();
+    if (!world || !world->NetDriver) return -1;
+    const uintptr_t nd = reinterpret_cast<uintptr_t>(world->NetDriver);
+    static uintptr_t imgBase = 0, imgSize = 0;
+    if (!imgBase) {
+        imgBase = GetBase(); auto* dos = reinterpret_cast<IMAGE_DOS_HEADER*>(imgBase);
+        auto* nth = reinterpret_cast<IMAGE_NT_HEADERS*>(imgBase + dos->e_lfanew);
+        imgSize = nth->OptionalHeader.SizeOfImage;
+    }
+    const uintptr_t vt = *reinterpret_cast<uintptr_t*>(nd);
+    if (vt < imgBase || vt >= imgBase + imgSize) return -1;      // not a real in-image netdriver yet
+    const int32_t numConns = *reinterpret_cast<int32_t*>(nd + 0x100);   // ClientConnections.Num()
+    return numConns < 0 ? 0 : numConns;
+}
+static void SafePlayerCountMeasure()
+{
+    __try { const int n = MeasureConnectedPlayers(); if (n >= 0) g_hbPlayers.store(n, std::memory_order_relaxed); }
+    __except (EXCEPTION_EXECUTE_HANDLER) {}
+}
 static void PlayerCountReportTick()
 {
     if (g_deploymentId.empty()) return;   // not registered yet / manual launch without an id
@@ -18045,6 +18070,12 @@ static void ProcessEvent_Hook(SDK::UObject* Context, SDK::UFunction* Function, v
 
         // Report the real connected-player count to the backend every ~3 min so the EOS session's
         // count gets reconciled past client-missed leaves (hard disconnects). See PlayerCountReportTick.
+        static ULONGLONG s_lastPlayerMeasure = 0;   // [PLAYERCOUNT] keep the heartbeat's count current (~2 s)
+        if (GetTickCount64() - s_lastPlayerMeasure > 2000)
+        {
+            s_lastPlayerMeasure = GetTickCount64();
+            SafePlayerCountMeasure();
+        }
         static ULONGLONG s_lastPlayerReport = 0;
         if (g_trackerDone && GetTickCount64() - s_lastPlayerReport > 180000)
         {
