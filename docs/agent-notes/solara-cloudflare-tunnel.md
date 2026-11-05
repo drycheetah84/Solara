@@ -65,6 +65,14 @@ D-series quota needs MFA login, a request was throttled -- retry for D8as_v5 the
   -n halcyon-game1 --command-id RunPowerShellScript --scripts @file.ps1` (no WinRM needed). C:\Halcyon layout as
   before; agent task HalcyonAgent -HubHost 10.10.1.4 -Box win-gamebox-1 -Capacity 5. 5 servers ~1.3 GB RAM each.
 - DLL deploy now: scp DLL to hub /opt/halcyon-dist, then on game1 iwr http://10.10.1.4:8000/HalcyonA2.dll.
+- **Every game server MUST run the SpecEditor flags `-SpecEdit -SpecEditSandbox`** (in `Args` of
+  `deploy/azure/server.config.psd1`). The agent launches servers from the box's OWN copy,
+  `C:\Halcyon\server.config.psd1` (bootstrap downloads it once), so EVERY deploy also scps
+  `deploy/azure/server.config.psd1` to /opt/halcyon-dist and iwr's it to `C:\Halcyon\server.config.psd1`.
+  Flags only apply to servers started after that: restart them. Then verify on game1 that every server has them:
+  `Get-CimInstance Win32_Process -Filter "Name='A2-Win64-Shipping.exe'" | % CommandLine` must show `-SpecEdit` and
+  `-SpecEditSandbox` on each line. Without them the editor client's placements/exports are silently ignored
+  (the client gets no error; only `%TEMP%\HalcyonA2*.log` on the box says why: `[SPECEDIT] REFUSED ...`).
 - DB was seeded from the repo production.solara.db (2026-10-31): Nov 1-4 AWS data lost; stations Ranked/Clubhouse/
   Freerunners recreated (new ids), their station config lost. Discord login RESTORED 2026-11-05 (new client secret; role map, role names and fleet owners rebuilt from history; owners remapped to the new station ids) -- was: needed a new client secret +
   DISCORD_ROLE_MAP/FLEET_OWNERS/ROLE_NAMES (client id + guild id restored in dashboard.env).
