@@ -33,6 +33,7 @@ export function proxy(req: NextRequest) {
     pathname === "/login" ||
     pathname === "/auth/discord" ||
     pathname === "/auth/discord/callback" ||
+    pathname === "/auth/key" ||                 // admin-key sign-in (POST, same-origin only -- checked above)
     pathname === "/logout" ||
     pathname.startsWith("/_next/") ||
     pathname === "/favicon.ico" ||

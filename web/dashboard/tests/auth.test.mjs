@@ -143,7 +143,7 @@ test("production dashboard authentication", async t => {
     assert.equal(upstreamRequests, 0);
   });
 
-  await t.test("key login is gone", async () => {
+  await t.test("the old /dash-login key login is gone (admin keys sign in at /auth/key)", async () => {
     const response = await request("/dash-login", {
       method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ key: adminKey }),
     });
@@ -255,6 +255,45 @@ test("production dashboard authentication", async t => {
     assert.equal((await request("/api/stats", { headers: { cookie, origin: "https://evil.example" } })).status, 200);
   });
 
+  // Last against this server: it ends by tripping the shared sign-in lockout.
+  await t.test("admin key sign-in: body only, constant-time, rate limited, httpOnly session", async () => {
+    const form = key => ({ method: "POST", headers: { "content-type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ key }).toString() });
+    const sessionOf = res => (res.headers.get("set-cookie") ?? "").match(/halcyon_dash=([^;]+)/)?.[1] ?? null;
+    // wrong key: back to /login with an error, no session
+    const bad = await request("/auth/key", form("not-the-key"));
+    assert.equal(bad.status, 303);
+    assert.match(bad.headers.get("location") ?? "", /\/login\?err=bad-key/);
+    assert.equal(sessionOf(bad), null);
+    // the key in the URL is never read; GET is not a sign-in
+    const inUrl = await request(`/auth/key?key=${adminKey}`, form(""));
+    assert.match(inUrl.headers.get("location") ?? "", /err=bad-key/);
+    assert.equal(sessionOf(inUrl), null);
+    const get = await request(`/auth/key?key=${adminKey}`);
+    assert.notEqual(get.status, 303);
+    assert.equal(sessionOf(get), null);
+    // a cross-site post is refused before the key is looked at
+    assert.equal((await request("/auth/key", { ...form(adminKey),
+      headers: { ...form(adminKey).headers, origin: "https://evil.example" } })).status, 403);
+    // the right key: a normal signed admin session (httpOnly, SameSite=Lax), never containing the key
+    const ok = await request("/auth/key", form(adminKey));
+    assert.equal(ok.status, 303);
+    assert.equal(new URL(ok.headers.get("location"), ok.url).pathname, "/");
+    const setCookie = ok.headers.get("set-cookie") ?? "";
+    assert.match(setCookie, /HttpOnly/i);
+    assert.match(setCookie, /SameSite=lax/i);
+    assert.equal(setCookie.includes(adminKey), false);
+    const keyCookie = `halcyon_dash=${sessionOf(ok)}`;
+    const api = await request("/api/stats", { headers: { cookie: keyCookie } });
+    assert.equal((await api.json()).correctKey, true);
+    assert.equal((await (await request("/me", { headers: { cookie: keyCookie } })).json()).admin, true);
+    // ten failures lock the client out -- even the right key is refused then
+    for (let i = 0; i < 10; i++) await request("/auth/key", form("wrong-" + i));
+    const locked = await request("/auth/key", form(adminKey));
+    assert.match(locked.headers.get("location") ?? "", /err=too-many-attempts/);
+    assert.equal(sessionOf(locked), null);
+  });
+
   await dashboard.stop();
   for (const missing of ["DASHBOARD_ADMIN_KEY", "DASHBOARD_SESSION_SECRET"]) {
     await t.test(`missing ${missing} fails closed`, async () => {
@@ -263,6 +302,10 @@ test("production dashboard authentication", async t => {
         const response = await unconfigured.request("/auth/discord/callback?code=x&state=y");
         assert.match(response.headers.get("location") ?? "", /err=discord-not-configured/);
         assert.equal(response.headers.get("set-cookie")?.includes("halcyon_dash=") ?? false, false);
+        const keyLogin = await unconfigured.request("/auth/key", { method: "POST",
+          headers: { "content-type": "application/x-www-form-urlencoded" }, body: `key=${adminKey}` });
+        assert.match(keyLogin.headers.get("location") ?? "", /err=key-not-configured/);
+        assert.equal(keyLogin.headers.get("set-cookie")?.includes("halcyon_dash=") ?? false, false);
         for (const url of ["/api/stats", "/game/stations"]) {
           assert.equal((await unconfigured.request(url, { headers: { cookie } })).status, 401);
         }
