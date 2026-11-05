@@ -51,7 +51,20 @@ functions with `idautils.Functions()`: a hand-rolled `get_func`/`end_ea` walk lo
 - UE logs per server: `C:\Windows\System32\config\systemprofile\AppData\Local\A2\Saved\Logs\A2_N.log` on the game box;
   the DLL log is `C:\Windows\Temp\HalcyonA2.log` (shared by all servers on the box).
 
-## Leading hypotheses
+## Strongest lead: cross-match input relay (fix built, commit a8e11d3)
+
+The 40-player night had **several full 4v4 matches running at once**. Our `RBFWD` relay sent each seated player's
+inputs to every seated player **within 80 m**, not "in the same sim". Neighbouring matches got each other's inputs,
+and the receiving client resolves the sender by `PlayerIndex` (the seat number, 0..7 in every match), so a foreign
+seat-N input was applied to its own seat-N player: players and the ball snapping, **only when several matches run**
+(invisible with one match, which is why Nov 3 looked fine). Fix: relay only when both pawns'
+`CurrentRollbackSimulationOutline` (`@0x1820`, first dword = SimIndex) match. `[RBSTAT]` gained `fwd/s` and
+`fwdBlocked/s` (relays the old rule would have sent across sims) to confirm on a busy night.
+
+Early `[RBSTAT]` data (one player in a sim, Nov 5): sim tick steady 90/s, lead ~6–8 frames, 23 late inputs in
+159 s, **0 ball corrections**, 0 missed reports. So timing/lateness alone did not produce snaps.
+
+## Other hypotheses
 
 1. **Late inputs → corrections.** 50451 steps on the clock, not on inputs. Our rebase starts every player only
    **2 frames (22 ms)** ahead, so any jitter above that makes an input late; the server simulates the frame without it,
