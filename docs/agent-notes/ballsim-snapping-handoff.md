@@ -1,13 +1,48 @@
 # Ball sim snapping (50451): handoff
 
-> Status 2026-11-05: **diagnosed, not fixed.** Written for whoever picks this up next (human or Claude). Read
+> Status 2026-11-05: **two fixes built, neither confirmed on a busy production server yet:** the cross-match input
+> relay fix (a8e11d3, "Strongest lead" below) and [RBDEDUPE] (duplicate sim-results sends, next section; verified
+> locally). Written for whoever picks this up next (human or Claude). Read
 > [a2-50451-rollback-sim-internals](a2-50451-rollback-sim-internals.md) and
 > [a2-rollback-netmode-fix](a2-rollback-netmode-fix.md) first. Never test on the live servers; use the local rig.
 
 ## The problem
 
-With ~40 players on one server (Freerunners, deployment `1c8b34fe`, box 1) playing driftball, **players in the sim and
-the ball snapped constantly.** With a handful of players (Nov 3) it looked acceptable. It gets worse with player count.
+With ~40 players **on the server** (Freerunners, deployment `1c8b34fe`, box 1) and a few of them playing driftball,
+**players in the sim and the ball snapped constantly.** With a handful of players on the server (Nov 3) it looked
+acceptable. It gets worse with the server's population, not with how many are seated in the sim.
+
+## Fix: [RBDEDUPE] duplicate sim-results sends (2026-11-05, alongside the cross-match relay fix)
+
+Measured on the local rig: the sim-results sender (`0x54FC0F0`, `Client_NewSendServerSimResults`) runs up to once per
+**engine tick**, not once per 90 Hz sim frame. With one seated PC client the server sent 233 results/s, of which ~144
+were byte-identical to the previous send (same frame, same ball and player states). Prod runs uncapped at ~550 fps,
+so there it is ~6x the needed traffic per seated player. Both that RPC and `Client_NewSendOtherPlayerInputs` (the
+`RBFWD` relay) are **unreliable**; a busy server's pose traffic fills every connection, and UE drops unreliable RPCs on a
+full connection, so the duplicates crowd out exactly what seated players need (leading explanation for the
+population scaling; the drops themselves are not measured).
+
+The DLL now skips a send that is byte-identical to the last one to that connection for that sim, so ~90/s go out (one
+per sim frame), like a ~90 Hz dedicated server. A re-simulated frame (different bytes) still goes out. Locally,
+dedupe on vs off: 0 corrections, 0 missed-input reports, inputs steady at 180 batches/s, no rollback errors in the
+client log. `-NoRbDedupe` turns it off; on the local rig `%TEMP%\rbtest_nodedupe.txt` turns it off live (A/B).
+`[RBSTAT]` gained `sends/s` and `dup` (repeats found; skipped while the dedupe is on).
+
+Still to confirm: a busy prod session with this build (corr/s should drop; `fwdBlocked/s` > 0 shows the cross-match
+relay was happening). If snapping remains, the next suspect is the per-connection pose budget (`[NETSCALE]` assumes
+45 poses/s, but a 50451 PC client sends ~184/s, see `[POSERATE]`).
+
+## Seating a PC client on the local rig (works, 2026-11-05)
+
+Local server WITHOUT `-NoSpecBlock` (so the PC client gets a real pawn), SpecEditor client, then over the bridge:
+`join 127.0.0.1:7777`; `slots` lists arena slot ids (driftball: `TKB_Driftplex01`..`06`, `TKB_Prime`, ...);
+`tp 16736 6900 -25766` + `arena TKB_Driftplex01` (inside Driftplex01); `tp 14644 6442 -26800` (its red team switcher;
+blue is at y 7358) -> server logs `ADMITDIAG ... ADMITTED`; after ~8 s `tp 16200 6700 -25900` onto the field.
+`[RBFRAMEFIX]` then shows the player's offset and `[RBSTAT]` prints every second.
+Trap: once seated, the sim owns the player's position, so a teleport can be undone and drop the player back on its
+own switcher, which clears the team (`Client_TeamClearSuccess`, `LeftArena`). Repeat the sequence if that happens.
+A second client never stayed seated this way (no movement input over the bridge), so two-player tests need a person
+on a headset or keyboard.
 
 ## How the 50451 sim works (IDA, RVAs relative to 0x140000000)
 

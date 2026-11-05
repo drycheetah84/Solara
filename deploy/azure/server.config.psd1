@@ -8,6 +8,11 @@
 
     InitWaitSeconds = 60
 
+    # REQUIRED on every production game server: the SpecEditor flags -SpecEdit and -SpecEditSandbox (the in-game
+    # level editor and its synced sandbox placement). Never drop them from a deploy. Older DLLs have the editor OFF
+    # unless these are passed; without them the editor client's placements, edits and exports are silently ignored.
+    # The agent reads the box's OWN copy, C:\Halcyon\server.config.psd1: a deploy must copy this file there too
+    # (docs/agent-notes/solara-cloudflare-tunnel.md), and only servers started afterwards get the new flags.
     Args = @(
         '-nullrhi'
         '-nosound'

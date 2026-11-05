@@ -3685,6 +3685,8 @@ static int32_t SafeRbNicOffset(void* nic)
 // check 0x5757260 when a client's reported state differs from the server's for that frame = a client-visible snap);
 // missedRep/missedSum = Client_ReportMissedInputs sends and the inputs they reported; lead = newest input frame minus
 // the server frame when a batch arrives (after our rebase; <= 0 means the input came too late for its frame).
+static volatile LONG g_rbsSends = 0;      // Client_NewSendServerSimResults sends attempted (up to one per seated player per ENGINE tick)
+static volatile LONG g_rbsDupSends = 0;   // ... of which were byte-identical repeats (skipped by [RBDEDUPE] unless it is off)
 static volatile LONG g_rbsCorr = 0, g_rbsMissRep = 0, g_rbsMissSum = 0, g_rbsBatches = 0, g_rbsLate = 0;
 static volatile LONG g_rbsLeadSum = 0, g_rbsLeadMin = 0x7FFFFFFF, g_rbsLeadMax = -0x7FFFFFFF;
 static volatile LONG g_rbsFwdSent = 0, g_rbsFwdBlocked = 0;   // [RBFWD] relays to same-sim players / skipped (other sim or unseated)
@@ -3728,10 +3730,12 @@ static void RbStatFlush()   // once a second from the step driver hook
     const LONG late = InterlockedExchange(&g_rbsLate, 0), sum = InterlockedExchange(&g_rbsLeadSum, 0);
     const LONG mn = InterlockedExchange(&g_rbsLeadMin, 0x7FFFFFFF), mx = InterlockedExchange(&g_rbsLeadMax, -0x7FFFFFFF);
     const LONG fwd = InterlockedExchange(&g_rbsFwdSent, 0), fwdBlk = InterlockedExchange(&g_rbsFwdBlocked, 0);
+    const LONG sends = InterlockedExchange(&g_rbsSends, 0), dups = InterlockedExchange(&g_rbsDupSends, 0);
     if (corr == 0 && rep == 0 && b == 0) return;
     HxLog("[HalcyonA2][RBSTAT] corr/s=%ld missedRep/s=%ld missedSum=%ld batches/s=%ld lead min=%ld avg=%.1f max=%ld late=%ld"
-        " | ticks/s=%d hitch=%d dtMax=%.1fms | fwd/s=%ld fwdBlocked/s=%ld\n",
-        corr, rep, miss, b, b ? mn : 0, b ? double(sum) / b : 0.0, b ? mx : 0, late, ticks, hitch, dtMax * 1000.0f, fwd, fwdBlk);
+        " sends/s=%ld dup=%ld | ticks/s=%d hitch=%d dtMax=%.1fms | fwd/s=%ld fwdBlocked/s=%ld\n",
+        corr, rep, miss, b, b ? mn : 0, b ? double(sum) / b : 0.0, b ? mx : 0, late, sends, dups, ticks, hitch, dtMax * 1000.0f,
+        fwd, fwdBlk);
 }
 static __int64 __fastcall RbMissed_Hook(void* nic, int32_t frame, uint64_t serverFrame, uint64_t missed, uint64_t missedBuf)
 {
@@ -3866,8 +3870,54 @@ static void SafeRbForwardInputs(SDK::UObject* nic, const uint8_t* in, int32_t n)
 {
     __try { RbForwardInputs(nic, in, n); } __except (EXCEPTION_EXECUTE_HANDLER) { HxLog("[HalcyonA2][RBFWD] fault\n"); }
 }
+// [RBDEDUPE 2026-11-05] The sim-results sender (0x54FC0F0) runs up to once per ENGINE tick (measured: sends/s = ticks/s
+// while a seated client streams inputs), but the sim only steps at 90 Hz,
+// so most sends repeat the frame the client already got. A real dedicated server ticks near 90 Hz, so it barely
+// repeats; ours runs uncapped (~230 fps on the local rig, ~550 on prod), so every seated player gets 2.5-6x the
+// result traffic for nothing (measured locally: 146 of 236 sends/s were byte-identical repeats). The RPC is
+// UNRELIABLE, and so is Client_NewSendOtherPlayerInputs; when a connection is full (a busy server's pose traffic adds
+// to every connection) UE drops unreliable RPCs, so the repeats crowd out the results and relayed inputs seated
+// players need -> mispredictions -> server corrections -> snapping that grows with server population (the leading
+// explanation, see docs/agent-notes/ballsim-snapping-handoff.md). Skip a send only when it is byte-identical to the
+// last one to that connection for that sim (same frame, same ball and player states), so a re-simulated frame still
+// goes out. -NoRbDedupe turns it off; on the local rig %TEMP%\rbtest_nodedupe.txt does too, live.
+static bool g_rbDedupe = wcsstr(GetCommandLineW(), L"-NoRbDedupe") == nullptr;
+static bool g_rbDedupeTestOff = false;   // local rig A/B (RbDedupeTestToggle)
+static uint64_t RbHashArr(uint64_t h, void* arr, size_t stride)
+{
+    const uint8_t* d = arr ? *reinterpret_cast<uint8_t**>(arr) : nullptr;
+    const int32_t n = arr ? *reinterpret_cast<int32_t*>(reinterpret_cast<uintptr_t>(arr) + 8) : 0;
+    h = (h ^ static_cast<uint32_t>(n)) * 1099511628211ull;
+    if (!d || n <= 0 || n > 64) return h;
+    for (size_t i = 0, len = stride * static_cast<size_t>(n); i < len; ++i) h = (h ^ d[i]) * 1099511628211ull;
+    return h;
+}
+static bool RbIsDupSend(void* conn, int32_t simIdx, int32_t frame, void* balls, void* players)
+{
+    struct Last { int32_t frame; uint64_t hash; };
+    static std::unordered_map<uint64_t, Last> s_last;   // game thread only (the sender runs in the sim step)
+    uint64_t h = 1469598103934665603ull;
+    h = RbHashArr(h, balls, 0x50);     // FFastRollbackBallState
+    h = RbHashArr(h, players, 0xB0);   // FFastRollbackPlayerState
+    const uint64_t key = (static_cast<uint64_t>(reinterpret_cast<uintptr_t>(conn)) << 8) ^ static_cast<uint32_t>(simIdx);
+    auto it = s_last.find(key);
+    if (it != s_last.end() && it->second.frame == frame && it->second.hash == h) return true;
+    if (s_last.size() > 512) s_last.clear();   // connections come and go; a stale entry only costs one extra send
+    s_last[key] = Last{ frame, h };
+    return false;
+}
+static bool SafeRbIsDupSend(void* conn, int32_t simIdx, int32_t frame, void* balls, void* players)
+{
+    __try { return RbIsDupSend(conn, simIdx, frame, balls, players); } __except (EXCEPTION_EXECUTE_HANDLER) { return false; }
+}
 static __int64 __fastcall RbSendRes_Hook(void* conn, int32_t simIdx, int32_t frame, void* balls, void* players)
 {
+    InterlockedIncrement(&g_rbsSends);   // [RBSTAT]
+    if (SafeRbIsDupSend(conn, simIdx, frame, balls, players))
+    {
+        InterlockedIncrement(&g_rbsDupSends);
+        if (g_rbDedupe && !g_rbDedupeTestOff) return 0;   // [RBDEDUPE] the client already has exactly this
+    }
     if (balls) SafeRbBallPush(simIdx, frame, balls);
     // results go out on the RECEIVING client's clock (inputs were rebased onto ours on the way in)
     const int32_t off = SafeRbConnFrameOffset(conn);
@@ -4942,8 +4992,21 @@ static void SafeTuneNetDriver() { __try { TuneNetDriver(); } __except (EXCEPTION
 //             ClientConnections{Data@0xD0, Num@0xD8};  UNetConnection: CurrentNetSpeed@0x38.
 static int  g_netSpeedTarget = 200000;   // bytes/s per connection (~660 poses/s of headroom); -NetSpeed=N
 static bool g_tuneNetRates = true;     // -NoNetRateTune to A/B
+// [RBDEDUPE] LOCAL RIG ONLY (-ServerName=HalcyonLocalTest*): while %TEMP%\rbtest_nodedupe.txt exists the dedupe is off,
+// so it can be A/B'd without a restart. Read every TuneNetRates pass (~2 s); ignored on any other server.
+static bool IsLocalRig();
+static void RbDedupeTestToggle()
+{
+    if (!IsLocalRig()) return;
+    wchar_t path[MAX_PATH]; const DWORD n = GetTempPathW(MAX_PATH, path);
+    if (!n || n > MAX_PATH - 24) return;
+    wcscat_s(path, L"rbtest_nodedupe.txt");
+    const bool off = GetFileAttributesW(path) != INVALID_FILE_ATTRIBUTES;
+    if (off != g_rbDedupeTestOff) { g_rbDedupeTestOff = off; HxLog("[HalcyonA2][RBDEDUPE] LOCAL TEST: dedupe %s\n", off ? "OFF" : "ON"); }
+}
 static void TuneNetRates()
 {
+    RbDedupeTestToggle();
     if (!g_tuneNetRates) return;
     auto* world = SDK::UWorld::GetWorld();
     if (!world || !world->NetDriver) return;
@@ -19912,6 +19975,7 @@ static void Main(HMODULE)
             const int v = _wtoi(ns + 10);
             if (v >= 10000 && v <= 10000000) { g_netSpeedTarget = v; HxLog("[HalcyonA2] -NetSpeed=%d bytes/s per connection\n", v); }
         }
+        if (!g_rbDedupe) HxLog("[HalcyonA2] -NoRbDedupe: every sim-results send goes out, repeats included\n");
         if (wcsstr(GetCommandLineW(), L"-NoFrameRebase")) { g_frameRebase = false; HxLog("[HalcyonA2] -NoFrameRebase: staggered-join epoch rebase OFF (default)\n"); }
         if (wcsstr(GetCommandLineW(), L"-FrameRebase")) { g_frameRebase = true;  HxLog("[HalcyonA2] -FrameRebase: epoch rebase ON (WARNING: in-place frame rewrite feeds back -> rejoin brick)\n"); }
         if (wcsstr(GetCommandLineW(), L"-NoHoldTarget")) { g_holdSimAtTarget = false; HxLog("[HalcyonA2] -NoHoldTarget: input-delay hold OFF (default)\n"); }
