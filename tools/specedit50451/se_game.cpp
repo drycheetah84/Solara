@@ -79,6 +79,7 @@ SDK::UClass* g_leSubsysClass = nullptr;
 bool         g_paletteDirty = true;
 ULONGLONG    g_lastPump = 0;
 bool         g_editorMode = false;   // client-side "Enter Level Editor" state
+SDK::UObject* g_camPrevView = nullptr; // what the player viewed through before the editor camera took over
 SDK::UFunction* g_setQuestsFn = nullptr;   // A2PlayerQuestComponent::Client_SetQuests (see LogIncomingQuests)
 std::vector<Snapshot::GameScript> g_gameScripts;   // ScanScripts result
 std::string g_dumpScriptsTo;                       // test op: also write the scan to this folder
@@ -1658,6 +1659,15 @@ void CameraActivate(const Snapshot& snap)
     CameraGravityUp(g_cam.up);                                   // start already the right way up
     CameraFrame();
     CameraApply();
+    // [2026-11-05] Remember what the player was viewing through, so Stop Editing / F12 can give exactly that back.
+    // A spectator views through the game's spectator camera, not a pawn: restoring "the pawn" (below) left a PC
+    // spectator on the wrong view target after editing, with broken spectator controls.
+    {
+        SDK::Params::Controller_GetViewTarget vt{};
+        SDK::UObject* prev = CallNative(g_pc, "Controller", "GetViewTarget", vt) ? vt.ReturnValue : nullptr;
+        if (prev && prev != g_cam.actor) g_camPrevView = prev;
+        Log("[cam] editor camera on (was viewing %s)", g_camPrevView && ObjectAlive(g_camPrevView) ? g_camPrevView->GetName().c_str() : "?");
+    }
     SetViewTarget(g_cam.actor);
     Cam().active = true;
 }
@@ -1667,10 +1677,20 @@ void CameraDeactivate()
     Cam().active = false;
     Cam().looking = false;
     if (!g_pc) return;
-    // Back to the player's own pawn (APlayerController.AcknowledgedPawn @0x340, else Controller.Pawn @0x2D8).
+    // Back to what the player viewed before editing (a spectator's camera, or their pawn).
+    if (g_camPrevView && ObjectAlive(g_camPrevView) && g_camPrevView != g_cam.actor)
+    {
+        SetViewTarget(g_camPrevView);
+        Log("[cam] editor camera off: view back to %s", g_camPrevView->GetName().c_str());
+        g_camPrevView = nullptr;
+        return;
+    }
+    g_camPrevView = nullptr;
+    // Fallback: the player's own pawn (APlayerController.AcknowledgedPawn @0x340, else Controller.Pawn @0x2D8).
     SDK::UObject* pawn = *reinterpret_cast<SDK::UObject**>(reinterpret_cast<uintptr_t>(g_pc) + 0x360);
     if (!pawn) pawn = *reinterpret_cast<SDK::UObject**>(reinterpret_cast<uintptr_t>(g_pc) + 0x2F8);
     SetViewTarget(pawn ? pawn : g_pc);
+    Log("[cam] editor camera off: view back to %s (fallback)", pawn ? pawn->GetName().c_str() : "the controller");
 }
 
 CamReport CamPose() { return { g_cam.x, g_cam.y, g_cam.z, g_cam.rp, g_cam.ry, g_cam.rr }; }
@@ -2526,7 +2546,7 @@ void ScriptOp(const Snapshot& snap, const std::string& line)
 
     if (!strcmp(op, "wait"))       { g_scriptNext = now + (ULONGLONG)(atof(rest.c_str()) * 1000.0); return; }
     if (!strcmp(op, "log"))        { Log("[script] %s", rest.c_str()); return; }
-    if (!strcmp(op, "enter"))      { State().Push({ CmdType::EnterEditor }); return; }
+    if (!strcmp(op, "enter"))      { g_uiVisible = true; State().Push({ CmdType::EnterEditor }); return; }   // scripts/bridge: the camera needs the UI up
     if (!strcmp(op, "exit"))       { State().Push({ CmdType::ExitEditor }); return; }
 
     if (!strcmp(op, "spawn") || !strcmp(op, "spawnat"))   // spawnat <Class> x y z yaw -- at a fixed spot
