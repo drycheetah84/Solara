@@ -2,6 +2,11 @@
 > sessions learned about this project: A2 reverse-engineering findings and IDA addresses, Mothership/backend
 > contracts, the local test rig, deployment layout, and traps that cost hours. Verify status lines against the code;
 > never deploy to production without the owner's approval. When you learn something durable, add or update a note there.
+>
+> **Deploying game servers:** always launch them with the repo's config, `deploy/azure/server.config.psd1`. It carries the
+> SpecEditor flags (`-SpecEdit -SpecEditSandbox`), which every production game server must run. The agent on the game
+> box reads its own copy, `C:\Halcyon\server.config.psd1`, so every deploy copies this file there too, restarts the
+> servers and checks their command lines for both flags. Steps: `docs/agent-notes/solara-cloudflare-tunnel.md`.
 
 # MASTER ENGINEERING PROMPT — HALCYON SERVER BACKEND + UNREAL MODULES → GO
 
