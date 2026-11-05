@@ -231,9 +231,22 @@ func (s *A2StationDbServer) RegisterServer(c *hosting.Context) hosting.Result {
 	depRow.Config = map[string]*string{}
 	if depCol != nil {
 		if existingDep != nil {
-			// Preserved bug: depRow carries a NEW ObjectId, so Update matches no
-			// document and the existing row is left unchanged.
-			depCol.Update(depRow)
+			// [Solara 2026-11-05] FIXED preserved bug: the original handed Update a row with a NEW ObjectId, so it matched
+			// no document and the existing row was never updated -- above all its ip:port. The watchdog restarts a server
+			// under the SAME deployment id, and the new process can come up on a different game port (UE takes the next
+			// free one), so the station list kept advertising the old port. After a restart of several servers on one box
+			// their ports could swap: everyone who picked Clubhouse landed on the Freerunners process (both are Station
+			// Prime), and the list showed Freerunners ~40 / Clubhouse ~2 while players believed they were in Clubhouse.
+			// Update the existing row in place: address, version, online, count; keep its station, name and config.
+			existingDep.IpAddress = depRow.IpAddress
+			existingDep.DeploymentName = depRow.DeploymentName
+			if !a2IsNullOrWhiteSpace(body.Region) || a2IsNullOrWhiteSpace(existingDep.Region) {
+				existingDep.Region = depRow.Region
+			}
+			existingDep.Version = depRow.Version
+			existingDep.Online = true
+			existingDep.PlayerCount = 0
+			depCol.Update(existingDep)
 		} else {
 			depCol.Insert(depRow)
 		}
