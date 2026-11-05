@@ -28,6 +28,10 @@ import (
 // BanPermanentMinutes is how a permanent ban is stored (100 years).
 const BanPermanentMinutes = 100 * 365 * 24 * 60
 
+// banErrorCode is the MothershipErrorCode sent with a ban refusal. The client reads it as a NUMBER (its fallback is
+// 99999); a string made the third check fail ("no ClientMessage, TraceId or MothershipErrorCode found").
+const banErrorCode = 40301
+
 var (
 	banCacheMu sync.Mutex
 	banCacheAt time.Time
@@ -71,10 +75,14 @@ func activeBan(playerId string) *models.MothershipBanDbObject {
 func banDenied(b *models.MothershipBanDbObject) hosting.Result {
 	text := BanMessage(b)
 	authLog(fmt.Sprintf("[BAN] login refused for %s: %s", sv(b.PlayerId), text))
+	// message is a STRING holding a JSON object: the client checks, in order, "no message or statusCode found",
+	// "message is not a valid JSON object", "no ClientMessage, TraceId or MothershipErrorCode found" (a nested
+	// object failed the first check in prod, 2026-11-05).
+	inner := stj.MarshalString(stj.O("ClientMessage", text, "TraceId", sv(b.BanId), "MothershipErrorCode", banErrorCode))
 	return jsonAnon(stj.O(
 		"statusCode", 403,
 		"name", "PlayerBanned",
-		"message", stj.O("ClientMessage", text, "TraceId", sv(b.BanId), "MothershipErrorCode", "PLAYER_BANNED"),
+		"message", inner,
 		"error", text,
 	), 403)
 }

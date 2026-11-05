@@ -10,15 +10,19 @@
   "You are banned from this fleet. Contact this community's admins for more information."
 - **Meta device bans:** Quest attestation at Mothership login (`CompleteQuestAuth`: `device_ban.is_banned`, tamper ->
   `banDevice`) -> 401, no session.
-- The Mothership login client reads NO ban field. A refused login is just a failed login. The error parser wants
-  `{"statusCode":N,"message":{"ClientMessage":"...","TraceId":"...","MothershipErrorCode":"..."}}` (strings
-  "no message or statusCode found", "no ClientMessage, TraceId or MothershipErrorCode found"); whether
-  ClientMessage reaches the screen is NOT verified (the strings have no code xrefs; IDA scans ban1-3.py).
+- The Mothership login client reads NO ban field. A refused login is just a failed login, but its error text IS
+  parsed and logged/shown. **Verified shape (prod, 2026-11-05):**
+  `{"statusCode":403,"message":"<JSON STRING: {\"ClientMessage\":\"...\",\"TraceId\":\"...\",\"MothershipErrorCode\":<int>}>"}`.
+  The parser's three checks, in order: "no message or statusCode found" (message as a nested object fails here),
+  "message is not a valid JSON object", "no ClientMessage, TraceId or MothershipErrorCode found" (a STRING error code
+  fails here; the client's fallback code is 99999). Result on the client: "Authentication Failed: <ClientMessage>.
+  Errror Code: 40301. Trace ID: <ban id>", and the player cannot log in.
 
 ## Solara global ban
 
 Any active `MothershipBanDbObject` (panel, game server, dashboard) is global:
-- every token-minting client login (Quest complete, Rift, Steam) refuses with 403 in the shape above, ClientMessage =
+- every token-minting client login (Quest complete, Rift, Steam) refuses with 403 in the shape above (error code
+  40301), ClientMessage =
   "You are banned from Halcyon for N more minutes/hours/days | permanently. Reason: ...";
 - `getUserIdFromToken` rejects a banned player's existing tokens, so a live session ends at once.
 - Our own game servers (`isTrustedServer`) are exempt. No game-server polling (owner's call).

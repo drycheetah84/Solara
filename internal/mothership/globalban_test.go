@@ -1,6 +1,7 @@
 package mothership
 
 import (
+	"encoding/json"
 	"strings"
 	"testing"
 )
@@ -26,8 +27,18 @@ func TestGlobalBan(t *testing.T) {
 	// login refused, in the client's Mothership error shape, with the reason
 	rec := do(t, s, "POST", "/v1/client/player/auth/RIFT", `{"UserId":"`+meta+`","Nonce":"y"}`)
 	body := rec.Body.String()
-	if rec.Code != 403 || !strings.Contains(body, `"statusCode":403`) || !strings.Contains(body, `"MothershipErrorCode":"PLAYER_BANNED"`) ||
-		!strings.Contains(body, `"ClientMessage":"You are banned from Halcyon for 60 more minutes. Reason: slurs in voice"`) {
+	// the client's shape: statusCode + message = a STRING holding {ClientMessage, TraceId, MothershipErrorCode}
+	var outer struct {
+		StatusCode int    `json:"statusCode"`
+		Message    string `json:"message"`
+	}
+	var inner struct {
+		ClientMessage, TraceId string
+		MothershipErrorCode    int
+	}
+	if rec.Code != 403 || json.Unmarshal([]byte(body), &outer) != nil || outer.StatusCode != 403 ||
+		json.Unmarshal([]byte(outer.Message), &inner) != nil || inner.MothershipErrorCode != banErrorCode || inner.TraceId == "" ||
+		inner.ClientMessage != "You are banned from Halcyon for 60 more minutes. Reason: slurs in voice" {
 		t.Fatalf("%d %s", rec.Code, body)
 	}
 	// the existing session is dead
