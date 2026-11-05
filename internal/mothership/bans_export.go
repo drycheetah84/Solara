@@ -26,7 +26,7 @@ type ActiveBan struct {
 func ActiveBans() []ActiveBan {
 	now := dotnet.UtcNow()
 	out := []ActiveBan{}
-	for _, b := range bans().Find(func(b *models.MothershipBanDbObject) bool { return b.ExpiresAt.After(now) }) {
+	for _, b := range bans().Find(func(b *models.MothershipBanDbObject) bool { return b.ExpiresAt.Time().After(now.Time()) }) {
 		ab := ActiveBan{BanId: sv(b.BanId), PlayerId: sv(b.PlayerId), Category: b.Category, Reason: sv(b.Reason),
 			Minutes: b.DurationMinutes, Source: sv(b.Metadata), CreatedAt: b.CreatedAt, ExpiresAt: b.ExpiresAt}
 		if p := v2Players().FindOne(func(p *models.MothershipV2PlayerDbObject) bool { return dbEq(p.PlayerId, ab.PlayerId) }); p != nil {
@@ -43,12 +43,14 @@ func ActiveBans() []ActiveBan {
 func LiftBans(playerId string) int {
 	now := dotnet.UtcNow()
 	cl, n := bans(), 0
-	for _, b := range cl.Find(func(b *models.MothershipBanDbObject) bool { return dbEq(b.PlayerId, playerId) }) {
-		if b.ExpiresAt.After(now) {
+	ids := append([]string{playerId}, resolveBanTargets(playerId)...) // Solara: a Meta id lifts its linked players
+	for _, b := range cl.Find(func(b *models.MothershipBanDbObject) bool { return containsStr(ids, sv(b.PlayerId)) }) {
+		if b.ExpiresAt.Time().After(now.Time()) { // by instant: DB dates come back Local-kind
 			b.ExpiresAt = now
 			cl.Update(b)
 			n++
 		}
 	}
+	InvalidateBanCache()
 	return n
 }

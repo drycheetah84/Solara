@@ -6,6 +6,18 @@
 > [a2-50451-rollback-sim-internals](a2-50451-rollback-sim-internals.md) and
 > [a2-rollback-netmode-fix](a2-rollback-netmode-fix.md) first. Never test on the live servers; use the local rig.
 
+## Deployed 2026-11-05 evening (DLL 6e0178e6): all three follow-ups below are live
+
+- `[RBSTAT]` gained `plcorr/s` (player corrections: the correction check's call to `RollbackPlayer` vtbl slot +1216,
+  RVA 0x5747980, hooked lazily from the first seated player), `leadUp` / `leadDown`.
+- `[RBLEAD]` adaptive lead (search `[RBLEAD 2026-11-05]`): per player per second, >=2 late inputs (or one 2+ frames
+  late) -> +1 frame (+2 if 3+ late), max +6; 20 s of min lead >= 4 -> -1. `-NoRbAdaptLead` off. Local rig: forcing +3
+  moved lead ~4.7 -> ~8 at once and it held across re-seats (the client does not fight it).
+- `[RBSIMMAP]` relay same-sim check now uses the sim index the server passes to the results sender
+  (conn -> pawn @0xA8 -> nic @0x1690), falling back to 80 m when unknown; `[RBFWDID]` prints both ids.
+  Not yet seen with two matches running at once.
+What to read on the next busy night: do `plcorr/s` spikes line up with `late`, and does `leadUp` bring `late` down?
+
 ## Prod data after the hotfix (2026-11-05, box 1, read-only)
 
 Source: `C:\Windows\Temp\HalcyonA2.log` on box 1 (shared by all 5 servers, so `[RBSTAT]` lines from idle servers

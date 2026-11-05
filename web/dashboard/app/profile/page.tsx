@@ -11,6 +11,7 @@ const PERM_TEXT: Record<string, string> = {
   "stats.read": "Server stats, telemetry, events, agents, netvar dumps",
   "users.read": "List users and view inventories",
   "users.ban": "Ban and unban users, lift game bans",
+  "users.mute": "Mute and unmute players' voice on every game server",
   "users.inventory": "Grant and revoke inventory items",
   "catalog.read": "Browse the item catalogue",
   "stations.read": "View station config, whitelist, members, bans, roles, boards, deployments, events",

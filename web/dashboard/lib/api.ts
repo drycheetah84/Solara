@@ -124,6 +124,21 @@ export type GameBan = {
   expires_at: string;
 };
 
+// A running voice mute (fleet-wide), GET /api/mutes. duration_minutes 0 / expires_at null = permanent.
+export type GameMute = {
+  mute_id: string;
+  player_id: string;
+  meta_id: string;
+  username: string;
+  duration_minutes: number;
+  reason: string;
+  by: string;
+  created_at: string;
+  expires_at: string | null;
+  seconds_left: number;
+};
+export type MutesResponse = { mutes: GameMute[]; players: { id: string; name: string; server: string }[] };
+
 // Grantable item from the 50451 catalogue (GET /api/catalog/items).
 export type CatalogItem = { id: string; currency: boolean };
 export type OwnedItem = { id: string; quantity: number; currency: boolean };
@@ -307,6 +322,15 @@ export const api = {
   // In-game / game-server bans (Mothership) -- the in-game moderation panel issues these
   gameBans:     ()                 => get<GameBan[]>("game_bans"),
   liftGameBans: (playerId: string) => post<ActionResult>(`game_bans/${encodeURIComponent(playerId)}/unban`),
+  // Global ban: no login, current session ends. player_id = Mothership or Meta id; minutes 0 = permanent
+  addGameBan:   (playerId: string, minutes: number, reason: string) =>
+    post<ActionResult>("game_bans", { player_id: playerId, duration_minutes: minutes, reason }),
+
+  // Voice mutes (fleet-wide; every game server enforces them within ~6 s)
+  mutes:    ()                                                    => get<MutesResponse>("mutes"),
+  mute:     (playerId: string, minutes: number, reason: string)   =>
+    post<ActionResult>("mutes", { player_id: playerId, duration_minutes: minutes, reason }),
+  unmute:   (playerId: string)                                    => post<ActionResult>(`mutes/${encodeURIComponent(playerId)}/unmute`),
 
   // Cosmetics / currency (Mothership inventory). user_id = dashboard user id (Meta id) or Mothership player id.
   catalogItems:  ()                                   => get<CatalogItem[]>("catalog/items"),

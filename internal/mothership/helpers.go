@@ -282,6 +282,10 @@ func getUserIdFromToken(req *hosting.Request) (sub string) {
 	}
 	if s, ok := root.TryGetProperty("sub"); ok {
 		if p := s.GetString(); p != nil {
+			// Solara: a globally banned player's tokens stop working (our own servers are exempt; globalban.go)
+			if !isTrustedServer(req) && activeBan(*p) != nil {
+				return ""
+			}
 			return *p
 		}
 	}

@@ -3707,6 +3707,20 @@ void ScriptOp(const Snapshot& snap, const std::string& line)
         }
         return;
     }
+    if (!strcmp(op, "mutestate"))             // mutestate -- our pawn's replicated settings & safety entries (mute bits) + muted-HUD flag
+    {
+        auto* pawn = g_pc ? *reinterpret_cast<uint8_t**>(reinterpret_cast<uintptr_t>(g_pc) + 0x360) : nullptr;
+        if (!pawn) { Log("[script] FAIL mutestate: no local pawn"); return; }
+        uint8_t* d = *reinterpret_cast<uint8_t**>(pawn + 0x1ED0);
+        const int32_t n = *reinterpret_cast<int32_t*>(pawn + 0x1ED8);
+        Log("[script] mutestate: %d entries, mutedHud@0x1A64=%d", n, (int)pawn[0x1A64]);
+        for (int32_t k = 0; d && k < n && k < 64; ++k)
+        {
+            auto* p = *reinterpret_cast<SDK::UObject**>(d + 16 * k + 8);
+            Log("[script]   [%d] flags=0x%02X %s", k, d[16 * k], p ? p->GetName().c_str() : "<null>");
+        }
+        return;
+    }
     if (!strcmp(op, "pawnfn"))                // pawnfn <Function> -- run a no-argument function on our own pawn (AcknowledgedPawn)
     {
         auto* pawn = g_pc ? *reinterpret_cast<SDK::UObject**>(reinterpret_cast<uintptr_t>(g_pc) + 0x360) : nullptr;
@@ -5195,6 +5209,19 @@ void JoinGuardTick()
     }
 }
 
+// [MUTEPROBE 2026-11-05] LOCAL TEST (-MuteProbe): log the client's local Vivox mute of another player
+// (0x56C2870(voip, pawn, bMute), called by the settings & safety mute loop 0x588B890) so a server-side
+// mute-for-all can be verified without listening.
+using MuteProbe_t = void(__fastcall*)(void*, void*, bool);
+static MuteProbe_t g_muteProbeOrig = nullptr;
+static void MuteProbeLogInner(void* pawn, bool mute) { Log("[muteprobe] local mute %s -> %d", pawn ? reinterpret_cast<SDK::UObject*>(pawn)->GetName().c_str() : "<null>", (int)mute); }
+static void MuteProbeLog(void* pawn, bool mute) { __try { MuteProbeLogInner(pawn, mute); } __except (EXCEPTION_EXECUTE_HANDLER) {} }
+static void __fastcall MuteProbe_Hook(void* voip, void* pawn, bool mute)
+{
+    MuteProbeLog(pawn, mute);
+    g_muteProbeOrig(voip, pawn, mute);
+}
+
 bool InstallGameHook()
 {
     // Idempotent: the boot worker may call this twice, and a second MH_CreateHook on the same target
@@ -5211,6 +5238,12 @@ bool InstallGameHook()
     // jmp corrupts whatever lives there — and if the pump's native calls touch it, the pump AVs. Opt back in
     // with -JoinGuard only after the 47031 RVA is re-resolved.
     // [50451] still unresolved for this build: never hooked, even with -JoinGuard.
+    if (wcsstr(GetCommandLineW(), L"-MuteProbe"))
+    {
+        void* mp = reinterpret_cast<void*>(base + 0x56C2870);
+        const bool ok = MH_CreateHook(mp, &MuteProbe_Hook, reinterpret_cast<void**>(&g_muteProbeOrig)) == MH_OK && MH_EnableHook(mp) == MH_OK;
+        Log("[muteprobe] local-mute hook %s", ok ? "on" : "FAILED");
+    }
     void* tmRep = reinterpret_cast<void*>(base + 0x4728BE0);
     if (false && wcsstr(GetCommandLineW(), L"-JoinGuard") && MH_CreateHook(tmRep, &TmRep_Hook, reinterpret_cast<void**>(&g_tmRepOrig)) == MH_OK && MH_EnableHook(tmRep) == MH_OK)
         Log("[game] join guard on the ticket managers' team list @%p", tmRep);

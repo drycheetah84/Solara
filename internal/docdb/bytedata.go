@@ -45,6 +45,13 @@ func NewBytedata(path string) (*Bytedata, error) {
 	if err := b.decode(raw); err != nil {
 		return nil, err
 	}
+	// Solara: the sidecar stores its own absolute path. A database copied to another machine (the Azure hub was
+	// seeded from a Windows checkout, so it held "C:\...\production.solara.db.meta") could then never save its
+	// collection list again ("metadata does not exist"). The file we just read IS the metadata: use its path.
+	if b.CompletePath != path {
+		b.log.Warning("Metadata path " + b.CompletePath + " does not match where it was read from; using " + path)
+		b.CompletePath = path
+	}
 	return b, nil
 }
 

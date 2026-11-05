@@ -4,8 +4,17 @@ import { useCallback, useEffect, useState } from "react";
 import { api, type GameBan } from "../../lib/api";
 import { fmt, ago } from "../../lib/utils";
 
-// Bans issued in game (the in-game moderation panel) or by a game server. They live in Mothership, not in the
-// station ban list above, so they get their own table and their own unban.
+const BAN_DURATIONS: { label: string; minutes: number }[] = [
+  { label: "1 hour", minutes: 60 },
+  { label: "1 day", minutes: 1440 },
+  { label: "7 days", minutes: 10080 },
+  { label: "30 days", minutes: 43200 },
+  { label: "Permanent", minutes: 0 },
+];
+
+// Game bans live in Mothership (not in the station ban list above). Every one is GLOBAL: the player cannot log in
+// and their current session stops working (Solara mothership/globalban.go). Issued here, by the in-game moderation
+// panel, or by a game server; lifted here.
 export default function GameBans() {
   const [bans, setBans] = useState<GameBan[] | null>(null);
   const [err, setErr] = useState<string | null>(null);
@@ -20,6 +29,28 @@ export default function GameBans() {
     const t = setInterval(load, 15000);
     return () => clearInterval(t);
   }, [load]);
+
+  const [banId, setBanId] = useState("");
+  const [banMinutes, setBanMinutes] = useState(1440);
+  const [banReason, setBanReason] = useState("");
+
+  async function ban() {
+    const id = banId.trim();
+    if (!id) { setErr("Paste a player id (Meta id or Mothership id)"); return; }
+    const howLong = BAN_DURATIONS.find(d => d.minutes === banMinutes)?.label.toLowerCase() ?? `${banMinutes} minutes`;
+    if (!confirm(`Ban ${id} from the game (${howLong})? They are disconnected from Mothership and cannot log in.`)) return;
+    setBusy("add");
+    try {
+      const res = await api.addGameBan(id, banMinutes, banReason.trim());
+      if (!res.success) setErr(res.error ?? "Ban failed");
+      else { setBanId(""); setBanReason(""); setErr(null); }
+      load();
+    } catch (e: unknown) {
+      setErr(e instanceof Error ? e.message : "Unknown error");
+    } finally {
+      setBusy(null);
+    }
+  }
 
   async function lift(b: GameBan) {
     const who = b.username || b.player_id;
@@ -54,6 +85,20 @@ export default function GameBans() {
           {err}
         </div>
       )}
+
+      <div className="mb-3 flex flex-wrap gap-2 items-center">
+        <input value={banId} onChange={e => setBanId(e.target.value)} placeholder="Player id (Meta id or Mothership id)"
+          className="field text-sm min-w-0 flex-1" style={{ minWidth: 220 }} />
+        <select value={banMinutes} onChange={e => setBanMinutes(Number(e.target.value))} className="field text-sm">
+          {BAN_DURATIONS.map(d => <option key={d.minutes} value={d.minutes}>{d.label}</option>)}
+        </select>
+        <input value={banReason} onChange={e => setBanReason(e.target.value)} maxLength={200}
+          placeholder="Reason (shown to the player)" className="field text-sm min-w-0 flex-1" style={{ minWidth: 200 }} />
+        <button onClick={ban} disabled={busy === "add"} className="btn-light text-sm disabled:opacity-50"
+          style={{ color: "var(--red)" }}>
+          {busy === "add" ? "Banning…" : "Ban"}
+        </button>
+      </div>
 
       <div className="rounded-lg overflow-x-auto" style={{ border: "1px solid var(--border)" }}>
         <table className="w-full text-sm">

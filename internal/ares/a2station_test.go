@@ -119,6 +119,7 @@ func TestA2StationDbServerRouteTable(t *testing.T) {
 	// The 86 original routes come first and in order; Solara additions follow.
 	extra := []string{"POST\t/v1/deployments/{deployment_id}/gaia/events\tSolara/PostGaiaEvents", "GET\t/v1/deployments/{deployment_id}/gaia/next\tSolara/GetGaiaNext",
 		"POST\t/v1/deployments/{deployment_id}/notify/players\tSolara/PostNotifyPlayers", "GET\t/v1/deployments/{deployment_id}/notify/next\tSolara/GetNotifyNext",
+		"GET\t/v1/deployments/{deployment_id}/mutes\tSolara/GetDeploymentMutes",
 		"POST\t/v1/deployments/{deployment_id}/quest_reward\tSolara/PostQuestReward",
 		"POST\t/v1/fleets/{fleet_id}/challenges/{challenge_id}/add\tSolara/AddChallengeRecord",
 		"POST\t/v1/fleets/{fleet_id}/challenges/{challenge_id}/list\tSolara/ListChallengeRecords",
@@ -462,6 +463,17 @@ func TestA2DeploymentFetchWithStationConfig(t *testing.T) {
 	}
 	if b, err := os.ReadFile(filepath.Join(dir, "netvar_overrides", "dep-9.txt")); err != nil || string(b) != w.Body.String() {
 		t.Error("override file not written by EnsureAllWritten")
+	}
+	// Solara fast poll: ?v=<current version> -> empty 200; a stale or empty version -> the full set
+	full := w.Body.String()
+	ver := strings.TrimPrefix(full[:strings.IndexByte(full, '\n')], "v=")
+	if w = a2Do(t, s, "GET", "/v1/deployments/dep-9/netvar_overrides?v="+ver, "", nil); w.Code != 200 || w.Body.Len() != 0 {
+		t.Errorf("unchanged poll: %d %q", w.Code, w.Body.String())
+	}
+	for _, v := range []string{"STALE", ""} {
+		if w = a2Do(t, s, "GET", "/v1/deployments/dep-9/netvar_overrides?v="+v, "", nil); w.Body.String() != full {
+			t.Errorf("poll v=%q: %q", v, w.Body.String())
+		}
 	}
 
 	// bad bool -> FormatException -> 500 page

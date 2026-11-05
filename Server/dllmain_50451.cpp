@@ -3609,6 +3609,47 @@ static void SafeWireNetInputComponents() { __try { WireNetInputComponents(); } _
 // [RBFRAMEFIX] per-player clock offset (server frame - client frame), keyed by the player's
 // UA2PawnNetInputComponent; filled by the Server_NewSubmitInputs rebase.
 static std::unordered_map<void*, int32_t> g_rbFrameOff;
+// [RBLEAD 2026-11-05] Adaptive input lead. The rebase seats every player with their newest input = server frame + 2
+// (~22 ms) and never adapts it; prod [RBSTAT] showed bursts of late inputs (lead avg 0.3-1.0, min -11, up to 27
+// late/s) -- each late input is a frame the server simulates with a guessed input -> a correction -> a snap. Per
+// player, once a second: >= 2 late inputs (or one 2+ frames late) -> add 1 frame to that player's offset (2 if
+// 3+ late), up to +6 (~67 ms); 20 s in a row with min lead >= 4 -> take 1 back. Only players whose inputs arrive late
+// get the extra delay. Every outbound conversion (results, missed reports, relayed inputs) reads g_rbFrameOff live,
+// so they all move with it; a step costs one input repeated (up) or skipped (down) for that player in the server sim.
+// -NoRbAdaptLead turns it off. LOCAL RIG ONLY: %TEMP%\rbtest_leadextra.txt holding a number forces that extra.
+struct RbLeadState { int32_t extra = 0; int32_t winMin = 0x7FFFFFFF; int32_t late = 0; ULONGLONG winStart = 0; int calm = 0; };
+static std::unordered_map<void*, RbLeadState> g_rbLead;   // game thread only (submit handler)
+static bool g_rbAdaptLead = wcsstr(GetCommandLineW(), L"-NoRbAdaptLead") == nullptr;
+static int32_t g_rbLeadForce = -1;   // local rig A/B (RbDedupeTestToggle reads the file); -1 = adapt normally
+static constexpr int32_t kRbLeadMaxExtra = 6;
+static volatile LONG g_rbsLeadUp = 0, g_rbsLeadDown = 0;   // [RBSTAT] adaptive-lead steps taken this second
+static void RbLeadAdapt(void* nic, RbLeadState& s, int32_t lead, int32_t& off)
+{
+    int32_t target = s.extra;
+    const ULONGLONG now = GetTickCount64();
+    if (g_rbLeadForce >= 0) target = g_rbLeadForce > kRbLeadMaxExtra ? kRbLeadMaxExtra : g_rbLeadForce;
+    else if (g_rbAdaptLead)
+    {
+        if (!s.winStart) s.winStart = now;
+        if (lead < s.winMin) s.winMin = lead;
+        if (lead <= 0) ++s.late;
+        if (now - s.winStart < 1000) return;
+        if (s.late >= 2 || s.winMin <= -2) { target += s.late >= 3 ? 2 : 1; s.calm = 0; }
+        else if (s.winMin >= 4 && s.extra > 0) { if (++s.calm >= 20) { target -= 1; s.calm = 0; } }
+        else s.calm = 0;
+        s.winStart = now; s.winMin = 0x7FFFFFFF; s.late = 0;
+        if (target > kRbLeadMaxExtra) target = kRbLeadMaxExtra;
+        if (target < 0) target = 0;
+    }
+    else target = 0;
+    if (target == s.extra) return;
+    const int32_t delta = target - s.extra;
+    off += delta;
+    InterlockedIncrement(delta > 0 ? &g_rbsLeadUp : &g_rbsLeadDown);
+    HxLog("[HalcyonA2][RBLEAD] %s: extra lead %d -> %d frames (offset now %d)\n",
+        reinterpret_cast<SDK::UObject*>(nic)->GetName().c_str(), s.extra, target, off);
+    s.extra = target;
+}
 using RbSendRes_t = __int64(__fastcall*)(void*, int32_t, int32_t, void*, void*);
 static RbSendRes_t RbSendRes_Orig = nullptr;
 static volatile LONG g_rbPushN = 0;
@@ -3690,12 +3731,79 @@ static volatile LONG g_rbsDupSends = 0;   // ... of which were byte-identical re
 static volatile LONG g_rbsCorr = 0, g_rbsMissRep = 0, g_rbsMissSum = 0, g_rbsBatches = 0, g_rbsLate = 0;
 static volatile LONG g_rbsLeadSum = 0, g_rbsLeadMin = 0x7FFFFFFF, g_rbsLeadMax = -0x7FFFFFFF;
 static volatile LONG g_rbsFwdSent = 0, g_rbsFwdBlocked = 0;   // [RBFWD] relays to same-sim players / skipped (other sim or unseated)
+static volatile LONG g_rbsPlCorr = 0;   // [RBSTAT] PLAYER corrections (0x5757260 -> player vtable +1216), installed lazily
+// [RBSIMMAP 2026-11-05] Which sim each player is in, as the SERVER itself knows it: the sim-results sender
+// (0x54FC0F0) is called with (connComp, SimIndex) for every seated player, so record nic -> SimIndex there
+// (conn -> VRPawn @0xA8 -> NetInputComponent @0x1690, same path as RbConnFrameOffset). Prod showed the pawn's own
+// CurrentRollbackSimulationOutline @0x1820 reads 0xFFFFFFFF for seated players, so it cannot be used for this.
+struct RbSimSeen { int32_t sim; ULONGLONG at; };
+static std::unordered_map<void*, RbSimSeen> g_rbNicSim;   // game thread only (sender and submit both run there)
+static int32_t RbNicSim(void* nic, ULONGLONG now)
+{
+    auto it = g_rbNicSim.find(nic);
+    return (it != g_rbNicSim.end() && now - it->second.at < 1000) ? it->second.sim : -1;
+}
 using RbCorr_t = __int64(__fastcall*)(void*, int32_t, void*);
 static RbCorr_t RbCorr_Orig = nullptr;
 static __int64 __fastcall RbCorr_Hook(void* part, int32_t frame, void* state)
 {
     InterlockedIncrement(&g_rbsCorr);
     return RbCorr_Orig(part, frame, state);
+}
+// [RBSTAT plcorr 2026-11-05] Player corrections. In the correction check 0x5757260, for each player of the sim
+// (sim value +80, the players TArray) whose reported state at the frame differs from the server's history by >= 1 cm
+// (position or the second vector), it calls `(*player)->vtbl[1216/8](player, frame, &state)`: the player
+// correction push. There is no fixed RVA (virtual), so read the slot from the first seated player's vtable at
+// runtime and hook that function. Counting only; the original always runs.
+using RbPlCorr_t = void(__fastcall*)(void*, int32_t, void*);
+static RbPlCorr_t RbPlCorr_Orig = nullptr;
+static void __fastcall RbPlCorr_Hook(void* pl, int32_t frame, void* state)
+{
+    InterlockedIncrement(&g_rbsPlCorr);
+    RbPlCorr_Orig(pl, frame, state);
+}
+static void RbPlCorrInstall()   // game thread, once a second until installed
+{
+    static bool s_done = false;
+    if (s_done) return;
+    static SDK::UClass* rbmCls = nullptr;
+    if (!rbmCls) rbmCls = SDK::UObject::FindClassFast("A2RollbackManager");
+    if (!rbmCls) return;
+    const uintptr_t base = GetBase();
+    const auto* nt = reinterpret_cast<const IMAGE_NT_HEADERS*>(base + reinterpret_cast<const IMAGE_DOS_HEADER*>(base)->e_lfanew);
+    const uintptr_t end = base + nt->OptionalHeader.SizeOfImage;
+    for (SDK::UObject* o : ClassObjects(rbmCls))
+    {
+        if (!o || o->IsDefaultObject()) continue;
+        const uintptr_t r = reinterpret_cast<uintptr_t>(o);
+        const uintptr_t data = *reinterpret_cast<uintptr_t*>(r + 0x348);   // Simulations TMap sparse elements (176 B)
+        const int32_t bound = *reinterpret_cast<int32_t*>(r + 0x370);
+        for (int i = 0; data && i < bound && i < 64; ++i)
+        {
+            const uintptr_t e = data + 176ull * i;
+            if (*reinterpret_cast<int32_t*>(e) < 0) continue;
+            const uintptr_t v = e + 8;
+            const uintptr_t pls = *reinterpret_cast<uintptr_t*>(v + 80);
+            const int32_t plN = *reinterpret_cast<int32_t*>(v + 88);
+            for (int k = 0; pls && k < plN && k < 16; ++k)
+            {
+                const uintptr_t pl = *reinterpret_cast<uintptr_t*>(pls + 8ull * k);
+                if (!pl) continue;
+                const uintptr_t vt = *reinterpret_cast<uintptr_t*>(pl);
+                if (vt < base || vt >= end) continue;
+                void* fn = *reinterpret_cast<void**>(vt + 1216);
+                if (reinterpret_cast<uintptr_t>(fn) < base || reinterpret_cast<uintptr_t>(fn) >= end) continue;
+                s_done = true;   // one attempt only, whatever the result
+                const MH_STATUS c = MH_CreateHook(fn, &RbPlCorr_Hook, reinterpret_cast<void**>(&RbPlCorr_Orig));
+                const MH_STATUS en = c == MH_OK ? MH_EnableHook(fn) : c;
+                HxLog("[HalcyonA2][RBSTAT] player-correction counter: %s vtbl RVA 0x%llX slot+1216 -> RVA 0x%llX create=%d enable=%d\n",
+                    reinterpret_cast<SDK::UObject*>(pl)->GetName().c_str(), (unsigned long long)(vt - base),
+                    (unsigned long long)(reinterpret_cast<uintptr_t>(fn) - base), (int)c, (int)en);
+                return;
+            }
+        }
+        break;
+    }
 }
 static void RbStatLead(int32_t lead)
 {
@@ -3731,11 +3839,15 @@ static void RbStatFlush()   // once a second from the step driver hook
     const LONG mn = InterlockedExchange(&g_rbsLeadMin, 0x7FFFFFFF), mx = InterlockedExchange(&g_rbsLeadMax, -0x7FFFFFFF);
     const LONG fwd = InterlockedExchange(&g_rbsFwdSent, 0), fwdBlk = InterlockedExchange(&g_rbsFwdBlocked, 0);
     const LONG sends = InterlockedExchange(&g_rbsSends, 0), dups = InterlockedExchange(&g_rbsDupSends, 0);
-    if (corr == 0 && rep == 0 && b == 0) return;
+    const LONG plc = InterlockedExchange(&g_rbsPlCorr, 0);
+    const LONG lup = InterlockedExchange(&g_rbsLeadUp, 0), ldn = InterlockedExchange(&g_rbsLeadDown, 0);
+    if (b > 0) RbPlCorrInstall();   // players are seated: find the player-correction slot (once)
+    if (corr == 0 && rep == 0 && b == 0 && plc == 0) return;
+    // fields appended at the end only, so older log greps keep working
     HxLog("[HalcyonA2][RBSTAT] corr/s=%ld missedRep/s=%ld missedSum=%ld batches/s=%ld lead min=%ld avg=%.1f max=%ld late=%ld"
-        " sends/s=%ld dup=%ld | ticks/s=%d hitch=%d dtMax=%.1fms | fwd/s=%ld fwdBlocked/s=%ld\n",
+        " sends/s=%ld dup=%ld | ticks/s=%d hitch=%d dtMax=%.1fms | fwd/s=%ld fwdBlocked/s=%ld | plcorr/s=%ld leadUp=%ld leadDown=%ld\n",
         corr, rep, miss, b, b ? mn : 0, b ? double(sum) / b : 0.0, b ? mx : 0, late, sends, dups, ticks, hitch, dtMax * 1000.0f,
-        fwd, fwdBlk);
+        fwd, fwdBlk, plc, lup, ldn);
 }
 static __int64 __fastcall RbMissed_Hook(void* nic, int32_t frame, uint64_t serverFrame, uint64_t missed, uint64_t missedBuf)
 {
@@ -3754,6 +3866,16 @@ static int32_t RbConnFrameOffset(void* conn)
     return it == g_rbFrameOff.end() ? 0 : it->second;
 }
 static int32_t SafeRbConnFrameOffset(void* conn) { __try { return RbConnFrameOffset(conn); } __except (EXCEPTION_EXECUTE_HANDLER) { return 0; } }
+static void RbNoteConnSim(void* conn, int32_t simIdx)
+{
+    if (!conn || simIdx < 0) return;
+    void* pawn = *reinterpret_cast<void**>(reinterpret_cast<uintptr_t>(conn) + 0xA8);
+    void* nic = pawn ? *reinterpret_cast<void**>(reinterpret_cast<uintptr_t>(pawn) + 0x1690) : nullptr;
+    if (!nic) return;
+    if (g_rbNicSim.size() > 512) g_rbNicSim.clear();   // players come and go; entries refill within one send
+    g_rbNicSim[nic] = RbSimSeen{ simIdx, GetTickCount64() };
+}
+static void SafeRbNoteConnSim(void* conn, int32_t simIdx) { __try { RbNoteConnSim(conn, simIdx); } __except (EXCEPTION_EXECUTE_HANDLER) {} }
 
 // ============================================================================================
 // [RBFWD 2026-11-01] Forward each seated player's inputs to the other seated players.
@@ -3838,25 +3960,28 @@ static void RbForwardInputs(SDK::UObject* nic, const uint8_t* in, int32_t n)
     // the receiver looks the sender up by PlayerIndex (the seat number, 0..7 in EVERY match), so a foreign seat-3
     // input was applied to its own seat-3 player -> players and the ball snapping, only when several matches ran.
     // AVRPawn::CurrentRollbackSimulationOutline @0x1820, first dword = SimIndex (0xFFFFFFFF = not seated).
-    const uint32_t mySim = *reinterpret_cast<const uint32_t*>(reinterpret_cast<uintptr_t>(pawn) + 0x1820);
+    // [RBSIMMAP] the sim each player is in comes from the server's own results sends (g_rbNicSim), not @0x1820,
+    // which prod showed is 0xFFFFFFFF for seated players (2026-11-05 [RBFWDID]: every line both sides).
+    const int32_t mySim = RbNicSim(nic, now);
     for (auto& [onic, other] : g_rbSeated)
     {
         if (onic == nic || !other.pawn || now - other.lastSubmit > 1500) continue;   // only players seated right now
-        const uint32_t otherSim = *reinterpret_cast<const uint32_t*>(reinterpret_cast<uintptr_t>(other.pawn) + 0x1820);
-        // [2026-11-05 HOTFIX] Prod showed @0x1820 does NOT match for players seated in the same match (fwd/s=0, every
-        // relay blocked -> teammates froze for each other). Block ONLY when both ids look valid and differ; otherwise
-        // fall back to the old 80 m rule. Log the ids seen so the right "same sim" field can be found.
+        const int32_t otherSim = RbNicSim(onic, now);
+        // Block ONLY when both sims are known and differ; when either is unknown (no results sent to it in the last
+        // second, e.g. just seated) fall back to the old 80 m rule, so a relay is never lost to a missing id.
         const SDK::FVector op = other.pawn->K2_GetActorLocation();
         const double dx = op.X - myPos.X, dy = op.Y - myPos.Y, dz = op.Z - myPos.Z;
         const bool nearby = dx * dx + dy * dy + dz * dz <= 8000.0 * 8000.0;
         {
             static volatile LONG s_idLog = 0;
             if (nearby && InterlockedIncrement(&s_idLog) <= 40)
-                HxLog("[HalcyonA2][RBFWDID] %s sim@0x1820=0x%X idx=%u -> %s sim@0x1820=0x%X idx=%u\n", pawn->GetName().c_str(), mySim,
+                HxLog("[HalcyonA2][RBFWDID] %s sim=%d idx=%u -> %s sim=%d idx=%u (@0x1820 0x%X / 0x%X)\n", pawn->GetName().c_str(), mySim,
                     (unsigned)myIdx, other.pawn->GetName().c_str(), otherSim,
-                    (unsigned)*(reinterpret_cast<uint8_t*>(other.pawn) + 0x180F));
+                    (unsigned)*(reinterpret_cast<uint8_t*>(other.pawn) + 0x180F),
+                    *reinterpret_cast<const uint32_t*>(reinterpret_cast<uintptr_t>(pawn) + 0x1820),
+                    *reinterpret_cast<const uint32_t*>(reinterpret_cast<uintptr_t>(other.pawn) + 0x1820));
         }
-        const bool idsValid = mySim != 0xFFFFFFFF && otherSim != 0xFFFFFFFF && mySim < 4096 && otherSim < 4096;
+        const bool idsValid = mySim >= 0 && otherSim >= 0;
         if (idsValid ? (otherSim != mySim) : !nearby)
         {
             if (nearby) InterlockedIncrement(&g_rbsFwdBlocked);   // nearby but a different (valid) sim
@@ -3931,6 +4056,7 @@ static __int64 __fastcall RbSendRes_Hook(void* conn, int32_t simIdx, int32_t fra
         if (g_rbDedupe && !g_rbDedupeTestOff) return 0;   // [RBDEDUPE] the client already has exactly this
     }
     if (balls) SafeRbBallPush(simIdx, frame, balls);
+    SafeRbNoteConnSim(conn, simIdx);   // [RBSIMMAP] remember which sim this player is in
     // results go out on the RECEIVING client's clock (inputs were rebased onto ours on the way in)
     const int32_t off = SafeRbConnFrameOffset(conn);
     return RbSendRes_Orig(conn, simIdx, frame - off, balls, players);
@@ -5015,6 +5141,12 @@ static void RbDedupeTestToggle()
     wcscat_s(path, L"rbtest_nodedupe.txt");
     const bool off = GetFileAttributesW(path) != INVALID_FILE_ATTRIBUTES;
     if (off != g_rbDedupeTestOff) { g_rbDedupeTestOff = off; HxLog("[HalcyonA2][RBDEDUPE] LOCAL TEST: dedupe %s\n", off ? "OFF" : "ON"); }
+    // [RBLEAD] %TEMP%\rbtest_leadextra.txt = "N" forces every player's extra lead to N frames; delete it to adapt again
+    path[n] = 0;
+    wcscat_s(path, L"rbtest_leadextra.txt");
+    int32_t force = -1;
+    if (FILE* f = _wfopen(path, L"rb")) { int v = -1; if (fscanf_s(f, "%d", &v) == 1 && v >= 0) force = v; fclose(f); }
+    if (force != g_rbLeadForce) { g_rbLeadForce = force; HxLog("[HalcyonA2][RBLEAD] LOCAL TEST: extra lead %s%d\n", force >= 0 ? "forced to " : "adaptive again ", force); }
 }
 static void TuneNetRates()
 {
@@ -11061,13 +11193,21 @@ static void NvPollerThread()
             nullptr, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, nullptr);
         if (dir == INVALID_HANDLE_VALUE)
         {
-            // No shared folder: slow fallback poll, and keep checking whether the folder appears.
+            // No shared folder (Azure: the backend is on the hub, not on this box). [2026-11-05] Poll every second
+            // instead of every 60 s, so a dashboard change reaches the server in ~1 s. Each poll sends our version
+            // (?v=); Solara answers an unchanged set with an empty body and does no other work, so this is cheap.
             static bool once = false;
-            if (!once) { once = true; HxLog("[HalcyonA2][NETVARS] override folder %ls not found -- falling back to a 60s poll\n", g_nvDir.c_str()); }
-            Sleep(60000);
-            status = 0;
-            const std::string body = HttpReq(kBackendHost, kBackendPort, L"GET", path.c_str(), std::string(), std::wstring(), &status);
-            if (status == 200) NvParseAndQueue(body, "fallback poll");
+            if (!once) { once = true; HxLog("[HalcyonA2][NETVARS] override folder %ls not found -- polling the backend every 1s\n", g_nvDir.c_str()); }
+            for (int i = 0; i < 60; ++i)   // re-check for the folder once a minute
+            {
+                Sleep(1000);
+                std::string have;
+                { std::lock_guard<std::mutex> lk(g_nvMu); have = g_nvVersion; }
+                const std::wstring q = path + L"?v=" + std::wstring(have.begin(), have.end());
+                status = 0;
+                const std::string body = HttpReq(kBackendHost, kBackendPort, L"GET", q.c_str(), std::string(), std::wstring(), &status);
+                if (status == 200 && !body.empty()) NvParseAndQueue(body, "poll");
+            }
             continue;
         }
         HxLog("[HalcyonA2][NETVARS] watching %ls for override changes (no polling)\n", g_nvDir.c_str());
@@ -13743,12 +13883,16 @@ static void TraceBallRpc(SDK::UObject* Context, SDK::UFunction* Function, void* 
                     const int32_t clientLast = *reinterpret_cast<int32_t*>(in0 + 496ull * (n0 - 1));
                     auto it = s_off.find(Context);
                     const int32_t want = serverF + 2 - clientLast;
+                    RbLeadState& ls = g_rbLead[Context];
                     if (it == s_off.end() || std::abs(it->second - want) > 300)
                     {
                         HxLog("[HalcyonA2][RBFRAMEFIX] %s: client frame %d -> server frame %d (offset %d, was %d)\n",
                             Context->GetName().c_str(), clientLast, serverF, want, it == s_off.end() ? 0 : it->second);
                         s_off[Context] = want;
+                        ls = RbLeadState{};   // fresh seat: no extra lead yet
                     }
+                    // [RBLEAD] adaptive lead: may move this player's offset by a frame (before this batch is rebased)
+                    RbLeadAdapt(Context, ls, clientLast + s_off[Context] - serverF, s_off[Context]);
                     const int32_t off = s_off[Context];
                     for (int32_t k = 0; k < n0; ++k) *reinterpret_cast<int32_t*>(in0 + 496ull * k) += off;
                     RbStatLead(clientLast + off - serverF);   // [RBSTAT] how early the newest input arrived
@@ -15931,15 +16075,251 @@ namespace ModAdmin {
             if (alive) KickController(k.pc, k.reason);
         }
     }
+    // ----------------------------------------------------------------------------------------------------------
+    // [MUTE 2026-11-05] Voice mutes. Voice goes client -> Vivox, never through this server, so a mute is enforced by
+    // the CLIENTS (docs/agent-notes/a2-50451-voice-moderation.md):
+    //  * every listener: AVRPawn::ClientVersionOfServerOnlySettingsAndSafetyData @0x1ED0 (TArray of 16 B entries
+    //    {uint8 flags; AVRPawn* pawn}, replicated to the owner, RepNotify). Bits: 0 ghosted, 1 muted, 2 mutedForAll,
+    //    3 muteDirty, 4 mothershipMuted. The client's OnRep (0x58615C0) marks an entry dirty when its muted state
+    //    changes and its loop (0x588B890) then calls the local Vivox mute (0x56C2870) with (flags & 6) != 0. So the
+    //    server sets bit 2 (+ bit 4 for backend mutes) on the muted player's entry in EVERY pawn's list.
+    //  * the muted player: AVRPlayerController::Client_SetMutedHud(true) (sets pawn +0x1A64: muted HUD icon, and the
+    //    push-to-talk / mic code then keeps the mic closed) and, for backend mutes, the game's own "MUTED FOR ..." board.
+    // Sources: the in-game moderator panel (Server_MutePlayerForAll / Server_MuteAllPlayersForAll; the game's server
+    // implementations are compiled out of this build) -- kept on this server only, like the original
+    // ServerOnlyMuteForAllMothershipIDs -- and the backend (Solara mutes collection, polled from
+    // GET /v1/deployments/{id}/mutes, fleet-wide). LOCAL RIG ONLY: %TEMP%\rbtest_mute.txt = "<player id>" or "all".
+    enum : uint8_t { PermMute = 38 };
+    struct MuteInfo { ULONGLONG until = 0; std::wstring reason; };   // until: GetTickCount64 deadline, 0 = forever
+    static std::unordered_map<std::string, MuteInfo> g_panelMutes;    // game thread only
+    static bool g_panelMuteAll = false;
+    static std::mutex g_bmu;
+    static std::unordered_map<std::string, MuteInfo> g_backendMutes;  // replaced by the poller (g_bmu)
+    static bool g_backendFresh = false;                                // a poll succeeded at least once
+    static std::unordered_map<SDK::UObject*, int> g_hudState;          // controller -> 0 none, 1 panel, 2 backend (as last sent)
+    static int32_t g_idxMute = 0, g_idxMuteAll = 0;
+    static std::string g_testMute;                                     // local rig trigger
+
+    static void MutePoller()
+    {
+        while (g_deploymentId.empty()) Sleep(2000);
+        const std::wstring path = L"/v1/deployments/" + std::wstring(g_deploymentId.begin(), g_deploymentId.end()) + L"/mutes";
+        for (;;)
+        {
+            DWORD status = 0;
+            const std::string body = HttpReq(kBackendHost, kBackendPort, L"GET", path.c_str(), std::string(), std::wstring(), &status);
+            if (status == 200)
+            {
+                // one active mute per line: "<player id>\t<seconds left, 0 = permanent>\t<reason>"
+                std::unordered_map<std::string, MuteInfo> m;
+                const ULONGLONG now = GetTickCount64();
+                for (size_t a = 0; a < body.size();)
+                {
+                    size_t b = body.find('\n', a); if (b == std::string::npos) b = body.size();
+                    std::string line = body.substr(a, b - a); a = b + 1;
+                    if (!line.empty() && line.back() == '\r') line.pop_back();
+                    const size_t t1 = line.find('\t'); if (t1 == std::string::npos || t1 == 0 || t1 > 128) continue;
+                    const size_t t2 = line.find('\t', t1 + 1);
+                    const long long secs = atoll(line.substr(t1 + 1, t2 == std::string::npos ? std::string::npos : t2 - t1 - 1).c_str());
+                    MuteInfo mi;
+                    mi.until = secs > 0 ? now + static_cast<ULONGLONG>(secs) * 1000ull : 0;
+                    if (t2 != std::string::npos) mi.reason = Notify::FromUtf8(line.substr(t2 + 1, 200));
+                    m[line.substr(0, t1)] = mi;
+                }
+                std::lock_guard<std::mutex> lk(g_bmu);
+                if (m.size() != g_backendMutes.size()) HxLog("[HalcyonA2][MUTE] backend: %zu active mute(s)\n", m.size());
+                g_backendMutes.swap(m); g_backendFresh = true;
+            }
+            Sleep(5000);
+        }
+    }
+    static void MuteTestToggle()
+    {
+        if (!IsLocalRig()) return;
+        wchar_t path[MAX_PATH]; const DWORD n = GetTempPathW(MAX_PATH, path);
+        if (!n || n > MAX_PATH - 24) return;
+        wcscat_s(path, L"rbtest_mute.txt");
+        std::string v;
+        if (FILE* f = _wfopen(path, L"rb")) { char buf[160] = {}; fgets(buf, sizeof(buf), f); fclose(f); v = buf; }
+        while (!v.empty() && (v.back() == '\n' || v.back() == '\r' || v.back() == ' ')) v.pop_back();
+        if (v != g_testMute) { HxLog("[HalcyonA2][MUTE] LOCAL TEST: mute '%s'\n", v.c_str()); g_testMute = v; }
+        // [KICKTEST] LOCAL RIG ONLY: %TEMP%\rbtest_kick.txt = "<player id>" kicks that player the way the moderator
+        // panel does (KickController -> Client_KickNicely), once; the file is deleted after.
+        path[n] = 0;
+        wcscat_s(path, L"rbtest_kick.txt");
+        std::string k;
+        if (FILE* f = _wfopen(path, L"rb")) { char buf[160] = {}; fgets(buf, sizeof(buf), f); fclose(f); k = buf; DeleteFileW(path); }
+        while (!k.empty() && (k.back() == '\n' || k.back() == '\r' || k.back() == ' ')) k.pop_back();
+        if (!k.empty() && g_pcCls)
+        {
+            std::vector<SDK::UObject*> pcs = ClassObjects(g_pcCls);
+            for (SDK::UObject* pc : pcs)
+                if (pc && !pc->IsDefaultObject() && MothershipIdOf(pc) == k) { HxLog("[HalcyonA2][KICKTEST] kicking %s\n", k.c_str()); KickController(pc, L"Kick test"); }
+        }
+    }
+    static std::wstring MutedBoard(const MuteInfo& mi, ULONGLONG now)
+    {
+        // the game's own Mothership-mute wording (0x5633180)
+        const std::wstring why = mi.reason.empty() ? std::wstring(L"BREAKING COMMUNITY RULES") : mi.reason;
+        if (!mi.until) return L"MUTED FOREVER FOR\n" + why;
+        const ULONGLONG left = mi.until > now ? (mi.until - now) / 60000ull + 1 : 1;
+        return L"MUTED FOR " + std::to_wstring(left) + L" MINUTES FOR\n" + why;
+    }
+    static void ApplyMutes()
+    {
+        static ULONGLONG s_next = 0;
+        const ULONGLONG now = GetTickCount64();
+        if (now < s_next) return;
+        s_next = now + 1000;
+        static bool s_poller = false;
+        if (!s_poller) { s_poller = true; std::thread(MutePoller).detach(); }
+        MuteTestToggle();
+        for (auto it = g_panelMutes.begin(); it != g_panelMutes.end();) it = (it->second.until && now >= it->second.until) ? g_panelMutes.erase(it) : std::next(it);
+        std::unordered_map<std::string, MuteInfo> backend;
+        { std::lock_guard<std::mutex> lk(g_bmu); backend = g_backendMutes; }
+        static SDK::UClass* vrPawnCls = SDK::UObject::FindClassFast("VRPawn");
+        if (!vrPawnCls) return;
+        // who is muted, by pawn: 0 = no, 1 = panel (this server), 2 = backend (bit 4 too)
+        std::unordered_map<SDK::UObject*, int> state;
+        const std::vector<SDK::UObject*> pawns = ClassObjects(vrPawnCls);   // a copy: RPCs below re-enter ProcessEvent
+        for (SDK::UObject* t : pawns)
+        {
+            if (!t || t->IsDefaultObject()) continue;
+            SDK::UObject* pc = *reinterpret_cast<SDK::UObject**>(reinterpret_cast<uint8_t*>(t) + 0x2E8);
+            const std::string id = MothershipIdOf(pc);
+            if (id.empty()) continue;
+            int s = 0;
+            auto b = backend.find(id);
+            if (b != backend.end() && (!b->second.until || now < b->second.until)) s = 2;
+            else if (g_panelMutes.count(id) || (g_panelMuteAll && !HasPerm(pc, PermMute)) ||
+                     (!g_testMute.empty() && (g_testMute == id || g_testMute == "all"))) s = 1;
+            state[t] = s;
+            // the muted player's own HUD (+ board for backend mutes), sent on every change and to every new controller
+            auto h = g_hudState.find(pc);
+            const int sent = h == g_hudState.end() ? 0 : h->second;
+            if (sent != s)
+            {
+                auto* vpc = static_cast<SDK::AVRPlayerController*>(pc);
+                vpc->Client_SetMutedHud(s != 0);
+                if (s == 2 && vpc->NotificationComponent)
+                    vpc->NotificationComponent->Client_ShowNotification(SDK::FString(MutedBoard(b->second, now).c_str()));
+                HxLog("[HalcyonA2][MUTE] %s (%s): %s\n", pc->GetName().c_str(), id.c_str(),
+                    s == 2 ? "MUTED by the backend" : s == 1 ? "muted for all (moderator panel)" : "unmuted");
+                g_hudState[pc] = s;
+            }
+        }
+        // every listener's entry list
+        int changed = 0, entries = 0, lists = 0;
+        for (SDK::UObject* l : pawns)
+        {
+            if (!l || l->IsDefaultObject()) continue;
+            uint8_t* data = *reinterpret_cast<uint8_t**>(reinterpret_cast<uint8_t*>(l) + 0x1ED0);
+            const int32_t num = *reinterpret_cast<int32_t*>(reinterpret_cast<uint8_t*>(l) + 0x1ED8);
+            if (!data || num <= 0 || num > 256) continue;
+            ++lists;
+            for (int32_t k = 0; k < num; ++k)
+            {
+                uint8_t& flags = data[16 * k];
+                auto* t = *reinterpret_cast<SDK::UObject**>(data + 16 * k + 8);
+                auto st = state.find(t);
+                if (!t || st == state.end()) continue;
+                ++entries;
+                const uint8_t want = st->second == 2 ? 0x14 : st->second == 1 ? 0x04 : 0x00;
+                if ((flags & 0x14) == want) continue;
+                flags = static_cast<uint8_t>((flags & ~0x14) | want);
+                ++changed;
+            }
+        }
+        static int s_lastLists = -1, s_lastEntries = -1;
+        if (changed || lists != s_lastLists || entries != s_lastEntries)
+        {
+            HxLog("[HalcyonA2][MUTE] entry lists=%d entries=%d changed=%d (pawns=%zu)\n", lists, entries, changed, pawns.size());
+            s_lastLists = lists; s_lastEntries = entries;
+        }
+        for (auto it = g_hudState.begin(); it != g_hudState.end();)   // forget controllers that are gone
+        {
+            bool alive = false;
+            for (SDK::UObject* t : pawns) if (t && *reinterpret_cast<SDK::UObject**>(reinterpret_cast<uint8_t*>(t) + 0x2E8) == it->first) { alive = true; break; }
+            it = alive ? std::next(it) : g_hudState.erase(it);
+        }
+    }
+    // Server_MutePlayerForAll(APawn* PlayerBeingMuted @0, bool bMute @8, FString Reason @0x10)
+    static void OnMute(SDK::UObject* ctx, void* parms)
+    {
+        SDK::UObject* caller = ControllerOf(ctx);
+        auto* target = *reinterpret_cast<SDK::UObject**>(parms);
+        const bool mute = *(reinterpret_cast<uint8_t*>(parms) + 8) != 0;
+        SDK::UObject* tpc = target ? *reinterpret_cast<SDK::UObject**>(reinterpret_cast<uint8_t*>(target) + 0x2E8) : nullptr;
+        if (!HasPerm(caller, PermMute)) { HxLog("[HalcyonA2][MUTE] mute REFUSED: %s lacks UserMute\n", caller ? caller->GetName().c_str() : "?"); return; }
+        const std::string id = MothershipIdOf(tpc);
+        if (id.empty() || tpc == caller) { HxLog("[HalcyonA2][MUTE] mute: no valid target\n"); return; }
+        if (mute) g_panelMutes[id] = MuteInfo{ 0, FStrW(reinterpret_cast<uint8_t*>(parms) + 0x10) };
+        else g_panelMutes.erase(id);
+        HxLog("[HalcyonA2][MUTE] %s %s %s for all\n", caller->GetName().c_str(), mute ? "mutes" : "unmutes", id.c_str());
+    }
+    // Server_MuteAllPlayersForAll(bool bMute @0): everyone except players who may mute (moderators)
+    static void OnMuteAll(SDK::UObject* ctx, void* parms)
+    {
+        SDK::UObject* caller = ControllerOf(ctx);
+        if (!HasPerm(caller, PermMute)) { HxLog("[HalcyonA2][MUTE] mute-all REFUSED: %s lacks UserMute\n", caller ? caller->GetName().c_str() : "?"); return; }
+        g_panelMuteAll = *reinterpret_cast<uint8_t*>(parms) != 0;
+        HxLog("[HalcyonA2][MUTE] %s %s everyone\n", caller->GetName().c_str(), g_panelMuteAll ? "mutes" : "unmutes");
+    }
+
+    // [KICKSELF 2026-11-05] Client_KickNicely makes the kicked CLIENT call Server_KickMyself(FString Reason) and wait for
+    // the server to drop it ("LogA2Moderation: Player asked to kick themselves"). That server implementation is
+    // compiled out of this build, so every admin kick left the player connected but stuck; when they quit and
+    // rejoined, the old connection was still on the server until its 60 s timeout (prod 2026-11-05: 4 failed rejoins
+    // of one kicked player, then a successful one ~15k log lines later). Do what it asks: send that controller back to
+    // the main menu with the reason, so the client closes its connection now and the server logs it out normally.
+    static int32_t g_idxKickSelf = 0;
+    static std::unordered_map<SDK::UObject*, ULONGLONG> g_kickSelfAt;   // controller -> when handled (one per 10 s)
+    static void OnKickSelf(SDK::UObject* ctx, void* parms)
+    {
+        SDK::UObject* pc = ControllerOf(ctx);
+        if (!pc) { HxLog("[HalcyonA2][KICKSELF] no controller for %s\n", ctx->GetName().c_str()); return; }
+        const ULONGLONG now = GetTickCount64();
+        auto it = g_kickSelfAt.find(pc);
+        if (it != g_kickSelfAt.end() && now - it->second < 10000) return;
+        if (g_kickSelfAt.size() > 256) g_kickSelfAt.clear();
+        g_kickSelfAt[pc] = now;
+        std::wstring reason = parms ? FStrW(parms) : std::wstring();
+        if (reason.empty()) reason = L"You have been kicked.";
+        HxLog("[HalcyonA2][KICKSELF] %s (%s) asked to be kicked ('%s') -> return to main menu\n", pc->GetName().c_str(),
+            MothershipIdOf(pc).c_str(), W2U(reason).c_str());
+        static_cast<SDK::APlayerController*>(pc)->ClientReturnToMainMenuWithTextReason(
+            SDK::UKismetTextLibrary::Conv_StringToText(SDK::FString(reason.c_str())));
+    }
+
     static void OnEvent(SDK::UObject* ctx, SDK::UFunction* fn, void* parms)
     {
         Resolve();
         if (!g_pending.empty()) DrainPending();
+        if (!g_idxKickSelf)
+        {
+            g_idxKickSelf = -1;
+            if (g_modCls)
+                if (auto* f = g_modCls->GetFunction("A2PlayerModerationComponent", "Server_KickMyself")) g_idxKickSelf = f->Name.ComparisonIndex;
+        }
+        if (g_idxKickSelf > 0 && ctx && fn && fn->Name.ComparisonIndex == g_idxKickSelf) { OnKickSelf(ctx, parms); return; }
+        if (!g_idxMute)
+        {
+            g_idxMute = g_idxMuteAll = -1;
+            if (g_modCls)
+            {
+                if (auto* f = g_modCls->GetFunction("A2PlayerModerationComponent", "Server_MutePlayerForAll")) g_idxMute = f->Name.ComparisonIndex;
+                if (auto* f = g_modCls->GetFunction("A2PlayerModerationComponent", "Server_MuteAllPlayersForAll")) g_idxMuteAll = f->Name.ComparisonIndex;
+            }
+            HxLog("[HalcyonA2][MUTE] mute=%d muteAll=%d\n", g_idxMute, g_idxMuteAll);
+        }
+        ApplyMutes();
         if (!ctx || !fn) return;
         const int32_t idx = fn->Name.ComparisonIndex;
         if (g_idxKick && idx == g_idxKick && parms) OnKick(ctx, parms);
         else if (g_idxBan && idx == g_idxBan && parms) OnBan(ctx, parms);
         else if (g_idxLogin && idx == g_idxLogin) OnLogin(ctx);
+        else if (g_idxMute > 0 && idx == g_idxMute && parms) OnMute(ctx, parms);
+        else if (g_idxMuteAll > 0 && idx == g_idxMuteAll && parms) OnMuteAll(ctx, parms);
     }
 }
 static void SafeModAdmin(SDK::UObject* c, SDK::UFunction* f, void* p) { __try { ModAdmin::OnEvent(c, f, p); } __except (EXCEPTION_EXECUTE_HANDLER) { HxLog("[HalcyonA2][MODADMIN] fault\n"); } }
@@ -16681,6 +17061,206 @@ static void CosmeticTick()
 static void SafeCosmeticTick() { __try { CosmeticTick(); } __except (EXCEPTION_EXECUTE_HANDLER) {} }
 
 
+// [COSGUARD 2026-11-05] Only owned cosmetics may be worn. Exploit reported by a player: a modded client adds every
+// item to its OWN local inventory (AddItemToInventoryById + VRPawn::Server_AddItemToInventoryById, whose server
+// implementation is an empty stub) and equips them; A2PlayerEntity::Server_SetEquippedItems accepted any id, the
+// server replicated the look to everyone, and [COSMETIC] saved it to player_inventory and restored it on every join.
+// Now every Server_SetEquippedItems (the client's, and our own restore, which goes through the same hook) is checked
+// BEFORE the server applies it: an item is allowed if it is free (the game's own starter bundles,
+// DT_ItemOnlineBundleMetadata BundleDefaultInventory + BundleDefaultEquippedItems), or the player owns it (their
+// Mothership /v1/inventory/client, fetched as them, cached 60 s), or it sits in a team slot (18 PreferredTeam,
+// 19 CurrentTeam: set by the game). Anything else is replaced by that slot's default in place, so nobody else sees
+// it and it is never saved. While the player's inventory is still loading, unowned items are stripped but NOT saved
+// (that would erase a real look); when it arrives the player's last requested list is re-applied. -NoCosGuard: off.
+namespace CosGuard {
+    static bool g_on = wcsstr(GetCommandLineW(), L"-NoCosGuard") == nullptr;
+    static const char* const kFree[] = {
+        // BundleDefaultInventory
+        "ChassisRobotD", "ColorPresetDefault", "ColorPreset01", "ColorPreset02", "ColorPreset03", "EyesBlink", "PatternDefault",
+        "TeamPixelPunks", "TeamRustRunners", "ColorPreset08", "ColorPreset11", "WearableShoulderDefault", "WieldableIntegrityToolA",
+        "HardCurrencyDriftium", "WearableIntegrityPledgeCoreA", "HeartBallPatternDefault", "HeartBallPatternRustGutHacked",
+        "HeartBallColorPresetRustGutHacked", "HeartBallMeshDefault",
+        // BundleDefaultEquippedItems (the rest are above)
+        "HardCurrencyDefault",
+    };
+    // what a stripped slot falls back to (EA2ItemSlot): 0 Chassis, 3 ChassisPattern, 4 ChassisEyes, 6 HeartballPattern, 8 ColorPreset
+    static const char* SlotDefault(int slot)
+    {
+        switch (slot) { case 0: return "ChassisRobotD"; case 3: return "PatternDefault"; case 4: return "EyesBlink";
+                        case 6: return "HeartBallPatternDefault"; case 8: return "ColorPresetDefault"; default: return "None"; }
+    }
+    struct Owned { std::unordered_set<std::string> ids; ULONGLONG at = 0; bool inflight = false; bool ok = false; };
+    static std::mutex g_mu;
+    static std::unordered_map<std::string, Owned> g_owned;                       // player id -> owned item ids
+    static std::unordered_map<void*, std::vector<std::string>> g_wanted;         // entity -> last list asked for while unknown (game thread)
+    static std::unordered_map<void*, std::string> g_wantedUid;
+
+    static bool IsFree(const std::string& id)
+    {
+        if (id.empty() || id == "None") return true;
+        for (const char* f : kFree) if (id == f) return true;
+        return false;
+    }
+    static void Fetch(std::string uid)
+    {
+        std::thread([uid]() {
+            Owned o; o.ok = false;
+            const std::string token = MothershipLogin(uid);
+            DWORD code = 0;
+            if (!token.empty())
+            {
+                const std::wstring wtok(token.begin(), token.end());
+                const std::wstring hdr = L"x-server-api-key: " + std::wstring(kServerApiKey) + L"\r\nx-mothership-token: " + wtok + L"\r\n";
+                const std::string resp = HttpReq(kMotherHost, kMotherPort, L"GET", L"/v1/inventory/client", "", hdr, &code);
+                if (code == 200)
+                {
+                    o.ok = true;
+                    static const std::string key = "\"in_game_id\":\"";
+                    for (size_t at = resp.find(key); at != std::string::npos; at = resp.find(key, at + 1))
+                    {
+                        const size_t s = at + key.size(), e = resp.find('"', s);
+                        if (e != std::string::npos && e - s < 128) o.ids.insert(resp.substr(s, e - s));
+                    }
+                }
+            }
+            std::lock_guard<std::mutex> lk(g_mu);
+            Owned& dst = g_owned[uid];
+            dst.inflight = false;
+            dst.at = GetTickCount64();
+            if (o.ok) { dst.ids.swap(o.ids); dst.ok = true; }
+            HxLog("[HalcyonA2][COSGUARD] %s: inventory http=%lu, %zu owned id(s)\n", uid.c_str(), (unsigned long)code, dst.ids.size());
+            }).detach();
+    }
+    // 1 = known (owned filled), 0 = still loading. Starts / refreshes the fetch as needed.
+    static int Ownership(const std::string& uid, std::unordered_set<std::string>& out)
+    {
+        std::lock_guard<std::mutex> lk(g_mu);
+        Owned& o = g_owned[uid];
+        const ULONGLONG now = GetTickCount64();
+        if (!o.inflight && (o.at == 0 || now - o.at > (o.ok ? 60000u : 10000u))) { o.inflight = true; Fetch(uid); }
+        if (!o.ok) return 0;
+        out = o.ids;
+        return 1;
+    }
+    // Server_SetEquippedItems(TArray<FName>) params: Data@0, Num@8. Edits the list in place.
+    static void Check(SDK::UObject* entity, void* parms)
+    {
+        if (!g_on || !entity || !parms) return;
+        auto* items = *reinterpret_cast<SDK::FName**>(parms);
+        const int32_t num = *reinterpret_cast<int32_t*>(reinterpret_cast<uint8_t*>(parms) + 8);
+        if (!items || num <= 0 || num > 64) return;
+        const std::string uid = CosUserId(entity);
+        if (uid.empty()) return;   // no account yet (pre-login default list): nothing to verify against
+        std::unordered_set<std::string> owned;
+        const int known = Ownership(uid, owned);
+        std::vector<std::string> asked; asked.reserve(num);
+        std::string stripped;
+        for (int32_t i = 0; i < num; ++i)
+        {
+            const std::string id = items[i].ToString();
+            asked.push_back(id);
+            if (i == 18 || i == 19 || IsFree(id) || (known && owned.count(id))) continue;
+            const char* def = SlotDefault(i);
+            items[i] = SDK::BasicFilesImplUtils::StringToName(std::wstring(def, def + strlen(def)).c_str());
+            if (!stripped.empty()) stripped += ", ";
+            stripped += id;
+        }
+        if (stripped.empty()) { if (known) { g_wanted.erase(entity); g_wantedUid.erase(entity); } return; }
+        if (known)
+        {
+            HxLog("[HalcyonA2][COSGUARD] %s (%s) tried to wear item(s) they do not own -> removed: %s\n",
+                entity->GetName().c_str(), uid.c_str(), stripped.c_str());
+            g_wanted.erase(entity); g_wantedUid.erase(entity);
+        }
+        else
+        {
+            // inventory not loaded yet: strip for now, never save this, re-apply the real request once it is known
+            g_wanted[entity] = std::move(asked); g_wantedUid[entity] = uid;
+            g_cosRestoring.insert(entity);   // CosmeticTrace skips saving while this is set (cleared by Tick)
+            HxLog("[HalcyonA2][COSGUARD] %s (%s): inventory still loading, held back: %s\n", entity->GetName().c_str(), uid.c_str(), stripped.c_str());
+        }
+    }
+    // Game thread, once a second: re-apply lists that were held back while an inventory was loading.
+    // LOCAL RIG ONLY: %TEMP%\rbtest_equip.txt = "<item id>" equips it (slot 9, Head) on every player through the same
+    // server path as a client's Server_SetEquippedItems; the file is deleted after.
+    static void EquipTest()
+    {
+        if (!IsLocalRig()) return;
+        wchar_t path[MAX_PATH]; const DWORD n = GetTempPathW(MAX_PATH, path);
+        if (!n || n > MAX_PATH - 24) return;
+        wcscat_s(path, L"rbtest_equip.txt");
+        std::string v;
+        if (FILE* f = _wfopen(path, L"rb")) { char buf[160] = {}; fgets(buf, sizeof(buf), f); fclose(f); v = buf; DeleteFileW(path); }
+        while (!v.empty() && (v.back() == '\n' || v.back() == '\r' || v.back() == ' ')) v.pop_back();
+        if (v.empty()) return;
+        static SDK::UClass* peCls = SDK::UObject::FindClassFast("A2PlayerEntity");
+        if (!peCls) return;
+        const std::vector<SDK::UObject*> live = ClassObjects(peCls);
+        for (SDK::UObject* e : live)
+        {
+            if (!e || e->IsDefaultObject() || CosUserId(e).empty()) continue;
+            std::vector<std::string> l(20, "None");
+            l[0] = "ChassisRobotD"; l[8] = "ColorPresetDefault"; l[9] = v;
+            HxLog("[HalcyonA2][COSGUARD] LOCAL TEST: equipping %s on %s\n", v.c_str(), e->GetName().c_str());
+            std::lock_guard<std::mutex> lk(g_cosMu);
+            g_cosApplyQ.push_back(CosApply{ e, std::move(l) });
+        }
+    }
+    static void Tick()
+    {
+        EquipTest();
+        if (!g_on || g_wanted.empty()) return;
+        static ULONGLONG s_last = 0;
+        const ULONGLONG now = GetTickCount64();
+        if (now - s_last < 1000) return;
+        s_last = now;
+        for (auto it = g_wanted.begin(); it != g_wanted.end();)
+        {
+            std::unordered_set<std::string> owned;
+            const std::string uid = g_wantedUid[it->first];
+            if (!Ownership(uid, owned)) { ++it; continue; }
+            g_cosRestoring.erase(it->first);
+            {
+                std::lock_guard<std::mutex> lk(g_cosMu);
+                g_cosApplyQ.push_back(CosApply{ it->first, it->second });   // goes through Check again, now with ownership
+            }
+            HxLog("[HalcyonA2][COSGUARD] %s: inventory loaded, re-applying the requested look\n", uid.c_str());
+            g_wantedUid.erase(it->first);
+            it = g_wanted.erase(it);
+        }
+    }
+}
+static void SafeCosGuardCheck(SDK::UObject* e, void* p) { __try { CosGuard::Check(e, p); } __except (EXCEPTION_EXECUTE_HANDLER) { HxLog("[HalcyonA2][COSGUARD] fault\n"); } }
+static void SafeCosGuardTick() { __try { CosGuard::Tick(); } __except (EXCEPTION_EXECUTE_HANDLER) {} }
+// true = drop this Server_AddItemToInventoryById (pawn -> Controller @0x2E8 -> MothershipId @0x920)
+static bool CosGuardDropAdd(SDK::UObject* pawn, void* parms)
+{
+    const std::string id = reinterpret_cast<SDK::FName*>(parms)->ToString();
+    if (CosGuard::IsFree(id) || id.rfind("HardCurrency", 0) == 0) return false;
+    void* ctrl = *reinterpret_cast<void**>(reinterpret_cast<uintptr_t>(pawn) + 0x2E8);
+    const std::string uid = ctrl ? FStringToNarrow(reinterpret_cast<SDK::FString*>(reinterpret_cast<uintptr_t>(ctrl) + 0x920)) : std::string();
+    if (uid.empty()) return false;
+    std::unordered_set<std::string> owned;
+    if (CosGuard::Ownership(uid, owned) && owned.count(id)) return false;
+    static ULONGLONG s_win = 0; static int s_n = 0;
+    const ULONGLONG now = GetTickCount64();
+    if (now - s_win > 10000) { if (s_n > 1) HxLog("[HalcyonA2][COSGUARD] ... %d more unowned item add(s) dropped\n", s_n - 1); s_win = now; s_n = 0; }
+    if (s_n++ == 0) HxLog("[HalcyonA2][COSGUARD] %s (%s): dropped Server_AddItemToInventoryById(%s), not owned\n", pawn->GetName().c_str(), uid.c_str(), id.c_str());
+    return true;
+}
+static bool SafeCosGuardDropAdd(SDK::UObject* p, void* parms) { __try { return CosGuardDropAdd(p, parms); } __except (EXCEPTION_EXECUTE_HANDLER) { return false; } }
+static int32_t CosGuardAddIdx()   // FName index of VRPawn::Server_AddItemToInventoryById (-1 = not found)
+{
+    static int32_t s_idx = -2;
+    if (s_idx == -2)
+    {
+        s_idx = -1;
+        if (auto* c = SDK::UObject::FindClassFast("VRPawn"))
+            if (auto* f = c->GetFunction("VRPawn", "Server_AddItemToInventoryById")) s_idx = f->Name.ComparisonIndex;
+    }
+    return s_idx;
+}
+
 // [2026-09-12 COSMETIC] Dump the incoming cosmetic payload. FA2CosmeticMaterialMetadata's layout is not
 // in the SDK dump, so print the raw parameter block as hex alongside the decoded MeshName -- that is
 // enough to store and replay it verbatim later.
@@ -16885,6 +17465,14 @@ static void ProcessEvent_Hook(SDK::UObject* Context, SDK::UFunction* Function, v
         __try { HeartSpawnTrace(Context, Parms); }
         __except (EXCEPTION_EXECUTE_HANDLER) {}
     }
+
+    // [COSGUARD] equips: only free or owned items get through (edits the list in place, before anything else sees it)
+    if (g_idxSetEquipped && Function && Context && Parms && Function->Name.ComparisonIndex == g_idxSetEquipped)
+        SafeCosGuardCheck(Context, Parms);
+    // [COSGUARD] VRPawn::Server_AddItemToInventoryById(FName): the server implementation is an empty stub, so this
+    // grants nothing; drop the ones for items the player does not own instead of letting a modded client spam them.
+    if (CosGuard::g_on && Function && Context && Parms && Function->Name.ComparisonIndex == CosGuardAddIdx() && SafeCosGuardDropAdd(Context, Parms))
+        return;
 
     // [2026-09-12 COSMETIC] what a colour change actually carries
     if (Function && Context && Parms &&
@@ -17321,6 +17909,7 @@ static void ProcessEvent_Hook(SDK::UObject* Context, SDK::UFunction* Function, v
         PROF(SafeRePushRoles);       // [ROLES] re-send station roles to owning clients (god voice)
         PROF(SafeHeartSpawnFollowUp);// [HEARTBALL] where the spawned ball ended up
         PROF(SafeCosmeticTick);      // [COSMETIC] persist + restore player colour
+        PROF(SafeCosGuardTick);      // [COSGUARD] re-apply looks held back while an inventory loaded
         PROF(SafeRolesTestPush);     // [ROLESTEST] -RolesTest: local proof that Client_SetRoles crosses the wire
         // Fallback only: if the tick above somehow doesn't advance a GSM out of GAME_BEGIN within ~11s,
         // force it to RUNNING via the NetVar (skips the Luau onEnter). Disarmed automatically the moment

@@ -160,6 +160,9 @@ func (s *MothershipServer) ClientAuthRift(c *hosting.Context) hosting.Result {
 		playerId = *existing.PlayerId
 	}
 
+	if res, ok := loginBanCheck(request, playerId, extId); !ok { // Solara: global ban
+		return res
+	}
 	now := time.Now()
 	expSec := now.Add(time.Hour).Unix()
 	expMs := now.Add(time.Hour).UnixMilli()
@@ -350,6 +353,9 @@ func (s *MothershipServer) CompleteQuestAuth(c *hosting.Context) hosting.Result 
 		playerId = *existing.PlayerId
 	}
 
+	if res, ok := loginBanCheck(request, playerId, userId); !ok { // Solara: global ban
+		return res
+	}
 	now := time.Now()
 	expSec := now.Add(time.Hour).Unix()
 	expMs := now.Add(time.Hour).UnixMilli()
@@ -448,6 +454,9 @@ func (s *MothershipServer) CompleteSteamAuth(c *hosting.Context) hosting.Result 
 		titleId = TENANT_ID
 	}
 
+	if res, ok := loginBanCheck(request, playerId, steamId); !ok { // Solara: global ban
+		return res
+	}
 	now := time.Now()
 	expSec := now.Add(time.Hour).Unix()
 	expMs := now.Add(time.Hour).UnixMilli()

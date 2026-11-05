@@ -370,6 +370,16 @@ func (s *A2StationDbServer) GetNetvarOverrides(c *hosting.Context) hosting.Resul
 		station = a2FindStation(stationId)
 	}
 
+	// Solara: ?v=<version> is the game server's fast poll (game servers on Azure are not co-located with the
+	// backend, so they cannot watch the files below): an unchanged set answers 200 with an empty body, and a poll
+	// never rewrites files or re-pushes the browser whitelists. Without ?v= this is the original startup fetch.
+	if have, ok := c.Request.Query("v"); ok {
+		text := BuildText(station)
+		if strings.HasPrefix(text, "v="+have+"\n") || text == "v="+have {
+			return hosting.Configurable(200, "text/plain; charset=utf-8", nil)
+		}
+		return hosting.Configurable(200, "text/plain; charset=utf-8", []byte(text))
+	}
 	// The game server calls this once at startup; make sure the watched files exist too.
 	EnsureAllWritten()
 	PushAll() // and that the EOS gateway has every station's browser whitelist

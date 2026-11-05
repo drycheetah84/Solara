@@ -5,6 +5,7 @@ import { api, type User, type Station, type SearchUser, type UserSearchPage } fr
 import { fmt, ago } from "../../lib/utils";
 import { X } from "lucide-react";
 import GameBans from "./GameBans";
+import GameMutes from "./GameMutes";
 import ItemsModal from "./ItemsModal";
 
 function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
@@ -156,6 +157,7 @@ export default function UsersPage() {
       )}
 
       <GameBans />
+      <GameMutes />
 
       {/* Search + pager */}
       <div className="flex flex-wrap items-center gap-2 mb-3">
