@@ -3680,8 +3680,61 @@ static int32_t SafeRbNicOffset(void* nic)
     __try { auto it = g_rbFrameOff.find(nic); return it == g_rbFrameOff.end() ? 0 : it->second; }
     __except (EXCEPTION_EXECUTE_HANDLER) { return 0; }
 }
+// [RBSTAT 2026-11-05] Diagnostic only (no behaviour change): per-second rollback health so "the sim snaps" can be
+// measured instead of guessed. corr = ball/disc corrections the server pushed (0x5747AE0, called by the correction
+// check 0x5757260 when a client's reported state differs from the server's for that frame = a client-visible snap);
+// missedRep/missedSum = Client_ReportMissedInputs sends and the inputs they reported; lead = newest input frame minus
+// the server frame when a batch arrives (after our rebase; <= 0 means the input came too late for its frame).
+static volatile LONG g_rbsCorr = 0, g_rbsMissRep = 0, g_rbsMissSum = 0, g_rbsBatches = 0, g_rbsLate = 0;
+static volatile LONG g_rbsLeadSum = 0, g_rbsLeadMin = 0x7FFFFFFF, g_rbsLeadMax = -0x7FFFFFFF;
+using RbCorr_t = __int64(__fastcall*)(void*, int32_t, void*);
+static RbCorr_t RbCorr_Orig = nullptr;
+static __int64 __fastcall RbCorr_Hook(void* part, int32_t frame, void* state)
+{
+    InterlockedIncrement(&g_rbsCorr);
+    return RbCorr_Orig(part, frame, state);
+}
+static void RbStatLead(int32_t lead)
+{
+    InterlockedIncrement(&g_rbsBatches);
+    InterlockedExchangeAdd(&g_rbsLeadSum, lead);
+    if (lead <= 0) InterlockedIncrement(&g_rbsLate);
+    for (LONG cur = g_rbsLeadMin; lead < cur; cur = g_rbsLeadMin)
+        if (InterlockedCompareExchange(&g_rbsLeadMin, lead, cur) == cur) break;
+    for (LONG cur = g_rbsLeadMax; lead > cur; cur = g_rbsLeadMax)
+        if (InterlockedCompareExchange(&g_rbsLeadMax, lead, cur) == cur) break;
+}
+static int g_rbsTicks = 0, g_rbsHitch = 0;   // game thread only (step driver)
+static float g_rbsDtMax = 0.0f;
+static void RbStatFlush();
+static void RbStatTick(float dt)
+{
+    ++g_rbsTicks;
+    if (dt > 0.0122232f) ++g_rbsHitch;   // the engine's own hitch threshold (1.1 sim frames)
+    if (dt > g_rbsDtMax) g_rbsDtMax = dt;
+    __try { RbStatFlush(); } __except (EXCEPTION_EXECUTE_HANDLER) {}
+}
+static void RbStatFlush()   // once a second from the step driver hook
+{
+    static ULONGLONG s_last = 0;
+    const ULONGLONG now = GetTickCount64();
+    if (now - s_last < 1000) return;
+    s_last = now;
+    const int ticks = g_rbsTicks, hitch = g_rbsHitch; const float dtMax = g_rbsDtMax;
+    g_rbsTicks = 0; g_rbsHitch = 0; g_rbsDtMax = 0.0f;
+    const LONG corr = InterlockedExchange(&g_rbsCorr, 0), rep = InterlockedExchange(&g_rbsMissRep, 0);
+    const LONG miss = InterlockedExchange(&g_rbsMissSum, 0), b = InterlockedExchange(&g_rbsBatches, 0);
+    const LONG late = InterlockedExchange(&g_rbsLate, 0), sum = InterlockedExchange(&g_rbsLeadSum, 0);
+    const LONG mn = InterlockedExchange(&g_rbsLeadMin, 0x7FFFFFFF), mx = InterlockedExchange(&g_rbsLeadMax, -0x7FFFFFFF);
+    if (corr == 0 && rep == 0 && b == 0) return;
+    HxLog("[HalcyonA2][RBSTAT] corr/s=%ld missedRep/s=%ld missedSum=%ld batches/s=%ld lead min=%ld avg=%.1f max=%ld late=%ld"
+        " | ticks/s=%d hitch=%d dtMax=%.1fms\n",
+        corr, rep, miss, b, b ? mn : 0, b ? double(sum) / b : 0.0, b ? mx : 0, late, ticks, hitch, dtMax * 1000.0f);
+}
 static __int64 __fastcall RbMissed_Hook(void* nic, int32_t frame, uint64_t serverFrame, uint64_t missed, uint64_t missedBuf)
 {
+    InterlockedIncrement(&g_rbsMissRep);
+    InterlockedExchangeAdd(&g_rbsMissSum, static_cast<LONG>(static_cast<int32_t>(missed)));
     return RbMissed_Orig(nic, frame - SafeRbNicOffset(nic), serverFrame, missed, missedBuf);
 }
 
@@ -13608,6 +13661,7 @@ static void TraceBallRpc(SDK::UObject* Context, SDK::UFunction* Function, void* 
                     }
                     const int32_t off = s_off[Context];
                     for (int32_t k = 0; k < n0; ++k) *reinterpret_cast<int32_t*>(in0 + 496ull * k) += off;
+                    RbStatLead(clientLast + off - serverF);   // [RBSTAT] how early the newest input arrived
                     SafeRbForwardInputs(Context, in0, n0);   // [RBFWD] relay to the other seated players
                 }
             }
@@ -14045,9 +14099,18 @@ static const char* CurlRewrite(const char* url, char* buf, size_t cap)
     std::string h(host, hostLen);
     for (char& c : h) c = static_cast<char>(tolower(static_cast<unsigned char>(c)));
     int port = 0;
-    if (h.find("aa-mothership") != std::string::npos) port = g_motherPort;
-    else if (h.find("api.oriondrift.net") != std::string::npos) port = g_backendPort;
+    const std::wstring* cfgHost = nullptr;
+    if (h.find("aa-mothership") != std::string::npos) { port = g_motherPort; cfgHost = &g_motherHost; }
+    else if (h.find("api.oriondrift.net") != std::string::npos) { port = g_backendPort; cfgHost = &g_backendHost; }
     if (!port) return nullptr;
+    if (port == 443 && cfgHost && !cfgHost->empty())
+    {
+        // [2026-11-05] A server outside the backend's private network (e.g. a local test server registered on prod):
+        // -MothershipHost / -BackendHost name an HTTPS host (Cloudflare tunnel) instead of a 127.0.0.1 port proxy.
+        std::string hn(cfgHost->begin(), cfgHost->end());
+        snprintf(buf, cap, "https://%s%s", hn.c_str(), path ? path : "/");
+        return buf;
+    }
     snprintf(buf, cap, "http://127.0.0.1:%d%s", port, path ? path : "/");
     return buf;
 }
@@ -17544,6 +17607,7 @@ static __int64 __fastcall RbStepDrv_Hook(void* a1, float dt, __int64 a3)
 {
     InterlockedIncrement(&g_rbDrvCalls);
     SafeRbStepDrvLog(a1, a3);
+    if (a3 == 0) RbStatTick(dt);   // [RBSTAT] frame-time spread + once-a-second flush
     return RbStepDrv_Orig(a1, dt, a3);
 }
 
@@ -17944,6 +18008,10 @@ static void PatchNetmode2Gates(uintptr_t base)
             const MH_STATUS c4 = MH_CreateHook(mi, &RbMissed_Hook, reinterpret_cast<void**>(&RbMissed_Orig));
             const MH_STATUS e4 = MH_EnableHook(mi);
             HxLog("[HalcyonA2][RBFRAMEFIX] missed-inputs sender hook create=%d enable=%d\n", (int)c4, (int)e4);
+            void* co = reinterpret_cast<void*>(base + 0x5747AE0);
+            const MH_STATUS c5 = MH_CreateHook(co, &RbCorr_Hook, reinterpret_cast<void**>(&RbCorr_Orig));
+            const MH_STATUS e5 = MH_EnableHook(co);
+            HxLog("[HalcyonA2][RBSTAT] correction-push counter hook create=%d enable=%d\n", (int)c5, (int)e5);
         }
         else HxLog("[HalcyonA2][RBTICK] rollback step driver bytes differ -- hook skipped\n");
     }
