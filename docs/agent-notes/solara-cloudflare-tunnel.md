@@ -68,3 +68,8 @@ D-series quota needs MFA login, a request was throttled -- retry for D8as_v5 the
 - DB was seeded from the repo production.solara.db (2026-10-31): Nov 1-4 AWS data lost; stations Ranked/Clubhouse/
   Freerunners recreated (new ids), their station config lost. Discord login RESTORED 2026-11-05 (new client secret; role map, role names and fleet owners rebuilt from history; owners remapped to the new station ids) -- was: needed a new client secret +
   DISCORD_ROLE_MAP/FLEET_OWNERS/ROLE_NAMES (client id + guild id restored in dashboard.env).
+- **Box 2 (2026-11-05):** `halcyon-game2` E8bds_v5 (8 vCPU / 64 GB) Windows 2022, **centralus** zone 1, public
+  172.212.202.163, private 10.20.1.10, VNet `halcyon-vnet-c` (10.20.0.0/16) peered to `halcyon-vnet`, NSG `game-nsg-c`.
+  Agent `win-gamebox-2` capacity 8, kept EMPTY as standby (spin-ups with no box land there once box 1 is full).
+  Hub allowlist SOLARA_AGENT_ALLOWED_IPS=10.10.1.10,10.20.1.10. Same admin creds file. Measured on box 1:
+  idle server ~0.4 core, +~2% core per player, game thread caps a server near 1 core (~25-30 players).
