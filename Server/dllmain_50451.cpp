@@ -4043,13 +4043,33 @@ static void RbAvgWorstLog(void* nic, float diff, float range, LONG c)
         reinterpret_cast<SDK::UObject*>(nic)->GetName().c_str(), diff, range, c);
 }
 static void SafeRbAvgWorstLog(void* nic, float diff, float range, LONG c) { __try { RbAvgWorstLog(nic, diff, range, c); } __except (EXCEPTION_EXECUTE_HANDLER) {} }
+// [TIMESYNC margin 2026-11-05] The game's target (client steers the worst-80 average margin to 0) leaves no slack on
+// our servers: measured on Clubhouse, late inputs went from 0.04/s (no time sync, lead ~5.6) to 5.3/s (72% of
+// seconds) once clients converged. Report Diff minus M frames instead, so each client settles with its slowest
+// inputs M frames early. Only for computed reports (the component still holds more samples than its minimum; the
+// "not enough samples" report passes through untouched). M: -RbSyncMargin=<frames> or the netvar
+// RbSyncMarginFrames (any slot, live); default 3, clamped 0..10.
+static const LONG g_rbSyncMarginDefault = [] {
+    const wchar_t* a = wcsstr(GetCommandLineW(), L"-RbSyncMargin=");
+    return a ? (LONG)_wtoi(a + 14) : 3L;
+}();
+static volatile LONG g_rbSyncMargin = g_rbSyncMarginDefault;
+static void RbSetSyncMargin(LONG m, const char* why)
+{
+    if (m < 0) m = 0; if (m > 10) m = 10;
+    if (InterlockedExchange(&g_rbSyncMargin, m) != m)
+        HxLog("[HalcyonA2][TIMESYNC] sync margin now %ld frame(s) (%s)\n", m, why);
+}
 static __int64 __fastcall RbAvgWorst_Hook(void* nic, float diff, float range)
 {
     InterlockedIncrement(&g_rbsTsync);
+    const uint8_t* c8 = reinterpret_cast<const uint8_t*>(nic);
+    const bool computed = *reinterpret_cast<const int32_t*>(c8 + 280) > *reinterpret_cast<const int32_t*>(c8 + 248);
+    const float sent = computed ? diff - float(g_rbSyncMargin) * 0.011112f : diff;
     static volatile LONG s_n = 0;
     const LONG c = InterlockedIncrement(&s_n);
-    if (c <= 20 || (c % 200) == 0) SafeRbAvgWorstLog(nic, diff, range, c);
-    return RbAvgWorst_Orig(nic, diff, range);
+    if (c <= 20 || (c % 200) == 0) SafeRbAvgWorstLog(nic, sent, range, c);
+    return RbAvgWorst_Orig(nic, sent, range);
 }
 static void RbDriveInputTicks(float dt)
 {
@@ -11747,6 +11767,12 @@ static void NvApplyTick()
 
     std::vector<NvOverride> todo;
     { std::lock_guard<std::mutex> lk(g_nvMu); todo = g_nvPending; }
+    if (newVersion)   // [TIMESYNC margin] DLL-side tunable riding the netvar channel (no game variable has this name)
+    {
+        LONG m = g_rbSyncMarginDefault;
+        for (const NvOverride& o : todo) if (o.name == "RbSyncMarginFrames") m = (LONG)atoi(o.value.c_str());
+        RbSetSyncMargin(m, "netvar RbSyncMarginFrames");
+    }
 
     static SDK::UClass* msCls = nullptr, * apiCls = nullptr, * tmCls = nullptr;
     if (!msCls)  msCls = SDK::UObject::FindClassFast("ModuleState");
