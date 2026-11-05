@@ -4683,6 +4683,7 @@ static std::string SeSandboxSpawn(const std::string& uniqueId, const double* loc
 // TargetQuest on the player's machine when every coin is collected inside Duration. "new" places one at x,y,z.
 // The start button of a run: the game's ProgressionButton reads serverData/TargetQuest (a 32-hex string)
 // when pressed and activates that quest on the presser's machine, which starts every run registered for it.
+// [50451] Not this build: there the quest is a GUID in Properties (props/TargetQuest), set at spawn in SeCoinRun.
 static bool SbSetButtonQuest(SDK::AActor* button, const std::string& questHex)
 {
     SDK::UObject* pc = SbPrefabOf(button);
@@ -4777,8 +4778,18 @@ static void SeCoinRun(const std::string& ident, const std::string& locs, const s
         double bl[3];
         if (!idx.empty() && questHex.size() == 32 && SeVec(buttonLoc, bl))
         {
+#if HALCYON_GAME_BUILD == 50451
+            // [2026-11-05] 50451's ProgressionButton keeps its quest as a GUID in Properties (props/TargetQuest, as on the
+            // station's own buttons, e.g. aa_se_BP_ProgressionButton_Mainframe), not as a 32-hex string under serverData:
+            // the old write (SbSetButtonQuest) found no serverData/TargetQuest and failed (-1), so the button carried an
+            // all-zero quest and pressing it never started the run. Give it the GUID at spawn, like the run's own data.
+            g_sbPendingLeaves = { { true, "TargetQuest", SbBlobGuid(g) } };
+            const std::string bidx = SeSandboxSpawn("aa_se_BP_ProgressionButton", bl, rot, scl);
+            HxLog("[HalcyonA2][SPECEDIT] button %s TargetQuest = %s (props guid at spawn)\n", bidx.empty() ? "FAILED" : bidx.c_str(), questHex.c_str());
+#else
             const std::string bidx = SeSandboxSpawn("aa_se_BP_ProgressionButton", bl, rot, scl);
             if (SDK::AActor* btn = bidx.empty() ? nullptr : SbActorForIdx(bidx)) SbSetButtonQuest(btn, questHex);
+#endif
             g_seCoinRuns[questRef] = { idx, bidx };
         }
         else if (!idx.empty()) g_seCoinRuns[questRef] = { idx, std::string() };

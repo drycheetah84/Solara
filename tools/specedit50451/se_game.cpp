@@ -2468,6 +2468,52 @@ static void Get(const std::string& path)
 }
 }  // namespace nvc
 
+// ---- coinprobe: which coin class / coin types the 50451 red coin quest uses (probing) --------------------------
+// URedCoinTimedQuestComponent (50451): RedcoinBlueprint TSubclassOf<AA2RedCoinActor> @0x470, CoinTypes
+// TMap<FName, FCoinType> @0x4A0. A TMap's TSparseArray: Data @+0, Num @+8 (free slots included), AllocationFlags
+// inline bits @+0x10; element = FName key (8) + FCoinType (0x18: OverrideBlueprint, StaticMeshes, Material) +
+// HashNextId/HashIndex (8) = 0x28.
+struct CoinProbeComp { SDK::UObject* rcb = nullptr; int n = 0; SDK::FName key[16]{}; SDK::UObject* ovr[16]{}; SDK::UObject* mesh[16]{}; };
+static bool CoinProbeRead(SDK::UObject* comp, CoinProbeComp* out)
+{
+    __try
+    {
+        const uint8_t* c = reinterpret_cast<const uint8_t*>(comp);
+        out->rcb = *reinterpret_cast<SDK::UObject* const*>(c + 0x470);
+        const uint8_t* data = *reinterpret_cast<const uint8_t* const*>(c + 0x4A0);
+        const int32_t num = *reinterpret_cast<const int32_t*>(c + 0x4A0 + 8);
+        // TBitArray<TInlineAllocator<4>>: 4 inline uint32 words @+0x10, then the heap pointer @+0x20 (null = inline)
+        const uint32_t* inl = reinterpret_cast<const uint32_t*>(c + 0x4A0 + 0x10);
+        const uint32_t* heap = *reinterpret_cast<const uint32_t* const*>(c + 0x4A0 + 0x20);
+        const uint32_t* flags = heap ? heap : inl;
+        for (int32_t i = 0; data && i < num && i < 128 && out->n < 16; ++i)
+        {
+            const uint32_t word = flags[i / 32];
+            if (!(word & (1u << (i % 32)))) continue;   // free slot
+            const uint8_t* e = data + 0x28ull * i;
+            out->key[out->n] = *reinterpret_cast<const SDK::FName*>(e);
+            out->ovr[out->n] = *reinterpret_cast<SDK::UObject* const*>(e + 0x8);
+            out->mesh[out->n] = *reinterpret_cast<SDK::UObject* const*>(e + 0x10);
+            ++out->n;
+        }
+        return true;
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER) { return false; }
+}
+static SDK::UClass* CoinProbeLoadClass(const std::wstring& path)
+{
+    SDK::Params::KismetSystemLibrary_MakeSoftClassPath mk{};
+    mk.PathString = SDK::FString(path.c_str());
+    SDK::Params::KismetSystemLibrary_Conv_SoftClassPathToSoftClassRef cv{};
+    SDK::Params::KismetSystemLibrary_LoadClassAsset_Blocking ld{};
+    if (!CallStatic("KismetSystemLibrary", "MakeSoftClassPath", mk)) return nullptr;
+    cv.SoftClassPath = mk.ReturnValue;
+    if (!CallStatic("KismetSystemLibrary", "Conv_SoftClassPathToSoftClassRef", cv)) return nullptr;
+    ld.AssetClass = cv.ReturnValue;
+    if (!CallStatic("KismetSystemLibrary", "LoadClassAsset_Blocking", ld)) return nullptr;
+    return ld.ReturnValue;
+}
+
 // One editor op (a test-script line), run now. The script runner above feeds it one line per frame; the MCP
 // bridge (se_mcp) runs single ops through it too, capturing what they log.
 void ScriptOp(const Snapshot& snap, const std::string& line)
@@ -3448,6 +3494,63 @@ void ScriptOp(const Snapshot& snap, const std::string& line)
             ++shown;
         }
         Log("[script] near: %d actor(s)", shown);
+        return;
+    }
+    if (!strcmp(op, "coinprobe"))             // coinprobe [class path ...] -- PROBING: coin classes + the red coin quest's coin types
+    {
+        std::vector<std::wstring> paths = {
+            L"/Game/A2/Prefabs/Quests/LE_BP_New_RedCoinTimedQuest.LE_BP_New_RedCoinTimedQuest_C",
+            L"/Game/A2/Progression/TimedQuest/LE_BP_RedCoin.LE_BP_RedCoin_C",
+            L"/Game/A2/Progression/TimedQuest/BP_RedCoin.BP_RedCoin_C" };
+        for (size_t b = 0; b < rest.size(); )
+        {
+            size_t e = rest.find(' ', b); if (e == std::string::npos) e = rest.size();
+            if (e > b) paths.push_back(std::wstring(rest.begin() + b, rest.begin() + e));
+            b = e + 1;
+        }
+        for (const std::wstring& p : paths)
+        {
+            SDK::UClass* c = CoinProbeLoadClass(p);
+            Log("[script] coinprobe load %ls: %s", p.c_str(), c ? c->GetFullName().c_str() : "NOT FOUND");
+        }
+        auto* clsCls = SDK::UObject::FindClassFast("Class");
+        auto* bpgc = SDK::UObject::FindClassFast("BlueprintGeneratedClass");
+        auto* rcqc = SDK::UObject::FindClassFast("RedCoinTimedQuestComponent");
+        auto* coinBase = SDK::UObject::FindClassFast("A2RedCoinActor");
+        const int32_t n = SDK::UObject::GObjects->Num();
+        int classes = 0, comps = 0;
+        for (int32_t i = 0; i < n; ++i)
+        {
+            SDK::UObject* o = SDK::UObject::GObjects->GetByIndex(i);
+            if (!o) continue;
+            const bool isClass = (clsCls && o->Class == clsCls) || (bpgc && o->Class == bpgc);
+            if (isClass && classes < 60)
+            {
+                auto* uc = static_cast<SDK::UClass*>(o);
+                const std::string nm = o->GetName();
+                bool coinChild = false;
+                for (SDK::UStruct* s = uc; s && coinBase; s = s->SuperStruct) if (s == coinBase) { coinChild = true; break; }
+                if (coinChild || nm.find("Coin") != std::string::npos)
+                {
+                    Log("[script] coinprobe class %s%s", o->GetFullName().c_str(), coinChild ? "  (an A2RedCoinActor)" : "");
+                    ++classes;
+                }
+                continue;
+            }
+            if (rcqc && o->IsA(rcqc) && comps < 20)
+            {
+                CoinProbeComp cp;
+                if (!CoinProbeRead(o, &cp)) { Log("[script] coinprobe comp %s: read fault", o->GetFullName().c_str()); continue; }
+                Log("[script] coinprobe comp %s  RedcoinBlueprint=%s  CoinTypes=%d", o->GetFullName().c_str(),
+                    cp.rcb && ObjectAlive(cp.rcb) ? cp.rcb->GetFullName().c_str() : "null", cp.n);
+                for (int k = 0; k < cp.n; ++k)
+                    Log("[script] coinprobe   type '%s' override=%s mesh=%s", cp.key[k].ToString().c_str(),
+                        cp.ovr[k] && ObjectAlive(cp.ovr[k]) ? cp.ovr[k]->GetName().c_str() : "null",
+                        cp.mesh[k] && ObjectAlive(cp.mesh[k]) ? cp.mesh[k]->GetName().c_str() : "null");
+                ++comps;
+            }
+        }
+        Log("[script] coinprobe: %d coin class(es), %d quest component(s)", classes, comps);
         return;
     }
     if (!strcmp(op, "classchain"))            // classchain <Class> -- its parent chain, and a live instance's root collision
