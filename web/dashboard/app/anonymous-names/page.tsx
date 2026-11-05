@@ -92,8 +92,9 @@ export default function AnonymousNamesPage() {
 
   const nAdj = words(adj).length, nNoun = words(nouns).length;
   return (
-    <div className="max-w-4xl">
-      <h1 className="text-lg font-semibold mb-1" style={{ color: "var(--text)" }}>Anonymous names</h1>
+    <div className="mx-auto max-w-[1100px] pt-8 pb-14">
+      <p className="eyebrow mb-1.5">Admin</p>
+      <h1 className="text-[44px] leading-tight font-medium tracking-tight mb-1">Anonymous names</h1>
       <p className="text-xs mb-5" style={{ color: "var(--muted)" }}>
         When a player turns anonymous mode on, their name tag becomes <b>Adjective + Noun + number</b>, picked from
         these lists by a random seed the game sends. Words: letters and digits only, up to 24 characters, one per line.

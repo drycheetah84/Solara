@@ -9,13 +9,12 @@ import ItemsModal from "./ItemsModal";
 
 function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center"
-      style={{ background: "rgba(0,0,0,0.6)" }}
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background: "rgba(0,0,0,0.65)" }}
       onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
-      <div className="w-full max-w-md rounded-lg p-6"
-        style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
+      <div className="card w-full max-w-md p-6">
         <div className="flex items-center justify-between mb-5">
-          <h2 className="font-semibold text-sm">{title}</h2>
+          <h2 className="text-[22px] font-medium">{title}</h2>
           <button onClick={onClose} style={{ color: "var(--muted)" }}><X size={16} /></button>
         </div>
         {children}
@@ -24,8 +23,8 @@ function Modal({ title, onClose, children }: { title: string; onClose: () => voi
   );
 }
 
-const inputCls = "w-full px-3 py-2 rounded-md text-sm outline-none";
-const inputStyle = { background: "var(--surface2)", border: "1px solid var(--border)", color: "var(--text)" };
+const inputCls = "field";
+const inputStyle = {};
 
 const PAGE_SIZES = [25, 50, 100, 200];
 
@@ -141,54 +140,50 @@ export default function UsersPage() {
   }
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-5">
-        <h1 className="text-lg font-semibold" style={{ color: "var(--text)" }}>Users</h1>
-        {pageInfo && (
-          <span className="text-xs px-2 py-1 rounded-full"
-            style={{ background: "var(--surface2)", color: "var(--muted)" }}>
-            {pageInfo.total} {q ? "matching" : "total"}
-          </span>
-        )}
+    <div className="mx-auto max-w-[1200px] pt-8 pb-14">
+      <div className="flex flex-wrap items-end justify-between gap-4 mb-6">
+        <div>
+          <p className="eyebrow mb-1.5">Accounts</p>
+          <h1 className="text-[44px] leading-tight font-medium tracking-tight">Users</h1>
+          <p className="text-[15px] mt-1.5 tabular" style={{ color: "var(--muted)" }}>
+            {pageInfo ? <><span className="font-medium" style={{ color: "var(--text)" }}>{pageInfo.total}</span> {q ? "matching" : "total"}</> : "Loading…"}
+          </p>
+        </div>
       </div>
 
       {err && (
-        <div className="mb-4 px-4 py-3 rounded-md text-sm"
-          style={{ background: "#2d1a1a", color: "var(--red)", border: "1px solid #5c2020" }}>
-          {err}
-        </div>
+        <div className="card mb-4 px-5 py-3.5 text-[15px]" style={{ color: "var(--red)" }}>{err}</div>
       )}
 
       <GameBans />
 
       {/* Search + pager */}
       <div className="flex flex-wrap items-center gap-2 mb-3">
-        <input className={inputCls} style={{ ...inputStyle, maxWidth: 320 }} value={query}
+        <input className="field max-w-[340px]" value={query}
           placeholder="Search by username or user ID…" onChange={e => setQuery(e.target.value)} />
         <div className="flex items-center gap-2 ml-auto text-xs" style={{ color: "var(--muted)" }}>
-          <select className="px-2 py-1.5 rounded-md text-xs outline-none" style={inputStyle} value={pageSize}
+          <select className="field w-auto! py-2! text-xs" value={pageSize}
             onChange={e => { setPageSize(Number(e.target.value)); setPage(1); }}>
             {PAGE_SIZES.map(n => <option key={n} value={n}>{n} per page</option>)}
           </select>
           <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={!pageInfo || page <= 1}
-            className="px-2.5 py-1.5 rounded-md disabled:opacity-40" style={{ border: "1px solid var(--border)", color: "var(--text)" }}>
+            className="btn-dark min-w-0! py-2! text-xs">
             ← Prev
           </button>
           <span>Page {pageInfo?.page ?? page} of {pageInfo?.pages ?? 1}</span>
           <button onClick={() => setPage(p => p + 1)} disabled={!pageInfo || page >= pageInfo.pages}
-            className="px-2.5 py-1.5 rounded-md disabled:opacity-40" style={{ border: "1px solid var(--border)", color: "var(--text)" }}>
+            className="btn-dark min-w-0! py-2! text-xs">
             Next →
           </button>
         </div>
       </div>
 
-      <div className="rounded-lg overflow-hidden" style={{ border: "1px solid var(--border)" }}>
-        <table className="w-full text-sm">
+      <div className="card overflow-x-auto p-0!">
+        <table className="w-full text-[14px]">
           <thead>
-            <tr style={{ background: "var(--surface)", borderBottom: "1px solid var(--border)" }}>
+            <tr style={{ background: "var(--surface2)", borderBottom: "1px solid var(--line)" }}>
               {["User ID", "Username", "Platform", "Roles", "Last Login", "Created", "Status", ""].map(h => (
-                <th key={h} className="px-4 py-3 text-left font-medium text-xs"
-                  style={{ color: "var(--muted)" }}>{h}</th>
+                <th key={h} className="px-4 py-3.5 text-left text-[14px] font-bold whitespace-nowrap">{h}</th>
               ))}
             </tr>
           </thead>
@@ -204,11 +199,7 @@ export default function UsersPage() {
                   style={{ color: "var(--muted)" }}>{q ? `No users match “${q}”` : "No users"}</td>
               </tr>
             ) : users.map((u, i) => (
-              <tr key={u.user_id || `row-${i}`}
-                style={{
-                  background: i % 2 === 0 ? "var(--surface)" : "var(--surface2)",
-                  borderBottom: "1px solid var(--border)",
-                }}>
+              <tr key={u.user_id || `row-${i}`} className="tbl-row">
                 {/* Guarded even though /api/users now filters id-less rows: this table renders whatever
                     the backend sends, and one null here previously threw inside render and blanked the
                     entire tab rather than the single bad row. */}
@@ -239,31 +230,30 @@ export default function UsersPage() {
                   <div className="flex gap-2">
                     {u.banned ? (
                       <button onClick={() => unban(u)}
-                        className="text-xs px-2 py-1 rounded"
-                        style={{ color: "var(--green)", border: "1px solid var(--border)" }}>
+                        className="btn-dark min-w-0! px-2.5! py-1! text-xs"
+                        style={{ color: "var(--green)" }}>
                         Unban
                       </button>
                     ) : (
                       <button onClick={() => openBan(u)}
-                        className="text-xs px-2 py-1 rounded"
-                        style={{ color: "var(--red)", border: "1px solid var(--border)" }}>
+                        className="btn-dark min-w-0! px-2.5! py-1! text-xs"
+                        style={{ color: "var(--red)" }}>
                         Ban
                       </button>
                     )}
                     <button onClick={() => setItemsFor(u)}
-                      className="text-xs px-2 py-1 rounded"
-                      style={{ color: "var(--text)", border: "1px solid var(--border)" }}>
+                      className="btn-dark min-w-0! px-2.5! py-1! text-xs">
                       Items
                     </button>
                     <button onClick={() => toggleAdmin(u)}
-                      className="text-xs px-2 py-1 rounded"
-                      style={{ color: u.is_admin ? "#f0883e" : "var(--muted)", border: "1px solid var(--border)" }}>
+                      className="btn-dark min-w-0! px-2.5! py-1! text-xs whitespace-nowrap"
+                      style={{ color: u.is_admin ? "#f0883e" : "var(--muted)" }}>
                       {u.is_admin ? "Revoke Admin" : "Grant Admin"}
                     </button>
                     <button onClick={() => openGlobalPerms(u)} disabled={busyId === u.user_id}
                       title="Permissions this user has on every server"
-                      className="text-xs px-2 py-1 rounded whitespace-nowrap disabled:opacity-40"
-                      style={{ color: u.global_permissions > 0 ? "#f0883e" : "var(--muted)", border: "1px solid var(--border)" }}>
+                      className="btn-dark min-w-0! px-2.5! py-1! text-xs whitespace-nowrap"
+                      style={{ color: u.global_permissions > 0 ? "#f0883e" : "var(--muted)" }}>
                       {busyId === u.user_id ? "…" : `Global perms${u.global_permissions > 0 ? ` (${u.global_permissions})` : ""}`}
                     </button>
                   </div>
@@ -319,13 +309,11 @@ export default function UsersPage() {
                 style={{ color: "var(--red)", border: "1px solid var(--border)" }}>Clear all</button>
             )}
             <button onClick={() => setGpUser(null)}
-              className="px-4 py-2 rounded-md text-xs"
-              style={{ background: "transparent", color: "var(--muted)", border: "1px solid var(--border)" }}>
+              className="btn-dark text-sm">
               Cancel
             </button>
             <button onClick={() => saveGlobalPerms(gpList)} disabled={busyId === gpUser.user_id}
-              className="px-4 py-2 rounded-md text-xs font-medium"
-              style={{ background: "var(--accent)", color: "#fff", opacity: busyId === gpUser.user_id ? 0.5 : 1 }}>
+              className="btn-light py-2.5! px-5! text-sm">
               {busyId === gpUser.user_id ? "Saving…" : "Save"}
             </button>
           </div>
@@ -359,13 +347,11 @@ export default function UsersPage() {
           </div>
           <div className="flex gap-2 justify-end">
             <button onClick={() => setBanTarget(null)}
-              className="px-4 py-2 rounded-md text-xs"
-              style={{ background: "transparent", color: "var(--muted)", border: "1px solid var(--border)" }}>
+              className="btn-dark text-sm">
               Cancel
             </button>
             <button onClick={submitBan} disabled={saving || !banStation}
-              className="px-4 py-2 rounded-md text-xs font-medium"
-              style={{ background: "var(--red)", color: "#fff", opacity: saving ? 0.5 : 1 }}>
+              className="btn-light py-2.5! px-5! text-sm" style={{ background: "var(--red)", color: "#fff" }}>
               {saving ? "Banning…" : "Ban User"}
             </button>
           </div>

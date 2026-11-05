@@ -154,8 +154,9 @@ export default function TitleDataPage() {
   const extras = extraKeys.filter(k => !knownKeys.has(k) && !stored[k]);
 
   return (
-    <div className="max-w-4xl">
-      <h1 className="text-lg font-semibold mb-1" style={{ color: "var(--text)" }}>Title data</h1>
+    <div className="mx-auto max-w-[1100px] pt-8 pb-14">
+      <p className="eyebrow mb-1.5">Admin</p>
+      <h1 className="text-[44px] leading-tight font-medium tracking-tight mb-1">Title data</h1>
       <p className="text-xs mb-5" style={{ color: "var(--muted)" }}>
         Shared by every player and fleet. Players download it when their game starts, so changes show on their next
         launch. A saved value overrides the main fleet&apos;s board images.

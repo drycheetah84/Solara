@@ -1,29 +1,244 @@
 @import "tailwindcss";
 
+
 :root {
-  --bg: #0d1117;
-  --surface: #161b22;
-  --surface2: #1c2128;
-  --border: #30363d;
-  --muted: #7d8590;
-  --text: #e6edf3;
-  --accent: #58a6ff;
-  --green: #3fb950;
-  --red: #f85149;
+  --bg: #14161b;
+  --surface: #1b1e25;
+  --surface2: #23272f;
+  --row: #181b21;
+  --border: #30363d; /* legacy alias */
+  --line: #2b303a;
+  --muted: #9aa1ad;
+  --text: #f2f4f7;
+  --accent: #58a6ff; /* legacy alias */
+  --link: #7cc7ff;
+  --green: #8bd450;
+  --red: #e5484d;
   --yellow: #d29922;
 }
 
 @theme inline {
   --color-background: var(--bg);
   --color-foreground: var(--text);
+  --font-sans: var(--font-sans), system-ui, sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, monospace;
+}
+
+html {
+  color-scheme: dark;
 }
 
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-family: var(--font-sans), "Segoe UI", system-ui, -apple-system, sans-serif;
+  min-height: 100%;
+  -webkit-font-smoothing: antialiased;
 }
 
-::-webkit-scrollbar { width: 6px; height: 6px; }
+::selection {
+  background: rgba(124, 199, 255, 0.35);
+  color: #fff;
+}
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb { background: #2e333d; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #3a414c; }
+
+/* ── Component classes ────────────────────────────────────────────────────
+   Wrapped in @layer components so Tailwind v4 utilities (utilities layer)
+   can still override them (e.g. className="btn-light py-2"). Unlayered
+   author CSS would beat every utility. NOTE: v4 important syntax is a
+   TRAILING bang (py-2!), not the v3 leading (!py-2). */
+
+@layer components {
+
+/* ── Gradient username (Welcome korp!) ────────────────────────────────── */
+
+.grad-name {
+  background: linear-gradient(90deg, #8fd0ff, #8b7cf6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* ── Cards & tables ───────────────────────────────────────────────────── */
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.tbl-head {
+  background: var(--surface2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.tbl-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background 0.12s ease;
+}
+.tbl-row:last-child {
+  border-bottom: none;
+}
+button.tbl-row:hover {
+  background: rgba(124, 199, 255, 0.05);
+}
+
+/* ── Status squares (lime online / red offline) ───────────────────────── */
+
+.status-sq {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+.status-sq.on { background: var(--green); }
+.status-sq.off { background: var(--red); }
+
+/* ── Buttons ──────────────────────────────────────────────────────────── */
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid var(--link);
+  border-radius: 6px;
+  white-space: nowrap;
+  transition: background 0.15s ease;
+}
+.btn-outline:hover { background: rgba(124, 199, 255, 0.1); }
+
+.btn-light {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #111;
+  background: #f2f4f7;
+  border: none;
+  border-radius: 6px;
+  white-space: nowrap;
+  transition: background 0.15s ease;
+}
+.btn-light:hover { background: #ffffff; }
+.btn-light:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-dark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 64px;
+  padding: 10px 16px;
+  color: var(--text);
+  background: var(--surface2);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  transition: background 0.15s ease;
+}
+.btn-dark:hover { background: #2a2f38; }
+.btn-dark:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── iOS-style toggle ─────────────────────────────────────────────────── */
+
+.toggle {
+  position: relative;
+  width: 64px;
+  height: 36px;
+  border-radius: 999px;
+  background: #2e333d;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  flex-shrink: 0;
+}
+.toggle .knob {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: #fff;
+  transition: left 0.2s ease;
+}
+.toggle[aria-checked="true"] { background: var(--green); }
+.toggle[aria-checked="true"] .knob { left: 32px; }
+
+/* ── Inputs ───────────────────────────────────────────────────────────── */
+
+.field {
+  width: 100%;
+  background: #101319;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 14px;
+  padding: 10px 12px;
+  outline: none;
+}
+.field::placeholder { color: #5d6572; }
+.field:focus { border-color: var(--link); }
+
+/* ── Misc ─────────────────────────────────────────────────────────────── */
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* Small caps section label */
+.eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.badge-meta {
+  display: inline-block;
+  padding: 3px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #111;
+  background: #e8ebf0;
+  border-radius: 5px;
+}
+
+.link-blue {
+  color: var(--link);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.link-blue:hover { color: #a5d8ff; }
+
+.skeleton {
+  background: linear-gradient(90deg, #1b1e25 25%, #262b34 50%, #1b1e25 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+  border-radius: 4px;
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+:focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: 2px;
+}
+
+} /* @layer components */

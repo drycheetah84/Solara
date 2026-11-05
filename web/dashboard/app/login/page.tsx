@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense } from "react";
+import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 
 // Dashboard sign-in: Discord only (/auth/discord). Members of the Halcyon Discord server get the access their roles
@@ -20,18 +21,31 @@ const ERRORS: Record<string, string> = {
 function LoginInner() {
   const urlErr = useSearchParams().get("err");
   return (
-    <div className="flex min-h-screen items-center justify-center bg-neutral-950 p-6">
-      <div className="w-full max-w-md rounded-xl border border-neutral-800 bg-neutral-900 p-7 shadow-xl">
-        <h1 className="mb-1 text-lg font-semibold text-neutral-100">Halcyon dashboard</h1>
-        <p className="mb-5 text-sm leading-relaxed text-neutral-400">
-          Sign in with your Discord account. What you can see and do comes from your roles in the Halcyon server.
-        </p>
-        <a href="/auth/discord"
-          className="block w-full rounded-lg py-2.5 text-center text-sm font-medium text-white transition hover:opacity-90"
-          style={{ background: "#5865F2" }}>
-          Log in with Discord
-        </a>
-        {urlErr && <div className="mt-3 text-xs text-red-400">{ERRORS[urlErr] ?? "Sign-in failed."}</div>}
+    <div className="mx-auto max-w-[1200px] px-6">
+      <div className="max-w-sm mx-auto pt-24 pb-20">
+        <div className="card p-8">
+          <div className="flex flex-col items-center gap-3 mb-6 text-center">
+            <Image src="/logo.webp" alt="Halcyon logo" width={56} height={56} style={{ borderRadius: 12 }} />
+            <div>
+              <p className="eyebrow mb-1.5">Halcyon</p>
+              <h1 className="text-[28px] font-medium tracking-tight">Log in</h1>
+              <p className="text-sm mt-1" style={{ color: "var(--muted)" }}>
+                Sign in with your Discord account. What you can see and do comes from your roles in the Halcyon server.
+              </p>
+            </div>
+          </div>
+
+          {urlErr && (
+            <div className="card mb-4 px-4 py-3 text-sm" style={{ color: "var(--red)" }}>
+              {ERRORS[urlErr] ?? "Sign-in failed."}
+            </div>
+          )}
+
+          <a href="/auth/discord" className="btn-light w-full py-3! text-sm justify-center"
+            style={{ background: "#5865F2", color: "#fff" }}>
+            Log in with Discord
+          </a>
+        </div>
       </div>
     </div>
   );

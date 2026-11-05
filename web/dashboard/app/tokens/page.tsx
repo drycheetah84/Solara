@@ -52,10 +52,12 @@ export default function TokensPage() {
   const cols = ["Prefix", "Kind", "Box", "Station", "Deployment", "Issued", "Last seen", "Expires", "Status", ""];
 
   return (
-    <div>
+    <div className="mx-auto max-w-[1200px] pt-8 pb-14">
+      <p className="eyebrow mb-1.5">Access</p>
+      <h1 className="text-[44px] leading-tight font-medium tracking-tight mb-6">Tokens</h1>
       <DashboardTokens />
-      <div className="flex items-center justify-between mb-2">
-        <h1 className="text-lg font-semibold" style={{ color: "var(--text)" }}>Server Tokens</h1>
+      <div className="flex items-center justify-between mb-2 mt-8">
+        <h2 className="text-[22px] font-medium tracking-tight">Server Tokens</h2>
         <label className="flex items-center gap-2 text-xs" style={{ color: "var(--muted)" }}>
           <input type="checkbox" checked={showAll} onChange={e => setShowAll(e.target.checked)} />
           show revoked / expired

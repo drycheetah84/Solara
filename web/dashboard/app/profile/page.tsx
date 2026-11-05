@@ -65,14 +65,16 @@ export default function ProfilePage() {
   if (!me) return <div className="text-sm" style={{ color: "var(--muted)" }}>Loading…</div>;
 
   return (
-    <div className="max-w-3xl">
-      <div className="rounded-lg p-5 mb-5 flex items-center gap-4" style={card}>
+    <div className="mx-auto max-w-[900px] pt-8 pb-14">
+      <p className="eyebrow mb-1.5">Account</p>
+      <h1 className="text-[44px] leading-tight font-medium tracking-tight mb-6">Profile</h1>
+      <div className="card p-5 mb-5 flex items-center gap-4">
         {me.avatar && (
           // eslint-disable-next-line @next/next/no-img-element -- Discord CDN avatar
           <img src={me.avatar} alt="" width={72} height={72} className="rounded-full" referrerPolicy="no-referrer" />
         )}
         <div className="flex-1 min-w-0">
-          <div className="text-lg font-semibold" style={{ color: "var(--text)" }}>{me.name}</div>
+          <div className="text-[24px] font-medium grad-name w-fit">{me.name}</div>
           <div className="text-xs font-mono" style={{ color: "var(--muted)" }}>Discord ID {me.id}</div>
           <div className="flex flex-wrap gap-1.5 mt-2">
             {me.roles.map(r => (
