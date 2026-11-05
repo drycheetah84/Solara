@@ -2536,6 +2536,7 @@ static SDK::UClass* CoinProbeLoadClass(const std::wstring& path)
 
 // One editor op (a test-script line), run now. The script runner above feeds it one line per frame; the MCP
 // bridge (se_mcp) runs single ops through it too, capturing what they log.
+static int SafeRbpLerpWalk(int setTo);   // [RBPROBE] defined beside PE_Hook
 void ScriptOp(const Snapshot& snap, const std::string& line)
 {
     const ULONGLONG now = GetTickCount64();
@@ -3832,6 +3833,17 @@ void ScriptOp(const Snapshot& snap, const std::string& line)
             sereflect::CallFn(ss, fn, pb);
             Log("[script] store last successful load t=%.1f", *reinterpret_cast<const float*>(pb));
         }
+        return;
+    }
+    if (!strcmp(op, "lerpstate"))             // lerpstate -- visual-lerp byte of every rollback player / ball in our sims
+    {
+        SafeRbpLerpWalk(-1);
+        return;
+    }
+    if (!strcmp(op, "lerpset"))               // lerpset <0|1> -- set it (players other than our own, and balls)
+    {
+        const int v = atoi(rest.c_str()) ? 1 : 0;
+        Log("[script] lerpset %d: %d object(s) set", v, SafeRbpLerpWalk(v));
         return;
     }
     if (!strcmp(op, "mutestate"))             // mutestate -- our pawn's replicated settings & safety entries (mute bits) + muted-HUD flag
@@ -5166,8 +5178,294 @@ static bool ReadWorldTime(double& out, const LARGE_INTEGER& t, const LARGE_INTEG
     return true;
 }
 
+// [RBPROBE 2026-11-05] LIVE PROD DIAGNOSTIC for driftball snapping (-RbProbe).
+//  * Spec block: prod servers run -NoSpecBlock, so a PC client that calls
+//    Server_AttemptTakeOwnershipOfSpectatorManager becomes the spectator (no pawn, never seated). Swallow that call on
+//    the CLIENT, so the PC client keeps its pawn and can be seated without touching (or restarting) any server.
+//  * The client's REAL rollback corrections (the server never runs the correction check -- see
+//    docs/agent-notes/ballsim-snapping-handoff.md): hook the ball push 0x5747AE0 and the player push 0x5747980
+//    (RollbackPlayer vtbl+1216) and log counts per second.
+//  * Visual lerp (the Rollback Replay tools' "Lerp Visuals", 0x57A1FF0): a byte at +0xD9 on each rollback player
+//    (skipped when +0x1840 is set: our own player) and on each ball's physics sync (ball+0xB0 -> +0x668 -> +0xD9).
+//    Bridge ops `lerpstate` / `lerpset <0|1>`.
+static bool g_rbProbe = false;
+static volatile LONG g_rbpCorrBall = 0, g_rbpCorrPlayer = 0;
+using RbpCorr_t = __int64(__fastcall*)(void*, int32_t, void*);
+static RbpCorr_t g_rbpBallOrig = nullptr, g_rbpPlayerOrig = nullptr;
+// per-second detail (game thread): the frame each correction is for, and which object
+struct RbpCorrRec { void* obj; int32_t frame; bool ball; };
+static RbpCorrRec g_rbpRecs[512];
+static int g_rbpRecN = 0;
+static void RbpRecord(void* a, int32_t f, bool ball) { if (g_rbpRecN < 512) g_rbpRecs[g_rbpRecN++] = RbpCorrRec{ a, f, ball }; }
+static __int64 __fastcall RbpBall_Hook(void* a, int32_t f, void* st) { InterlockedIncrement(&g_rbpCorrBall); RbpRecord(a, f, true); return g_rbpBallOrig(a, f, st); }
+static __int64 __fastcall RbpPlayer_Hook(void* a, int32_t f, void* st) { InterlockedIncrement(&g_rbpCorrPlayer); RbpRecord(a, f, false); return g_rbpPlayerOrig(a, f, st); }
+// the client's current frame of the sim it is seated in (sim value +16), and the sim's player list
+static int32_t RbpSimNow(uintptr_t* playersOut, int32_t* playerNOut)
+{
+    static SDK::UClass* cls = nullptr;
+    if (!cls) cls = SDK::UObject::FindClassFast("A2RollbackManager");
+    if (!cls) return -1;
+    const int32_t n = SDK::UObject::GObjects->Num();
+    static SDK::UObject* s_mgr = nullptr;
+    if (!s_mgr || !s_mgr->IsA(cls))
+    {
+        s_mgr = nullptr;
+        for (int32_t i = 0; i < n && !s_mgr; ++i)
+        {
+            SDK::UObject* o = SDK::UObject::GObjects->GetByIndex(i);
+            if (o && !o->IsDefaultObject() && o->IsA(cls)) s_mgr = o;
+        }
+        if (!s_mgr) return -1;
+    }
+    const uintptr_t r = reinterpret_cast<uintptr_t>(s_mgr);
+    const uintptr_t data = *reinterpret_cast<uintptr_t*>(r + 0x348);
+    const int32_t bound = *reinterpret_cast<int32_t*>(r + 0x370);
+    for (int k = 0; data && k < bound && k < 64; ++k)
+    {
+        const uintptr_t e = data + 176ull * k;
+        if (*reinterpret_cast<int32_t*>(e) < 0) continue;
+        const uintptr_t v = e + 8;
+        const int32_t plN = *reinterpret_cast<int32_t*>(v + 0x58);
+        if (plN <= 0) continue;
+        *playersOut = *reinterpret_cast<uintptr_t*>(v + 0x50); *playerNOut = plN;
+        return *reinterpret_cast<int32_t*>(v + 16);
+    }
+    return -1;
+}
+static void RbpDetail()
+{
+    uintptr_t pls = 0; int32_t plN = 0;
+    const int32_t now = RbpSimNow(&pls, &plN);
+    if (g_rbpRecN == 0) return;
+    int amin = 1 << 30, amax = -(1 << 30); long asum = 0;
+    int perPlayer[16] = {}; int other = 0;
+    for (int i = 0; i < g_rbpRecN; ++i)
+    {
+        const RbpCorrRec& c = g_rbpRecs[i];
+        const int age = now - c.frame;
+        if (age < amin) amin = age; if (age > amax) amax = age; asum += age;
+        if (!c.ball)
+        {
+            int idx = -1;
+            for (int j = 0; pls && j < plN && j < 16; ++j) if (*reinterpret_cast<void**>(pls + 8ull * j) == c.obj) { idx = j; break; }
+            if (idx >= 0) ++perPlayer[idx]; else ++other;
+        }
+    }
+    char buf[256]; int bl = 0;
+    for (int j = 0; j < plN && j < 16; ++j) bl += sprintf_s(buf + bl, sizeof(buf) - bl, "p%d=%d ", j, perPlayer[j]);
+    Log("[rbprobe]   detail: simFrame=%d correction age (frames) min=%d avg=%.1f max=%d | per player: %s other=%d",
+        now, amin, double(asum) / g_rbpRecN, amax, buf, other);
+    g_rbpRecN = 0;
+}
+static void SafeRbpDetail() { __try { RbpDetail(); } __except (EXCEPTION_EXECUTE_HANDLER) { g_rbpRecN = 0; } }
+static int32_t RbpTakeOwnIdx()
+{
+    static int32_t s = -2;
+    if (s == -2)
+    {
+        s = -1;
+        if (auto* c = SDK::UObject::FindClassFast("VRPawn"))
+            if (auto* f = c->GetFunction("VRPawn", "Server_AttemptTakeOwnershipOfSpectatorManager")) s = f->Name.ComparisonIndex;
+        Log("[rbprobe] spec block: Server_AttemptTakeOwnershipOfSpectatorManager idx=%d", s);
+    }
+    return s;
+}
+static bool RbpIsTakeOwn(void* fn)
+{
+    const int32_t idx = RbpTakeOwnIdx();
+    return idx >= 0 && reinterpret_cast<SDK::UFunction*>(fn)->Name.ComparisonIndex == idx;
+}
+static bool SafeRbpIsTakeOwn(void* fn) { __try { return RbpIsTakeOwn(fn); } __except (EXCEPTION_EXECUTE_HANDLER) { return false; } }
+// relayed inputs reaching this client: Client_NewSendOtherPlayerInputs(uint8 PlayerIndex @0, FFastRollbackPlayerInputs @8);
+// fast+128 = HMD rotation, compressed (smallest-three). 0xC0000000 = the identity quaternion.
+static volatile LONG g_rbpRelayed = 0, g_rbpRelayedIdentityHmd = 0;
+static int32_t RbpRelayIdx()
+{
+    static int32_t s = -2;
+    if (s == -2)
+    {
+        s = -1;
+        if (auto* c = SDK::UObject::FindClassFast("A2PawnNetInputComponent"))
+            if (auto* f = c->GetFunction("A2PawnNetInputComponent", "Client_NewSendOtherPlayerInputs")) s = f->Name.ComparisonIndex;
+    }
+    return s;
+}
+static void RbpObserveRelay(void* fn, void* parms)
+{
+    const int32_t idx = RbpRelayIdx();
+    if (idx < 0 || !parms || reinterpret_cast<SDK::UFunction*>(fn)->Name.ComparisonIndex != idx) return;
+    const uint32_t hmd = *reinterpret_cast<const uint32_t*>(static_cast<const uint8_t*>(parms) + 8 + 128);
+    InterlockedIncrement(&g_rbpRelayed);
+    if (hmd == 0xC0000000u) InterlockedIncrement(&g_rbpRelayedIdentityHmd);
+}
+static void SafeRbpObserveRelay(void* fn, void* parms) { __try { RbpObserveRelay(fn, parms); } __except (EXCEPTION_EXECUTE_HANDLER) {} }
+static int32_t RbpResultsIdx()
+{
+    static int32_t s = -2;
+    if (s == -2)
+    {
+        s = -1;
+        if (auto* c = SDK::UObject::FindClassFast("RollbackConnectionComponent"))
+            if (auto* f = c->GetFunction("RollbackConnectionComponent", "Client_NewSendServerSimResults")) s = f->Name.ComparisonIndex;
+        Log("[rbprobe] results RPC idx=%d", s);
+    }
+    return s;
+}
+// per second: count, frames received (min/max), out-of-order, repeats, largest same-frame burst
+static int32_t g_rbrFrames[1024]; static int g_rbrN = 0;
+static uint64_t g_rbrTick[1024];
+static int32_t g_rbrAgeAtArrival[1024];
+static uint64_t g_rbrGameFrame = 0;   // advanced once per RbpTick call... use GFrameCounter-like: our own PE tick counter
+static void RbpObserveResults(void* fn, void* parms)
+{
+    const int32_t idx = RbpResultsIdx();
+    if (idx < 0 || !parms || reinterpret_cast<SDK::UFunction*>(fn)->Name.ComparisonIndex != idx) return;
+    if (g_rbrN < 1024)
+    {
+        uintptr_t pls = 0; int32_t plN = 0;
+        const int32_t nowF = RbpSimNow(&pls, &plN);
+        g_rbrFrames[g_rbrN] = *reinterpret_cast<const int32_t*>(static_cast<const uint8_t*>(parms) + 4);
+        g_rbrTick[g_rbrN] = GetTickCount64();
+        g_rbrAgeAtArrival[g_rbrN] = nowF - g_rbrFrames[g_rbrN];
+        ++g_rbrN;
+    }
+}
+static void SafeRbpObserveResults(void* fn, void* parms) { __try { RbpObserveResults(fn, parms); } __except (EXCEPTION_EXECUTE_HANDLER) {} }
+// the server's time-sync reports arriving at this client (A2PawnNetInputComponent):
+//   Client_ReportRollbackAvgWorstRemainingTime(float Diff @0, float Range @4)
+//   Client_ReportMissedInputs(uint32 CommandFrame @0, uint32 ServerFrame @4, uint64 MissedInputs @8, uint64 MissedInputsInBuffer @16)
+static void RbpObserveTimeSync(void* fn, void* parms)
+{
+    static int32_t s_avg = -2, s_missed = -2;
+    if (s_avg == -2)
+    {
+        s_avg = s_missed = -1;
+        if (auto* c = SDK::UObject::FindClassFast("A2PawnNetInputComponent"))
+        {
+            if (auto* f = c->GetFunction("A2PawnNetInputComponent", "Client_ReportRollbackAvgWorstRemainingTime")) s_avg = f->Name.ComparisonIndex;
+            if (auto* f = c->GetFunction("A2PawnNetInputComponent", "Client_ReportMissedInputs")) s_missed = f->Name.ComparisonIndex;
+        }
+        Log("[rbprobe] time-sync RPC idx: avgWorst=%d missed=%d", s_avg, s_missed);
+    }
+    const int32_t idx = reinterpret_cast<SDK::UFunction*>(fn)->Name.ComparisonIndex;
+    const uint8_t* b = static_cast<const uint8_t*>(parms);
+    static int s_nAvg = 0, s_nMissed = 0;
+    if (idx == s_avg && s_avg >= 0)
+    {
+        ++s_nAvg;
+        if (s_nAvg <= 30 || s_nAvg % 20 == 0)
+            Log("[rbprobe] TIMESYNC #%d AvgWorstRemainingTime Diff=%.4f Range=%.4f", s_nAvg, *reinterpret_cast<const float*>(b), *reinterpret_cast<const float*>(b + 4));
+    }
+    else if (idx == s_missed && s_missed >= 0)
+    {
+        ++s_nMissed;
+        if (s_nMissed <= 30 || s_nMissed % 20 == 0)
+            Log("[rbprobe] MISSED #%d CommandFrame=%u ServerFrame=%u missed=0x%llX inBuffer=0x%llX", s_nMissed,
+                *reinterpret_cast<const uint32_t*>(b), *reinterpret_cast<const uint32_t*>(b + 4),
+                (unsigned long long)*reinterpret_cast<const uint64_t*>(b + 8), (unsigned long long)*reinterpret_cast<const uint64_t*>(b + 16));
+    }
+}
+static void SafeRbpObserveTimeSync(void* fn, void* parms) { __try { RbpObserveTimeSync(fn, parms); } __except (EXCEPTION_EXECUTE_HANDLER) {} }
+static int32_t RbpSimNow(uintptr_t* playersOut, int32_t* playerNOut);
+static void RbpResultsReport()
+{
+    if (g_rbrN == 0) return;
+    uintptr_t pls = 0; int32_t plN = 0;
+    const int32_t now = RbpSimNow(&pls, &plN);
+    int amin = 1 << 30, amax = -(1 << 30); long asum = 0; int back = 0, repeat = 0, maxBurst = 1, burst = 1;
+    for (int i = 0; i < g_rbrN; ++i)
+    {
+        const int age = g_rbrAgeAtArrival[i];   // measured when the result arrived, not at this report
+        if (age < amin) amin = age; if (age > amax) amax = age; asum += age;
+        if (i)
+        {
+            if (g_rbrFrames[i] < g_rbrFrames[i - 1]) ++back;
+            if (g_rbrFrames[i] == g_rbrFrames[i - 1]) ++repeat;
+            if (g_rbrTick[i] - g_rbrTick[i - 1] <= 2) { if (++burst > maxBurst) maxBurst = burst; } else burst = 1;
+        }
+    }
+    Log("[rbprobe]   results: %d/s, age on arrival min=%d avg=%.1f max=%d | frames %d..%d, went back %d, repeats %d, largest burst (<=2 ms apart) %d",
+        g_rbrN, amin, double(asum) / g_rbrN, amax, g_rbrFrames[0], g_rbrFrames[g_rbrN - 1], back, repeat, maxBurst);
+    g_rbrN = 0;
+}
+static void SafeRbpResultsReport() { __try { RbpResultsReport(); } __except (EXCEPTION_EXECUTE_HANDLER) { g_rbrN = 0; } }
+static void RbpTick()
+{
+    static ULONGLONG s_last = 0, s_quietSince = 0;
+    const ULONGLONG now = GetTickCount64();
+    if (now - s_last < 1000) return;
+    s_last = now;
+    const LONG b = InterlockedExchange(&g_rbpCorrBall, 0), pl = InterlockedExchange(&g_rbpCorrPlayer, 0);
+    const LONG rr = InterlockedExchange(&g_rbpRelayed, 0), ri = InterlockedExchange(&g_rbpRelayedIdentityHmd, 0);
+    if (b || pl || rr || now - s_quietSince > 10000)
+    {
+        Log("[rbprobe] client corrections/s ball=%ld player=%ld | relayed inputs/s=%ld, HMD rotation = identity in %ld", b, pl, rr, ri);
+        s_quietSince = now;
+    }
+    SafeRbpDetail();
+    SafeRbpResultsReport();
+}
+// every sim of the client's rollback manager: players +0x50/+0x58, balls +0x60/+0x68 (as 0x57A1FF0 walks them)
+static uint8_t* RbpBallLerpByte(uintptr_t ball)
+{
+    uintptr_t a = ball ? *reinterpret_cast<uintptr_t*>(ball + 0xB0) : 0;
+    uintptr_t b = a ? *reinterpret_cast<uintptr_t*>(a + 0x668) : 0;
+    return b ? reinterpret_cast<uint8_t*>(b + 0xD9) : nullptr;
+}
+static int RbpLerpWalk(int setTo)   // setTo < 0: report only
+{
+    static SDK::UClass* cls = nullptr;
+    if (!cls) cls = SDK::UObject::FindClassFast("A2RollbackManager");
+    if (!cls) { Log("[script] lerp: no A2RollbackManager class"); return 0; }
+    int touched = 0;
+    const int32_t n = SDK::UObject::GObjects->Num();
+    for (int32_t i = 0; i < n; ++i)
+    {
+        SDK::UObject* o = SDK::UObject::GObjects->GetByIndex(i);
+        if (!o || o->IsDefaultObject() || !o->IsA(cls)) continue;
+        const uintptr_t r = reinterpret_cast<uintptr_t>(o);
+        const uintptr_t data = *reinterpret_cast<uintptr_t*>(r + 0x348);
+        const int32_t bound = *reinterpret_cast<int32_t*>(r + 0x370);
+        for (int k = 0; data && k < bound && k < 64; ++k)
+        {
+            const uintptr_t e = data + 176ull * k;
+            const int32_t key = *reinterpret_cast<int32_t*>(e);
+            if (key < 0) continue;
+            const uintptr_t v = e + 8;
+            const uintptr_t pls = *reinterpret_cast<uintptr_t*>(v + 0x50); const int32_t plN = *reinterpret_cast<int32_t*>(v + 0x58);
+            const uintptr_t bls = *reinterpret_cast<uintptr_t*>(v + 0x60); const int32_t blN = *reinterpret_cast<int32_t*>(v + 0x68);
+            if (plN <= 0 && blN <= 0) continue;
+            Log("[script] sim %d: %d player(s), %d ball(s)", key, plN, blN);
+            for (int j = 0; pls && j < plN && j < 16; ++j)
+            {
+                uint8_t* pl = *reinterpret_cast<uint8_t**>(pls + 8ull * j);
+                if (!pl) continue;
+                if (setTo >= 0 && pl[0x1840] == 0) { pl[0xD9] = static_cast<uint8_t>(setTo); ++touched; }
+                Log("[script]   player %s lerp@0xD9=%d local@0x1840=%d", reinterpret_cast<SDK::UObject*>(pl)->GetName().c_str(), pl[0xD9], pl[0x1840]);
+            }
+            for (int j = 0; bls && j < blN && j < 16; ++j)
+            {
+                const uintptr_t ball = *reinterpret_cast<uintptr_t*>(bls + 8ull * j);
+                uint8_t* lb = RbpBallLerpByte(ball);
+                if (lb && setTo >= 0) { *lb = static_cast<uint8_t>(setTo); ++touched; }
+                Log("[script]   ball %s lerp=%d", ball ? reinterpret_cast<SDK::UObject*>(ball)->GetName().c_str() : "<null>", lb ? *lb : -1);
+            }
+        }
+    }
+    return touched;
+}
+static int SafeRbpLerpWalk(int setTo) { __try { return RbpLerpWalk(setTo); } __except (EXCEPTION_EXECUTE_HANDLER) { Log("[script] lerp walk faulted"); return -1; } }
+
 void __fastcall PE_Hook(void* ctx, void* fn, void* parms)
 {
+    if (g_rbProbe && fn && SafeRbpIsTakeOwn(fn))   // [RBPROBE] spec block: stay a real player on -NoSpecBlock servers
+    {
+        static int s_n = 0;
+        if (++s_n <= 5) Log("[rbprobe] swallowed Server_AttemptTakeOwnershipOfSpectatorManager (#%d)", s_n);
+        return;
+    }
+    if (g_rbProbe && fn && parms) { SafeRbpObserveRelay(fn, parms); SafeRbpObserveResults(fn, parms); SafeRbpObserveTimeSync(fn, parms); }
+    if (g_rbProbe && GetCurrentThreadId() == g_mainThread) RbpTick();
     if (fn && fn == g_setQuestsFn && parms && GetCurrentThreadId() == g_mainThread)
         __try { LogIncomingQuests(parms); } __except (EXCEPTION_EXECUTE_HANDLER) {}
 
@@ -5365,6 +5663,15 @@ bool InstallGameHook()
     // jmp corrupts whatever lives there — and if the pump's native calls touch it, the pump AVs. Opt back in
     // with -JoinGuard only after the 47031 RVA is re-resolved.
     // [50451] still unresolved for this build: never hooked, even with -JoinGuard.
+    if (wcsstr(GetCommandLineW(), L"-RbProbe"))
+    {
+        g_rbProbe = true;
+        void* hb = reinterpret_cast<void*>(base + 0x5747AE0);
+        void* hp = reinterpret_cast<void*>(base + 0x5747980);
+        const bool ok1 = MH_CreateHook(hb, &RbpBall_Hook, reinterpret_cast<void**>(&g_rbpBallOrig)) == MH_OK && MH_EnableHook(hb) == MH_OK;
+        const bool ok2 = MH_CreateHook(hp, &RbpPlayer_Hook, reinterpret_cast<void**>(&g_rbpPlayerOrig)) == MH_OK && MH_EnableHook(hp) == MH_OK;
+        Log("[rbprobe] on: spec block + correction hooks ball=%s player=%s", ok1 ? "on" : "FAILED", ok2 ? "on" : "FAILED");
+    }
     if (wcsstr(GetCommandLineW(), L"-MuteProbe"))
     {
         void* mp = reinterpret_cast<void*>(base + 0x56C2870);

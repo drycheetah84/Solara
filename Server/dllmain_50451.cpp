@@ -3731,6 +3731,7 @@ static volatile LONG g_rbsDupSends = 0;   // ... of which were byte-identical re
 static volatile LONG g_rbsCorr = 0, g_rbsMissRep = 0, g_rbsMissSum = 0, g_rbsBatches = 0, g_rbsLate = 0;
 static volatile LONG g_rbsLeadSum = 0, g_rbsLeadMin = 0x7FFFFFFF, g_rbsLeadMax = -0x7FFFFFFF;
 static volatile LONG g_rbsFwdSent = 0, g_rbsFwdBlocked = 0;   // [RBFWD] relays to same-sim players / skipped (other sim or unseated)
+static volatile LONG g_rbsTsync = 0;    // [RBSTAT] time-sync reports sent this second ([TIMESYNC])
 static volatile LONG g_rbsPlCorr = 0;   // [RBSTAT] PLAYER corrections (0x5757260 -> player vtable +1216), installed lazily
 // [RBSIMMAP 2026-11-05] Which sim each player is in, as the SERVER itself knows it: the sim-results sender
 // (0x54FC0F0) is called with (connComp, SimIndex) for every seated player, so record nic -> SimIndex there
@@ -3841,13 +3842,15 @@ static void RbStatFlush()   // once a second from the step driver hook
     const LONG sends = InterlockedExchange(&g_rbsSends, 0), dups = InterlockedExchange(&g_rbsDupSends, 0);
     const LONG plc = InterlockedExchange(&g_rbsPlCorr, 0);
     const LONG lup = InterlockedExchange(&g_rbsLeadUp, 0), ldn = InterlockedExchange(&g_rbsLeadDown, 0);
+    const LONG tsy = InterlockedExchange(&g_rbsTsync, 0);
     if (b > 0) RbPlCorrInstall();   // players are seated: find the player-correction slot (once)
     if (corr == 0 && rep == 0 && b == 0 && plc == 0) return;
     // fields appended at the end only, so older log greps keep working
     HxLog("[HalcyonA2][RBSTAT] corr/s=%ld missedRep/s=%ld missedSum=%ld batches/s=%ld lead min=%ld avg=%.1f max=%ld late=%ld"
-        " sends/s=%ld dup=%ld | ticks/s=%d hitch=%d dtMax=%.1fms | fwd/s=%ld fwdBlocked/s=%ld | plcorr/s=%ld leadUp=%ld leadDown=%ld\n",
+        " sends/s=%ld dup=%ld | ticks/s=%d hitch=%d dtMax=%.1fms | fwd/s=%ld fwdBlocked/s=%ld | plcorr/s=%ld leadUp=%ld leadDown=%ld"
+        " | tsync/s=%ld\n",
         corr, rep, miss, b, b ? mn : 0, b ? double(sum) / b : 0.0, b ? mx : 0, late, sends, dups, ticks, hitch, dtMax * 1000.0f,
-        fwd, fwdBlk, plc, lup, ldn);
+        fwd, fwdBlk, plc, lup, ldn, tsy);
 }
 static __int64 __fastcall RbMissed_Hook(void* nic, int32_t frame, uint64_t serverFrame, uint64_t missed, uint64_t missedBuf)
 {
@@ -4005,6 +4008,78 @@ static void RbForwardInputs(SDK::UObject* nic, const uint8_t* in, int32_t n)
 static void SafeRbForwardInputs(SDK::UObject* nic, const uint8_t* in, int32_t n)
 {
     __try { RbForwardInputs(nic, in, n); } __except (EXCEPTION_EXECUTE_HANDLER) { HxLog("[HalcyonA2][RBFWD] fault\n"); }
+}
+
+// [TIMESYNC 2026-11-05] The rollback time sync never ran on our servers. UA2PawnNetInputComponent's per-tick function
+// 0x56F7230 (nic, dt) is where the SERVER (owner pawn role 3) does it: every interval (comp +256) it sorts the
+// "remaining time" samples the submit handler records (comp +272, how early each input arrived, seconds), averages
+// the worst N (+260) and sends Client_ReportRollbackAvgWorstRemainingTime (0x545B250) so the client steers its clock;
+// every 64 ticks it sends Client_ReportMissedInputs (0x545B1E0) with a bitmask of frames it had to guess. Only the
+// pawn's Tick calls it (0x5889F50, `if (Role == 3 || IsLocallyControlled)`), and on our server that never happens:
+// measured on a seated prod client 2026-11-05, zero reports of either kind in over a minute while it corrected up
+// to 49 times a second. Drive it ourselves, for every seated player whose component the engine did not tick in the
+// last 0.5 s (a hook records engine calls, so it can never run twice). The game's own logic decides what to send.
+// -NoRbTimeSync turns it off.
+using RbInTick_t = char(__fastcall*)(void*, float);
+static RbInTick_t RbInTick_Orig = nullptr;
+static std::unordered_map<void*, ULONGLONG> g_rbInTickAt;   // nic -> last ENGINE call (game thread)
+static bool g_rbInTickDriving = false;
+static bool g_rbTimeSync = wcsstr(GetCommandLineW(), L"-NoRbTimeSync") == nullptr;
+static char __fastcall RbInTick_Hook(void* nic, float dt)
+{
+    if (!g_rbInTickDriving) g_rbInTickAt[nic] = GetTickCount64();
+    return RbInTick_Orig(nic, dt);
+}
+using RbAvgWorst_t = __int64(__fastcall*)(void*, float, float);
+static RbAvgWorst_t RbAvgWorst_Orig = nullptr;
+static void RbAvgWorstLog(void* nic, float diff, float range, LONG c)
+{
+    HxLog("[HalcyonA2][TIMESYNC] AvgWorstRemainingTime -> %s diff=%.4f range=%.4f (#%ld)\n",
+        reinterpret_cast<SDK::UObject*>(nic)->GetName().c_str(), diff, range, c);
+}
+static void SafeRbAvgWorstLog(void* nic, float diff, float range, LONG c) { __try { RbAvgWorstLog(nic, diff, range, c); } __except (EXCEPTION_EXECUTE_HANDLER) {} }
+static __int64 __fastcall RbAvgWorst_Hook(void* nic, float diff, float range)
+{
+    InterlockedIncrement(&g_rbsTsync);
+    static volatile LONG s_n = 0;
+    const LONG c = InterlockedIncrement(&s_n);
+    if (c <= 20 || (c % 200) == 0) SafeRbAvgWorstLog(nic, diff, range, c);
+    return RbAvgWorst_Orig(nic, diff, range);
+}
+static void RbDriveInputTicks(float dt)
+{
+    if (!g_rbTimeSync || !RbInTick_Orig) return;
+    const ULONGLONG now = GetTickCount64();
+    static std::unordered_set<void*> s_logged, s_refused;
+    for (auto& [nic, st] : g_rbSeated)
+    {
+        if (!nic || !st.pawn || now - st.lastSubmit > 1500) continue;               // seated and streaming inputs
+        auto it = g_rbInTickAt.find(nic);
+        if (it != g_rbInTickAt.end() && now - it->second < 500) continue;           // the engine ticks it: leave it
+        const uint8_t* c = reinterpret_cast<const uint8_t*>(nic);
+        const float interval = *reinterpret_cast<const float*>(c + 256);
+        if (!(interval >= 0.05f && interval <= 60.0f))                              // unconfigured: would send every tick
+        {
+            if (s_refused.insert(nic).second)
+                HxLog("[HalcyonA2][TIMESYNC] NOT driving %s: report interval %.3f s looks unset\n", nic->GetName().c_str(), interval);
+            continue;
+        }
+        if (s_logged.insert(nic).second)
+            HxLog("[HalcyonA2][TIMESYNC] driving the input tick for %s (the engine does not tick it here): minSamples=%d delay=%.3f interval=%.3f worstN=%d\n",
+                nic->GetName().c_str(), *reinterpret_cast<const int32_t*>(c + 248), *reinterpret_cast<const float*>(c + 252), interval,
+                *reinterpret_cast<const int32_t*>(c + 260));
+        g_rbInTickDriving = true;
+        RbInTick_Orig(nic, dt);
+        g_rbInTickDriving = false;
+    }
+    if (s_logged.size() > 512) s_logged.clear();
+    if (s_refused.size() > 512) s_refused.clear();
+    if (g_rbInTickAt.size() > 512) g_rbInTickAt.clear();
+}
+static void SafeRbDriveInputTicks(float dt)
+{
+    __try { RbDriveInputTicks(dt); }
+    __except (EXCEPTION_EXECUTE_HANDLER) { g_rbInTickDriving = false; HxLog("[HalcyonA2][TIMESYNC] drive fault\n"); }
 }
 // [RBDEDUPE 2026-11-05] The sim-results sender (0x54FC0F0) runs up to once per ENGINE tick (measured: sends/s = ticks/s
 // while a seated client streams inputs), but the sim only steps at 90 Hz,
@@ -18392,6 +18467,7 @@ static __int64 __fastcall RbStepDrv_Hook(void* a1, float dt, __int64 a3)
     InterlockedIncrement(&g_rbDrvCalls);
     SafeRbStepDrvLog(a1, a3);
     if (a3 == 0) RbStatTick(dt);   // [RBSTAT] frame-time spread + once-a-second flush
+    if (a3 == 0) SafeRbDriveInputTicks(dt);   // [TIMESYNC] run the input components' server tick the engine skips
     return RbStepDrv_Orig(a1, dt, a3);
 }
 
@@ -18796,6 +18872,14 @@ static void PatchNetmode2Gates(uintptr_t base)
             const MH_STATUS c5 = MH_CreateHook(co, &RbCorr_Hook, reinterpret_cast<void**>(&RbCorr_Orig));
             const MH_STATUS e5 = MH_EnableHook(co);
             HxLog("[HalcyonA2][RBSTAT] correction-push counter hook create=%d enable=%d\n", (int)c5, (int)e5);
+            void* it = reinterpret_cast<void*>(base + 0x56F7230);
+            const MH_STATUS c6 = MH_CreateHook(it, &RbInTick_Hook, reinterpret_cast<void**>(&RbInTick_Orig));
+            const MH_STATUS e6 = MH_EnableHook(it);
+            void* aw = reinterpret_cast<void*>(base + 0x545B250);
+            const MH_STATUS c7 = MH_CreateHook(aw, &RbAvgWorst_Hook, reinterpret_cast<void**>(&RbAvgWorst_Orig));
+            const MH_STATUS e7 = MH_EnableHook(aw);
+            HxLog("[HalcyonA2][TIMESYNC] input-tick hook create=%d enable=%d, avgWorst sender hook create=%d enable=%d (%s)\n",
+                (int)c6, (int)e6, (int)c7, (int)e7, g_rbTimeSync ? "driving on" : "-NoRbTimeSync: off");
         }
         else HxLog("[HalcyonA2][RBTICK] rollback step driver bytes differ -- hook skipped\n");
     }
