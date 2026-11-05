@@ -3843,12 +3843,23 @@ static void RbForwardInputs(SDK::UObject* nic, const uint8_t* in, int32_t n)
     {
         if (onic == nic || !other.pawn || now - other.lastSubmit > 1500) continue;   // only players seated right now
         const uint32_t otherSim = *reinterpret_cast<const uint32_t*>(reinterpret_cast<uintptr_t>(other.pawn) + 0x1820);
-        if (mySim == 0xFFFFFFFF || otherSim != mySim)                                // same sim only
+        // [2026-11-05 HOTFIX] Prod showed @0x1820 does NOT match for players seated in the same match (fwd/s=0, every
+        // relay blocked -> teammates froze for each other). Block ONLY when both ids look valid and differ; otherwise
+        // fall back to the old 80 m rule. Log the ids seen so the right "same sim" field can be found.
+        const SDK::FVector op = other.pawn->K2_GetActorLocation();
+        const double dx = op.X - myPos.X, dy = op.Y - myPos.Y, dz = op.Z - myPos.Z;
+        const bool nearby = dx * dx + dy * dy + dz * dz <= 8000.0 * 8000.0;
         {
-            // count only the relays the old 80 m rule WOULD have sent (wrong match / unseated, but nearby)
-            const SDK::FVector op = other.pawn->K2_GetActorLocation();
-            const double dx = op.X - myPos.X, dy = op.Y - myPos.Y, dz = op.Z - myPos.Z;
-            if (dx * dx + dy * dy + dz * dz <= 8000.0 * 8000.0) InterlockedIncrement(&g_rbsFwdBlocked);
+            static volatile LONG s_idLog = 0;
+            if (nearby && InterlockedIncrement(&s_idLog) <= 40)
+                HxLog("[HalcyonA2][RBFWDID] %s sim@0x1820=0x%X idx=%u -> %s sim@0x1820=0x%X idx=%u\n", pawn->GetName().c_str(), mySim,
+                    (unsigned)myIdx, other.pawn->GetName().c_str(), otherSim,
+                    (unsigned)*(reinterpret_cast<uint8_t*>(other.pawn) + 0x180F));
+        }
+        const bool idsValid = mySim != 0xFFFFFFFF && otherSim != 0xFFFFFFFF && mySim < 4096 && otherSim < 4096;
+        if (idsValid ? (otherSim != mySim) : !nearby)
+        {
+            if (nearby) InterlockedIncrement(&g_rbsFwdBlocked);   // nearby but a different (valid) sim
             continue;
         }
         InterlockedIncrement(&g_rbsFwdSent);
