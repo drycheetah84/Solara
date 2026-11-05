@@ -50,3 +50,21 @@ http://209.126.2.136:78 and boards never change. Station config (board URLs) is 
 dashboard init, so new boards need a game-server restart.
 
 **TWO game boxes (2026-11-04):** win-gamebox-1 = 172.31.37.84 (`python3 ~/wr.py`, 1 server) and **win-gamebox-2** = public 98.92.201.29 (`python3 ~/wr2.py`, 4 servers, most players). A DLL deploy must hit BOTH. Box 2 cannot reach the hub private IP: fetch the bundle via the hub public IP `http://18.222.37.52:8000/HalcyonA2.dll`, and download BEFORE killing A2-Win64-Shipping (then Move-Item into C:\Halcyon\HalcyonA2.dll). After a kill the watchdog relaunches each server once heartbeats go quiet (~2-3 min); check `GET 127.0.0.1:9095/watchdog` (x-dashboard-key from /etc/halcyon/dashboard.env).
+
+**MOVED 2026-11-05 to AZURE (AWS account banned 2026-11-04; EC2 data unrecoverable so far).** Resource group
+`halcyon-rg` (eastus, Pay-As-You-Go, CLI: `C:\Program Files\Microsoft SDKs\Azure\CLI2\wbin\az.cmd`, quota 10 vCPU;
+D-series quota needs MFA login, a request was throttled -- retry for D8as_v5 then resize game1).
+- Hub `halcyon-hub` B2ms Ubuntu 24.04, zone 2, public 20.51.185.231, private 10.10.1.4.
+  `ssh -i ~/.ssh/solara_azure ubuntu@20.51.185.231` (NSG allows only the owner IPs 71.80.193.144 + 104.243.245.183;
+  update `hub-nsg`/`game-nsg` rules if the owner IP changes). Same layout as AWS: systemd `solara` (/opt/solara,
+  env drop-ins dashboard.conf/board.conf, /etc/halcyon/dashboard.env), `halcyon-dashboard` (:3000), `cloudflared`
+  (same tunnel id/creds, /etc/cloudflared/config.yml), `halcyon-dist` (python http.server 10.10.1.4:8000 =
+  /opt/halcyon-dist). 4 GB swap. Nightly DB copy to /opt/solara/backups (14 days, NOT off-box yet).
+- Game box `halcyon-game1` F8s_v2 Windows 2022, zone 3, public 52.186.172.63, private 10.10.1.10; admin creds in
+  config/generated-azure-gamebox-admin.txt (git-ignored). Run commands with `az vm run-command invoke -g halcyon-rg
+  -n halcyon-game1 --command-id RunPowerShellScript --scripts @file.ps1` (no WinRM needed). C:\Halcyon layout as
+  before; agent task HalcyonAgent -HubHost 10.10.1.4 -Box win-gamebox-1 -Capacity 5. 5 servers ~1.3 GB RAM each.
+- DLL deploy now: scp DLL to hub /opt/halcyon-dist, then on game1 iwr http://10.10.1.4:8000/HalcyonA2.dll.
+- DB was seeded from the repo production.solara.db (2026-10-31): Nov 1-4 AWS data lost; stations Ranked/Clubhouse/
+  Freerunners recreated (new ids), their station config lost. Discord login needs a NEW client secret +
+  DISCORD_ROLE_MAP/FLEET_OWNERS/ROLE_NAMES (client id + guild id restored in dashboard.env).
