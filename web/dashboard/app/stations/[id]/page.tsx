@@ -7,7 +7,7 @@ import { api, type Ban, type Role, type Member, type User, type Station, type De
 import { fmt, ago } from "../../../lib/utils";
 import {
   ChevronLeft, Plus, Trash2, X, Shield,
-  Users, Cpu, Wifi, Clock, Rocket, Calendar, Radio,
+  Rocket, Calendar, Radio,
 } from "lucide-react";
 import NetvarsTab from "./NetvarsTab";
 import LevelsTab from "./LevelsTab";
@@ -16,6 +16,7 @@ import GaiaTab from "./GaiaTab";
 import NotifyTab from "./NotifyTab";
 import ArenaWhitelistTab from "./ArenaWhitelistTab";
 import DraftersPanel from "@/components/DraftersPanel";
+import { CopyId, FleetIcon } from "../../../components/ui";
 
 type Tab = "bans" | "roles" | "members" | "deployments" | "events" | "sessions" | "netvars" | "levels" | "whitelist" | "drafters" | "boards" | "gaia" | "notify" | "arenas";
 
@@ -1150,57 +1151,59 @@ export default function StationDetailPage() {
   }, [stationId]);
 
   return (
-    <div>
+    <div className="mx-auto max-w-[1100px] pt-8 pb-14">
       {/* Breadcrumb */}
-      <div className="flex items-center gap-2 mb-5 text-xs" style={{ color: "var(--muted)" }}>
-        <Link href="/stations" className="hover:underline" style={{ color: "var(--muted)" }}>
-          <ChevronLeft size={13} className="inline" /> Stations
+      <div className="flex items-center gap-2 mb-5 text-[15px]" style={{ color: "var(--muted)" }}>
+        <Link href="/" className="flex items-center gap-1.5 hover:opacity-80">
+          <ChevronLeft size={16} /> Stations
         </Link>
         <span>/</span>
-        <span style={{ color: "var(--text)" }}>{station?.station_name ?? stationId.slice(0, 12) + "…"}</span>
+        <span style={{ color: "var(--text)" }}>{station?.station_name ?? `${stationId.slice(0, 12)}…`}</span>
       </div>
 
       {/* Station header */}
-      <div className="rounded-lg p-5 mb-5"
-        style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <h1 className="text-lg font-semibold">
+      <div className="card px-6 py-5 mb-4">
+        <div className="flex flex-wrap items-center gap-4">
+          {station ? <FleetIcon name={station.station_name} /> : <div className="skeleton h-11 w-11" />}
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-3 flex-wrap">
+              <h1 className="text-[28px] leading-tight font-medium tracking-tight truncate">
                 {station?.station_name ?? <span style={{ color: "var(--muted)" }}>Loading…</span>}
               </h1>
               {station && (
-                station.online ? (
-                  <span className="text-xs px-2 py-0.5 rounded-full font-medium"
-                    style={{ background: "#1a2d1a", color: "var(--green)" }}>Online</span>
-                ) : (
-                  <span className="text-xs px-2 py-0.5 rounded-full font-medium"
-                    style={{ background: "var(--surface2)", color: "var(--muted)" }}>Offline</span>
-                )
+                <span
+                  className="text-[11px] font-semibold uppercase tracking-[0.14em] px-2.5 py-1"
+                  style={{
+                    color: station.online ? "var(--green)" : "var(--muted)",
+                    background: station.online ? "rgba(139,212,80,0.1)" : "rgba(255,255,255,0.04)",
+                    boxShadow: station.online ? "inset 0 0 0 1px rgba(139,212,80,0.35)" : "inset 0 0 0 1px var(--line)",
+                    borderRadius: 3,
+                  }}>
+                  {station.online ? "Online" : "Offline"}
+                </span>
               )}
             </div>
-            <div className="font-mono text-xs" style={{ color: "var(--muted)" }}>{stationId}</div>
+            <div className="mt-1"><CopyId id={stationId} short={`${stationId.slice(0, 12)}…`} /></div>
           </div>
         </div>
 
         {station && (
-          <div className="flex flex-wrap gap-5 mt-4 pt-4" style={{ borderTop: "1px solid var(--border)" }}>
-            <Stat icon={<Cpu size={13} />} label="Deployments" value={station.deployments} />
-            <Stat icon={<Wifi size={13} />} label="Online" value={station.online_deps} accent="var(--green)" />
-            <Stat icon={<Users size={13} />} label="Players" value={station.player_count} accent="var(--accent)" />
-            <Stat icon={<Clock size={13} />} label="Last Seen" value={ago(station.last_online)} />
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-5">
+            <StatTile label="Deployments" value={station.deployments} />
+            <StatTile label="Online" value={station.online_deps} accent="var(--green)" />
+            <StatTile label="Players" value={station.player_count} accent="var(--link)" />
+            <StatTile label="Last seen" value={ago(station.last_online)} />
           </div>
         )}
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 mb-5 p-1 rounded-lg w-fit"
-        style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
+      <div className="card rounded-lg! flex flex-wrap gap-1 p-1.5 mb-4 w-fit max-w-full">
         {TABS.map(t => (
           <button key={t.id} onClick={() => setTab(t.id)}
-            className="px-4 py-1.5 rounded-md text-sm transition-colors"
+            className="px-4 py-2 rounded-md text-sm whitespace-nowrap transition-colors"
             style={{
-              background: tab === t.id ? "var(--surface2)" : "transparent",
+              background: tab === t.id ? "rgba(255,255,255,0.07)" : "transparent",
               color: tab === t.id ? "var(--text)" : "var(--muted)",
               fontWeight: tab === t.id ? 500 : 400,
             }}>
@@ -1227,14 +1230,11 @@ export default function StationDetailPage() {
   );
 }
 
-function Stat({ icon, label, value, accent }: { icon: React.ReactNode; label: string; value: string | number; accent?: string }) {
+function StatTile({ label, value, accent }: { label: string; value: string | number; accent?: string }) {
   return (
-    <div className="flex items-center gap-2">
-      <span style={{ color: accent ?? "var(--muted)" }}>{icon}</span>
-      <div>
-        <div className="text-xs" style={{ color: "var(--muted)" }}>{label}</div>
-        <div className="text-sm font-medium" style={{ color: accent ?? "var(--text)" }}>{value}</div>
-      </div>
+    <div className="rounded-md px-4 py-3" style={{ background: "var(--surface2)", border: "1px solid var(--line)" }}>
+      <div className="text-[12px] uppercase tracking-[0.18em] mb-1" style={{ color: "var(--muted)" }}>{label}</div>
+      <div className="text-[20px] font-medium tabular" style={{ color: accent ?? "var(--text)" }}>{value}</div>
     </div>
   );
 }

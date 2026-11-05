@@ -4,12 +4,20 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { LogOut } from "lucide-react";
+import { Avatar } from "./ui";
 
 const nav = [
   { href: "/",            label: "Stations"    },
   { href: "/users",       label: "Users"       },
   { href: "/deployments", label: "Deployments" },
   { href: "/events",      label: "Events"      },
+];
+
+// Global-admin extras (master session). Everything is still enforced server-side; hiding is cosmetic.
+const adminNav = [
+  { href: "/titledata",       label: "Title data"      },
+  { href: "/anonymous-names", label: "Anonymous names" },
 ];
 
 export type Me = {
@@ -38,56 +46,64 @@ export function TopBar() {
 
   if (path === "/login") return null;
 
+  const items = [...nav, ...(me?.admin ? adminNav : [])];
+
   return (
-    <header className="flex items-center gap-4 px-4 py-3"
-      style={{ background: "var(--surface)", borderBottom: "1px solid var(--border)" }}>
+    <header style={{ background: "#20242c", borderBottom: "1px solid var(--line)" }}>
+      <div className="flex items-center gap-3 px-6 py-3.5">
+        {/* Lead: logo + wordmark */}
+        <Link href="/" className="flex items-center gap-2.5 shrink-0 hover:opacity-85 active:opacity-60">
+          <Image src="/logo.webp" alt="Halcyon logo" width={30} height={30} style={{ borderRadius: 6 }} />
+          <strong className="text-[15px] font-bold tracking-wide hidden min-[480px]:block">
+            HALCYON STATION DASHBOARD
+          </strong>
+        </Link>
 
-      {/* Lead: logo + title */}
-      <Link href="/" className="flex items-center gap-2 shrink-0 hover:opacity-80 active:opacity-50">
-        <Image src="/logo.webp" alt="logo" width={28} height={28} className="rounded" />
-        <strong className="text-sm uppercase tracking-wide hidden sm:block">
-          Ares Dashboard
-        </strong>
-      </Link>
+        {/* Nav */}
+        <nav className="flex items-center gap-1 flex-1 overflow-x-auto ml-2">
+          {items.map(({ href, label }) => {
+            const active = href === "/"
+              ? (path === "/" || path.startsWith("/stations"))
+              : path.startsWith(href);
+            return (
+              <Link key={href} href={href}
+                className="px-3 py-1.5 rounded-md text-sm whitespace-nowrap transition-colors"
+                style={{
+                  color: active ? "var(--text)" : "var(--muted)",
+                  background: active ? "rgba(255,255,255,0.07)" : "transparent",
+                  fontWeight: active ? 500 : 400,
+                }}>
+                {label}
+              </Link>
+            );
+          })}
+        </nav>
 
-      {/* Nav */}
-      <nav className="flex items-center gap-1 flex-1 overflow-x-auto">
-        {[...nav, ...(me?.admin ? [{ href: "/titledata", label: "Title data" }, { href: "/anonymous-names", label: "Anonymous names" }] : [])].map(({ href, label }) => {
-          const active = href === "/"
-            ? (path === "/" || path.startsWith("/stations"))
-            : path.startsWith(href);
-          return (
-            <Link key={href} href={href}
-              className="px-3 py-1.5 rounded-md text-sm whitespace-nowrap transition-colors"
-              style={{
-                color:      active ? "var(--text)"    : "var(--muted)",
-                background: active ? "var(--surface2)" : "transparent",
-                fontWeight: active ? 500 : 400,
-              }}>
-              {label}
-            </Link>
-          );
-        })}
-      </nav>
-
-      {/* Trail: the signed-in Discord user */}
-      {me && (
-        <div className="flex items-center gap-2 shrink-0">
-          <Link href="/profile"
-            className="flex items-center gap-2 px-2 py-1 rounded-md transition-colors hover:opacity-90"
-            style={{ background: path.startsWith("/profile") ? "var(--surface2)" : "transparent" }}>
-            {me.avatar && (
-              // eslint-disable-next-line @next/next/no-img-element -- Discord CDN avatar, no image optimisation needed
-              <img src={me.avatar} alt="" width={26} height={26} className="rounded-full" referrerPolicy="no-referrer" />
-            )}
-            <span className="text-sm hidden sm:inline" style={{ color: "var(--text)" }}>{me.name}</span>
-          </Link>
-          <button onClick={logout} className="px-2.5 py-1 rounded-md text-xs"
-            style={{ border: "1px solid var(--border)", color: "var(--muted)" }}>
-            Log out
-          </button>
+        {/* Trail: the signed-in Discord user */}
+        <div className="flex items-center gap-3 shrink-0">
+          {me ? (
+            <>
+              {me.admin && (
+                <span className="px-1.5 py-0.5 rounded text-xs font-medium hidden md:inline"
+                  style={{ background: "#1a3a2a", color: "var(--green)" }}>
+                  ADMIN
+                </span>
+              )}
+              <button onClick={logout} className="btn-outline">
+                <LogOut size={13} /> <span className="hidden sm:inline">Logout</span>
+              </button>
+              <Link href="/profile" className="flex items-center gap-2.5 hover:opacity-85">
+                <span className="text-[15px] hidden sm:block max-w-40 truncate">{me.name}</span>
+                <span className="rounded-full overflow-hidden inline-flex">
+                  <Avatar url={me.avatar} name={me.name} size={40} />
+                </span>
+              </Link>
+            </>
+          ) : (
+            <Link href="/login" className="btn-outline">Login</Link>
+          )}
         </div>
-      )}
+      </div>
     </header>
   );
 }

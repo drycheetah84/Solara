@@ -2,6 +2,8 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { api, type WsClient, type WsMessage } from "../../lib/api";
+import { EmptyRow } from "../../components/ui";
+import { Pause, Play } from "lucide-react";
 
 function ago(ts: string) {
   const diff = Date.now() - new Date(ts).getTime();
@@ -46,7 +48,7 @@ export default function WsPage() {
   }, []);
 
   useEffect(() => {
-    if (!selected) { setMessages(null); return; }
+    if (!selected) return;
     loadMessages(selected.session_id);
     if (!live) return;
     const t = setInterval(() => loadMessages(selected.session_id), 2000);
@@ -58,144 +60,145 @@ export default function WsPage() {
   const sorted = [...online, ...offline];
 
   return (
-    <div className="flex gap-4 h-full" style={{ minHeight: 0 }}>
-      {/* Left — client list */}
-      <div className="flex flex-col w-80 shrink-0">
-        <div className="flex items-center justify-between mb-4 gap-3">
-          <h1 className="text-lg font-semibold shrink-0">WS Clients</h1>
+    <div className="mx-auto max-w-[1200px] pt-8 pb-14">
+      <div className="flex flex-wrap items-end justify-between gap-4 mb-6">
+        <div>
+          <p className="eyebrow mb-1.5">Sockets</p>
+          <h1 className="text-[44px] leading-tight font-medium tracking-tight">WS Monitor</h1>
+          <p className="text-[15px] mt-1.5 tabular" style={{ color: "var(--muted)" }}>
+            {clients ? <><span className="font-medium" style={{ color: "var(--green)" }}>{online.length} online</span>{" · "}{offline.length} offline</> : "Loading…"}
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
           <button
-            className="px-3 py-1.5 rounded-md text-xs font-medium shrink-0"
-            style={{ background: live ? "var(--accent)" : "var(--surface2)", color: live ? "#fff" : "var(--muted)", border: "1px solid var(--border)" }}
-            onClick={() => setLive(l => !l)}>
-            {live ? "⏸ Live" : "▶ Paused"}
+            role="switch"
+            aria-checked={live}
+            onClick={() => setLive(l => !l)}
+            className="flex items-center gap-2.5 text-[14px] font-medium px-1 py-1"
+            style={{ color: live ? "var(--text)" : "var(--muted)" }}
+          >
+            <span
+              className="relative w-10 h-[22px] rounded-full transition-colors"
+              style={{ background: live ? "var(--green)" : "#1a2334", boxShadow: "inset 0 0 0 1px var(--line)" }}
+            >
+              <span className="absolute top-[3px] h-4 w-4 rounded-full bg-white transition-all"
+                style={{ left: live ? "calc(100% - 19px)" : "3px" }} />
+            </span>
+            {live ? "Live" : "Paused"}
           </button>
-          <button
-            className="px-3 py-1.5 rounded-md text-xs shrink-0"
-            style={{ background: "var(--surface2)", color: "var(--muted)", border: "1px solid var(--border)" }}
-            onClick={loadClients}>Refresh</button>
-        </div>
-
-        {err && (
-          <div className="mb-3 px-4 py-2 rounded-md text-sm" style={{ background: "#2d1a1a", color: "var(--red)" }}>{err}</div>
-        )}
-
-        <div className="flex-1 overflow-y-auto rounded-lg space-y-1.5" style={{ minHeight: 0 }}>
-          {!clients ? (
-            <p className="text-sm px-2 py-6 text-center" style={{ color: "var(--muted)" }}>Loading…</p>
-          ) : sorted.length === 0 ? (
-            <p className="text-sm px-2 py-6 text-center" style={{ color: "var(--muted)" }}>No clients</p>
-          ) : sorted.map(c => {
-            const isOnline  = !c.disconnected_at;
-            const isSelected = selected?.session_id === c.session_id;
-            return (
-              <div key={c.session_id}
-                onClick={() => setSelected(isSelected ? null : c)}
-                className="rounded-lg px-3 py-2.5 cursor-pointer"
-                style={{
-                  background: isSelected ? "var(--accent)22" : "var(--surface2)",
-                  border: `1px solid ${isSelected ? "var(--accent)" : "var(--border)"}`,
-                }}>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="w-1.5 h-1.5 rounded-full shrink-0"
-                    style={{ background: isOnline ? "var(--green)" : "var(--muted)" }} />
-                  <span className="font-mono text-xs truncate" style={{ color: "var(--text)" }}>
-                    {c.session_id}
-                  </span>
-                  <span className="ml-auto text-xs shrink-0 font-medium px-1.5 py-0.5 rounded"
-                    style={{ background: "var(--surface)", color: "var(--muted)" }}>
-                    {c.message_count}
-                  </span>
-                </div>
-                <div className="text-xs truncate" style={{ color: "var(--muted)" }} title={c.path}>
-                  {shortPath(c.path)}
-                </div>
-                <div className="text-xs mt-0.5" style={{ color: "var(--muted)" }}>
-                  {isOnline ? `connected ${ago(c.connected_at)}` : `disconnected ${ago(c.disconnected_at!)}`}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="mt-2 text-xs" style={{ color: "var(--muted)" }}>
-          {online.length} online · {offline.length} offline
+          <button onClick={loadClients} className="btn-dark !py-2 text-sm">Refresh</button>
         </div>
       </div>
 
-      {/* Right — message log */}
-      <div className="flex flex-col flex-1 min-w-0">
-        {!selected ? (
-          <div className="flex-1 flex items-center justify-center rounded-lg"
-            style={{ border: "1px dashed var(--border)", color: "var(--muted)" }}>
-            <span className="text-sm">Select a client to inspect messages</span>
-          </div>
-        ) : (
-          <>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="flex-1 min-w-0">
-                <span className="font-mono text-xs font-semibold" style={{ color: "var(--accent)" }}>
-                  {selected.session_id}
-                </span>
-                <span className="ml-2 text-xs" style={{ color: "var(--muted)" }} title={selected.path}>
-                  {shortPath(selected.path)}
-                </span>
-              </div>
-              <button
-                className="px-3 py-1.5 rounded-md text-xs shrink-0"
-                style={{ background: "var(--surface2)", color: "var(--muted)", border: "1px solid var(--border)" }}
-                onClick={() => loadMessages(selected.session_id)}>Refresh</button>
-            </div>
+      {err && <div className="card mb-4 px-5 py-3.5 text-[15px]" style={{ color: "var(--red)" }}>{err}</div>}
 
-            {msgErr && (
-              <div className="mb-3 px-4 py-2 rounded-md text-sm" style={{ background: "#2d1a1a", color: "var(--red)" }}>{msgErr}</div>
-            )}
-
-            <div className="flex-1 overflow-y-auto rounded-lg space-y-1.5" style={{ minHeight: 0 }}>
-              {!messages ? (
-                <p className="text-sm px-2 py-6 text-center" style={{ color: "var(--muted)" }}>Loading…</p>
-              ) : messages.length === 0 ? (
-                <p className="text-sm px-2 py-6 text-center" style={{ color: "var(--muted)" }}>No messages</p>
-              ) : messages.map((m, i) => {
-                const isIn = m.direction === "in";
+      <div className="grid gap-4 lg:grid-cols-[320px_minmax(0,1fr)] items-start">
+        {/* Client list */}
+        <div className="min-w-0">
+          {!clients ? (
+            <div className="card p-5"><div className="skeleton h-5 w-2/3" /></div>
+          ) : sorted.length === 0 ? (
+            <div className="card"><EmptyRow>No clients connected.</EmptyRow></div>
+          ) : (
+            <div className="space-y-2">
+              {sorted.map(c => {
+                const isOnline  = !c.disconnected_at;
+                const isSelected = selected?.session_id === c.session_id;
                 return (
-                  <div key={i} className="rounded-lg px-3 py-2"
-                    style={{ background: "var(--surface2)", border: "1px solid var(--border)" }}>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-xs font-semibold px-1.5 py-0.5 rounded font-mono"
-                        style={{
-                          background: isIn ? "#1a2d3a" : "#1a2a1a",
-                          color: isIn ? "#60aadd" : "var(--green)",
-                        }}>
-                        {isIn ? "↓ IN" : "↑ OUT"}
-                      </span>
-                      <span className="font-mono text-xs font-semibold" style={{ color: "var(--text)" }}>
-                        {m.command}
-                      </span>
-                      <span className="ml-auto text-xs" style={{ color: "var(--muted)" }}>
-                        {ago(m.timestamp)}
+                  <button
+                    key={c.session_id}
+                    onClick={() => setSelected(isSelected ? null : c)}
+                    className="card card-hover w-full text-left p-4"
+                    style={isSelected ? { boxShadow: "inset 0 0 0 1px var(--link)" } : undefined}
+                  >
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <span className={isOnline ? "live-dot" : "live-dot off"} style={isOnline ? undefined : { width: 6, height: 6 }} aria-hidden />
+                      <span className="font-mono text-[13px] truncate tabular">{c.session_id}</span>
+                      <span className="ml-auto text-[12px] tabular shrink-0" style={{ color: "var(--muted)" }}>
+                        {c.message_count} msg
                       </span>
                     </div>
-                    {m.headers && (
-                      <div className="text-xs font-mono mb-1 truncate" style={{ color: "var(--muted)" }}>
-                        {m.headers}
-                      </div>
-                    )}
-                    {m.body && (
-                      <pre className="text-xs font-mono whitespace-pre-wrap break-all"
-                        style={{ color: "var(--text)", maxHeight: "6rem", overflow: "hidden" }}>
-                        {m.body}
-                      </pre>
-                    )}
-                  </div>
+                    <div className="font-mono text-[12px] truncate" style={{ color: "var(--muted)" }} title={c.path}>
+                      {shortPath(c.path)}
+                    </div>
+                    <div className="text-[12px] mt-1 tabular" style={{ color: "var(--muted)" }}>
+                      {isOnline ? `connected ${ago(c.connected_at)}` : `gone ${ago(c.disconnected_at!)}`}
+                    </div>
+                  </button>
                 );
               })}
             </div>
+          )}
+        </div>
 
-            <div className="mt-2 text-xs" style={{ color: "var(--muted)" }}>
-              {messages?.length ?? 0} message{messages?.length !== 1 ? "s" : ""}
+        {/* Message log */}
+        <div className="min-w-0">
+          {!selected ? (
+            <div className="card"><EmptyRow>Pick a client to read its messages.</EmptyRow></div>
+          ) : (
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex-1 min-w-0">
+                  <span className="font-mono text-[13px] font-medium" style={{ color: "var(--link)" }}>
+                    {selected.session_id}
+                  </span>
+                  <span className="ml-2 font-mono text-[12px] truncate" style={{ color: "var(--muted)" }} title={selected.path}>
+                    {shortPath(selected.path)}
+                  </span>
+                </div>
+                <button onClick={() => loadMessages(selected.session_id)} className="btn-dark !py-2 text-sm shrink-0">
+                  Refresh
+                </button>
+              </div>
+
+              {msgErr && <div className="card mb-4 px-5 py-3.5 text-[15px]" style={{ color: "var(--red)" }}>{msgErr}</div>}
+
+              {!messages ? (
+                <div className="card p-5"><div className="skeleton h-5 w-1/3" /></div>
+              ) : messages.length === 0 ? (
+                <div className="card"><EmptyRow>No messages on this connection yet.</EmptyRow></div>
+              ) : (
+                <div className="space-y-2">
+                  {messages.map((m, i) => {
+                    const isIn = m.direction === "in";
+                    return (
+                      <div key={i} className="card p-4">
+                        <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                          <span className="font-mono text-[12px] font-semibold px-1.5 py-0.5 rounded"
+                            style={isIn
+                              ? { background: "rgba(124,199,255,0.1)", color: "var(--link)" }
+                              : { background: "rgba(139,212,80,0.1)", color: "var(--green)" }}>
+                            {isIn ? "↓ IN" : "↑ OUT"}
+                          </span>
+                          <span className="font-mono text-[13px] font-medium truncate">{m.command}</span>
+                          <span className="ml-auto text-[12px] tabular shrink-0" style={{ color: "var(--muted)" }}>
+                            {ago(m.timestamp)}
+                          </span>
+                        </div>
+                        {m.headers && (
+                          <div className="font-mono text-[12px] mb-1 truncate" style={{ color: "var(--muted)" }}>
+                            {m.headers}
+                          </div>
+                        )}
+                        {m.body && (
+                          <pre className="font-mono text-[12px] whitespace-pre-wrap break-all overflow-hidden"
+                            style={{ color: "var(--text)", maxHeight: "6rem" }}>
+                            {m.body}
+                          </pre>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              <p className="mt-3 text-[13px] tabular flex items-center gap-2" style={{ color: "var(--muted)" }}>
+                {live ? <Pause size={13} /> : <Play size={13} />}
+                {messages?.length ?? 0} messages · {live ? "updating every 2 seconds" : "paused"}
+              </p>
             </div>
-          </>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
