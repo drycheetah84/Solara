@@ -2969,8 +2969,12 @@ void ScriptOp(const Snapshot& snap, const std::string& line)
             double l[3] = { 0, 0, 0 };
             if (void* root = *reinterpret_cast<void**>(b + 0x1C8))
             { const double* t = reinterpret_cast<const double*>(reinterpret_cast<uintptr_t>(root) + 0x1E0 + 0x20); l[0] = t[0]; l[1] = t[1]; l[2] = t[2]; }
-            Log("[script] SLOT '%s' %s at (%.0f,%.0f,%.0f) gm=%s tm=%s", id.c_str(), s->GetName().c_str(), l[0], l[1], l[2],
-                lgm ? lgm->GetName().c_str() : "-", tm ? tm->GetName().c_str() : "-");
+            // DefaultGamemodePath @0x478 (FString): on 50451 a project link ("1;b:0:c;g;<guid>;..."), not a path
+            const wchar_t* dp = *reinterpret_cast<const wchar_t**>(b + 0x478);
+            std::string path;
+            if (dp) for (const wchar_t* w = dp; *w && path.size() < 160; ++w) path += static_cast<char>(*w < 128 ? *w : '?');
+            Log("[script] SLOT '%s' %s at (%.0f,%.0f,%.0f) gm=%s tm=%s path='%s'", id.c_str(), s->GetName().c_str(), l[0], l[1], l[2],
+                lgm ? lgm->GetName().c_str() : "-", tm ? tm->GetName().c_str() : "-", path.c_str());
         }
         return;
     }

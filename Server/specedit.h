@@ -410,6 +410,12 @@ static SDK::AActor* SbActorForIdx(const std::string& idx, bool indexOnly);      
 static double g_sbHostOutsideCm = 0;   // set by SbHostGamemode: how far outside every importance volume (cm; 0 inside)
 static void SbMoveFlush();                                                                  // below (moves settle)
 static void SbEditorSlotTick(ULONGLONG now);                                                // below (editor-made slot)
+#if HALCYON_GAME_BUILD == 50451
+static void SbStartAsyncLoad(SDK::AActor* slot, bool editor);                               // below (50451: runtime areas load asynchronously)
+static void SbClearStarterObjects(SDK::AActor* slot);                                       // below (a loaded area's own starter objects)
+static bool g_sbAreaPending = false;   // this command needed an always-visible area that is still loading (SbFullAreaFor)
+static bool g_seInCommand = false;     // inside an editor command (SpecEditDispatch / its retry), not a level load
+#endif
 static void SbEditorSlotClearTick(ULONGLONG now);                                           // below
 static std::string g_sbSpawnCls;   // the editor class of the sandbox spawn in flight (for SbOwned)
 static bool SeTeamChangerAllowedAt(const double* loc);   // below (game modes)
@@ -506,6 +512,14 @@ static void SeSpawn(SDK::UObject* pawn, const std::string& path, const std::stri
                 if (SDK::AActor* mine = SeFindEditorActor(ident)) SeMarkProxyDirty(mine);
                 return;
             }
+#if HALCYON_GAME_BUILD == 50451
+            if (g_sbAreaPending && g_seInCommand)              // held, not failed: SpecEditDispatch replays it once the area is in
+            {
+                if (SDK::UObject* pc = SeCallerPC(pawn))
+                    SeBroadcast("SE|NOTE|Making an always-visible area here first, so Quest players can see it -- your object appears in a few seconds.", pc);
+                return;
+            }
+#endif
             HxLog("[HalcyonA2][SPECEDIT] sandbox spawn of %s failed -- falling back to a plain spawn\n", cls->GetName().c_str());
         }
     }
@@ -800,6 +814,8 @@ static void SeQuestTick();   // below
 static void SeTextTick();   // below (text from scripts)
 #if HALCYON_GAME_BUILD == 50451
 static void SeFlushSendQueue();   // below (authored quests to players who just got theirs)
+static void SbPendingAreasTick(ULONGLONG now);   // below (runtime areas finishing their asynchronous load)
+static void SeRetryTick(ULONGLONG now);          // below (editor commands held for such an area)
 #endif
 static void SbDeferredSetsTick();   // below (Game data writes that had to wait)
 static std::unordered_map<std::string, ULONGLONG> g_sbSpawnAt;   // sandbox idx -> when its node was created (see SbDeferredSet)
@@ -810,6 +826,8 @@ static void SpecEditTick()
     if (!g_specEdit) return;
 #if HALCYON_GAME_BUILD == 50451
     SeFlushSendQueue();
+    SbPendingAreasTick(GetTickCount64());
+    SeRetryTick(GetTickCount64());
 #endif
     SeStartPermissionPoller();
     SeQuestTick();
@@ -4268,6 +4286,9 @@ static bool SbCreateEditorSlot(const double* at, const std::string& path)
     if (auto* fn = slot->Class->GetFunction("Actor", "ForceNetUpdate")) SafeProcessEvent(slot, fn, nullptr);
     if (auto* fn = slot->Class->GetFunction("ModuleSlot", "PushNetVars")) SafeProcessEvent(slot, fn, nullptr);
     g_seEditorSlot = slot; g_seEditorSlotState = 1; g_seEditorSlotAt = GetTickCount64();
+#if HALCYON_GAME_BUILD == 50451
+    SbStartAsyncLoad(slot, true);                          // the spawn alone never loads it on 50451 (see SbStartAsyncLoad)
+#endif
     HxLog("[HalcyonA2][SPECEDIT] editor slot: spawned at (%.0f,%.0f,%.0f) for a box centred on (%.0f,%.0f,%.0f), loading '%s'\n",
           xf.Translation.X, xf.Translation.Y, xf.Translation.Z, at[0], at[1], at[2], path.c_str());
     SbEditorSlotTick(GetTickCount64());                    // the load binds during the spawn: usually ready right now
@@ -4315,6 +4336,9 @@ static SDK::AActor* SbCreateSlotWithId(const double* at, const std::string& path
         *reinterpret_cast<uint8_t*>(reinterpret_cast<uintptr_t>(slot) + 0x35B) = 1;       // AModuleSlot::bUseRollbackNetcode
     SDK::UGameplayStatics::FinishSpawningActor(slot, xf, SDK::ESpawnActorScaleMethod::MultiplyWithRoot);
     --g_lodForceVisible;
+#if HALCYON_GAME_BUILD == 50451
+    SbStartAsyncLoad(slot, false);                                     // the spawn alone never loads it on 50451
+#endif
     const uintptr_t sp = reinterpret_cast<uintptr_t>(slot);
     if (auto* f = slot->Class->GetFunction("Actor", "SetReplicates")) { struct { bool b; } rp{ true }; SafeProcessEvent(slot, f, &rp); }
     *reinterpret_cast<uint8_t*>(sp + 0x64) |= 0x08 | 0x10;               // bAlwaysRelevant | bReplicateMovement
@@ -4396,6 +4420,10 @@ static void SbEditorSlotClearTick(ULONGLONG now)
     SDK::UObject* lgm = (g_seEditorSlotState == 2 && g_seEditorSlot && SeAlive(g_seEditorSlot))
                             ? *reinterpret_cast<SDK::UObject**>(reinterpret_cast<uintptr_t>(g_seEditorSlot) + 0x490) : nullptr;
     if (!lgm) return;
+#if HALCYON_GAME_BUILD == 50451
+    SbClearStarterObjects(g_seEditorSlot);   // by the area's own loadedPrefabs list (the walk below finds none on 50451)
+    return;
+#endif
     // Through each object's server actor (its prefab component's own handle), the way a station object is
     // deleted cleanly -- walking to the node by name from the root faulted in NodeRemove for these.
     auto* pcCls = SDK::UObject::FindClassFast("PrefabComponent");
@@ -4416,6 +4444,9 @@ static void SbEditorSlotClearTick(ULONGLONG now)
 }
 // SE|PROJPROBE|<path> (local test): load a project into a throwaway slot with its own id, far away, and report
 // what it brings (objects, scripts) -- to pick an empty project for the editor area.
+#if HALCYON_GAME_BUILD == 50451
+static std::vector<SDK::AActor*> g_seProbeSlots;   // SE|PROJCHECK
+#endif
 static void SeProjProbe(const std::string& path)
 {
     if (!g_seLocalTest) return;
@@ -4456,7 +4487,45 @@ static void SeProjProbe(const std::string& path)
     }
     HxLog("[HalcyonA2][SPECEDIT] PROJPROBE '%s': %s, %d object(s), %d script(s) %s\n", path.c_str(), lgm ? "loaded" : "DID NOT LOAD",
           objects, scripts, types.c_str());
+#if HALCYON_GAME_BUILD == 50451
+    // [2026-11-05] 50451: a runtime slot does not load its DefaultGamemodePath during the spawn (even paths the
+    // station's own slots load, e.g. arena_jakeball). Try the game's supported entry point too, and keep the slot so
+    // SE|PROJCHECK can report it later (the 50451 load may be asynchronous).
+    if (!lgm)
+    {
+        SDK::UGamemodesManager::LoadGamemodeIntoSlot(world, SDK::FString(s_ids[s_n - 1]), SDK::FString(s_paths[s_n - 1]));
+        lgm = *reinterpret_cast<SDK::UObject**>(reinterpret_cast<uintptr_t>(slot) + 0x490);
+        HxLog("[HalcyonA2][SPECEDIT] PROJPROBE '%s': LoadGamemodeIntoSlot('%ls') called -> LoadedGameMode=%p right after\n",
+              path.c_str(), s_ids[s_n - 1], static_cast<void*>(lgm));
+    }
+    g_seProbeSlots.push_back(slot);
+#endif
 }
+#if HALCYON_GAME_BUILD == 50451
+// SE|PROJCHECK (local test): the probe slots' state now.
+static void SeProjCheck()
+{
+    if (!g_seLocalTest) return;
+    for (SDK::AActor* s : g_seProbeSlots)
+    {
+        if (!SeAlive(s)) continue;
+        const uintptr_t b = reinterpret_cast<uintptr_t>(s);
+        SDK::UObject* lgm = *reinterpret_cast<SDK::UObject**>(b + 0x490);
+        const wchar_t* id = *reinterpret_cast<const wchar_t**>(b + 0x3F0);
+        const wchar_t* p = *reinterpret_cast<const wchar_t**>(b + 0x478);
+        int objects = -1, scripts = -1;
+        if (lgm)
+        {
+            uint8_t* root = reinterpret_cast<uint8_t*>(SbNodeOf(GamemodeHandle(lgm)));
+            uint8_t* c = nullptr;
+            if (root && SbFindChildRaw(root, NvNameBits(NvName("objects")), &c) >= 0) objects = *reinterpret_cast<int32_t*>(c + 144);
+            if (root && SbFindChildRaw(root, NvNameBits(NvName("Scripts")), &c) >= 0) scripts = *reinterpret_cast<int32_t*>(c + 144);
+        }
+        HxLog("[HalcyonA2][SPECEDIT] PROJCHECK slot '%ls' path '%ls': LoadedGameMode=%p%s objects=%d scripts=%d\n", id ? id : L"",
+              p ? p : L"", static_cast<void*>(lgm), lgm ? " LOADED" : "", objects, scripts);
+    }
+}
+#endif
 
 static SDK::UObject* SbEditorSlotLgm()   // the editor area's gamemode once it is ready, else null
 {
@@ -4466,11 +4535,114 @@ static SDK::UObject* SbEditorSlotLgm()   // the editor area's gamemode once it i
 // The project loaded into the editor area. Probed (SE|PROJPROBE): Testing/TestingProject20 loads with no objects
 // and no scripts. (TempProject123 brings 3 bridge meshes that can't be removed safely; UnitTests/EmptyBase and
 // SelectionBase fault in the loader; the rest bring cubes, bridges, team changers or scripts.)
+#if HALCYON_GAME_BUILD == 50451
+// [2026-11-05] Testing/TestingProject20 does not exist in 50451 (PROJPROBE: never loads, even through the game's own
+// LoadGamemodeIntoSlot). Candidates that do load: tag/teamchanger (2 objects -- but both are team changers, which
+// SeSandboxDelete rightly refuses to remove, so they would stay in every area), Racing/Nascar (6: bridges, golf track
+// and ramp pieces, a pipe, a reset teleporter -- all removable, no scripts), Quests/PKR_Rockwall (282). Racing/Nascar's
+// six are removed once the area has settled (SbClearStarterObjects, verified: 6 of 6).
+static const char kSeEditorProject[] = "Racing/Nascar";
+#else
 static const char kSeEditorProject[] = "Testing/TestingProject20";
+#endif
 
 
 // Always-visible areas made for spots no "Full" slot covers (see the end of SbHostGamemode).
 static std::vector<SDK::AActor*> g_seAreaSlots;
+#if HALCYON_GAME_BUILD == 50451
+// [2026-11-05] Placed objects were collision-only (invisible) on Quest, though the PC builds drew them: Quest draws a
+// sandbox object only if its host area is always-visible (a "_Full" SlotID) or the player walked into that area's box
+// after it spawned (see SbHostGamemode). The editor makes always-visible areas for that, but on 50451 a runtime slot
+// never loads its project during the spawn: its LoadedGameMode stayed null, SbFullAreaFor returned nothing, and every
+// object fell back to a station area -- collision-only on Quest. The game's own UGamemodesManager::LoadGamemodeIntoSlot
+// does load it, a few seconds later (verified: arena_jakeball, tag/teamchanger). So: start that load, keep the
+// always-visible LOD rewrite (g_lodForceVisible) armed until it lands (the project's DefaultLODSettings netvar is made
+// by the async load, not the spawn), and hold editor placements for a spot whose area is still loading
+// (g_sbAreaPending -> SeRetry*) instead of letting them fall back to a hiding host.
+struct SePendingArea { SDK::AActor* slot; ULONGLONG since; bool editor; };
+static std::vector<SePendingArea> g_sePendingAreas;
+struct SeAreaClear { SDK::AActor* slot; ULONGLONG at; };
+static std::vector<SeAreaClear> g_seAreaClears;
+static void SbStartAsyncLoad(SDK::AActor* slot, bool editor)
+{
+    if (!slot) return;
+    const uintptr_t s = reinterpret_cast<uintptr_t>(slot);
+    if (*reinterpret_cast<SDK::UObject**>(s + 0x490)) return;                 // loaded during the spawn after all
+    const wchar_t* id = *reinterpret_cast<const wchar_t* const*>(s + 0x3F0);
+    const wchar_t* path = *reinterpret_cast<const wchar_t* const*>(s + 0x478);
+    auto* world = SDK::UWorld::GetWorld();
+    if (!id || !path || !world) return;
+    ++g_lodForceVisible;                                                      // released in SbPendingAreasTick
+    SDK::UGamemodesManager::LoadGamemodeIntoSlot(world, SDK::FString(id), SDK::FString(path));
+    g_sePendingAreas.push_back({ slot, GetTickCount64(), editor });
+    HxLog("[HalcyonA2][SPECEDIT] area '%ls': loading '%ls' (asynchronous on 50451)\n", id, path);
+}
+// The objects a freshly loaded area's project brought with it (tag/teamchanger: two). Same deletion path as the editor
+// area's starter objects (SbEditorSlotClearTick): through each object's own server actor. Ours are kept.
+static void SbClearStarterObjects(SDK::AActor* slot)
+{
+    if (!slot || !SeAlive(slot)) return;
+    SDK::UObject* lgm = *reinterpret_cast<SDK::UObject**>(reinterpret_cast<uintptr_t>(slot) + 0x490);
+    if (!lgm) return;
+    // ULoadedGameMode::loadedPrefabs (TArray<UPrefabComponent*> @0x2E0): the objects its project brought. Each prefab's
+    // server actor is UPrefabComponent::Actor @0x2B8. (A GObjects walk matching PrefabComponent::GameMode @0x310 found
+    // none of tag/teamchanger's two team changers.)
+    std::vector<SDK::AActor*> doomed;
+    std::string names;
+    const uintptr_t l = reinterpret_cast<uintptr_t>(lgm);
+    SDK::UObject** arr = *reinterpret_cast<SDK::UObject***>(l + 0x2E0);
+    const int32_t num = *reinterpret_cast<int32_t*>(l + 0x2E0 + 8);
+    for (int32_t i = 0; arr && i < num && i < 256; ++i)
+    {
+        SDK::UObject* pc = arr[i];
+        if (!pc || !SeAlive(pc) || SbOwnedByIdx(SbPrefabIdx(pc))) continue;   // ours: keep
+        SDK::AActor* a = *reinterpret_cast<SDK::AActor**>(reinterpret_cast<uintptr_t>(pc) + 0x2B8);
+        if (!a || !SeAlive(a)) a = (pc->Outer && SeAlive(pc->Outer)) ? static_cast<SDK::AActor*>(pc->Outer) : nullptr;
+        if (!a) continue;
+        if (names.size() < 200) names += a->GetName() + " ";
+        doomed.push_back(a);
+    }
+    int cleared = 0;
+    for (SDK::AActor* a : doomed) if (SeSandboxDelete(a)) ++cleared;
+    if (auto* fn = slot->Class->GetFunction("ModuleSlot", "PushNetVars")) SafeProcessEvent(slot, fn, nullptr);
+    HxLog("[HalcyonA2][SPECEDIT] area '%ls': %d of %d starter object(s) removed (loadedPrefabs=%d: %s)\n",
+          *reinterpret_cast<const wchar_t* const*>(reinterpret_cast<uintptr_t>(slot) + 0x3F0), cleared,
+          static_cast<int>(doomed.size()), num, names.c_str());
+}
+static void SbPendingAreasTick(ULONGLONG now)
+{
+    for (auto it = g_sePendingAreas.begin(); it != g_sePendingAreas.end(); )
+    {
+        SDK::AActor* slot = it->slot;
+        SDK::UObject* lgm = SeAlive(slot) ? *reinterpret_cast<SDK::UObject**>(reinterpret_cast<uintptr_t>(slot) + 0x490) : nullptr;
+        if (lgm || !SeAlive(slot) || now - it->since > 30000)
+        {
+            --g_lodForceVisible;
+            if (lgm)
+            {
+                HxLog("[HalcyonA2][SPECEDIT] area '%ls': loaded after %llu ms (%s)\n",
+                      *reinterpret_cast<const wchar_t* const*>(reinterpret_cast<uintptr_t>(slot) + 0x3F0),
+                      static_cast<unsigned long long>(now - it->since), lgm->GetName().c_str());
+                if (!it->editor)   // the editor area has its own follow-up (SbEditorSlotTick / SbEditorSlotClearTick)
+                {
+                    if (auto* fn = slot->Class->GetFunction("ModuleSlot", "PushNetVars")) SafeProcessEvent(slot, fn, nullptr);
+                    if (auto* fn = lgm->Class->GetFunction("LoadedGameMode", "PushNetVars")) SafeProcessEvent(lgm, fn, nullptr);
+                    if (auto* fn = slot->Class->GetFunction("Actor", "ForceNetUpdate")) SafeProcessEvent(slot, fn, nullptr);
+                    g_seAreaClears.push_back({ slot, now + 5000 });   // settle first (see SbEditorSlotClearTick)
+                }
+            }
+            else HxLog("[HalcyonA2][SPECEDIT] area load gave up after %llu ms\n", static_cast<unsigned long long>(now - it->since));
+            it = g_sePendingAreas.erase(it);
+        }
+        else ++it;
+    }
+    for (auto it = g_seAreaClears.begin(); it != g_seAreaClears.end(); )
+    {
+        if (now >= it->at) { SbClearStarterObjects(it->slot); it = g_seAreaClears.erase(it); }
+        else ++it;
+    }
+}
+#endif
 static SDK::UObject* SbFullAreaFor(const double* loc)
 {
     for (SDK::AActor* a : g_seAreaSlots)
@@ -4478,6 +4650,9 @@ static SDK::UObject* SbFullAreaFor(const double* loc)
         if (!a || !SeAlive(a)) continue;
         SDK::UObject* lgm = *reinterpret_cast<SDK::UObject**>(reinterpret_cast<uintptr_t>(a) + 0x490);
         SDK::UBoxComponent* box = SbImportanceBox(a);
+#if HALCYON_GAME_BUILD == 50451
+        if (!lgm && box && SbOutsideBox(box, loc) <= 1.0) { g_sbAreaPending = true; return nullptr; }   // still loading
+#endif
         if (lgm && box && SbOutsideBox(box, loc) <= 1.0) return lgm;
     }
     if (g_seAreaSlots.size() >= 32) return nullptr;
@@ -4486,7 +4661,11 @@ static SDK::UObject* SbFullAreaFor(const double* loc)
     if (!slot) return nullptr;
     g_seFabSlots.erase(std::remove(g_seFabSlots.begin(), g_seFabSlots.end(), slot), g_seFabSlots.end());   // not a game mode
     g_seAreaSlots.push_back(slot);
-    return *reinterpret_cast<SDK::UObject**>(reinterpret_cast<uintptr_t>(slot) + 0x490);
+    SDK::UObject* made = *reinterpret_cast<SDK::UObject**>(reinterpret_cast<uintptr_t>(slot) + 0x490);
+#if HALCYON_GAME_BUILD == 50451
+    if (!made) g_sbAreaPending = true;   // loading now (SbStartAsyncLoad): hold the placement, don't fall back
+#endif
+    return made;
 }
 
 static SDK::UObject* SbHostGamemode(const std::string& uniqueId, const double* loc)
@@ -4570,6 +4749,16 @@ static SDK::UObject* SbHostGamemode(const std::string& uniqueId, const double* l
                 bestWhy = "always-visible area";
             }
     }
+#if HALCYON_GAME_BUILD == 50451
+    // The spot's always-visible area is still loading: an editor command waits for it (SeRetry*) rather than taking a
+    // station host, which Quest would draw collision-only. Level loads (not a command) still fall back as before.
+    if (g_sbAreaPending && g_seInCommand)
+    {
+        HxLog("[HalcyonA2][SPECEDIT] host for %s at (%.0f,%.0f,%.0f): always-visible area still loading -- held\n",
+              uniqueId.c_str(), loc[0], loc[1], loc[2]);
+        return nullptr;
+    }
+#endif
     g_sbHostOutsideCm = bestTier == 2 ? bestScore : (bestTier == 3 ? -1.0 : 0.0);
     static const char* kTier[] = { "inside its importance volume", "inside its importance volume (subclass slot)",
                                    "OUTSIDE every importance volume -- nearest one", "no importance volume anywhere -- nearest slot" };
@@ -8982,6 +9171,9 @@ static bool SpecEditHandle(SDK::UObject* pawn, const std::string& cmd)
     else if (op == "SLOTS") SeSlotsDump(p.size() >= 3 ? p[2] : std::string());
     else if (op == "SLOTBOX") SeSlotBoxProbe();
     else if (op == "PROJPROBE" && p.size() >= 3) SeProjProbe(p[2]);
+#if HALCYON_GAME_BUILD == 50451
+    else if (op == "PROJCHECK") SeProjCheck();
+#endif
     else if (op == "MKSLOT" && g_seLocalTest && p.size() >= 4) { double at[3]; if (SeVec(p[2], at)) SbCreateEditorSlot(at, p[3] == "-" ? std::string() : p[3]); }
     else if (op == "NODEMOVE" && p.size() >= 4) SeTestNodeMove(p[2], p[3]);
     else if (op == "ACTORS" && p.size() >= 3) SeActorClasses(p[2]);
@@ -9052,6 +9244,32 @@ static void ResolveSpecEditIndex()
 // Server_AttemptLockObject(const FString& idx): the params block is a single FString at offset 0,
 // which FStringToNarrow reads by raw offset (Data@0, Num@8). Out-of-line because it holds std::string
 // temporaries, which cannot live inside a __try frame (C2712) -- SafeSpecEditDispatch owns the SEH.
+#if HALCYON_GAME_BUILD == 50451
+// Editor commands held because the spot's always-visible area was still loading (see SbStartAsyncLoad): replayed once
+// no area is loading any more, at most 3 times and for 40 s, then dropped with a note in the log.
+struct SeRetry { SDK::UObject* pawn; std::string cmd; ULONGLONG since; int tries; };
+static std::vector<SeRetry> g_seRetries;
+static void SeRetryTick(ULONGLONG now)
+{
+    if (g_seRetries.empty() || !g_sePendingAreas.empty()) return;          // wait for the area(s) to land
+    std::vector<SeRetry> q;
+    q.swap(g_seRetries);
+    for (SeRetry& r : q)
+    {
+        if (!SeAlive(r.pawn) || now - r.since > 40000 || r.tries >= 3)
+        {
+            HxLog("[HalcyonA2][SPECEDIT] held command dropped (%s): %.60s\n", SeAlive(r.pawn) ? "gave up" : "editor left", r.cmd.c_str());
+            continue;
+        }
+        g_sbAreaPending = false; g_seInCommand = true;
+        SpecEditHandle(r.pawn, r.cmd);
+        g_seInCommand = false;
+        if (g_sbAreaPending) { ++r.tries; g_seRetries.push_back(r); }
+        else HxLog("[HalcyonA2][SPECEDIT] held command replayed after %llu ms: %.60s\n", static_cast<unsigned long long>(now - r.since), r.cmd.c_str());
+        g_sbAreaPending = false;
+    }
+}
+#endif
 static bool SpecEditDispatch(SDK::UObject* pawn, void* parms)
 {
     // [SEPROF] Editor commands run inside the RPC handler, where [PROF] never looks -- that is how full-object
@@ -9062,7 +9280,15 @@ static bool SpecEditDispatch(SDK::UObject* pawn, void* parms)
     LARGE_INTEGER t0, t1;
     QueryPerformanceCounter(&t0);
     const std::string cmd = FStringToNarrow(parms);
+#if HALCYON_GAME_BUILD == 50451
+    g_sbAreaPending = false; g_seInCommand = true;
+#endif
     const bool r = SpecEditHandle(pawn, cmd);
+#if HALCYON_GAME_BUILD == 50451
+    g_seInCommand = false;
+    if (g_sbAreaPending && g_seRetries.size() < 64) g_seRetries.push_back({ pawn, cmd, GetTickCount64(), 0 });
+    g_sbAreaPending = false;
+#endif
     QueryPerformanceCounter(&t1);
     const double ms = 1000.0 * static_cast<double>(t1.QuadPart - t0.QuadPart) / static_cast<double>(s_freq.QuadPart);
     static ULONGLONG s_window = 0;
