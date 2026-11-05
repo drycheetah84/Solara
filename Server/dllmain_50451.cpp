@@ -3687,6 +3687,7 @@ static int32_t SafeRbNicOffset(void* nic)
 // the server frame when a batch arrives (after our rebase; <= 0 means the input came too late for its frame).
 static volatile LONG g_rbsCorr = 0, g_rbsMissRep = 0, g_rbsMissSum = 0, g_rbsBatches = 0, g_rbsLate = 0;
 static volatile LONG g_rbsLeadSum = 0, g_rbsLeadMin = 0x7FFFFFFF, g_rbsLeadMax = -0x7FFFFFFF;
+static volatile LONG g_rbsFwdSent = 0, g_rbsFwdBlocked = 0;   // [RBFWD] relays to same-sim players / skipped (other sim or unseated)
 using RbCorr_t = __int64(__fastcall*)(void*, int32_t, void*);
 static RbCorr_t RbCorr_Orig = nullptr;
 static __int64 __fastcall RbCorr_Hook(void* part, int32_t frame, void* state)
@@ -3726,10 +3727,11 @@ static void RbStatFlush()   // once a second from the step driver hook
     const LONG miss = InterlockedExchange(&g_rbsMissSum, 0), b = InterlockedExchange(&g_rbsBatches, 0);
     const LONG late = InterlockedExchange(&g_rbsLate, 0), sum = InterlockedExchange(&g_rbsLeadSum, 0);
     const LONG mn = InterlockedExchange(&g_rbsLeadMin, 0x7FFFFFFF), mx = InterlockedExchange(&g_rbsLeadMax, -0x7FFFFFFF);
+    const LONG fwd = InterlockedExchange(&g_rbsFwdSent, 0), fwdBlk = InterlockedExchange(&g_rbsFwdBlocked, 0);
     if (corr == 0 && rep == 0 && b == 0) return;
     HxLog("[HalcyonA2][RBSTAT] corr/s=%ld missedRep/s=%ld missedSum=%ld batches/s=%ld lead min=%ld avg=%.1f max=%ld late=%ld"
-        " | ticks/s=%d hitch=%d dtMax=%.1fms\n",
-        corr, rep, miss, b, b ? mn : 0, b ? double(sum) / b : 0.0, b ? mx : 0, late, ticks, hitch, dtMax * 1000.0f);
+        " | ticks/s=%d hitch=%d dtMax=%.1fms | fwd/s=%ld fwdBlocked/s=%ld\n",
+        corr, rep, miss, b, b ? mn : 0, b ? double(sum) / b : 0.0, b ? mx : 0, late, ticks, hitch, dtMax * 1000.0f, fwd, fwdBlk);
 }
 static __int64 __fastcall RbMissed_Hook(void* nic, int32_t frame, uint64_t serverFrame, uint64_t missed, uint64_t missedBuf)
 {
@@ -3827,12 +3829,25 @@ static void RbForwardInputs(SDK::UObject* nic, const uint8_t* in, int32_t n)
     me.lastFwdFrame = *reinterpret_cast<const int32_t*>(in + 496ull * (n - 1));
     struct alignas(8) Params { uint8_t PlayerIndex; uint8_t pad[7]; uint8_t Fast[0xC0]; } p{};
     p.PlayerIndex = myIdx;
+    // [2026-11-05 RBFWD SAME-SIM] Relay only to players seated in the SAME rollback sim. This used to be "anyone
+    // seated within 80 m", which with several 4v4 matches side by side relayed inputs into the neighbouring matches;
+    // the receiver looks the sender up by PlayerIndex (the seat number, 0..7 in EVERY match), so a foreign seat-3
+    // input was applied to its own seat-3 player -> players and the ball snapping, only when several matches ran.
+    // AVRPawn::CurrentRollbackSimulationOutline @0x1820, first dword = SimIndex (0xFFFFFFFF = not seated).
+    const uint32_t mySim = *reinterpret_cast<const uint32_t*>(reinterpret_cast<uintptr_t>(pawn) + 0x1820);
     for (auto& [onic, other] : g_rbSeated)
     {
         if (onic == nic || !other.pawn || now - other.lastSubmit > 1500) continue;   // only players seated right now
-        const SDK::FVector op = other.pawn->K2_GetActorLocation();
-        const double dx = op.X - myPos.X, dy = op.Y - myPos.Y, dz = op.Z - myPos.Z;
-        if (dx * dx + dy * dy + dz * dz > 8000.0 * 8000.0) continue;                 // same arena only
+        const uint32_t otherSim = *reinterpret_cast<const uint32_t*>(reinterpret_cast<uintptr_t>(other.pawn) + 0x1820);
+        if (mySim == 0xFFFFFFFF || otherSim != mySim)                                // same sim only
+        {
+            // count only the relays the old 80 m rule WOULD have sent (wrong match / unseated, but nearby)
+            const SDK::FVector op = other.pawn->K2_GetActorLocation();
+            const double dx = op.X - myPos.X, dy = op.Y - myPos.Y, dz = op.Z - myPos.Z;
+            if (dx * dx + dy * dy + dz * dz <= 8000.0 * 8000.0) InterlockedIncrement(&g_rbsFwdBlocked);
+            continue;
+        }
+        InterlockedIncrement(&g_rbsFwdSent);
         auto offIt = g_rbFrameOff.find(onic);
         const int32_t offB = offIt == g_rbFrameOff.end() ? 0 : offIt->second;
         for (int32_t k = first; k < n; ++k)
