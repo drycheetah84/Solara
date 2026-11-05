@@ -1,10 +1,65 @@
 # Ball sim snapping (50451): handoff
 
-> Status 2026-11-05: **two fixes built, neither confirmed on a busy production server yet:** the cross-match input
-> relay fix (a8e11d3, "Strongest lead" below) and [RBDEDUPE] (duplicate sim-results sends, next section; verified
-> locally). Written for whoever picks this up next (human or Claude). Read
+> Status 2026-11-05 (late): **prod is on DLL `8E4D13BB` (commit 2e62694) on all 5 box 1 servers**, with `[RBSTAT]`,
+> [RBDEDUPE] and the relay hotfix. Read **"Prod data after the hotfix"** right below first: it rules out two of the
+> theories further down and points at **late inputs**. Written for whoever picks this up next (human or Claude). Read
 > [a2-50451-rollback-sim-internals](a2-50451-rollback-sim-internals.md) and
 > [a2-rollback-netmode-fix](a2-rollback-netmode-fix.md) first. Never test on the live servers; use the local rig.
+
+## Prod data after the hotfix (2026-11-05, box 1, read-only)
+
+Source: `C:\Windows\Temp\HalcyonA2.log` on box 1 (shared by all 5 servers, so `[RBSTAT]` lines from idle servers
+show `fwd/s=0`; look at lines with `batches/s` > 90). Sample: one 2–3 player driftball match, **not** the 40-player
+crowd, so it shows the mechanism, not the worst case.
+
+| Signal | Value | Meaning |
+|---|---|---|
+| `corr/s` | **0** everywhere | No **ball** corrections (`0x5747AE0`). Player corrections (vtable `+1216`) are **not counted yet** |
+| `dup` | **0** | [RBDEDUPE] skips nothing on prod (it ticks ~90/s). Harmless, kept |
+| `ticks/s` | 87–91, `dtMax` 11–24 ms | Server tick is fine. Not the cause |
+| `fwd/s` / `fwdBlocked/s` | ~175 / **0** in the active match | Relay works again after the hotfix |
+| `lead` | normally min 2, avg 3–4 | Healthy most of the time… |
+| `lead` / `late` in bursts | avg **0.3–1.0**, min **−11**, `late` **up to 23–27/s** | …but inputs regularly arrive after the server already simulated that frame |
+
+### Finding 1: `@0x1820` is not the sim id (relay same-sim check is effectively off)
+
+All 80 `[RBFWDID]` lines show `sim@0x1820=0xFFFFFFFF` for **both** players while they were seated together in one
+match (seat idx 2/6, 3, 5/7). So `AVRPawn + 0x1820` (first dword of `CurrentRollbackSimulationOutline`) does not hold
+the seated sim's index on the server, or it's the wrong offset. Commit a8e11d3 relied on it and blocked every relay
+(teammates froze); hotfix 2e62694 only blocks when both ids are valid and differ, otherwise falls back to the old 80 m
+rule. **Net effect: prod relays exactly like before a8e11d3**, so the cross-match relay theory below is still
+**untested**. To-do: find the real "which sim is this player in" field, e.g. the sim the
+`Server_NewSubmitInputs` impl (`0x57105D0`) inserts into, or the outline's player list, and key the relay on that.
+
+### Finding 2 (current lead): late inputs from the fixed 2-frame rebase
+
+The frame rebase (`want = serverF + 2 - clientLast`, see "What our DLL does on top") gives every player a **fixed**
+2-frame (~22 ms) buffer at seat time and never adapts it (only re-fixes on >300 frames of drift). Quest Wi-Fi
+jitter or slow clock drift eats that, and prod shows it: bursts where a quarter of a player's inputs are late. A late
+input means the server simulated that frame with a guessed input; when the real one disagrees, the player (and the
+ball, if touched) snaps. A busier server/network makes the bursts worse, which matches "only bad at 40 players".
+
+Proposed fixes, smallest first (none built yet; the owner has not approved a prod deploy of any of them):
+
+1. **Bigger fixed lead:** `serverF + 2` → `serverF + 4` (+22 ms input delay). One-line change, easy A/B on prod via
+   `late` and `lead min` in `[RBSTAT]`.
+2. **Adaptive lead:** per player, track `lead min` over a window; if inputs keep arriving late, bump that player's
+   offset by 1–2 frames (and slowly back down when lead stays high). Must also re-adjust the outbound `frame - offset`
+   for results and relayed inputs consistently (`g_rbFrameOff`).
+3. **22284-style pacing:** cap the accumulator (`+0x338`) so the sim never passes the slowest seated player's newest
+   input minus a small delay (see "How 22284 fixed ball lag").
+
+Also add a **player-correction counter** (hook the vtable `+1216` call in `0x5757260`) so `[RBSTAT]` shows whether
+late bursts line up with player corrections. That would prove Finding 2.
+
+### Deploying to box 1 (what actually works)
+
+Copying a new DLL over `C:\Halcyon\HalcyonA2.dll` while servers run fails silently (file locked), and the agent caches
+the DllPath it read at connect time. Working method: **rename** the loaded `HalcyonA2.dll` (allowed while mapped),
+copy the new one to the same path, then restart servers **one at a time**, waiting for `injected pid N` in
+`C:\Halcyon\logs\agent.log` (~65 s) before the next (killing a server kills any other still initializing). Verify the
+loaded module hash per process. Run the script on the box with `powershell -File` (stdin drops multi-line loops).
+Box 2's Halcyon server is still on the older `2DB11F71` build (old 80 m relay, no `[RBFWDID]`).
 
 ## The problem
 
@@ -91,7 +146,7 @@ functions with `idautils.Functions()`: a hand-rolled `get_func`/`end_ea` walk lo
 - UE logs per server: `C:\Windows\System32\config\systemprofile\AppData\Local\A2\Saved\Logs\A2_N.log` on the game box;
   the DLL log is `C:\Windows\Temp\HalcyonA2.log` (shared by all servers on the box).
 
-## Strongest lead: cross-match input relay (fix built, commit a8e11d3)
+## Earlier lead: cross-match input relay (commit a8e11d3; its sim-id field turned out wrong, see Finding 1)
 
 The 40-player night had **several full 4v4 matches running at once**. Our `RBFWD` relay sent each seated player's
 inputs to every seated player **within 80 m**, not "in the same sim". Neighbouring matches got each other's inputs,
@@ -123,7 +178,7 @@ sent results for confirmed frames (`ArmResultsOnStep`; pinning results every fra
 That never simulated a frame before every player's input for it had arrived. The equivalent for 50451 would be to cap
 the accumulator (`+0x338`) so the sim frame never passes the slowest seated player's newest input minus a small delay.
 
-## Instrumentation already added (in the working tree, built, NOT deployed)
+## Instrumentation (deployed to prod box 1 since 2026-11-05; fields added since: `sends/s`, `dup`, `fwd/s`, `fwdBlocked/s`)
 
 `[RBSTAT]` once per second from the step driver hook (diagnostic only, no behaviour change):
 

@@ -45,7 +45,7 @@ arena balls, per-client PC (RIFT) identities, the Station_Prime level-tree desyn
 | [a2-50451-mothership-schemas](a2-50451-mothership-schemas.md) | Client Mothership response contracts (inventory, storefront, IAP, tech trees) |
 | [a2-mothership-notifications-ws](a2-mothership-notifications-ws.md) | The Mothership websocket = moderation push (Warning/Mute/Unmute); `Client_ShowNotification` for custom boards |
 | [a2-voip-vivox](a2-voip-vivox.md) | Voice chat setup per build |
-| [ballsim-snapping-handoff](ballsim-snapping-handoff.md) | **Open:** 40-player driftball snapping: what we know, hypotheses, `[RBSTAT]` instrumentation, how to test |
+| [ballsim-snapping-handoff](ballsim-snapping-handoff.md) | **Open:** 40-player driftball snapping: prod `[RBSTAT]` data (late inputs = current lead, `@0x1820` is not the sim id), fixes to try, deploy method |
 | [a2-50451-rollback-sim-internals](a2-50451-rollback-sim-internals.md) | How the 50451 rollback sim steps, takes inputs and corrects clients (IDA RVAs) |
 | [a2-47031-desync](a2-47031-desync.md) | 47031 Station_Prime crash investigation + rollback/seat RE notes (long) |
 | [a2-47031-speceditor-port](a2-47031-speceditor-port.md) | In-game level editor port 22284 -> 47031 |
