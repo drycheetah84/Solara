@@ -65,6 +65,15 @@ D-series quota needs MFA login, a request was throttled -- retry for D8as_v5 the
   -n halcyon-game1 --command-id RunPowerShellScript --scripts @file.ps1` (no WinRM needed). C:\Halcyon layout as
   before; agent task HalcyonAgent -HubHost 10.10.1.4 -Box win-gamebox-1 -Capacity 5. 5 servers ~1.3 GB RAM each.
 - DLL deploy now: scp DLL to hub /opt/halcyon-dist, then on game1 iwr http://10.10.1.4:8000/HalcyonA2.dll.
+- **DLL deploy method (2026-11-05):** a loaded DLL cannot be overwritten (silent failure) and the agent caches its
+  DllPath, so: rename the live `C:\Halcyon\HalcyonA2.dll` (allowed while mapped), copy the new one to that path, then
+  stop servers ONE AT A TIME and wait for `injected pid N` in `C:\Halcyon\logsgent.log` before the next (a server
+  killed while another is initialising takes that one down too). Verify by process START TIME, not by hashing the
+  module path (that reads the new file on disk, not the loaded image). Run box scripts with `powershell -File`.
+- **Watchdog speed (2026-11-05, c7f039b):** the agent reports a server exit within ~1 s and the watchdog relaunches
+  within one 10 s tick (measured: 2 s). Before, the agent forgot its servers on every hub reconnect (= every Solara
+  restart), so restarts took the 180 s silent path (~4 min each). The agent can be swapped live: stopping the
+  HalcyonAgent task leaves its game servers running and the new agent adopts them.
 - **Every game server MUST run the SpecEditor flags `-SpecEdit -SpecEditSandbox`** (in `Args` of
   `deploy/azure/server.config.psd1`). The agent launches servers from the box's OWN copy,
   `C:\Halcyon\server.config.psd1` (bootstrap downloads it once), so EVERY deploy also scps
