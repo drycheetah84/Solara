@@ -59,9 +59,13 @@ func TestPlayerNames(t *testing.T) {
 	if n := signIn(pid); n != "dry_renamed" {
 		t.Fatalf("server login by PlayerId = %q", n)
 	}
-	// ...and follows the player's next station-login rename
-	if c := SyncPlayerName("11112222333", "dry3"); c != 2 || stored(pid) != "dry3" {
-		t.Fatalf("sync changed %d, server-login record %q", c, stored(pid))
+	// ...because it IS the player's own record now (trustedlogin.go): no second "server-login" record is
+	// created, so a rename touches exactly one record and the server login follows it
+	if c := SyncPlayerName("11112222333", "dry3"); c != 1 || stored("11112222333") != "dry3" || stored(pid) != "(none)" {
+		t.Fatalf("sync changed %d, stored %q, server-login record %q", c, stored("11112222333"), stored(pid))
+	}
+	if n := signIn(pid); n != "dry3" {
+		t.Fatalf("server login by PlayerId after rename = %q", n)
 	}
 	names["11112222333"] = "dry3"
 	// placeholder / empty names never overwrite anything

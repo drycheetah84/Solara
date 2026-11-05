@@ -341,6 +341,18 @@ func (s *MothershipServer) CompleteQuestAuth(c *hosting.Context) hosting.Result 
 	}
 
 	cl := v2Players()
+	// Solara: our game-server DLL (trusted) signs in AS a player it already knows by Mothership player id (the
+	// cosmetic guard reading what they own, quest/state reads). Treated as a Meta user id, that minted a fresh,
+	// empty player every time -- so the guard saw nobody owning anything and stripped bought cosmetics. Issue the
+	// existing player's token instead, without touching any stored record.
+	if trustedServer {
+		if res, ok := trustedServerPlayerToken(cl, userId); ok {
+			stateMu.Lock()
+			delete(pendingQuestAuth, userId)
+			stateMu.Unlock()
+			return res
+		}
+	}
 	var existing *models.MothershipV2PlayerDbObject
 	for _, p := range cl.FindAll() {
 		if eqS(p.ExternalProviderId, userId) && eqS(p.ExternalService, "QUEST") {
