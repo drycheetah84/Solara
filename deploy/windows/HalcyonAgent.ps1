@@ -107,6 +107,12 @@ function Send($writer, $obj) {
 $configPath = Resolve-FromHere $Config
 Log "agent starting: box=$Box capacity=$Capacity hub=${HubHost}:$HubPort config=$configPath"
 
+# [2026-11-05] Kept across hub reconnects (they used to be reset on every reconnect, i.e. every Solara restart):
+# a server whose exit is not reported here is only noticed by the watchdog's silent check (~3-4 minutes) instead
+# of within seconds, and a launch still waiting to be injected when the hub dropped was never injected.
+$pending = @{}   # pid -> @{ Proc; Id; InjectAt }  (launched, waiting to inject)
+$ours    = @{}   # pid -> Process                 (game servers whose exit we report)
+
 while ($true) {
     $client = $null
     try {
@@ -126,8 +132,14 @@ while ($true) {
         Send $writer $hello
         Log "connected to hub; running=$(Running-Count); agent token: $(if ($agentTok) { 'yes' } else { 'no' })"
 
-        $pending   = @{}   # pid -> @{ Proc; Id; InjectAt }  (launched, waiting to inject)
-        $ours      = @{}   # pid -> Process                 (launched by this agent, injected)
+        # Adopt every game server already running on this box (started before this agent, or before an agent
+        # restart) so its exit is reported at once too. The watchdog maps pids to deployments from the heartbeats.
+        foreach ($gp in @(Get-Process -Name $procName -ErrorAction SilentlyContinue)) {
+            if (-not $ours.ContainsKey($gp.Id) -and -not $pending.ContainsKey($gp.Id)) {
+                $ours[$gp.Id] = $gp
+                Log "adopted running server pid $($gp.Id) (its exit will be reported)"
+            }
+        }
         $nextBeat  = (Get-Date).AddSeconds(30)
         $readTask  = $reader.ReadLineAsync()
 
@@ -224,7 +236,7 @@ while ($true) {
             # 3. servers we launched that have stopped
             foreach ($procId in @($ours.Keys)) {
                 if (-not $ours[$procId].HasExited) { continue }
-                $code = $ours[$procId].ExitCode
+                $code = try { $ours[$procId].ExitCode } catch { 'unknown' }   # an adopted process may not expose it
                 $ours.Remove($procId)
                 Log "pid $procId exited (code $code)"
                 Send $writer @{ type = 'exited'; pid = "$procId"; code = "$code"; running = (Running-Count) }

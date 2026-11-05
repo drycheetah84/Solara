@@ -564,6 +564,16 @@ func (wd *ServerWatchdog) evaluateOne(g *lockGuard, w *Watched, now dotnet.DateT
 		return
 	}
 
+	// Solara (2026-11-05): the agent REPORTED this process's exit (OnExited sets ProbeAlive=false), after our last
+	// restart of it. OnExited restarts at once, but not inside the cooldown, and then the report was forgotten: the
+	// server waited for the silent path (~3-4 min). Act on it now that the cooldown is over.
+	if w.ProbeAlive != nil && !*w.ProbeAlive && w.ProbeAnsweredAt != nil &&
+		(w.LastHeartbeat == nil || !w.ProbeAnsweredAt.Before(*w.LastHeartbeat)) &&
+		(w.LastRestartAt == nil || w.ProbeAnsweredAt.After(*w.LastRestartAt)) {
+		wd.tryRestart(g, w, "process-exited", fmt.Sprintf("the agent reported pid %d exited", w.Pid))
+		return
+	}
+
 	if w.LastHeartbeat == nil {
 		// Never heard from it: still booting, or it came up without the DLL.
 		if msBetween(now.Ticks(), w.CreatedAt.Ticks()) < float64(k.startupGraceMs) {

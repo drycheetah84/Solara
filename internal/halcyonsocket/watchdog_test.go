@@ -389,3 +389,46 @@ func TestWatchdogLoopStops(t *testing.T) {
 	wd.close() // idempotent
 	_ = c
 }
+
+// Solara: an exit the agent reports inside the cooldown is acted on as soon as the cooldown ends (it used to be
+// dropped, leaving the server to the ~3-4 minute silent path).
+func TestWatchdogExitDuringCooldown(t *testing.T) {
+	h := newWdHarness(t, currentKnobs())
+	wd := h.wd
+	verdict := func() string {
+		for _, w := range wd.Servers() {
+			if w.DeploymentId == "cd" {
+				return w.LastVerdict
+			}
+		}
+		return "<missing>"
+	}
+	wd.OnSpinUpRequested("cd", "r1", "boxA", nil, nil, "", nil)
+	wd.OnSpunUp("r1", "11", "ok", "boxA")
+	wd.OnHeartbeat("cd", 11, 1, 0, 0, 0, 0, nil)
+	h.clk.advance(1000)
+	wd.OnExited("boxA", "11", "1") // first exit: restarted at once
+	if v := verdict(); v != "restarting (process-exited)" {
+		t.Fatal(v)
+	}
+	wd.OnSpunUp("REQ", "12", "ok", "boxA")
+	wd.OnHeartbeat("cd", 12, 1, 0, 0, 0, 0, nil)
+	h.clk.advance(60_000)
+	wd.OnExited("boxA", "12", "1") // second exit, inside the 180 s cooldown: not yet
+	wd.Evaluate()
+	if v := verdict(); v != "cooling down" {
+		t.Fatal(v)
+	}
+	h.clk.advance(120_001) // cooldown over: restart on this tick, not after the silent window
+	wd.Evaluate()
+	if v := verdict(); v != "restarting (process-exited)" {
+		t.Fatal(v)
+	}
+	// and a fresh replacement is not restarted again on that stale report
+	wd.OnSpunUp("REQ", "13", "ok", "boxA")
+	h.clk.advance(180_001)
+	wd.Evaluate()
+	if v := verdict(); v != "starting (no heartbeat yet)" {
+		t.Fatal(v)
+	}
+}
