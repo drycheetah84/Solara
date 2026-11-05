@@ -192,6 +192,29 @@ test("production dashboard authentication", async t => {
     assert.equal((await request("/api/stats", { headers: { cookie: discordCookie({ admin: false }) } })).status, 401);
   });
 
+  await t.test("an API key (scoped token in a header) calls the dashboard API as itself", async () => {
+    // Authorization: Bearer and x-api-key both work, and forward THAT token (the backend enforces its scope).
+    for (const headers of [{ authorization: `Bearer ${scopedToken}` }, { "x-api-key": scopedToken }]) {
+      const api = await request("/api/users", { headers });
+      assert.equal(api.status, 200);
+      assert.deepEqual(await api.json(), {
+        path: "/api/users", method: "GET", body: "", correctKey: false, scopedKey: true, forwardedCookie: false,
+      });
+    }
+    const before = upstreamRequests;
+    // the master key is never accepted from a header, nor anything that is not a scoped token
+    for (const value of [`Bearer ${adminKey}`, "Bearer sdt1_short", "Basic abc", `Bearer ${scopedToken}x`]) {
+      assert.equal((await request("/api/users", { headers: { authorization: value } })).status, 401);
+    }
+    assert.equal((await request("/api/users", { headers: { "x-api-key": adminKey } })).status, 401);
+    // an API key does not open the station API (:78) or the dashboard pages
+    assert.equal((await request("/game/stations/create", {
+      method: "POST", headers: { authorization: `Bearer ${scopedToken}` }, body: "{}" })).status, 401);
+    const page = await request("/", { headers: { authorization: `Bearer ${scopedToken}` } });
+    assert.equal(page.status, 307);
+    assert.equal(upstreamRequests, before);
+  });
+
   await t.test("expired, future-dated, tampered and legacy sessions are rejected", async () => {
     const before = upstreamRequests;
     const now = Math.floor(Date.now() / 1000);
