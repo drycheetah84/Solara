@@ -3619,7 +3619,12 @@ static std::unordered_map<void*, int32_t> g_rbFrameOff;
 // -NoRbAdaptLead turns it off. LOCAL RIG ONLY: %TEMP%\rbtest_leadextra.txt holding a number forces that extra.
 struct RbLeadState { int32_t extra = 0; int32_t winMin = 0x7FFFFFFF; int32_t late = 0; ULONGLONG winStart = 0; int calm = 0; };
 static std::unordered_map<void*, RbLeadState> g_rbLead;   // game thread only (submit handler)
-static bool g_rbAdaptLead = wcsstr(GetCommandLineW(), L"-NoRbAdaptLead") == nullptr;
+// [TIMESYNC 2026-11-05] Now that the game's own time sync runs, this ratchet fights it: the client steers the average of
+// the worst 80 input margins (frame - server frame - 1, last 3 s) toward 0 while RBLEAD added up to +6 frames on any
+// late input (prod: players at +5/+6, Diff stuck at 3-4 frames early), and each step repeats/skips one input in the
+// server sim. So it is OFF while time sync is on; -RbAdaptLead forces it on, -NoRbTimeSync brings it back as before.
+static bool g_rbAdaptLead = wcsstr(GetCommandLineW(), L"-NoRbAdaptLead") == nullptr &&
+    (wcsstr(GetCommandLineW(), L"-RbAdaptLead") != nullptr || wcsstr(GetCommandLineW(), L"-NoRbTimeSync") != nullptr);
 static int32_t g_rbLeadForce = -1;   // local rig A/B (RbDedupeTestToggle reads the file); -1 = adapt normally
 static constexpr int32_t kRbLeadMaxExtra = 6;
 static volatile LONG g_rbsLeadUp = 0, g_rbsLeadDown = 0;   // [RBSTAT] adaptive-lead steps taken this second
