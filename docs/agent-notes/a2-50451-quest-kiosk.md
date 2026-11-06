@@ -100,3 +100,14 @@ game server by killing it, never by bare /spinup; if a spinup is unavoidable, th
 /opt/solara/snapshots/*_startup/production.solara.db with tools/snapdump (password = PRODUCTION_DB_PASSWORD in
 /opt/solara/config/legacy-secrets.env; work on a copy). Board image files live in /opt/solara/boards (served at
 https://station.halcy0n.net/board/<file>). Backend restarts drop the agent hub briefly: verify the game process after.
+
+**ScrapRun traps (2026-11-06, 259c97c, built not deployed at time of writing):** traps came back without collision
+or not at all. Decompiled BPs are in D:\projects\BlueprintToCpp\...\net8.0\A2\Content (BP_Scraprun_TrapDescriptor,
+BP_ScraprunActor, Deathrun/BP_Trap_*). Trap reset (descriptor natives SetPrimitiveVisiblityAndCollision 0x55CC320 =
+level actors' hidden flag + SetActorEnableCollision; SetAllActorMaterials 0x55C9760) never restores COMPONENT
+collision profiles. BunnyHop / StickySlime set NoCollision on their own cycle and only the SERVER's chain
+(adjuster completion -> Delay -> authority LuaDisable) flips the Toggleable back; its disabled event restores
+BlockAll on clients. Same class as [BOOSTRESPAWN] (client Luau request enables, server chain never runs).
+[TRAPTOGGLE] resets BP_Trap_BunnyHop toggles stuck >8 s and StickySlime >20 s; others logged at 60 s.
+ScraprunActor +0x2C0 = bShouldSupportFading (gates all piece fade natives). The TRAPPROBE descriptor scan never
+saw a descriptor on prod (unexplained); TRAPTOGGLE uses the ToggleableComponent class list (proven by BOOSTRESPAWN).
