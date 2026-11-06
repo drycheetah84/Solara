@@ -14081,9 +14081,14 @@ static void MatchResultSlot(SDK::UObject* o, ULONGLONG now)
         g_mrStep = "score";
         int sc[2] = { 0, 0 };
         const bool fromComponent = MrReadScore(o, sc);
-        if (!fromComponent) { sc[0] = ms->GetScore(0); sc[1] = ms->GetScore(1); }
+        // [2026-11-06] No ModuleState calls on the tick the game ENDS: its state is being torn down, and
+        // GetRoundsWon faulted there twice inside ProcessEvent (game +0x49B0421, null read; swallowed by the PE
+        // wrapper) at the exact second a 43 s game ended. That tick uses what was recorded while the game ran
+        // (st.best / st.rounds); the score component (a plain memory read) is still checked once more.
+        if (!fromComponent && running) { sc[0] = ms->GetScore(0); sc[1] = ms->GetScore(1); }
         g_mrStep = "rounds";
-        const int rd[2] = { ms->GetRoundsWon(0), ms->GetRoundsWon(1) };
+        int rd[2] = { st.rounds[0], st.rounds[1] };
+        if (running) { rd[0] = ms->GetRoundsWon(0); rd[1] = ms->GetRoundsWon(1); }
         g_mrStep = "track";
         if (running)
         {
