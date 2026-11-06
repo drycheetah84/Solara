@@ -7644,7 +7644,18 @@ static void PumpBallOverlaps(bool discsOnly = false)
             // Server_SendPhysicsPropData updates, so a point check can land before and after the Z Drift start cylinder
             // and never inside it. When it jumped > 50 uu, walk it through the gap (teleport moves; each runs the
             // engine's own overlap update -> OnOverlapByDisc fires as for a real pass-through), then put it back.
-            if (known && d2 > 50.0f * 50.0f)
+            // [2026-11-06 BALLFREEZE] Only Z Drift balls are swept. The sweep teleports the ball along its path and back,
+            // and on every other ball -- Tackleball / Driftplex, whose position the ball sim owns -- those moves held
+            // the server's copy in place: balls stood still in every arena (kickoff still registered). A plain
+            // UpdateOverlaps never moves the ball.
+            static SDK::UClass* zdriftBallCls = nullptr;
+            static ULONGLONG s_zdLookup = 0;
+            if (!zdriftBallCls && GetTickCount64() - s_zdLookup > 5000)   // loaded with the Z Drift slots; retry until then
+            {
+                s_zdLookup = GetTickCount64();
+                zdriftBallCls = SDK::UObject::FindClassFast("BP_ZDriftGamemodeBall_C");
+            }
+            if (known && d2 > 50.0f * 50.0f && zdriftBallCls && discs[i]->IsA(zdriftBallCls))
                 SafeSweepDisc(root, x - dx, y - dy, z - dz, x, y, z, d2);
             else
                 SafeUpdateOverlaps(root);
