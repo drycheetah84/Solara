@@ -4033,6 +4033,45 @@ static void SafeRbForwardInputs(SDK::UObject* nic, const uint8_t* in, int32_t n)
 // to 49 times a second. Drive it ourselves, for every seated player whose component the engine did not tick in the
 // last 0.5 s (a hook records engine calls, so it can never run twice). The game's own logic decides what to send.
 // -NoRbTimeSync turns it off.
+// [2026-11-06 LUAERR] Shipping servers write no engine log, so Luau script errors (a gamemode BeginPlay dying on a nil
+// component, "attempt to index nil with 'Listen'") were invisible. Every Luau runtime error goes through pusherror
+// (0x7AB29D0, (lua_State* L, const char* msg)): it pushes "chunk:line: msg" on the stack. Log that string (TValue at
+// L->top-1, L->top @+8; string tag 5, TString len @+20, data @+24), each distinct error 3 times, then every 100th.
+using LuaPushErr_t = __int64(__fastcall*)(__int64, const char*);
+static LuaPushErr_t LuaPushErr_Orig = nullptr;
+static void LuaErrLog(__int64 L, const char* msg)
+{
+    const char* text = msg;
+    std::string full;
+    const uint8_t* top = *reinterpret_cast<const uint8_t* const*>(L + 8);
+    if (top)
+    {
+        const uint8_t* tv = top - 16;
+        if (*reinterpret_cast<const int32_t*>(tv + 12) == 5)
+        {
+            const uint8_t* ts = *reinterpret_cast<const uint8_t* const*>(tv);
+            const uint32_t len = ts ? *reinterpret_cast<const uint32_t*>(ts + 20) : 0;
+            if (ts && len > 0 && len < 2048) { full.assign(reinterpret_cast<const char*>(ts + 24), len); text = full.c_str(); }
+        }
+    }
+    if (!text) return;
+    static std::mutex s_mu;
+    static std::unordered_map<std::string, int> s_seen;
+    int n;
+    {
+        std::lock_guard<std::mutex> lk(s_mu);
+        if (s_seen.size() > 2000) return;
+        n = ++s_seen[text];
+    }
+    if (n <= 3 || n % 100 == 0) HxLog("[HalcyonA2][LUAERR] (#%d) %s\n", n, text);
+}
+static void SafeLuaErrLog(__int64 L, const char* msg) { __try { LuaErrLog(L, msg); } __except (EXCEPTION_EXECUTE_HANDLER) {} }
+static __int64 __fastcall LuaPushErr_Hook(__int64 L, const char* msg)
+{
+    const __int64 r = LuaPushErr_Orig(L, msg);
+    SafeLuaErrLog(L, msg);
+    return r;
+}
 using RbInTick_t = char(__fastcall*)(void*, float);
 static RbInTick_t RbInTick_Orig = nullptr;
 static std::unordered_map<void*, ULONGLONG> g_rbInTickAt;   // nic -> last ENGINE call (game thread)
@@ -12249,6 +12288,44 @@ static void TrapToggleTick()
     if (s_on.size() > 4096) s_on.clear();
 }
 static void SafeTrapToggleTick() { __try { TrapToggleTick(); } __except (EXCEPTION_EXECUTE_HANDLER) {} }
+
+// [2026-11-06 GSDUMP] Which gamemode level sits in which module slot, its GameStateManager state (@0x4CC; -1 = the
+// script never switched state, 1 = WAITING_TO_START) and the slot's ball spawner ball (Disc @0x580). 90 s after boot,
+// then every 5 min. [GSTATE] only logs changes and has no level name, so a stuck gamemode (Z Drift never starting)
+// could not be told apart from an idle one.
+static void GsDumpTick()
+{
+    static ULONGLONG s_boot = 0, s_next = 0;
+    const ULONGLONG now = GetTickCount64();
+    if (!s_boot) { s_boot = now; s_next = now + 90000; }
+    if (now < s_next) return;
+    s_next = now + 300000;
+    static SDK::UClass* gsCls = nullptr; static SDK::UClass* spCls = nullptr;
+    if (!gsCls) gsCls = SDK::UObject::FindClassFast("GameStateManagerComponent");
+    if (!spCls) spCls = SDK::UObject::FindClassFast("BallSpawnerComponent");
+    if (!gsCls) return;
+    int n = 0;
+    for (SDK::UObject* o : ClassObjects(gsCls))
+    {
+        if (!o || o->IsDefaultObject() || ++n > 80) continue;
+        const uintptr_t q = reinterpret_cast<uintptr_t>(o);
+        SDK::UObject* slot = *reinterpret_cast<SDK::UObject**>(q + 0x448);
+        SDK::UObject* pkg = o;
+        for (int g = 0; g < 16 && pkg && pkg->Outer; ++g) pkg = pkg->Outer;
+        std::string ball = "-";
+        if (spCls && slot)
+            for (SDK::UObject* sp : ClassObjects(spCls))
+            {
+                if (!sp || sp->IsDefaultObject() || *reinterpret_cast<SDK::UObject**>(reinterpret_cast<uintptr_t>(sp) + 0x448) != slot) continue;
+                SDK::UObject* d = *reinterpret_cast<SDK::UObject**>(reinterpret_cast<uintptr_t>(sp) + 0x580);
+                if (ball != "-") ball += ",";
+                ball = (ball == "-" ? std::string() : ball) + (d ? d->GetName() : std::string("<none>"));
+            }
+        HxLog("[HalcyonA2][GSDUMP] slot=%s level=%s state=%d spawnerBall=%s\n", slot ? slot->GetName().c_str() : "-",
+            pkg ? pkg->GetName().c_str() : "?", *reinterpret_cast<int32_t*>(q + 0x4CC), ball.c_str());
+    }
+}
+static void SafeGsDumpTick() { __try { GsDumpTick(); } __except (EXCEPTION_EXECUTE_HANDLER) {} }
 static void SafeNvApplyTick() { __try { NvApplyTick(); } __except (EXCEPTION_EXECUTE_HANDLER) {} }
 
 // =====================================================================================================
@@ -15220,16 +15297,25 @@ static void SafeFdSync(SDK::UObject* c, SDK::UFunction* f, void* p) { __try { Fd
 // (+0x540 PhysicalOverlapCooldown, +0x544 last). Tells "never overlapped" from "overlapped, nobody listening".
 static void PhysDiscOverlapLog(SDK::UObject* ctx, SDK::UObject* other, const char* which)
 {
-    static int s_n = 0;
+    static int s_n = 0, s_z = 0;
     static SDK::UClass* discCls = nullptr;
-    if (s_n >= 500 || !ctx || !other) return;
+    if (!ctx || !other) return;
     if (!discCls) discCls = SDK::UObject::FindClassFast("DiscEntity");
     if (!discCls || !other->IsA(discCls)) return;
-    ++s_n;
+    // [2026-11-06 ZDRIFT] Z Drift balls always log (own cap); pooled grenades / snowballs / display balls flickering in an
+    // unrelated trigger used to burn the whole 500-line cap within minutes, so they no longer count or log.
+    const std::string dcls = other->Class ? other->Class->GetName() : std::string();
+    const bool isZ = dcls.find("ZDrift") != std::string::npos;
+    if (!isZ && (dcls.find("Pooled") != std::string::npos || dcls.find("Display") != std::string::npos)) return;
+    if (isZ ? s_z >= 3000 : s_n >= 500) return;
+    ++(isZ ? s_z : s_n);
     const uintptr_t p = reinterpret_cast<uintptr_t>(ctx);
     SDK::UObject* slot = *reinterpret_cast<SDK::UObject**>(p + 0x448);
-    HxLog("[HalcyonA2][PHYSDISC] %s %s owner=%s slot=%s disc=%s (%s) luau=%p onOverlapByDisc=%d twoWay=%d cooldown=%.2f last=%.2f\n",
+    SDK::UObject* pkg = ctx;   // the trigger's level package (which gamemode level this is)
+    for (int g = 0; g < 16 && pkg && pkg->Outer; ++g) pkg = pkg->Outer;
+    HxLog("[HalcyonA2][PHYSDISC] %s %s owner=%s slot=%s level=%s disc=%s (%s) luau=%p onOverlapByDisc=%d twoWay=%d cooldown=%.2f last=%.2f\n",
         which, ctx->GetName().c_str(), ctx->Outer ? ctx->Outer->GetName().c_str() : "?", slot ? slot->GetName().c_str() : "-",
+        pkg ? pkg->GetName().c_str() : "?",
         other->GetName().c_str(), other->Class ? other->Class->GetName().c_str() : "?",
         *reinterpret_cast<void**>(p + 0x430), *reinterpret_cast<int32_t*>(p + 0x470 + 8), *reinterpret_cast<int32_t*>(p + 0x4D0 + 8),
         *reinterpret_cast<float*>(p + 0x540), *reinterpret_cast<float*>(p + 0x544));
@@ -18254,6 +18340,7 @@ static void ProcessEvent_Hook(SDK::UObject* Context, SDK::UFunction* Function, v
         PROF(SafeBoostProbeTick);       // [BOOSTPROBE] -VerboseDiag: boost pickup hide/show changes   // [WHITELIST] log each arena's effective whitelist on change (1 Hz, read-only)
         PROF(SafeBoostRespawnTick);     // [BOOSTRESPAWN] reset taken arena boosts after their cooldown
         PROF(SafeTrapToggleTick);       // [TRAPTOGGLE] reset Scrap Run trap toggles stuck enabled
+        PROF(SafeGsDumpTick);           // [GSDUMP] gamemode level / state / spawner ball per slot (90 s, then 5 min)
         PROF(SafeSpecEditTick);      // [SPECEDIT] collision stand-ins for placed meshes -- no-op unless -SpecEdit
         PROF(SafeNvWorldCensus);     // [NVCENSUS] one-shot, log-only, 90s after boot
         PROF(SafeDetectTeamChanger);   // [TEAMVOL] fire the real team-changer overlap (headless never does)
@@ -19050,6 +19137,10 @@ static void PatchNetmode2Gates(uintptr_t base)
             const MH_STATUS c5 = MH_CreateHook(co, &RbCorr_Hook, reinterpret_cast<void**>(&RbCorr_Orig));
             const MH_STATUS e5 = MH_EnableHook(co);
             HxLog("[HalcyonA2][RBSTAT] correction-push counter hook create=%d enable=%d\n", (int)c5, (int)e5);
+            void* le = reinterpret_cast<void*>(base + 0x7AB29D0);   // [LUAERR] Luau pusherror(L, msg)
+            const MH_STATUS c8 = MH_CreateHook(le, &LuaPushErr_Hook, reinterpret_cast<void**>(&LuaPushErr_Orig));
+            const MH_STATUS e8 = MH_EnableHook(le);
+            HxLog("[HalcyonA2][LUAERR] Luau error hook create=%d enable=%d\n", (int)c8, (int)e8);
             void* it = reinterpret_cast<void*>(base + 0x56F7230);
             const MH_STATUS c6 = MH_CreateHook(it, &RbInTick_Hook, reinterpret_cast<void**>(&RbInTick_Orig));
             const MH_STATUS e6 = MH_EnableHook(it);
