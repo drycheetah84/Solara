@@ -4033,6 +4033,45 @@ static void SafeRbForwardInputs(SDK::UObject* nic, const uint8_t* in, int32_t n)
 // to 49 times a second. Drive it ourselves, for every seated player whose component the engine did not tick in the
 // last 0.5 s (a hook records engine calls, so it can never run twice). The game's own logic decides what to send.
 // -NoRbTimeSync turns it off.
+// [2026-11-06 LUAERR] Shipping servers write no engine log, so Luau script errors (a gamemode BeginPlay dying on a nil
+// component, "attempt to index nil with 'Listen'") were invisible. Every Luau runtime error goes through pusherror
+// (0x7AB29D0, (lua_State* L, const char* msg)): it pushes "chunk:line: msg" on the stack. Log that string (TValue at
+// L->top-1, L->top @+8; string tag 5, TString len @+20, data @+24), each distinct error 3 times, then every 100th.
+using LuaPushErr_t = __int64(__fastcall*)(__int64, const char*);
+static LuaPushErr_t LuaPushErr_Orig = nullptr;
+static void LuaErrLog(__int64 L, const char* msg)
+{
+    const char* text = msg;
+    std::string full;
+    const uint8_t* top = *reinterpret_cast<const uint8_t* const*>(L + 8);
+    if (top)
+    {
+        const uint8_t* tv = top - 16;
+        if (*reinterpret_cast<const int32_t*>(tv + 12) == 5)
+        {
+            const uint8_t* ts = *reinterpret_cast<const uint8_t* const*>(tv);
+            const uint32_t len = ts ? *reinterpret_cast<const uint32_t*>(ts + 20) : 0;
+            if (ts && len > 0 && len < 2048) { full.assign(reinterpret_cast<const char*>(ts + 24), len); text = full.c_str(); }
+        }
+    }
+    if (!text) return;
+    static std::mutex s_mu;
+    static std::unordered_map<std::string, int> s_seen;
+    int n;
+    {
+        std::lock_guard<std::mutex> lk(s_mu);
+        if (s_seen.size() > 2000) return;
+        n = ++s_seen[text];
+    }
+    if (n <= 3 || n % 100 == 0) HxLog("[HalcyonA2][LUAERR] (#%d) %s\n", n, text);
+}
+static void SafeLuaErrLog(__int64 L, const char* msg) { __try { LuaErrLog(L, msg); } __except (EXCEPTION_EXECUTE_HANDLER) {} }
+static __int64 __fastcall LuaPushErr_Hook(__int64 L, const char* msg)
+{
+    const __int64 r = LuaPushErr_Orig(L, msg);
+    SafeLuaErrLog(L, msg);
+    return r;
+}
 using RbInTick_t = char(__fastcall*)(void*, float);
 static RbInTick_t RbInTick_Orig = nullptr;
 static std::unordered_map<void*, ULONGLONG> g_rbInTickAt;   // nic -> last ENGINE call (game thread)
@@ -7477,6 +7516,23 @@ static char SafeUpdateOverlaps(void* comp)
 }
 
 // [2026-11-06 FASTDISC] discsOnly: the fast path (see SafePumpMovingDiscs) -- re-check only balls that MOVED.
+static void SweepDisc(SDK::USceneComponent* root, float x0, float y0, float z0, float x1, float y1, float z1, float d2)
+{
+    const float dist = sqrtf(d2);
+    int n = static_cast<int>(dist / 50.0f) + 1;
+    if (n > 8) n = 8;
+    SDK::FHitResult hit{};
+    for (int k = 1; k < n; ++k)
+    {
+        const float t = float(k) / float(n);
+        root->K2_SetWorldLocation(SDK::FVector{ x0 + (x1 - x0) * t, y0 + (y1 - y0) * t, z0 + (z1 - z0) * t }, false, &hit, true);
+    }
+    root->K2_SetWorldLocation(SDK::FVector{ x1, y1, z1 }, false, &hit, true);   // back where the sim put it
+}
+static void SafeSweepDisc(SDK::USceneComponent* root, float x0, float y0, float z0, float x1, float y1, float z1, float d2)
+{
+    __try { SweepDisc(root, x0, y0, z0, x1, y1, z1, d2); } __except (EXCEPTION_EXECUTE_HANDLER) {}
+}
 static void PumpBallOverlaps(bool discsOnly = false)
 {
     static SDK::UClass* primCls = nullptr;   // [PERF] cached class lookup
@@ -7582,114 +7638,63 @@ static void PumpBallOverlaps(bool discsOnly = false)
             const bool known = s_lastObj[i] == discs[i];
             const float dx = x - s_lastX[i], dy = y - s_lastY[i], dz = z - s_lastZ[i];
             s_lastObj[i] = discs[i]; s_lastX[i] = x; s_lastY[i] = y; s_lastZ[i] = z;
-            if (known && dx * dx + dy * dy + dz * dz < 1.0f) continue;   // resting: the slow pass covers it
-            SafeUpdateOverlaps(root);
+            const float d2 = dx * dx + dy * dy + dz * dz;
+            if (known && d2 < 1.0f) continue;   // resting: the slow pass covers it
+            // [2026-11-06 ZDRIFT THROW] A thrown ball is client-simulated: the server copy JUMPS between
+            // Server_SendPhysicsPropData updates, so a point check can land before and after the Z Drift start cylinder
+            // and never inside it. When it jumped > 50 uu, walk it through the gap (teleport moves; each runs the
+            // engine's own overlap update -> OnOverlapByDisc fires as for a real pass-through), then put it back.
+            if (known && d2 > 50.0f * 50.0f)
+                SafeSweepDisc(root, x - dx, y - dy, z - dz, x, y, z, d2);
+            else
+                SafeUpdateOverlaps(root);
             InterlockedIncrement(&g_fastDiscChecks);
             QueryPerformanceCounter(&q1);
             if ((double)(q1.QuadPart - q0.QuadPart) * 1000.0 / (double)qf.QuadPart > 6.0) break;   // never stall a frame
         }
         return;
     }
-    static int s_ovCursor = 0;
-    const double OV_BUDGET_MS = 4.0;
-    const int totalItems = nDisc + nPhys + nGoal;
-    if (totalItems <= 0) return;
-    if (s_ovCursor >= totalItems) s_ovCursor = 0;
-    LARGE_INTEGER _ovQpf, _ovT0, _ovT1;
-    QueryPerformanceFrequency(&_ovQpf);
-    QueryPerformanceCounter(&_ovT0);
-    for (int done = 0; done < totalItems; ++done)
+    // [2026-11-06 OVERLAP DIET] The old pass re-checked every static trigger collider (~576 PhysicalComponent / goal
+    // colliders) round-robin with a 4 ms budget at 10 Hz (~37 ms/s on prod) and still covered them only every 1-3 s.
+    // An overlap fires for BOTH components whichever side is checked, and the triggers never move: checking the moving
+    // balls (fast path above) is enough, so the static colliders only need GenerateOverlapEvents switched on, once per
+    // list rebuild. Resting balls get a slow re-check (1 Hz, 2 ms cap) so a ball spawned inside a trigger still trips
+    // it (Z Drift start). Discs are never skipped by the fast path for longer than a second.
+    static long s_armedEpoch = -1;
+    static ULONGLONG s_lastArm = 0;
+    if (lastRebuild != s_lastArm)
     {
-        if (done)
+        s_lastArm = lastRebuild;
+        for (int i = 0; i < nPhys; ++i)
         {
-            QueryPerformanceCounter(&_ovT1);
-            if (((double)(_ovT1.QuadPart - _ovT0.QuadPart) * 1000.0 / (double)_ovQpf.QuadPart) >= OV_BUDGET_MS)
-                break;
-        }
-        const int idx = s_ovCursor;
-        s_ovCursor = (idx + 1 >= totalItems) ? 0 : (idx + 1);
-        // [MI 2026-09-23] The time budget is checked BETWEEN items, so one expensive item still ran whole:
-        // [PROF] SafePumpBallOverlaps peaked at 69 ms in a single call on prod (big colliders -- level
-        // geometry, editor-placed walls). Time every item; one that costs >8 ms sits out for 30 s, so it can
-        // still be re-checked but can no longer stall back-to-back frames. Discs are never benched.
-        SDK::UObject* const itemObj = idx < nDisc ? discs[idx] : idx < nDisc + nPhys ? phys[idx - nDisc] : goals[idx - nDisc - nPhys];
-        // [2026-09-23] Benching reverted: a benched collider (a ball's, a goal's) missed its re-check, and
-        // driftball felt worse. Every item is re-checked as before; slow items are only reported.
-        static std::unordered_map<SDK::UObject*, ULONGLONG> s_benched;
-        LARGE_INTEGER _itT0; QueryPerformanceCounter(&_itT0);
-        struct ItemTimer
-        {
-            LARGE_INTEGER t0, qpf; SDK::UObject* obj; bool benchable; ULONGLONG now;
-            std::unordered_map<SDK::UObject*, ULONGLONG>* benched;
-            ~ItemTimer()
-            {
-                LARGE_INTEGER t1; QueryPerformanceCounter(&t1);
-                const double ms = (double)(t1.QuadPart - t0.QuadPart) * 1000.0 / (double)qpf.QuadPart;
-                // [2026-11-03] Re-enabled for EXTREME items only (>100 ms): prod showed a single UpdateOverlaps at
-                // 727 ms (a whole-frame freeze, ping spike). Ball / goal colliders cost a few ms and are never benched
-                // at this threshold, so driftball keeps its every-item re-check (the reason benching was reverted).
-                if (ms > 100.0 && benchable && benched->size() < 256)
-                {
-                    // Repeat offenders sit out longer: 30 s, 2 min, then 10 min (prod showed the same heavy
-                    // colliders coming back every 30 s with a fresh 40-50 ms stall each time).
-                    static std::unordered_map<SDK::UObject*, int> s_strikes;
-                    int& k = s_strikes[obj];
-                    if (k < 3) ++k;
-                    (*benched)[obj] = now + (k == 1 ? 30000ull : k == 2 ? 120000ull : 600000ull);
-                    static int s_logged = 0;
-                    if (s_logged < 40) { ++s_logged; HxLog("[HalcyonA2][OVERLAPS] %.1f ms for one item (%s) -- benched (strike %d)\n", ms, obj ? obj->GetName().c_str() : "?", k); }
-                }
-            }
-        } itemTimer{ _itT0, _ovQpf, itemObj, idx >= nDisc, now, &s_benched };
-        if (idx >= nDisc)   // a benched (extreme) collider sits out until its time is up
-        {
-            auto b = s_benched.find(itemObj);
-            if (b != s_benched.end())
-            {
-                if (now < b->second) continue;
-                s_benched.erase(b);
-            }
-        }
-        if (idx < nDisc)
-        {
-            // Disc side: the ball's root primitive AND its SphereComponent@0x4D0 (the real
-            // collision body; the root may be a non-colliding scene component).
-            auto* o = discs[idx];
-            if (!ObjAliveAt(o, discSlot[idx])) continue;   // GC'd since the rebuild -> do NOT touch it
-            auto* a = static_cast<SDK::AActor*>(o);
-            auto* root = a->RootComponent;
-            if (root && root->IsA(primCls))
-                SafeUpdateOverlaps(root);
-            void* sphere = nullptr;   // [50451] ADiscEntity::SphereComponent (22284 @0x4D0) no longer exists
-            if (sphere && static_cast<SDK::UObject*>(sphere)->IsA(primCls))
-            {
-                static_cast<SDK::UPrimitiveComponent*>(sphere)->SetGenerateOverlapEvents(true);
-                SafeUpdateOverlaps(sphere);
-            }
-        }
-        else if (idx < nDisc + nPhys)
-        {
-            // Trigger side: force each PhysicalComponent's Collider@0x4F0 to generate events and
-            // re-check, so both sides of the overlap generate events.
-            if (!ObjAliveAt(phys[idx - nDisc], physSlot[idx - nDisc])) continue;   // freed since the rebuild
-            void* collider = *reinterpret_cast<void**>(reinterpret_cast<uintptr_t>(phys[idx - nDisc]) + 0x548);  // [50451 offs]
+            if (!ObjAliveAt(phys[i], physSlot[i])) continue;
+            void* collider = *reinterpret_cast<void**>(reinterpret_cast<uintptr_t>(phys[i]) + 0x548);  // [50451 offs]
             if (collider && static_cast<SDK::UObject*>(collider)->IsA(primCls))
-            {
                 static_cast<SDK::UPrimitiveComponent*>(collider)->SetGenerateOverlapEvents(true);
-                SafeUpdateOverlaps(collider);
-            }
         }
-        else
+        for (int i = 0; i < nGoal; ++i)
         {
-            // Goal side: UGoalComponent's trigger is a UStaticMeshComponent@0x5A0.
-            if (!ObjAliveAt(goals[idx - nDisc - nPhys], goalSlot[idx - nDisc - nPhys])) continue;   // freed since the rebuild
-            void* collider = *reinterpret_cast<void**>(reinterpret_cast<uintptr_t>(goals[idx - nDisc - nPhys]) + 0x5A0);
+            if (!ObjAliveAt(goals[i], goalSlot[i])) continue;
+            void* collider = *reinterpret_cast<void**>(reinterpret_cast<uintptr_t>(goals[i]) + 0x5A0);
             if (collider && static_cast<SDK::UObject*>(collider)->IsA(primCls))
-            {
                 static_cast<SDK::UPrimitiveComponent*>(collider)->SetGenerateOverlapEvents(true);
-                SafeUpdateOverlaps(collider);
-            }
         }
+    }
+    (void)s_armedEpoch;
+    static ULONGLONG s_lastRest = 0;
+    if (now - s_lastRest < 1000 || nDisc <= 0) return;
+    s_lastRest = now;
+    static int s_restCursor = 0;
+    LARGE_INTEGER rq0, rq1, rqf; QueryPerformanceFrequency(&rqf); QueryPerformanceCounter(&rq0);
+    for (int done = 0; done < nDisc; ++done)
+    {
+        if (s_restCursor >= nDisc) s_restCursor = 0;
+        const int i = s_restCursor++;
+        if (!ObjAliveAt(discs[i], discSlot[i])) continue;
+        auto* root = static_cast<SDK::AActor*>(discs[i])->RootComponent;
+        if (root && root->IsA(primCls)) SafeUpdateOverlaps(root);
+        QueryPerformanceCounter(&rq1);
+        if ((double)(rq1.QuadPart - rq0.QuadPart) * 1000.0 / (double)rqf.QuadPart > 2.0) break;
     }
 }
 
@@ -12390,6 +12395,44 @@ static void TrapToggleTick()
     if (s_on.size() > 4096) s_on.clear();
 }
 static void SafeTrapToggleTick() { __try { TrapToggleTick(); } __except (EXCEPTION_EXECUTE_HANDLER) {} }
+
+// [2026-11-06 GSDUMP] Which gamemode level sits in which module slot, its GameStateManager state (@0x4CC; -1 = the
+// script never switched state, 1 = WAITING_TO_START) and the slot's ball spawner ball (Disc @0x580). 90 s after boot,
+// then every 5 min. [GSTATE] only logs changes and has no level name, so a stuck gamemode (Z Drift never starting)
+// could not be told apart from an idle one.
+static void GsDumpTick()
+{
+    static ULONGLONG s_boot = 0, s_next = 0;
+    const ULONGLONG now = GetTickCount64();
+    if (!s_boot) { s_boot = now; s_next = now + 90000; }
+    if (now < s_next) return;
+    s_next = now + 300000;
+    static SDK::UClass* gsCls = nullptr; static SDK::UClass* spCls = nullptr;
+    if (!gsCls) gsCls = SDK::UObject::FindClassFast("GameStateManagerComponent");
+    if (!spCls) spCls = SDK::UObject::FindClassFast("BallSpawnerComponent");
+    if (!gsCls) return;
+    int n = 0;
+    for (SDK::UObject* o : ClassObjects(gsCls))
+    {
+        if (!o || o->IsDefaultObject() || ++n > 80) continue;
+        const uintptr_t q = reinterpret_cast<uintptr_t>(o);
+        SDK::UObject* slot = *reinterpret_cast<SDK::UObject**>(q + 0x448);
+        SDK::UObject* pkg = o;
+        for (int g = 0; g < 16 && pkg && pkg->Outer; ++g) pkg = pkg->Outer;
+        std::string ball = "-";
+        if (spCls && slot)
+            for (SDK::UObject* sp : ClassObjects(spCls))
+            {
+                if (!sp || sp->IsDefaultObject() || *reinterpret_cast<SDK::UObject**>(reinterpret_cast<uintptr_t>(sp) + 0x448) != slot) continue;
+                SDK::UObject* d = *reinterpret_cast<SDK::UObject**>(reinterpret_cast<uintptr_t>(sp) + 0x580);
+                if (ball != "-") ball += ",";
+                ball = (ball == "-" ? std::string() : ball) + (d ? d->GetName() : std::string("<none>"));
+            }
+        HxLog("[HalcyonA2][GSDUMP] slot=%s level=%s state=%d spawnerBall=%s\n", slot ? slot->GetName().c_str() : "-",
+            pkg ? pkg->GetName().c_str() : "?", *reinterpret_cast<int32_t*>(q + 0x4CC), ball.c_str());
+    }
+}
+static void SafeGsDumpTick() { __try { GsDumpTick(); } __except (EXCEPTION_EXECUTE_HANDLER) {} }
 static void SafeNvApplyTick() { __try { NvApplyTick(); } __except (EXCEPTION_EXECUTE_HANDLER) {} }
 
 // =====================================================================================================
@@ -15361,16 +15404,25 @@ static void SafeFdSync(SDK::UObject* c, SDK::UFunction* f, void* p) { __try { Fd
 // (+0x540 PhysicalOverlapCooldown, +0x544 last). Tells "never overlapped" from "overlapped, nobody listening".
 static void PhysDiscOverlapLog(SDK::UObject* ctx, SDK::UObject* other, const char* which)
 {
-    static int s_n = 0;
+    static int s_n = 0, s_z = 0;
     static SDK::UClass* discCls = nullptr;
-    if (s_n >= 500 || !ctx || !other) return;
+    if (!ctx || !other) return;
     if (!discCls) discCls = SDK::UObject::FindClassFast("DiscEntity");
     if (!discCls || !other->IsA(discCls)) return;
-    ++s_n;
+    // [2026-11-06 ZDRIFT] Z Drift balls always log (own cap); pooled grenades / snowballs / display balls flickering in an
+    // unrelated trigger used to burn the whole 500-line cap within minutes, so they no longer count or log.
+    const std::string dcls = other->Class ? other->Class->GetName() : std::string();
+    const bool isZ = dcls.find("ZDrift") != std::string::npos;
+    if (!isZ && (dcls.find("Pooled") != std::string::npos || dcls.find("Display") != std::string::npos)) return;
+    if (isZ ? s_z >= 3000 : s_n >= 500) return;
+    ++(isZ ? s_z : s_n);
     const uintptr_t p = reinterpret_cast<uintptr_t>(ctx);
     SDK::UObject* slot = *reinterpret_cast<SDK::UObject**>(p + 0x448);
-    HxLog("[HalcyonA2][PHYSDISC] %s %s owner=%s slot=%s disc=%s (%s) luau=%p onOverlapByDisc=%d twoWay=%d cooldown=%.2f last=%.2f\n",
+    SDK::UObject* pkg = ctx;   // the trigger's level package (which gamemode level this is)
+    for (int g = 0; g < 16 && pkg && pkg->Outer; ++g) pkg = pkg->Outer;
+    HxLog("[HalcyonA2][PHYSDISC] %s %s owner=%s slot=%s level=%s disc=%s (%s) luau=%p onOverlapByDisc=%d twoWay=%d cooldown=%.2f last=%.2f\n",
         which, ctx->GetName().c_str(), ctx->Outer ? ctx->Outer->GetName().c_str() : "?", slot ? slot->GetName().c_str() : "-",
+        pkg ? pkg->GetName().c_str() : "?",
         other->GetName().c_str(), other->Class ? other->Class->GetName().c_str() : "?",
         *reinterpret_cast<void**>(p + 0x430), *reinterpret_cast<int32_t*>(p + 0x470 + 8), *reinterpret_cast<int32_t*>(p + 0x4D0 + 8),
         *reinterpret_cast<float*>(p + 0x540), *reinterpret_cast<float*>(p + 0x544));
@@ -18362,9 +18414,9 @@ static void ProcessEvent_Hook(SDK::UObject* Context, SDK::UFunction* Function, v
                 PROF(SafeBounceSynthTick);
             }
         }
-        {   // [2026-11-06 FASTDISC] moving balls re-checked ~45 Hz so thin triggers (midfield, goals) fire on time
+        {   // [2026-11-06 FASTDISC] moving balls re-checked ~30 Hz so thin triggers (midfield, goals) fire on time
             static ULONGLONG s_lastFast = 0;
-            if (g_ballOverlapPump && !g_fastDiscOff && !g_minimal && GetTickCount64() - s_lastFast >= 22)
+            if (g_ballOverlapPump && !g_fastDiscOff && !g_minimal && GetTickCount64() - s_lastFast >= 33)
             {
                 s_lastFast = GetTickCount64();
                 PROF(SafePumpMovingDiscs);
@@ -18395,6 +18447,7 @@ static void ProcessEvent_Hook(SDK::UObject* Context, SDK::UFunction* Function, v
         PROF(SafeBoostProbeTick);       // [BOOSTPROBE] -VerboseDiag: boost pickup hide/show changes   // [WHITELIST] log each arena's effective whitelist on change (1 Hz, read-only)
         PROF(SafeBoostRespawnTick);     // [BOOSTRESPAWN] reset taken arena boosts after their cooldown
         PROF(SafeTrapToggleTick);       // [TRAPTOGGLE] reset Scrap Run trap toggles stuck enabled
+        PROF(SafeGsDumpTick);           // [GSDUMP] gamemode level / state / spawner ball per slot (90 s, then 5 min)
         PROF(SafeSpecEditTick);      // [SPECEDIT] collision stand-ins for placed meshes -- no-op unless -SpecEdit
         PROF(SafeNvWorldCensus);     // [NVCENSUS] one-shot, log-only, 90s after boot
         PROF(SafeDetectTeamChanger);   // [TEAMVOL] fire the real team-changer overlap (headless never does)
@@ -19197,6 +19250,10 @@ static void PatchNetmode2Gates(uintptr_t base)
             const MH_STATUS c5 = MH_CreateHook(co, &RbCorr_Hook, reinterpret_cast<void**>(&RbCorr_Orig));
             const MH_STATUS e5 = MH_EnableHook(co);
             HxLog("[HalcyonA2][RBSTAT] correction-push counter hook create=%d enable=%d\n", (int)c5, (int)e5);
+            void* le = reinterpret_cast<void*>(base + 0x7AB29D0);   // [LUAERR] Luau pusherror(L, msg)
+            const MH_STATUS c8 = MH_CreateHook(le, &LuaPushErr_Hook, reinterpret_cast<void**>(&LuaPushErr_Orig));
+            const MH_STATUS e8 = MH_EnableHook(le);
+            HxLog("[HalcyonA2][LUAERR] Luau error hook create=%d enable=%d\n", (int)c8, (int)e8);
             void* it = reinterpret_cast<void*>(base + 0x56F7230);
             const MH_STATUS c6 = MH_CreateHook(it, &RbInTick_Hook, reinterpret_cast<void**>(&RbInTick_Orig));
             const MH_STATUS e6 = MH_EnableHook(it);
