@@ -7644,6 +7644,17 @@ static void PumpBallOverlaps(bool discsOnly = false)
         for (int i = 0; i < nDisc; ++i)
         {
             if (!ObjAliveAt(discs[i], discSlot[i])) continue;
+            {   // [2026-11-06] pooled gadgets (grenades, snowballs, golf balls) keep exactly their pre-tonight handling
+                static std::unordered_map<SDK::UObject*, bool> s_pooled;
+                auto pit = s_pooled.find(discs[i]);
+                if (pit == s_pooled.end())
+                {
+                    if (s_pooled.size() > 8192) s_pooled.clear();
+                    const std::string cn = discs[i]->Class ? discs[i]->Class->GetName() : std::string();
+                    pit = s_pooled.emplace(discs[i], cn.find("Pooled") != std::string::npos || cn.find("Golf") != std::string::npos).first;
+                }
+                if (pit->second) continue;
+            }
             auto* root = static_cast<SDK::AActor*>(discs[i])->RootComponent;
             if (!root || !root->IsA(primCls)) continue;
             const SDK::FVector p = root->K2_GetComponentLocation();
@@ -7668,6 +7679,20 @@ static void PumpBallOverlaps(bool discsOnly = false)
                 s_zdLookup = GetTickCount64();
                 zdriftBallCls = SDK::UObject::FindClassFast("BP_ZDriftGamemodeBall_C");
             }
+            // [2026-11-06] A Z Drift ball's root may not generate overlap events at all (prod: zero Z Drift overlaps with
+            // the ball listed, moving and checked). Switch them on for Z Drift balls only, once, and say what it was.
+            if (zdriftBallCls && discs[i]->IsA(zdriftBallCls))
+            {
+                static std::unordered_set<SDK::UObject*> s_armedZ;
+                if (s_armedZ.insert(discs[i]).second && s_armedZ.size() < 256)
+                {
+                    auto* prim = static_cast<SDK::UPrimitiveComponent*>(root);
+                    const bool was = prim->GetGenerateOverlapEvents();
+                    if (!was) prim->SetGenerateOverlapEvents(true);
+                    HxLog("[HalcyonA2][ZDRIFT] %s root %s GenerateOverlapEvents was %d -> on\n", discs[i]->GetName().c_str(),
+                        root->Class ? root->Class->GetName().c_str() : "?", (int)was);
+                }
+            }
             if (known && d2 > 50.0f * 50.0f && zdriftBallCls && discs[i]->IsA(zdriftBallCls))
                 SafeSweepDisc(root, x - dx, y - dy, z - dz, x, y, z, d2);
             else
@@ -7684,27 +7709,43 @@ static void PumpBallOverlaps(bool discsOnly = false)
     // balls (fast path above) is enough, so the static colliders only need GenerateOverlapEvents switched on, once per
     // list rebuild. Resting balls get a slow re-check (1 Hz, 2 ms cap) so a ball spawned inside a trigger still trips
     // it (Z Drift start). Discs are never skipped by the fast path for longer than a second.
-    static long s_armedEpoch = -1;
-    static ULONGLONG s_lastArm = 0;
-    if (lastRebuild != s_lastArm)
+    // [2026-11-06 REVERTED] Dropping the trigger-side re-check froze grenades on prod and never let Z Drift balls trip
+    // anything: a ball whose own root has GenerateOverlapEvents off produces NO event from a ball-side UpdateOverlaps --
+    // only the trigger-side re-check (the trigger generates events) ever fired those overlaps. Restored exactly as
+    // before tonight: triggers + goals round-robin, 4 ms budget per call at 10 Hz, extreme (>100 ms) items benched.
     {
-        s_lastArm = lastRebuild;
-        for (int i = 0; i < nPhys; ++i)
+        static int s_trigCursor = 0;
+        static std::unordered_map<SDK::UObject*, ULONGLONG> s_benched;
+        const int nTrig = nPhys + nGoal;
+        if (nTrig > 0)
         {
-            if (!ObjAliveAt(phys[i], physSlot[i])) continue;
-            void* collider = *reinterpret_cast<void**>(reinterpret_cast<uintptr_t>(phys[i]) + 0x548);  // [50451 offs]
-            if (collider && static_cast<SDK::UObject*>(collider)->IsA(primCls))
+            if (s_trigCursor >= nTrig) s_trigCursor = 0;
+            LARGE_INTEGER tq0, tq1, tqf; QueryPerformanceFrequency(&tqf); QueryPerformanceCounter(&tq0);
+            for (int done = 0; done < nTrig; ++done)
+            {
+                if (done)
+                {
+                    QueryPerformanceCounter(&tq1);
+                    if ((double)(tq1.QuadPart - tq0.QuadPart) * 1000.0 / (double)tqf.QuadPart >= 4.0) break;
+                }
+                const int idx = s_trigCursor;
+                s_trigCursor = (idx + 1 >= nTrig) ? 0 : idx + 1;
+                SDK::UObject* owner = idx < nPhys ? phys[idx] : goals[idx - nPhys];
+                const int32_t slot = idx < nPhys ? physSlot[idx] : goalSlot[idx - nPhys];
+                if (!ObjAliveAt(owner, slot)) continue;
+                auto b = s_benched.find(owner);
+                if (b != s_benched.end()) { if (now < b->second) continue; s_benched.erase(b); }
+                void* collider = *reinterpret_cast<void**>(reinterpret_cast<uintptr_t>(owner) + (idx < nPhys ? 0x548 : 0x5A0));  // [50451 offs]
+                if (!collider || !static_cast<SDK::UObject*>(collider)->IsA(primCls)) continue;
+                LARGE_INTEGER it0, it1; QueryPerformanceCounter(&it0);
                 static_cast<SDK::UPrimitiveComponent*>(collider)->SetGenerateOverlapEvents(true);
-        }
-        for (int i = 0; i < nGoal; ++i)
-        {
-            if (!ObjAliveAt(goals[i], goalSlot[i])) continue;
-            void* collider = *reinterpret_cast<void**>(reinterpret_cast<uintptr_t>(goals[i]) + 0x5A0);
-            if (collider && static_cast<SDK::UObject*>(collider)->IsA(primCls))
-                static_cast<SDK::UPrimitiveComponent*>(collider)->SetGenerateOverlapEvents(true);
+                SafeUpdateOverlaps(collider);
+                QueryPerformanceCounter(&it1);
+                if ((double)(it1.QuadPart - it0.QuadPart) * 1000.0 / (double)tqf.QuadPart > 100.0 && s_benched.size() < 256)
+                    s_benched[owner] = now + 30000;
+            }
         }
     }
-    (void)s_armedEpoch;
     static ULONGLONG s_lastRest = 0;
     if (now - s_lastRest < 1000 || nDisc <= 0) return;
     s_lastRest = now;
