@@ -7955,6 +7955,100 @@ static bool SafeCallReflectedOverlapBegin(SDK::UObject* trig, SDK::UObject* pawn
     __except (EXCEPTION_EXECUTE_HANDLER) { return false; }
 }
 
+// [2026-11-06 ZDRIFT START] Z Drift never started on prod: the ball held / thrown by a player is client-driven, and its
+// server copy never produced a single overlap with the start cylinder (Z Drift balls listed, moving, overlap events on,
+// arenas WAITING_TO_START, no Luau errors) -- locally, a ball placed server-side DID start it. So detect it ourselves:
+// every PhysicalComponent in a Z Drift module slot whose owner is a Cylinder (the CenterDiscCylinder) with collision
+// enabled; every BP_ZDriftGamemodeBall_C; test the ball's path since the last check against the trigger's bounds box
+// and on entry fire the trigger's own reflected OverlapBegin -> OnOverlapByDisc -> the script's OnBallHitsStartTrigger.
+// The script itself still checks the ball is its spawner's and the state is WAITING_TO_START. -NoZDriftStart disables.
+static void ZDriftStartTick()
+{
+    static const bool off = wcsstr(GetCommandLineW(), L"-NoZDriftStart") != nullptr;
+    if (off) return;
+    static ULONGLONG s_last = 0;
+    const ULONGLONG now = GetTickCount64();
+    if (now - s_last < 33) return;
+    s_last = now;
+    static SDK::UClass* ballCls = nullptr; static SDK::UClass* physCls = nullptr; static SDK::UClass* primCls = nullptr;
+    static ULONGLONG s_ballLookup = 0;
+    if (!ballCls && now - s_ballLookup > 5000) { s_ballLookup = now; ballCls = SDK::UObject::FindClassFast("BP_ZDriftGamemodeBall_C"); }
+    if (!physCls) physCls = SDK::UObject::FindClassFast("PhysicalComponent");
+    if (!primCls) primCls = SDK::UObject::FindClassFast("PrimitiveComponent");
+    if (!ballCls || !physCls || !primCls) return;
+    struct Trig { SDK::UObject* comp; SDK::UPrimitiveComponent* collider; SDK::FVector o, e; };
+    static std::vector<Trig> s_trigs;
+    static ULONGLONG s_rebuild = 0;
+    if (now - s_rebuild > 3000)
+    {
+        s_rebuild = now;
+        s_trigs.clear();
+        static std::unordered_set<SDK::UObject*> s_logged;
+        for (SDK::UObject* c : ClassObjects(physCls))
+        {
+            if (!c || c->IsDefaultObject() || !c->Outer) continue;
+            SDK::UObject* slot = *reinterpret_cast<SDK::UObject**>(reinterpret_cast<uintptr_t>(c) + 0x448);   // ULuauBehavior::ModuleSlot
+            if (!slot || !slot->Class || slot->Class->GetName().find("ZDrift") == std::string::npos) continue;
+            auto* col = *reinterpret_cast<SDK::UPrimitiveComponent**>(reinterpret_cast<uintptr_t>(c) + 0x548);   // Collider [50451 offs]
+            const std::string owner = c->Outer->GetName();
+            if (s_logged.insert(c).second && s_logged.size() < 200)
+                HxLog("[HalcyonA2][ZDRIFTSTART] Z Drift trigger %s owner=%s collider=%s%s\n", c->GetName().c_str(), owner.c_str(),
+                    col ? col->GetName().c_str() : "<null>", owner.find("Cylinder") != std::string::npos ? "  <- start cylinder" : "");
+            if (!col || !col->IsA(primCls) || owner.find("Cylinder") == std::string::npos) continue;
+            Trig t{ c, col, {}, {} };
+            float r = 0.f;
+            SDK::UKismetSystemLibrary::GetComponentBounds(col, &t.o, &t.e, &r);
+            if (t.e.X <= 0 || t.e.Y <= 0 || t.e.Z <= 0) continue;
+            s_trigs.push_back(t);
+        }
+    }
+    if (s_trigs.empty()) return;
+    struct BallSt { SDK::FVector last; bool known = false; std::unordered_set<SDK::UObject*> inside; };
+    static std::unordered_map<SDK::UObject*, BallSt> s_balls;
+    if (s_balls.size() > 512) s_balls.clear();
+    static int s_fired = 0;
+    for (SDK::UObject* b : ClassObjects(ballCls))
+    {
+        if (!b || b->IsDefaultObject()) continue;
+        auto* root = static_cast<SDK::AActor*>(b)->RootComponent;
+        if (!root) continue;
+        const SDK::FVector p = root->K2_GetComponentLocation();
+        BallSt& st = s_balls[b];
+        const SDK::FVector a = st.known ? st.last : p;
+        st.last = p; st.known = true;
+        const double dx = p.X - a.X, dy = p.Y - a.Y, dz = p.Z - a.Z;
+        const double len = sqrt(dx * dx + dy * dy + dz * dz);
+        const int steps = len > 25.0 ? static_cast<int>(len / 25.0) + 1 : 1;
+        for (Trig& t : s_trigs)
+        {
+            bool in = false;
+            for (int k = 1; k <= (steps > 64 ? 64 : steps) && !in; ++k)
+            {
+                const double f = double(k) / double(steps > 64 ? 64 : steps);
+                const double x = a.X + dx * f, y = a.Y + dy * f, z = a.Z + dz * f;
+                in = fabs(x - t.o.X) <= t.e.X && fabs(y - t.o.Y) <= t.e.Y && fabs(z - t.o.Z) <= t.e.Z;
+            }
+            const bool was = st.inside.count(t.comp) != 0;
+            if (in && !was)
+            {
+                st.inside.insert(t.comp);
+                const SDK::ECollisionEnabled ce = t.collider->GetCollisionEnabled();
+                const bool enabled = ce != SDK::ECollisionEnabled::NoCollision;
+                if (s_fired < 300)
+                {
+                    ++s_fired;
+                    HxLog("[HalcyonA2][ZDRIFTSTART] %s entered %s (%s) collision=%d -> %s\n", b->GetName().c_str(), t.comp->GetName().c_str(),
+                        t.comp->Outer ? t.comp->Outer->GetName().c_str() : "?", (int)ce, enabled ? "OverlapBegin fired" : "cylinder disabled, ignored");
+                }
+                if (enabled) SafeCallReflectedOverlapBegin(t.comp, b);
+            }
+            else if (!in && was)
+                st.inside.erase(t.comp);
+        }
+    }
+}
+static void SafeZDriftStartTick() { __try { ZDriftStartTick(); } __except (EXCEPTION_EXECUTE_HANDLER) {} }
+
 static void DetectRunnerAtFinish()
 {
     // [PERF] Was called on every ProcessEvent dispatch pass (~150/s) and cost 42-92ms/s even on the
@@ -18592,6 +18686,7 @@ static void ProcessEvent_Hook(SDK::UObject* Context, SDK::UFunction* Function, v
         PROF(SafeBoostProbeTick);       // [BOOSTPROBE] -VerboseDiag: boost pickup hide/show changes   // [WHITELIST] log each arena's effective whitelist on change (1 Hz, read-only)
         PROF(SafeBoostRespawnTick);     // [BOOSTRESPAWN] reset taken arena boosts after their cooldown
         PROF(SafeTrapToggleTick);       // [TRAPTOGGLE] reset Scrap Run trap toggles stuck enabled
+        PROF(SafeZDriftStartTick);      // [ZDRIFT START] client-driven Z Drift ball entering its start cylinder (~30 Hz)
         PROF(SafeGsDumpTick);           // [GSDUMP] gamemode level / state / spawner ball per slot (90 s, then 5 min)
         PROF(SafeSpecEditTick);      // [SPECEDIT] collision stand-ins for placed meshes -- no-op unless -SpecEdit
         PROF(SafeNvWorldCensus);     // [NVCENSUS] one-shot, log-only, 90s after boot
