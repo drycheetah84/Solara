@@ -7547,11 +7547,11 @@ static void PumpBallOverlaps(bool discsOnly = false)
     // remote players teleported/snapped. DetectGoals hit + fixed the exact same thing; same pattern here.
     // Iterating the small cached lists (~70 discs + ~220 phys + ~32 goals) instead of 120k objects is a
     // ~300x cut. Stale entries (GC between rebuilds) are caught by the SafePumpBallOverlaps SEH wrapper.
-    static SDK::UObject* discs[128]; static int nDisc = 0;
-    static SDK::UObject* phys[512];  static int nPhys = 0;
-    static SDK::UObject* goals[64];  static int nGoal = 0;
+    static SDK::UObject* discs[1024]; static int nDisc = 0;   // [2026-11-06] was 128: pooled golf/jakeball/grenade/snowball discs alone filled it, so Z Drift balls were never checked
+    static SDK::UObject* phys[2048]; static int nPhys = 0;
+    static SDK::UObject* goals[256]; static int nGoal = 0;
     // GObjects slot of each cached entry, so we can prove it is still alive before touching it.
-    static int32_t discSlot[128], physSlot[512], goalSlot[64];
+    static int32_t discSlot[1024], physSlot[2048], goalSlot[256];
     static ULONGLONG lastRebuild = 0;
     const ULONGLONG now = GetTickCount64();
     // Same per-tick full-scan trap as the other caches: an empty result must not mean
@@ -7587,22 +7587,35 @@ static void PumpBallOverlaps(bool discsOnly = false)
         if (discCls)
             for (const ObjIdxEntry& e : ClassObjectEntries(discCls))
             {
-                if (nDisc >= 128) break; discSlot[nDisc] = e.idx; discs[nDisc++] = e.obj;
+                if (nDisc >= 1024) break; discSlot[nDisc] = e.idx; discs[nDisc++] = e.obj;
             }
         if (physCls)
             for (const ObjIdxEntry& e : ClassObjectEntries(physCls))
             {
-                if (nPhys >= 512) break;
+                if (nPhys >= 2048) break;
                 if (discCls && e.obj->IsA(discCls)) continue;
                 physSlot[nPhys] = e.idx; phys[nPhys++] = e.obj;
             }
         if (goalCls)
             for (const ObjIdxEntry& e : ClassObjectEntries(goalCls))
             {
-                if (nGoal >= 64) break;
+                if (nGoal >= 256) break;
                 if ((discCls && e.obj->IsA(discCls)) || (physCls && e.obj->IsA(physCls))) continue;
                 goalSlot[nGoal] = e.idx; goals[nGoal++] = e.obj;
             }
+        {   // [2026-11-06] list sizes vs totals (the 128-ball cap hid Z Drift balls); logged when they change
+            static int s_pd = -1, s_pp = -1, s_pg = -1;
+            int totalDiscs = 0, zd = 0;
+            if (discCls) totalDiscs = static_cast<int>(ClassObjectEntries(discCls).size());
+            for (int i = 0; i < nDisc; ++i)
+                if (discs[i] && discs[i]->Class && discs[i]->Class->GetName().find("ZDrift") != std::string::npos) ++zd;
+            if (nDisc != s_pd || nPhys != s_pp || nGoal != s_pg)
+            {
+                s_pd = nDisc; s_pp = nPhys; s_pg = nGoal;
+                HxLog("[HalcyonA2][OVERLAPS] lists: balls %d listed / %d exist (Z Drift balls listed: %d), triggers %d, goals %d\n",
+                    nDisc, totalDiscs, zd, nPhys, nGoal);
+            }
+        }
     }
 
     // [PERF 2026-09-09] AMORTIZED. This used to run every list in full on ONE call: up to
@@ -7623,8 +7636,8 @@ static void PumpBallOverlaps(bool discsOnly = false)
     // before its turn never tripped it. Balls are the moving side: re-check every ball that moved since its last check,
     // ~45 Hz (SafePumpMovingDiscs). One ball-side UpdateOverlaps reaches every trigger it touches (the slow pass below
     // keeps the triggers' GenerateOverlapEvents on). -NoFastDiscOverlaps turns it off.
-    static float s_lastX[128], s_lastY[128], s_lastZ[128];
-    static SDK::UObject* s_lastObj[128] = {};
+    static float s_lastX[1024], s_lastY[1024], s_lastZ[1024];
+    static SDK::UObject* s_lastObj[1024] = {};
     if (discsOnly)
     {
         LARGE_INTEGER q0, q1, qf; QueryPerformanceFrequency(&qf); QueryPerformanceCounter(&q0);
