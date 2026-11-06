@@ -11261,6 +11261,113 @@ static void PlayerCountReportTick()
 }
 static void SafePlayerCountReportTick() { __try { PlayerCountReportTick(); } __except (EXCEPTION_EXECUTE_HANDLER) {} }
 
+// [MATCHRESULT 2026-11-05] Report every game that finishes in a module slot (Tackleball arenas, Driftplex...) to the
+// backend: POST /v1/deployments/{id}/match_result {slot_id, started_ms_ago, duration_ms, teams:[{team,score,rounds}],
+// players:[{name,team}]}. The dashboard serves them at GET /api/stations/{station}/matches (match_results.go), which is
+// how a ranked bot learns a game is over and who won -- no spectator client needed.
+//   AModuleSlot: ModuleState @0x360 (UModuleState: GetIsGameRunning / GetScore(team) / GetRoundsWon(team)),
+//                SlotID FString @0x3F0, TicketManager @0x488.
+//   ATicketManager: VerifiedTicketHolders TArray<TScriptInterface<ITicketHolder>> @0x3A0 (16-byte entries, object first).
+//   A holder is a pawn: APawn::PlayerState -> AAxPlayerState TeamIndex @0x3D0 [50451], GetPlayerName().
+// Players are collected WHILE the game runs (they are let out of the ticket manager as it ends) and keep their last team.
+static bool SeAlive(SDK::UObject* o);   // specedit.h
+struct MrSlot
+{
+    bool        running = false;
+    ULONGLONG   startedAt = 0;
+    std::string slotId;
+    std::map<std::string, int> players;   // name -> last team seen
+};
+static std::unordered_map<SDK::UObject*, MrSlot> g_mrSlots;
+static const int kMrMinGameMs = 5000;     // shorter "games" are a start/stop flicker, not a result
+
+static std::string MrJsonStr(const std::string& s)
+{
+    std::string o;
+    for (char c : s)
+    {
+        if (c == '"' || c == '\\') { o += '\\'; o += c; }
+        else if (static_cast<unsigned char>(c) < 0x20) o += ' ';
+        else o += c;
+    }
+    return o;
+}
+static void MrCollectPlayers(SDK::AActor* slot, MrSlot& st)
+{
+    SDK::UObject* tm = *reinterpret_cast<SDK::UObject**>(reinterpret_cast<uintptr_t>(slot) + 0x488);
+    if (!tm || !SeAlive(tm)) return;
+    const uintptr_t arr = *reinterpret_cast<uintptr_t*>(reinterpret_cast<uintptr_t>(tm) + 0x3A0);
+    const int32_t n = *reinterpret_cast<int32_t*>(reinterpret_cast<uintptr_t>(tm) + 0x3A8);
+    for (int32_t i = 0; arr && i < n && i < 64; ++i)
+    {
+        SDK::UObject* o = *reinterpret_cast<SDK::UObject**>(arr + 16 * static_cast<uintptr_t>(i));
+        if (!o || !SeAlive(o) || !o->IsA(SDK::APawn::StaticClass())) continue;
+        SDK::APlayerState* ps = static_cast<SDK::APawn*>(o)->PlayerState;
+        if (!ps || !SeAlive(ps)) continue;
+        const std::string name = ps->GetPlayerName().ToString();
+        if (name.empty()) continue;
+        int team = -1;
+        if (ps->IsA(SDK::AAxPlayerState::StaticClass())) team = *reinterpret_cast<int32_t*>(reinterpret_cast<uintptr_t>(ps) + 0x3D0);
+        st.players[name] = team;
+    }
+}
+static void MatchResultTick()
+{
+    static SDK::UClass* slotCls = nullptr;
+    if (!slotCls) slotCls = SDK::UObject::FindClassFast("ModuleSlot");
+    if (!slotCls) return;
+    const ULONGLONG now = GetTickCount64();
+    std::unordered_set<SDK::UObject*> seen;
+    for (SDK::UObject* o : ClassObjects(slotCls))
+    {
+        if (!o || o->IsDefaultObject() || !SeAlive(o)) continue;
+        auto* slot = static_cast<SDK::AActor*>(o);
+        auto* ms = *reinterpret_cast<SDK::UModuleState**>(reinterpret_cast<uintptr_t>(o) + 0x360);
+        if (!ms || !SeAlive(ms)) continue;
+        seen.insert(o);
+        MrSlot& st = g_mrSlots[o];
+        const bool running = ms->GetIsGameRunning();
+        if (running)
+        {
+            if (!st.running)
+            {
+                st.running = true; st.startedAt = now; st.players.clear();
+                const wchar_t* id = *reinterpret_cast<const wchar_t* const*>(reinterpret_cast<uintptr_t>(o) + 0x3F0);
+                st.slotId.clear();
+                for (int k = 0; id && id[k] && k < 128; ++k) st.slotId += static_cast<char>(id[k] < 0x80 ? id[k] : '?');
+                HxLog("[HalcyonA2][MATCHRESULT] game started in %s\n", st.slotId.c_str());
+            }
+            MrCollectPlayers(slot, st);
+            continue;
+        }
+        if (!st.running) continue;
+        st.running = false;                                   // running -> stopped: the game is over
+        const ULONGLONG dur = now - st.startedAt;
+        int sc[2] = { ms->GetScore(0), ms->GetScore(1) }, rd[2] = { ms->GetRoundsWon(0), ms->GetRoundsWon(1) };
+        HxLog("[HalcyonA2][MATCHRESULT] game ended in %s after %llus: %d-%d (rounds %d-%d), %zu player(s)%s\n", st.slotId.c_str(),
+              dur / 1000, sc[0], sc[1], rd[0], rd[1], st.players.size(), dur < kMrMinGameMs ? " -- too short, not reported" : "");
+        if (dur < kMrMinGameMs || st.slotId.empty() || g_deploymentId.empty()) continue;
+        std::string players;
+        for (const auto& kv : st.players)
+            players += (players.empty() ? "" : ",") + std::string("{\"name\":\"") + MrJsonStr(kv.first) + "\",\"team\":" + std::to_string(kv.second) + "}";
+        const std::string body = "{\"slot_id\":\"" + MrJsonStr(st.slotId) + "\",\"started_ms_ago\":" + std::to_string(dur)
+            + ",\"duration_ms\":" + std::to_string(dur)
+            + ",\"teams\":[{\"team\":0,\"score\":" + std::to_string(sc[0]) + ",\"rounds\":" + std::to_string(rd[0])
+            + "},{\"team\":1,\"score\":" + std::to_string(sc[1]) + ",\"rounds\":" + std::to_string(rd[1]) + "}]"
+            + ",\"players\":[" + players + "]}";
+        const std::wstring path = L"/v1/deployments/" + std::wstring(g_deploymentId.begin(), g_deploymentId.end()) + L"/match_result";
+        std::thread([path, body]() {
+            DWORD code = 0;
+            const std::string resp = HttpReq(kBackendHost, kBackendPort, L"POST", path.c_str(), body,
+                L"Content-Type: application/json\r\nx-server-api-key: " + std::wstring(kServerApiKey) + L"\r\n", &code);
+            HxLog("[HalcyonA2][MATCHRESULT] reported: HTTP %lu %s\n", code, resp.substr(0, 160).c_str());
+            }).detach();
+    }
+    for (auto it = g_mrSlots.begin(); it != g_mrSlots.end();)   // slots that went away (district streamed out)
+        it = seen.count(it->first) ? std::next(it) : g_mrSlots.erase(it);
+}
+static void SafeMatchResultTick() { __try { MatchResultTick(); } __except (EXCEPTION_EXECUTE_HANDLER) {} }
+
 // =====================================================================================================
 // [2026-09-10 NETVAR OVERRIDES FROM THE DASHBOARD]
 // The dashboard stores overrides in the station config as reserved "nv." keys; the backend serves them,
@@ -18436,6 +18543,12 @@ static void ProcessEvent_Hook(SDK::UObject* Context, SDK::UFunction* Function, v
         {
             s_lastPlayerMeasure = GetTickCount64();
             SafePlayerCountMeasure();
+        }
+        static ULONGLONG s_lastMatchResult = 0;   // [MATCHRESULT] finished games -> backend (~1 s)
+        if (GetTickCount64() - s_lastMatchResult > 1000)
+        {
+            s_lastMatchResult = GetTickCount64();
+            SafeMatchResultTick();
         }
         static ULONGLONG s_lastPlayerReport = 0;
         if (g_trackerDone && GetTickCount64() - s_lastPlayerReport > 180000)

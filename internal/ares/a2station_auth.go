@@ -65,6 +65,8 @@ var a2RouteAuth = map[string]a2AuthLevel{
 	"Solara/AddChallengeRecord": a2Writer,
 	// Solara: quest rewards -- the handler further requires a trusted (game server) credential
 	"Solara/PostQuestReward": a2Writer,
+	// Solara: match results -- the handler further requires a trusted (game server) credential
+	"Solara/PostMatchResult": a2Writer,
 	// account / privilege management
 	"CreateUserApiKey":           a2Admin,
 	"CreateOrUpdateUser":         a2Admin,
