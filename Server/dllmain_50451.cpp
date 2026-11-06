@@ -7468,13 +7468,16 @@ static void SafeDumpBallStructure() { __try { DumpBallStructure(); } __except (E
 // world yet). Guard each call with SEH so a bad component is skipped, not fatal.
 // SEH function must hold no C++ unwinding objects (MSVC C2712) — so this is isolated.
 static char(*g_UpdateOverlaps)(void*, void*, unsigned char, void*) = nullptr;
+static volatile LONG g_fastDiscChecks = 0;
+static const bool g_fastDiscOff = wcsstr(GetCommandLineW(), L"-NoFastDiscOverlaps") != nullptr;   // [FASTDISC] off switch   // [FASTDISC] moving-ball overlap re-checks (reported in [RBSTAT])
 static char SafeUpdateOverlaps(void* comp)
 {
     __try { return g_UpdateOverlaps(comp, nullptr, /*bDoNotifyActors=*/1, nullptr); }
     __except (EXCEPTION_EXECUTE_HANDLER) { return 0; }
 }
 
-static void PumpBallOverlaps()
+// [2026-11-06 FASTDISC] discsOnly: the fast path (see SafePumpMovingDiscs) -- re-check only balls that MOVED.
+static void PumpBallOverlaps(bool discsOnly = false)
 {
     static SDK::UClass* primCls = nullptr;   // [PERF] cached class lookup
     if (!primCls) primCls = SDK::UObject::FindClassFast("PrimitiveComponent");
@@ -7559,6 +7562,34 @@ static void PumpBallOverlaps()
     // A COUNT budget is not a bound here: UpdateOverlaps cost varies per component, and 64 items
     // still peaked at 204ms. Budget by TIME instead, so a single call can never blow the frame no
     // matter how expensive the individual queries turn out to be.
+    // [2026-11-06 FASTDISC] Jailball midfield / goals "not always instant, sometimes never": the round-robin below covers
+    // ~700 items at 10 Hz with a 4 ms budget, so a full pass took 1-3 s -- a ball that crossed a thin trigger and left
+    // before its turn never tripped it. Balls are the moving side: re-check every ball that moved since its last check,
+    // ~45 Hz (SafePumpMovingDiscs). One ball-side UpdateOverlaps reaches every trigger it touches (the slow pass below
+    // keeps the triggers' GenerateOverlapEvents on). -NoFastDiscOverlaps turns it off.
+    static float s_lastX[128], s_lastY[128], s_lastZ[128];
+    static SDK::UObject* s_lastObj[128] = {};
+    if (discsOnly)
+    {
+        LARGE_INTEGER q0, q1, qf; QueryPerformanceFrequency(&qf); QueryPerformanceCounter(&q0);
+        for (int i = 0; i < nDisc; ++i)
+        {
+            if (!ObjAliveAt(discs[i], discSlot[i])) continue;
+            auto* root = static_cast<SDK::AActor*>(discs[i])->RootComponent;
+            if (!root || !root->IsA(primCls)) continue;
+            const SDK::FVector p = root->K2_GetComponentLocation();
+            const float x = (float)p.X, y = (float)p.Y, z = (float)p.Z;
+            const bool known = s_lastObj[i] == discs[i];
+            const float dx = x - s_lastX[i], dy = y - s_lastY[i], dz = z - s_lastZ[i];
+            s_lastObj[i] = discs[i]; s_lastX[i] = x; s_lastY[i] = y; s_lastZ[i] = z;
+            if (known && dx * dx + dy * dy + dz * dz < 1.0f) continue;   // resting: the slow pass covers it
+            SafeUpdateOverlaps(root);
+            InterlockedIncrement(&g_fastDiscChecks);
+            QueryPerformanceCounter(&q1);
+            if ((double)(q1.QuadPart - q0.QuadPart) * 1000.0 / (double)qf.QuadPart > 6.0) break;   // never stall a frame
+        }
+        return;
+    }
     static int s_ovCursor = 0;
     const double OV_BUDGET_MS = 4.0;
     const int totalItems = nDisc + nPhys + nGoal;
@@ -7669,6 +7700,11 @@ static void PumpBallOverlaps()
 static void SafePumpBallOverlaps()
 {
     __try { PumpBallOverlaps(); }
+    __except (EXCEPTION_EXECUTE_HANDLER) {}
+}
+static void SafePumpMovingDiscs()
+{
+    __try { PumpBallOverlaps(true); }
     __except (EXCEPTION_EXECUTE_HANDLER) {}
 }
 
@@ -17644,8 +17680,47 @@ static void TrapBreakTrace(SDK::UObject* Context, SDK::UFunction* Function)
         }
     
 }
+// [2026-11-06 PVPTRACE] "You can't always punch / knock back people." The attacker's client (0x585BBE0) AND the server
+// (Server_KnockbackOtherPawn impl 0x586D3D0) only forward a punch when the TARGET pawn's replicated PVPCounter
+// (+0x1800) > 0 and LockPVPValue (+0x1801) == 0. Only the target's own client changes those (enable 0x5853510,
+// disable 0x5852470, PvP-disabling components 0x5844080) and reports them with Server_SetPVPStatus (impl 0x586EAB0
+// stores them, real code). Log both RPCs so one session shows whether punches arrive and why they are refused.
+static void PvpTrace(SDK::UObject* ctx, SDK::UFunction* fn, void* parms)
+{
+    static int32_t s_set = -2, s_kb = -2;
+    if (s_set == -2)
+    {
+        s_set = s_kb = -1;
+        if (auto* c = SDK::UObject::FindClassFast("VRPawn"))
+        {
+            if (auto* f = c->GetFunction("VRPawn", "Server_SetPVPStatus")) s_set = f->Name.ComparisonIndex;
+            if (auto* f = c->GetFunction("VRPawn", "Server_KnockbackOtherPawn")) s_kb = f->Name.ComparisonIndex;
+        }
+    }
+    const int32_t idx = fn->Name.ComparisonIndex;
+    if (idx != s_set && idx != s_kb) return;
+    static volatile LONG s_n = 0;
+    if (InterlockedIncrement(&s_n) > 4000) return;   // plenty for a session
+    const uint8_t* p = static_cast<const uint8_t*>(parms);
+    const uint8_t* self = reinterpret_cast<const uint8_t*>(ctx);
+    if (idx == s_set)
+    {
+        HxLog("[HalcyonA2][PVPTRACE] %s SetPVPStatus counter %d -> %d lock %d -> %d\n", ctx->GetName().c_str(),
+            (int)self[0x1800], *reinterpret_cast<const int32_t*>(p), (int)self[0x1801], (int)p[4]);
+        return;
+    }
+    auto* tgt = *reinterpret_cast<SDK::UObject* const*>(p);
+    const uint8_t* t = reinterpret_cast<const uint8_t*>(tgt);
+    const double ix = *reinterpret_cast<const double*>(p + 8), iy = *reinterpret_cast<const double*>(p + 16), iz = *reinterpret_cast<const double*>(p + 24);
+    const bool fwd = tgt && t[0x1801] == 0 && t[0x1800] != 0;
+    HxLog("[HalcyonA2][PVPTRACE] %s punches %s: target counter=%d lock=%d -> %s | impulse |%.0f|\n", ctx->GetName().c_str(),
+        tgt ? tgt->GetName().c_str() : "<null>", tgt ? (int)t[0x1800] : -1, tgt ? (int)t[0x1801] : -1,
+        fwd ? "forwarded" : "REFUSED (target not PvP)", sqrt(ix * ix + iy * iy + iz * iz));
+}
+static void SafePvpTrace(SDK::UObject* ctx, SDK::UFunction* fn, void* parms) { __try { PvpTrace(ctx, fn, parms); } __except (EXCEPTION_EXECUTE_HANDLER) {} }
 static void ProcessEvent_Hook(SDK::UObject* Context, SDK::UFunction* Function, void* Parms)
 {
+    if (Context && Function && Parms) SafePvpTrace(Context, Function, Parms);   // [PVPTRACE]
     // [2026-09-12 WATCHDOG] First thing, before any early-out below can skip it: this is the proof
     // that the engine is still dispatching. Two relaxed atomic stores -- see HeartbeatMark.
     HeartbeatMark();
@@ -18178,6 +18253,14 @@ static void ProcessEvent_Hook(SDK::UObject* Context, SDK::UFunction* Function, v
             {
                 s_lastBounceTick = GetTickCount64();
                 PROF(SafeBounceSynthTick);
+            }
+        }
+        {   // [2026-11-06 FASTDISC] moving balls re-checked ~45 Hz so thin triggers (midfield, goals) fire on time
+            static ULONGLONG s_lastFast = 0;
+            if (g_ballOverlapPump && !g_fastDiscOff && !g_minimal && GetTickCount64() - s_lastFast >= 22)
+            {
+                s_lastFast = GetTickCount64();
+                PROF(SafePumpMovingDiscs);
             }
         }
         if ((g_ballOverlapPump || (g_ballPumpsEnabled && g_ballSimMgr)) && GetTickCount64() - g_lastBallOverlapTick >= 100)   // 10Hz; cached lists [2026-11-02: no longer needs the arena sim]
