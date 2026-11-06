@@ -3737,6 +3737,12 @@ static volatile LONG g_rbsCorr = 0, g_rbsMissRep = 0, g_rbsMissSum = 0, g_rbsBat
 static volatile LONG g_rbsLeadSum = 0, g_rbsLeadMin = 0x7FFFFFFF, g_rbsLeadMax = -0x7FFFFFFF;
 static volatile LONG g_rbsFwdSent = 0, g_rbsFwdBlocked = 0;   // [RBFWD] relays to same-sim players / skipped (other sim or unseated)
 static volatile LONG g_rbsTsync = 0;    // [RBSTAT] time-sync reports sent this second ([TIMESYNC])
+static volatile LONG64 g_rbsDriveQpc = 0;   // [RBSTAT] QPC ticks spent driving input ticks this second ([TIMESYNC rate])
+static const LONG g_rbDriveHzDefault = [] {
+    const wchar_t* a = wcsstr(GetCommandLineW(), L"-RbSyncDriveHz=");
+    return a ? (LONG)_wtoi(a + 15) : 10L;
+}();
+static volatile LONG g_rbDriveHz = g_rbDriveHzDefault;
 static volatile LONG g_rbsPlCorr = 0;   // [RBSTAT] PLAYER corrections (0x5757260 -> player vtable +1216), installed lazily
 // [RBSIMMAP 2026-11-05] Which sim each player is in, as the SERVER itself knows it: the sim-results sender
 // (0x54FC0F0) is called with (connComp, SimIndex) for every seated player, so record nic -> SimIndex there
@@ -3848,14 +3854,16 @@ static void RbStatFlush()   // once a second from the step driver hook
     const LONG plc = InterlockedExchange(&g_rbsPlCorr, 0);
     const LONG lup = InterlockedExchange(&g_rbsLeadUp, 0), ldn = InterlockedExchange(&g_rbsLeadDown, 0);
     const LONG tsy = InterlockedExchange(&g_rbsTsync, 0);
+    static double s_qpcMs = [] { LARGE_INTEGER f; QueryPerformanceFrequency(&f); return 1000.0 / double(f.QuadPart); }();
+    const double driveMs = double(InterlockedExchange64(&g_rbsDriveQpc, 0)) * s_qpcMs;
     if (b > 0) RbPlCorrInstall();   // players are seated: find the player-correction slot (once)
     if (corr == 0 && rep == 0 && b == 0 && plc == 0) return;
     // fields appended at the end only, so older log greps keep working
     HxLog("[HalcyonA2][RBSTAT] corr/s=%ld missedRep/s=%ld missedSum=%ld batches/s=%ld lead min=%ld avg=%.1f max=%ld late=%ld"
         " sends/s=%ld dup=%ld | ticks/s=%d hitch=%d dtMax=%.1fms | fwd/s=%ld fwdBlocked/s=%ld | plcorr/s=%ld leadUp=%ld leadDown=%ld"
-        " | tsync/s=%ld\n",
+        " | tsync/s=%ld drive=%.1fms/s@%ldHz\n",
         corr, rep, miss, b, b ? mn : 0, b ? double(sum) / b : 0.0, b ? mx : 0, late, sends, dups, ticks, hitch, dtMax * 1000.0f,
-        fwd, fwdBlk, plc, lup, ldn, tsy);
+        fwd, fwdBlk, plc, lup, ldn, tsy, driveMs, (long)g_rbDriveHz);
 }
 static __int64 __fastcall RbMissed_Hook(void* nic, int32_t frame, uint64_t serverFrame, uint64_t missed, uint64_t missedBuf)
 {
@@ -4071,9 +4079,28 @@ static __int64 __fastcall RbAvgWorst_Hook(void* nic, float diff, float range)
     if (c <= 20 || (c % 200) == 0) SafeRbAvgWorstLog(nic, sent, range, c);
     return RbAvgWorst_Orig(nic, sent, range);
 }
-static void RbDriveInputTicks(float dt)
+// [TIMESYNC rate 2026-11-06] Driving every player's input tick on EVERY frame cost real server time under load
+// (box 1, same load as the old DLL: hitches 3.5 -> 12 /s at 300-600 batches/s, 72 ticks/s at 1200+). Only its
+// reports matter (AvgWorst every 3 s from accumulated dt, MissedInputs every 64 calls) and before this the engine
+// never ran it at all, so run it at RbSyncDriveHz (default 10) with the accumulated dt. -RbSyncDriveHz=<n> or the
+// netvar RbSyncDriveHz (live; 0 = off), clamped 0..90. [RBSTAT] drive=ms/s measures it.
+static void RbSetDriveHz(LONG hz, const char* why)
+{
+    if (hz < 0) hz = 0; if (hz > 90) hz = 90;
+    if (InterlockedExchange(&g_rbDriveHz, hz) != hz)
+        HxLog("[HalcyonA2][TIMESYNC] input-tick drive rate now %ld Hz (%s)\n", hz, why);
+}
+static void RbDriveInputTicks(float frameDt)
 {
     if (!g_rbTimeSync || !RbInTick_Orig) return;
+    static float s_acc = 0.0f;
+    const LONG hz = g_rbDriveHz;
+    if (hz <= 0) { s_acc = 0.0f; return; }
+    s_acc += frameDt;
+    if (s_acc < 1.0f / float(hz)) return;
+    float dt = s_acc;
+    s_acc = 0.0f;
+    if (dt > 1.0f) dt = 1.0f;   // after a long stall: one step's worth, never a burst of reports
     const ULONGLONG now = GetTickCount64();
     static std::unordered_set<void*> s_logged, s_refused;
     for (auto& [nic, st] : g_rbSeated)
@@ -4103,8 +4130,11 @@ static void RbDriveInputTicks(float dt)
 }
 static void SafeRbDriveInputTicks(float dt)
 {
+    LARGE_INTEGER a, b; QueryPerformanceCounter(&a);
     __try { RbDriveInputTicks(dt); }
     __except (EXCEPTION_EXECUTE_HANDLER) { g_rbInTickDriving = false; HxLog("[HalcyonA2][TIMESYNC] drive fault\n"); }
+    QueryPerformanceCounter(&b);
+    InterlockedExchangeAdd64(&g_rbsDriveQpc, b.QuadPart - a.QuadPart);
 }
 // [RBDEDUPE 2026-11-05] The sim-results sender (0x54FC0F0) runs up to once per ENGINE tick (measured: sends/s = ticks/s
 // while a seated client streams inputs), but the sim only steps at 90 Hz,
@@ -11770,8 +11800,14 @@ static void NvApplyTick()
     if (newVersion)   // [TIMESYNC margin] DLL-side tunable riding the netvar channel (no game variable has this name)
     {
         LONG m = g_rbSyncMarginDefault;
-        for (const NvOverride& o : todo) if (o.name == "RbSyncMarginFrames") m = (LONG)atoi(o.value.c_str());
+        LONG hz = g_rbDriveHzDefault;
+        for (const NvOverride& o : todo)
+        {
+            if (o.name == "RbSyncMarginFrames") m = (LONG)atoi(o.value.c_str());
+            if (o.name == "RbSyncDriveHz") hz = (LONG)atoi(o.value.c_str());
+        }
         RbSetSyncMargin(m, "netvar RbSyncMarginFrames");
+        RbSetDriveHz(hz, "netvar RbSyncDriveHz");
     }
 
     static SDK::UClass* msCls = nullptr, * apiCls = nullptr, * tmCls = nullptr;
@@ -12150,6 +12186,67 @@ static void BoostRespawnTick()
     }
 }
 static void SafeBoostRespawnTick() { __try { BoostRespawnTick(); } __except (EXCEPTION_EXECUTE_HANDLER) {} }
+
+// [2026-11-06 TRAPTOGGLE] Scrap Run traps came back without collision (or not at all) after runs. Same bug class as
+// [BOOSTRESPAWN]: a self-resetting trap's UToggleableComponent (Luau netvar "isEnabled", +0x479) is enabled by the
+// stepping player's Luau request, and only the SERVER-side Blueprint chain flips it back
+// (BP_Trap_BunnyHop: enabled -> TrapActivate -> 1 s material fade -> its completion event -> platform NoCollision +
+// invisible -> HasWorldAuthority: Delay(2.5) -> LuaDisable; the disabled event runs TrapDeactivate on every machine:
+// platform visible + BlockAll). BP_Trap_StickySlime likewise ends in an authority-only LuaDisable (Delay 3 + 4 +
+// timelines). When that server chain does not complete, isEnabled stays 1 forever: every client keeps the platform
+// invisible / without collision, later steps cannot re-trigger it, and the trap reset (actor collision, hidden flag,
+// materials) never touches the component collision profile. Reset it ourselves after well past the normal cycle:
+// LuaDisable's server branch writes isEnabled=false -> clients get the disabled event -> the game's own restore.
+// Idempotent when the Blueprint also resets it. Other trap toggles are only logged. -NoTrapToggleReset disables.
+static void TrapToggleTick()
+{
+    static const bool off = wcsstr(GetCommandLineW(), L"-NoTrapToggleReset") != nullptr;
+    if (off) return;
+    static ULONGLONG s_t = 0; const ULONGLONG now = GetTickCount64();
+    if (now - s_t < 500) return;
+    s_t = now;
+    static SDK::UClass* togCls = nullptr;
+    if (!togCls) togCls = SDK::UObject::FindClassFast("ToggleableComponent");
+    if (!togCls) return;
+    struct Seen { ULONGLONG since; bool logged; };
+    static std::unordered_map<void*, Seen> s_on;   // component -> when it was first seen enabled
+    static SDK::UFunction* fnDisable = nullptr;
+    static int s_logged = 0;
+    for (SDK::UObject* c : ClassObjects(togCls))
+    {
+        if (!c || c->IsDefaultObject() || !c->Outer || c->Outer->IsDefaultObject() || !c->Outer->Class) continue;
+        const std::string cls = c->Outer->Class->GetName();
+        if (cls.rfind("BP_Trap_", 0) != 0) continue;   // Scrap Run trap actors only
+        const uintptr_t cp = reinterpret_cast<uintptr_t>(c);
+        if (*reinterpret_cast<uint8_t*>(cp + 0x479) == 0) { s_on.erase(c); continue; }   // idle
+        auto it = s_on.find(c);
+        if (it == s_on.end()) { s_on.emplace(c, Seen{ now, false }); continue; }
+        // normal cycles: BunnyHop ~3.5 s, StickySlime ~9 s
+        ULONGLONG limit = 0;
+        if (cls.rfind("BP_Trap_BunnyHop", 0) == 0) limit = 8000;
+        else if (cls.rfind("BP_Trap_StickySlime", 0) == 0) limit = 20000;
+        if (!limit)
+        {
+            if (!it->second.logged && now - it->second.since > 60000 && s_logged < 300)
+            {
+                it->second.logged = true; ++s_logged;
+                HxLog("[HalcyonA2][TRAPTOGGLE] %s (%s) toggle enabled for 60 s+ (not reset: not a self-resetting trap)\n",
+                    c->Outer->GetName().c_str(), cls.c_str());
+            }
+            continue;
+        }
+        if (now - it->second.since < limit) continue;
+        if (!fnDisable && c->Class) fnDisable = c->Class->GetFunction("ToggleableComponent", "LuaDisable");
+        if (!fnDisable) return;
+        static uint8_t s_noParms[16] = {};
+        SafeProcessEvent(c, fnDisable, s_noParms);
+        if (s_logged < 300) { ++s_logged; HxLog("[HalcyonA2][TRAPTOGGLE] %s (%s) stuck enabled %.0fs -> reset, isEnabled now %d\n",
+            c->Outer->GetName().c_str(), cls.c_str(), double(now - it->second.since) / 1000.0, *reinterpret_cast<uint8_t*>(cp + 0x479)); }
+        it->second.since = now;   // if it did not take, retry after another limit
+    }
+    if (s_on.size() > 4096) s_on.clear();
+}
+static void SafeTrapToggleTick() { __try { TrapToggleTick(); } __except (EXCEPTION_EXECUTE_HANDLER) {} }
 static void SafeNvApplyTick() { __try { NvApplyTick(); } __except (EXCEPTION_EXECUTE_HANDLER) {} }
 
 // =====================================================================================================
@@ -18107,6 +18204,7 @@ static void ProcessEvent_Hook(SDK::UObject* Context, SDK::UFunction* Function, v
         PROF(SafeWhitelistProbeTick);
         PROF(SafeBoostProbeTick);       // [BOOSTPROBE] -VerboseDiag: boost pickup hide/show changes   // [WHITELIST] log each arena's effective whitelist on change (1 Hz, read-only)
         PROF(SafeBoostRespawnTick);     // [BOOSTRESPAWN] reset taken arena boosts after their cooldown
+        PROF(SafeTrapToggleTick);       // [TRAPTOGGLE] reset Scrap Run trap toggles stuck enabled
         PROF(SafeSpecEditTick);      // [SPECEDIT] collision stand-ins for placed meshes -- no-op unless -SpecEdit
         PROF(SafeNvWorldCensus);     // [NVCENSUS] one-shot, log-only, 90s after boot
         PROF(SafeDetectTeamChanger);   // [TEAMVOL] fire the real team-changer overlap (headless never does)
