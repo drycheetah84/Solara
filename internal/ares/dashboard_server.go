@@ -146,6 +146,7 @@ func newAresDashboardServer() *AresDashboardServer {
 	h.Handle("POST", "/api/anonymous-names/preview", "Solara/PreviewAnonymousNamesAdmin", s.PreviewAnonymousNamesAdmin)
 	// Users tab: paged search over every user, and per-user global permissions (see dashboard_users_admin.go).
 	h.Handle("GET", "/api/users/search", "Solara/SearchUsers", s.SearchUsers)
+	h.Handle("GET", "/api/stations/{station_id}/matches", "Solara/GetStationMatches", s.GetStationMatches)
 	h.Handle("GET", "/api/users/{user_id}/global_permissions", "Solara/GetUserGlobalPermissions", s.GetUserGlobalPermissions)
 	h.Handle("PUT", "/api/users/{user_id}/global_permissions", "Solara/PutUserGlobalPermissions", s.PutUserGlobalPermissions)
 	return s

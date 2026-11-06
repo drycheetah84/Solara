@@ -112,6 +112,7 @@ var dashScopedRoutes = []dashScopedRoute{
 	{"GET", "/api/deployments", "stations.read|fleets.view", true},
 	{"GET", "/api/stations/{station_id}/config", "stations.read", false},
 	{"GET", "/api/stations/{station_id}/whitelist", "stations.read", false},
+	{"GET", "/api/stations/{station_id}/matches", "stations.read", false}, // Solara: arena match results
 	{"GET", "/api/stations/{station_id}/members", "stations.read", false},
 	{"GET", "/api/stations/{station_id}/bans", "stations.read", false},
 	{"GET", "/api/stations/{station_id}/roles", "stations.read", false},
