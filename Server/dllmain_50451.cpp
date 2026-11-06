@@ -15442,6 +15442,117 @@ static char __fastcall GiveAndCheck_Hook(uintptr_t tm, void* iface, int team, ch
     return r;
 }
 
+// [RESVGATE 2026-11-06] Matchmaker 3v3 reservations never let the player through the arena gate. IDA (50451):
+// ADriftballMatchmaker::ReserveArenaSlotForPlayer impl 0x55C6050 only sets the team component's
+// ReservedPawnTeamIndex (@0x12C, ITicketHolder vtable +136). The entrance-delay gate's client Tick (0x55D0820)
+// keeps TeamSwitcherMesh on BlockAll unless GetTeamIndex 0x553EF50 (Entity sim team, else CurrentPawnTeamIndex
+// @0x200) != -1, so a reserved player who has no team yet hits an invisible wall. Fix: on reservation also set
+// CurrentPawnTeamIndex to the reserved team via the game's setter (iface vtable +128, marks rep index 4 dirty).
+// The server switch handler 0x55CF750 joins only when GetTeamIndex != gate team (TeamChangeComp@0x338 +1316), so
+// for a pre-set, not-yet-admitted player we clear the byte raw for that call and the normal join runs. On revoke
+// (0x55C7C70) of a never-admitted player the pre-set team is cleared. -NoResvGateFix disables.
+using ResvReserve_t = void(__fastcall*)(uintptr_t, uintptr_t, uintptr_t, char);
+using ResvRevoke_t = void*(__fastcall*)(uintptr_t, uintptr_t, uintptr_t, char);
+using ResvSwitch_t = char(__fastcall*)(uintptr_t, int);
+static ResvReserve_t ResvReserve_Orig = nullptr;
+static ResvRevoke_t ResvRevoke_Orig = nullptr;
+static ResvSwitch_t ResvSwitch_Orig = nullptr;
+static std::unordered_map<uintptr_t, std::pair<uintptr_t, int>> g_resvPreset; // team comp -> (ticket manager, team)
+static bool ResvGateOff() { static const bool off = wcsstr(GetCommandLineW(), L"-NoResvGateFix") != nullptr; return off; }
+static bool ResvIsVerified(uintptr_t tm, uintptr_t comp)
+{
+    const uintptr_t* d = *reinterpret_cast<uintptr_t**>(tm + 0x3A0);
+    const int n = *reinterpret_cast<int*>(tm + 0x3A8);
+    for (int i = 0; d && i < n; ++i) if (d[2 * i] == comp) return true;
+    return false;
+}
+static void ResvSetCurrentTeam(uintptr_t comp, int team)
+{
+    const uintptr_t iface = comp + 0xB0;
+    using SetTeam_t = void(__fastcall*)(uintptr_t, uint8_t);
+    (*reinterpret_cast<SetTeam_t**>(iface))[128 / 8](iface, static_cast<uint8_t>(team));
+}
+static void ResvAfterReserve(uintptr_t pawn, uintptr_t tm, int team)
+{
+    const uintptr_t comp = *reinterpret_cast<uintptr_t*>(pawn + 0x1B78);
+    if (!comp || team < 0 || team > 1) return;
+    const int8_t reserved = *reinterpret_cast<int8_t*>(comp + 0x12C);
+    const int8_t current = *reinterpret_cast<int8_t*>(comp + 0x200);
+    HxLog("[HalcyonA2][RESVGATE] reserve pawn=%s arena=%s team=%d reservedIdx=%d currentIdx=%d\n",
+        reinterpret_cast<SDK::UObject*>(pawn)->GetName().c_str(), reinterpret_cast<SDK::UObject*>(tm)->GetName().c_str(),
+        team, (int)reserved, (int)current);
+    if (reserved != team || current != -1 || ResvIsVerified(tm, comp)) return;
+    ResvSetCurrentTeam(comp, team);
+    g_resvPreset[comp] = { tm, team };
+    HxLog("[HalcyonA2][RESVGATE] preset CurrentPawnTeamIndex=%d so the entrance gate opens\n", team);
+}
+static void SafeResvAfterReserve(uintptr_t p, uintptr_t tm, int t) { __try { ResvAfterReserve(p, tm, t); } __except (EXCEPTION_EXECUTE_HANDLER) {} }
+static void __fastcall ResvReserve_Hook(uintptr_t mm, uintptr_t pawn, uintptr_t tm, char team)
+{
+    ResvReserve_Orig(mm, pawn, tm, team);
+    if (!ResvGateOff() && pawn && tm) SafeResvAfterReserve(pawn, tm, team);
+}
+static void ResvAfterRevoke(uintptr_t pawn)
+{
+    const uintptr_t comp = *reinterpret_cast<uintptr_t*>(pawn + 0x1B78);
+    auto it = comp ? g_resvPreset.find(comp) : g_resvPreset.end();
+    if (it == g_resvPreset.end()) return;
+    const bool admitted = ResvIsVerified(it->second.first, comp);
+    if (!admitted && *reinterpret_cast<int8_t*>(comp + 0x200) == it->second.second) ResvSetCurrentTeam(comp, -1);
+    HxLog("[HalcyonA2][RESVGATE] revoke pawn=%s admitted=%d -> %s\n", reinterpret_cast<SDK::UObject*>(pawn)->GetName().c_str(),
+        (int)admitted, admitted ? "kept team" : "cleared preset team");
+    g_resvPreset.erase(it);
+}
+static void SafeResvAfterRevoke(uintptr_t p) { __try { ResvAfterRevoke(p); } __except (EXCEPTION_EXECUTE_HANDLER) {} }
+static void* __fastcall ResvRevoke_Hook(uintptr_t mm, uintptr_t pawn, uintptr_t tm, char team)
+{
+    void* r = ResvRevoke_Orig(mm, pawn, tm, team);
+    if (pawn) SafeResvAfterRevoke(pawn);
+    return r;
+}
+// Before the server switch handler: returns the comp whose preset byte was cleared (0 = none).
+static uintptr_t ResvBeforeSwitch(uintptr_t gate, int playerIdx)
+{
+    if (g_resvPreset.empty()) return 0;
+    using GetWorld_t = uintptr_t(__fastcall*)(uintptr_t);
+    using PawnByIdx_t = uintptr_t(__fastcall*)(uintptr_t, int);
+    const uintptr_t base = reinterpret_cast<uintptr_t>(GetModuleHandleW(nullptr));
+    const uintptr_t world = reinterpret_cast<GetWorld_t>(base + 0x3695740)(gate);
+    if (!world) return 0;
+    const uintptr_t pawn = reinterpret_cast<PawnByIdx_t>(base + 0x5857100)(world, playerIdx);
+    const uintptr_t comp = pawn ? *reinterpret_cast<uintptr_t*>(pawn + 0x1B78) : 0;
+    auto it = comp ? g_resvPreset.find(comp) : g_resvPreset.end();
+    if (it == g_resvPreset.end()) return 0;
+    const uintptr_t tcc = *reinterpret_cast<uintptr_t*>(gate + 0x338);
+    const int gateTeam = tcc ? *reinterpret_cast<int*>(tcc + 1316) : -99;
+    if (ResvIsVerified(it->second.first, comp) || *reinterpret_cast<int8_t*>(comp + 0x200) != it->second.second) {
+        g_resvPreset.erase(it); return 0;
+    }
+    HxLog("[HalcyonA2][RESVGATE] switch pawn=%s gateTeam=%d preset=%d -> clearing preset for the join\n",
+        reinterpret_cast<SDK::UObject*>(pawn)->GetName().c_str(), gateTeam, it->second.second);
+    *reinterpret_cast<int8_t*>(comp + 0x200) = -1;
+    return comp;
+}
+static uintptr_t SafeResvBeforeSwitch(uintptr_t g, int i) { __try { return ResvBeforeSwitch(g, i); } __except (EXCEPTION_EXECUTE_HANDLER) { return 0; } }
+static void ResvAfterSwitch(uintptr_t comp)
+{
+    auto it = g_resvPreset.find(comp);
+    if (it == g_resvPreset.end()) return;
+    const bool admitted = ResvIsVerified(it->second.first, comp);
+    const int8_t now = *reinterpret_cast<int8_t*>(comp + 0x200);
+    if (!admitted && now == -1) *reinterpret_cast<int8_t*>(comp + 0x200) = static_cast<int8_t>(it->second.second); // refused: keep gate open
+    HxLog("[HalcyonA2][RESVGATE] switch result admitted=%d team=%d\n", (int)admitted, (int)*reinterpret_cast<int8_t*>(comp + 0x200));
+    if (admitted) g_resvPreset.erase(it);
+}
+static void SafeResvAfterSwitch(uintptr_t c) { __try { ResvAfterSwitch(c); } __except (EXCEPTION_EXECUTE_HANDLER) {} }
+static char __fastcall ResvSwitch_Hook(uintptr_t gate, int playerIdx)
+{
+    const uintptr_t comp = (ResvGateOff() || !gate) ? 0 : SafeResvBeforeSwitch(gate, playerIdx);
+    const char r = ResvSwitch_Orig(gate, playerIdx);
+    if (comp) SafeResvAfterSwitch(comp);
+    return r;
+}
+
 static void SrpcLog(SDK::UObject* ctx, SDK::UFunction* fn)
 {
     const uint32_t flags = *reinterpret_cast<uint32_t*>(reinterpret_cast<uintptr_t>(fn) + 0xB0);
@@ -21976,6 +22087,11 @@ static void Main(HMODULE)
     // g_gameplayHooks gate is off on 50451). Enabled by MH_ALL_HOOKS at the end of Main.
     { MH_STATUS sa = MH_CreateHook(reinterpret_cast<void*>(base + 0x4ACA160), &GiveAndCheck_Hook, reinterpret_cast<void**>(&GiveAndCheck_Orig));
       HxLog("[HalcyonA2][ADMITDIAG] GiveAndCheckTicket hook create=%d\n", (int)sa); }
+    { // [RESVGATE] matchmaker reservation -> entrance gate fix (see ResvReserve_Hook)
+      const int r1 = (int)MH_CreateHook(reinterpret_cast<void*>(base + 0x55C6050), &ResvReserve_Hook, reinterpret_cast<void**>(&ResvReserve_Orig));
+      const int r2 = (int)MH_CreateHook(reinterpret_cast<void*>(base + 0x55C7C70), &ResvRevoke_Hook, reinterpret_cast<void**>(&ResvRevoke_Orig));
+      const int r3 = (int)MH_CreateHook(reinterpret_cast<void*>(base + 0x55CF750), &ResvSwitch_Hook, reinterpret_cast<void**>(&ResvSwitch_Orig));
+      HxLog("[HalcyonA2][RESVGATE] hooks reserve=%d revoke=%d switch=%d off=%d\n", r1, r2, r3, (int)ResvGateOff()); }
     MH_STATUS s6 = MH_CreateHook(joinAddr, &JoinBuild_Hook, reinterpret_cast<void**>(&JoinBuild_Orig));
     void* sendAddr = reinterpret_cast<void*>(base + SendJoin_RVA);
     MH_STATUS s7 = MH_CreateHook(sendAddr, &SendJoin_Hook, reinterpret_cast<void**>(&SendJoin_Orig));
