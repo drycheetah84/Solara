@@ -3225,6 +3225,15 @@ void ScriptOp(const Snapshot& snap, const std::string& line)
                 Log("[tms] %s slotID='%s' slot=%s holders=%d verified=%d wl0=%d wl1=%d wlStrings=%d", o->GetName().c_str(), sid->IsValid() ? sid->ToString().c_str() : "",
                     slot ? slot->GetName().c_str() : "NULL", *reinterpret_cast<int32_t*>(b + 0x398), *reinterpret_cast<int32_t*>(b + 0x3A8),
                     (int)*reinterpret_cast<uint8_t*>(b + 0x303), (int)*reinterpret_cast<uint8_t*>(b + 0x304), *reinterpret_cast<int32_t*>(b + 0x310));
+                // [2026-11-06] TeamSizes @0x3D8 / MaxTeamSizes @0x3E8 / ReservedTeamSlots @0x3F8 (TArray<int32>): what THIS client thinks
+                auto arr = [&](uintptr_t off) {
+                    const int32_t* d = *reinterpret_cast<int32_t* const*>(b + off);
+                    const int32_t n = *reinterpret_cast<const int32_t*>(b + off + 8);
+                    std::string s = "[";
+                    for (int32_t k = 0; d && k < n && k < 8; ++k) s += (k ? "," : "") + std::to_string(d[k]);
+                    return s + "]";
+                };
+                Log("[tms]   %s sizes=%s max=%s reserved=%s", sid->IsValid() ? sid->ToString().c_str() : "", arr(0x3D8).c_str(), arr(0x3E8).c_str(), arr(0x3F8).c_str());
             }
             else if (msc && o->IsA(msc) && o->Class->GetName().find("ImportanceVolume") != std::string::npos)
                 Log("[tms] slot %s tm=%p", o->GetName().c_str(), *reinterpret_cast<void**>(b + 0x488));

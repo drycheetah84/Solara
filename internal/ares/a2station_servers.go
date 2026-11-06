@@ -294,6 +294,7 @@ func (s *A2StationDbServer) UpdatePlayerCount(c *hosting.Context) hosting.Result
 		count = 0
 	}
 	matched := eos.SetSessionPlayerCount(*body.DeploymentId, count)
+	recordDistrictPops(*body.DeploymentId, c.Request.Body()) // Solara: optional district_populations (district_pops.go)
 
 	depCol := a2Deployments()
 	if depCol != nil {

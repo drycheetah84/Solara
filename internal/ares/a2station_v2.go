@@ -125,7 +125,7 @@ func a2StationsPageFor50451(p *models.StationsPageV2, version string) *v50Statio
 			StationId: it.StationId, FleetId: it.FleetId, FleetName: fleetName, SessionId: it.SessionId,
 			StationName: it.StationName, Region: a2Deref(it.Region), Ip: it.Ip, Version: it.Version,
 			DeploymentCl: it.DeploymentCl, Created: it.Created, Online: it.Online, LastEvent: last,
-			PlayerCount: it.PlayerCount, Disabled: it.Disabled, Config: cfg, DistrictPopulations: map[string]int{},
+			PlayerCount: it.PlayerCount, Disabled: it.Disabled, Config: cfg, DistrictPopulations: districtPopsFor(it.StationId, it.Ip),
 			IsPublic: true, IsAllowlist: false,
 		})
 	}

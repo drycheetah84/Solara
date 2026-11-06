@@ -7963,6 +7963,180 @@ static bool SafeCallReflectedOverlapBegin(SDK::UObject* trig, SDK::UObject* pawn
 // and on entry fire the trigger's own reflected OverlapBegin -> OnOverlapByDisc -> the script's OnBallHitsStartTrigger.
 // The script itself still checks the ball is its spawner's and the state is WAITING_TO_START. -NoZDriftStart disables.
 // GoalComponent::OverlapBegin(OverlappedComponent = its collider @0x5A0, OtherActor = ball, OtherComp = ball root, ...)
+// ---------------------------------------------------------------------------------------------------
+// [2026-11-06 GOAL SHAPES] Accurate goal / trigger hit test, shared by every goal detector.
+// Before: each detector took the collider's WORLD AXIS-ALIGNED bounds (GetComponentBounds) and asked whether the ball
+// CENTRE was inside it (+40 uu slack), once per tick. A rotated goal's world AABB is far bigger than the goal (corner
+// shots and near misses scored), the slack added more, and a fast ball could skip a thin goal between two ticks.
+// Now: the collider's REAL shape in its own frame (box / sphere / capsule with the component's rotation and scale; any
+// other primitive, e.g. a static mesh, uses its local bounds box -- still rotated), tested against the ball as a SPHERE
+// of its real radius SWEPT along its path since the last check. That is what the engine's own overlap does (ball
+// collision touching the goal collider), so a goal counts exactly when OverlapBegin would have.
+struct GoalShape
+{
+    enum Kind { None = 0, Box, Sphere, Capsule } kind = None;
+    SDK::FVector c{};          // centre (world)
+    SDK::FVector ax[3]{};      // unit axes (world): forward, right, up
+    double ext[3]{};           // box half-extents along ax (scaled)
+    double radius = 0;         // sphere / capsule radius (scaled)
+    double half = 0;           // capsule half-height of the segment part (scaled, along ax[2])
+};
+static double GsDot(const SDK::FVector& a, const SDK::FVector& b) { return a.X * b.X + a.Y * b.Y + a.Z * b.Z; }
+static SDK::FVector GsSub(const SDK::FVector& a, const SDK::FVector& b) { return { a.X - b.X, a.Y - b.Y, a.Z - b.Z }; }
+static SDK::FVector GsMad(const SDK::FVector& a, const SDK::FVector& d, double t) { return { a.X + d.X * t, a.Y + d.Y * t, a.Z + d.Z * t }; }
+static SDK::FVector GsUnit(const SDK::FVector& v)
+{
+    const double l = sqrt(GsDot(v, v));
+    return l > 1e-9 ? SDK::FVector{ v.X / l, v.Y / l, v.Z / l } : SDK::FVector{ 0, 0, 0 };
+}
+
+// Measure a collider (reflected calls -- do it once per rebuild; level geometry does not move).
+static bool BuildGoalShape(SDK::USceneComponent* col, GoalShape* out, std::string* desc)
+{
+    static SDK::UClass* boxCls = nullptr, * sphCls = nullptr, * capCls = nullptr, * smCls = nullptr;
+    if (!boxCls) boxCls = SDK::UObject::FindClassFast("BoxComponent");
+    if (!sphCls) sphCls = SDK::UObject::FindClassFast("SphereComponent");
+    if (!capCls) capCls = SDK::UObject::FindClassFast("CapsuleComponent");
+    if (!smCls)  smCls = SDK::UObject::FindClassFast("StaticMeshComponent");
+    if (!col) return false;
+    GoalShape s;
+    const SDK::FVector loc = col->K2_GetComponentLocation();
+    const SDK::FVector scl = col->K2_GetComponentScale();
+    s.ax[0] = GsUnit(col->GetForwardVector());
+    s.ax[1] = GsUnit(col->GetRightVector());
+    s.ax[2] = GsUnit(col->GetUpVector());
+    if (GsDot(s.ax[0], s.ax[0]) < 0.5 || GsDot(s.ax[1], s.ax[1]) < 0.5 || GsDot(s.ax[2], s.ax[2]) < 0.5) return false;
+    const double sx = fabs(scl.X), sy = fabs(scl.Y), sz = fabs(scl.Z);
+    const uintptr_t p = reinterpret_cast<uintptr_t>(col);
+    char b[200];
+    if (boxCls && col->IsA(boxCls))
+    {
+        const SDK::FVector e = *reinterpret_cast<const SDK::FVector*>(p + 0x518);     // UBoxComponent::BoxExtent (unscaled)
+        s.kind = GoalShape::Box; s.c = loc; s.ext[0] = fabs(e.X) * sx; s.ext[1] = fabs(e.Y) * sy; s.ext[2] = fabs(e.Z) * sz;
+        sprintf_s(b, "box ext=(%.0f,%.0f,%.0f)", s.ext[0], s.ext[1], s.ext[2]);
+    }
+    else if (sphCls && col->IsA(sphCls))
+    {
+        s.kind = GoalShape::Sphere; s.c = loc;
+        s.radius = fabs(*reinterpret_cast<const float*>(p + 0x518)) * (std::min)({ sx, sy, sz });   // USphereComponent::SphereRadius
+        sprintf_s(b, "sphere r=%.0f", s.radius);
+    }
+    else if (capCls && col->IsA(capCls))
+    {
+        const double hh = fabs(*reinterpret_cast<const float*>(p + 0x518));            // CapsuleHalfHeight (incl. caps)
+        const double rr = fabs(*reinterpret_cast<const float*>(p + 0x51C));            // CapsuleRadius
+        s.kind = GoalShape::Capsule; s.c = loc; s.radius = rr * (std::min)(sx, sy);
+        s.half = (std::max)(0.0, hh * sz - s.radius);
+        sprintf_s(b, "capsule r=%.0f half=%.0f", s.radius, s.half);
+    }
+    else
+    {
+        // Any other primitive: local bounds when it is a static mesh, else the world bounds as a last resort.
+        SDK::FVector mn{}, mx{};
+        bool local = false;
+        if (smCls && col->IsA(smCls))
+        {
+            static_cast<SDK::UStaticMeshComponent*>(col)->GetLocalBounds(&mn, &mx);
+            local = (mx.X - mn.X) + (mx.Y - mn.Y) + (mx.Z - mn.Z) > 0.0;
+        }
+        if (local)
+        {
+            const SDK::FVector lc{ (mn.X + mx.X) * 0.5 * scl.X, (mn.Y + mx.Y) * 0.5 * scl.Y, (mn.Z + mx.Z) * 0.5 * scl.Z };
+            s.kind = GoalShape::Box;
+            s.c = GsMad(GsMad(GsMad(loc, s.ax[0], lc.X), s.ax[1], lc.Y), s.ax[2], lc.Z);
+            s.ext[0] = (mx.X - mn.X) * 0.5 * sx; s.ext[1] = (mx.Y - mn.Y) * 0.5 * sy; s.ext[2] = (mx.Z - mn.Z) * 0.5 * sz;
+            sprintf_s(b, "mesh local box ext=(%.0f,%.0f,%.0f)", s.ext[0], s.ext[1], s.ext[2]);
+        }
+        else
+        {
+            SDK::FVector o{}, e{}; float r = 0.f;
+            SDK::UKismetSystemLibrary::GetComponentBounds(col, &o, &e, &r);
+            s.kind = GoalShape::Box; s.c = o; s.ax[0] = { 1, 0, 0 }; s.ax[1] = { 0, 1, 0 }; s.ax[2] = { 0, 0, 1 };
+            s.ext[0] = e.X; s.ext[1] = e.Y; s.ext[2] = e.Z;
+            sprintf_s(b, "%s world bounds ext=(%.0f,%.0f,%.0f)", col->Class ? col->Class->GetName().c_str() : "?", e.X, e.Y, e.Z);
+        }
+    }
+    if (s.kind == GoalShape::Box && s.ext[0] + s.ext[1] + s.ext[2] <= 0.0) return false;
+    if (s.kind != GoalShape::Box && s.radius <= 0.0) return false;
+    *out = s;
+    if (desc)
+    {
+        char full[320];
+        sprintf_s(full, "%s at (%.0f,%.0f,%.0f) fwd=(%.2f,%.2f,%.2f)", b, s.c.X, s.c.Y, s.c.Z, s.ax[0].X, s.ax[0].Y, s.ax[0].Z);
+        *desc = full;
+    }
+    return true;
+}
+
+// Closest distance between segments p0-p1 and q0-q1.
+static double GsSegSegDist(const SDK::FVector& p0, const SDK::FVector& p1, const SDK::FVector& q0, const SDK::FVector& q1)
+{
+    const SDK::FVector d1 = GsSub(p1, p0), d2 = GsSub(q1, q0), r = GsSub(p0, q0);
+    const double a = GsDot(d1, d1), e = GsDot(d2, d2), f = GsDot(d2, r);
+    double s = 0, t = 0;
+    if (a <= 1e-9 && e <= 1e-9) { s = t = 0; }
+    else if (a <= 1e-9) { s = 0; t = (std::clamp)(f / e, 0.0, 1.0); }
+    else
+    {
+        const double c = GsDot(d1, r);
+        if (e <= 1e-9) { t = 0; s = (std::clamp)(-c / a, 0.0, 1.0); }
+        else
+        {
+            const double bb = GsDot(d1, d2), den = a * e - bb * bb;
+            s = den > 1e-12 ? (std::clamp)((bb * f - c * e) / den, 0.0, 1.0) : 0.0;
+            t = (bb * s + f) / e;
+            if (t < 0) { t = 0; s = (std::clamp)(-c / a, 0.0, 1.0); }
+            else if (t > 1) { t = 1; s = (std::clamp)((bb - c) / a, 0.0, 1.0); }
+        }
+    }
+    const SDK::FVector d = GsSub(GsMad(p0, d1, s), GsMad(q0, d2, t));
+    return sqrt(GsDot(d, d));
+}
+
+// Does a sphere of radius r, moving from a to b, touch the shape anywhere along the way?
+static bool GoalShapeHit(const GoalShape& s, const SDK::FVector& a, const SDK::FVector& b, double r)
+{
+    if (s.kind == GoalShape::Sphere) return GsSegSegDist(a, b, s.c, s.c) <= s.radius + r;
+    if (s.kind == GoalShape::Capsule)
+        return GsSegSegDist(a, b, GsMad(s.c, s.ax[2], -s.half), GsMad(s.c, s.ax[2], s.half)) <= s.radius + r;
+    if (s.kind != GoalShape::Box) return false;
+    // Segment vs the box grown by r, in the box's own frame (slab test). Growing the box by r is exact on the faces and
+    // edges-on and only a hair generous right at the corners (a rounded box would be exact) -- far tighter than before.
+    const SDK::FVector da = GsSub(a, s.c), db = GsSub(b, s.c);
+    double t0 = 0.0, t1 = 1.0;
+    for (int i = 0; i < 3; ++i)
+    {
+        const double pa = GsDot(da, s.ax[i]), pb = GsDot(db, s.ax[i]), e = s.ext[i] + r, d = pb - pa;
+        if (fabs(d) < 1e-9) { if (pa < -e || pa > e) return false; continue; }
+        double u0 = (-e - pa) / d, u1 = (e - pa) / d;
+        if (u0 > u1) std::swap(u0, u1);
+        t0 = (std::max)(t0, u0); t1 = (std::min)(t1, u1);
+        if (t0 > t1) return false;
+    }
+    return true;
+}
+// Is a point (a resting / just-teleported ball centre) touching the shape?
+static bool GoalShapeHitPoint(const GoalShape& s, const SDK::FVector& p, double r) { return GoalShapeHit(s, p, p, r); }
+
+// The ball's collision radius: its root sphere if it has one, else its bounds.
+static double BallRadius(SDK::AActor* ball)
+{
+    static SDK::UClass* sphCls = nullptr;
+    if (!sphCls) sphCls = SDK::UObject::FindClassFast("SphereComponent");
+    auto* root = ball ? ball->RootComponent : nullptr;
+    if (!root) return 0.0;
+    if (sphCls && root->IsA(sphCls))
+    {
+        const SDK::FVector sc = root->K2_GetComponentScale();
+        const double r = fabs(*reinterpret_cast<const float*>(reinterpret_cast<uintptr_t>(root) + 0x518)) * (std::min)({ fabs(sc.X), fabs(sc.Y), fabs(sc.Z) });
+        if (r > 0.0 && r < 500.0) return r;
+    }
+    SDK::FVector o{}, e{}; float sr = 0.f;
+    SDK::UKismetSystemLibrary::GetComponentBounds(root, &o, &e, &sr);
+    const double r = (std::min)({ e.X, e.Y, e.Z });   // a ball's bounds are a cube around it: the half-side is its radius
+    return (r > 0.0 && r < 500.0) ? r : 0.0;
+}
+
 static void CallGoalOverlapBegin(SDK::UObject* goal, SDK::UObject* collider, SDK::UObject* ball)
 {
     static SDK::UFunction* fn = nullptr;
@@ -7995,7 +8169,7 @@ static void ZDriftStartTick()
     if (!physCls) physCls = SDK::UObject::FindClassFast("PhysicalComponent");
     if (!primCls) primCls = SDK::UObject::FindClassFast("PrimitiveComponent");
     if (!ballCls || !physCls || !primCls) return;
-    struct Trig { SDK::UObject* comp; SDK::UPrimitiveComponent* collider; SDK::FVector o, e; bool goal = false; };
+    struct Trig { SDK::UObject* comp; SDK::UPrimitiveComponent* collider; SDK::FVector o, e; bool goal = false; GoalShape shape; };
     static std::vector<Trig> s_trigs;
     static ULONGLONG s_rebuild = 0;
     if (now - s_rebuild > 3000)
@@ -8022,6 +8196,12 @@ static void ZDriftStartTick()
                 (int)col->GetCollisionEnabled());
             if (s_lastBounds[c] != bb) { s_lastBounds[c] = bb; HxLog("[HalcyonA2][ZDRIFTSTART] cylinder %s %s\n", owner.c_str(), bb); }
             if (t.e.X <= 0 || t.e.Y <= 0 || t.e.Z <= 0) continue;
+            {   // [GOAL SHAPES] the cylinder's real shape (rotated box / capsule / mesh bounds), not its world AABB
+                std::string sd;
+                if (!BuildGoalShape(col, &t.shape, &sd)) { t.shape.kind = GoalShape::Box; t.shape.c = t.o; t.shape.ax[0] = { 1, 0, 0 }; t.shape.ax[1] = { 0, 1, 0 }; t.shape.ax[2] = { 0, 0, 1 }; t.shape.ext[0] = t.e.X; t.shape.ext[1] = t.e.Y; t.shape.ext[2] = t.e.Z; sd = "world AABB fallback"; }
+                static std::unordered_map<SDK::UObject*, std::string> s_lastShape;
+                if (s_lastShape[c] != sd) { s_lastShape[c] = sd; HxLog("[HalcyonA2][GOALSHAPE] %s (%s): %s\n", owner.c_str(), col->Class ? col->Class->GetName().c_str() : "?", sd.c_str()); }
+            }
             s_trigs.push_back(t);
         }
         // [2026-11-06 ZDRIFT GOALS] The goal colliders never overlapped the Z Drift ball either (GoalComponent::OverlapBegin
@@ -8045,6 +8225,12 @@ static void ZDriftStartTick()
             if (s_lastGoal[c] != bb) { s_lastGoal[c] = bb; HxLog("[HalcyonA2][ZDRIFTSTART] goal %s (%s) %s\n", c->GetName().c_str(), c->Outer->GetName().c_str(), bb); }
             // goals are flat planes (one extent 0, the goal line): keep them; the ball radius + path sampling catch the crossing
             if (t.e.X + t.e.Y + t.e.Z <= 0) continue;
+            {   // [GOAL SHAPES]
+                std::string sd;
+                if (!BuildGoalShape(col, &t.shape, &sd)) { t.shape.kind = GoalShape::Box; t.shape.c = t.o; t.shape.ax[0] = { 1, 0, 0 }; t.shape.ax[1] = { 0, 1, 0 }; t.shape.ax[2] = { 0, 0, 1 }; t.shape.ext[0] = t.e.X; t.shape.ext[1] = t.e.Y; t.shape.ext[2] = t.e.Z; sd = "world AABB fallback"; }
+                static std::unordered_map<SDK::UObject*, std::string> s_lastShape;
+                if (s_lastShape[c] != sd) { s_lastShape[c] = sd; HxLog("[HalcyonA2][GOALSHAPE] Z Drift goal %s (%s, %s): %s\n", c->GetName().c_str(), c->Outer->GetName().c_str(), col->Class ? col->Class->GetName().c_str() : "?", sd.c_str()); }
+            }
             s_trigs.push_back(t);
         }
     }
@@ -8102,13 +8288,7 @@ static void ZDriftStartTick()
         st.last = p; st.known = true;
         const double dx = p.X - a.X, dy = p.Y - a.Y, dz = p.Z - a.Z;
         const double len = sqrt(dx * dx + dy * dy + dz * dz);
-        double br = 0.0;   // the ball's radius: a touch is the ball's surface reaching the trigger
-        {
-            SDK::FVector bo{}, be{}; float bsr = 0.f;
-            SDK::UKismetSystemLibrary::GetComponentBounds(root, &bo, &be, &bsr);
-            br = (std::max)({ be.X, be.Y, be.Z });
-            if (!(br > 0.0 && br < 500.0)) br = 0.0;
-        }
+        const double br = BallRadius(static_cast<SDK::AActor*>(b));   // [GOAL SHAPES] a touch is the ball's surface reaching the trigger
         {   // [diag] every 2 s per moving ball: nearest start cylinder and how far outside its box it is
             static std::unordered_map<SDK::UObject*, ULONGLONG> s_diagAt;
             ULONGLONG& da = s_diagAt[b];
@@ -8127,16 +8307,11 @@ static void ZDriftStartTick()
                     p.X, p.Y, p.Z, best, bt->comp->Outer ? bt->comp->Outer->GetName().c_str() : "?");
             }
         }
-        const int steps = len > 25.0 ? static_cast<int>(len / 25.0) + 1 : 1;
+        const bool teleported = len > 2500.0;   // a reset / respawn jump: only where it landed counts, not the path
         for (Trig& t : s_trigs)
         {
-            bool in = false;
-            for (int k = 1; k <= (steps > 64 ? 64 : steps) && !in; ++k)
-            {
-                const double f = double(k) / double(steps > 64 ? 64 : steps);
-                const double x = a.X + dx * f, y = a.Y + dy * f, z = a.Z + dz * f;
-                in = fabs(x - t.o.X) <= t.e.X + br && fabs(y - t.o.Y) <= t.e.Y + br && fabs(z - t.o.Z) <= t.e.Z + br;   // ball surface, not centre
-            }
+            // [GOAL SHAPES] swept ball sphere vs the trigger's real shape (was: 25 uu path samples vs its world AABB)
+            const bool in = teleported ? GoalShapeHitPoint(t.shape, p, br) : GoalShapeHit(t.shape, a, p, br);
             const bool was = st.inside.count(t.comp) != 0;
             if (in && !was)
             {
@@ -9103,7 +9278,7 @@ static void DetectGoals()
     // Edge-triggered debounce: a ball scores ONCE when it enters a goal, and only re-arms after it
     // has left every goal. (The old 3s time cooldown re-scored a ball that just sat frozen in the net.)
     static std::unordered_set<void*> ballInGoal;
-    const double MARGIN = 40.0;   // small slack so the ball (radius) counts as "in"
+    // [GOAL SHAPES] no flat slack any more: the ball's real radius against the goal collider's real shape.
 
     // CACHED goal + ball lists, rebuilt ~1Hz. A full GObjects walk (twice) + per-goal
     // GetComponentBounds every 100ms stuttered the game thread on a weak/contended VPS core, which
@@ -9111,11 +9286,14 @@ static void DetectGoals()
     // positions vs cached goal AABBs (no walk, no ProcessEvent). Stale cache entries (GC) are caught
     // by the SafeDetectGoals SEH wrapper + refreshed on the next rebuild.
     static SDK::UObject* gObj[64]; static SDK::FVector gOrg[64]; static SDK::FVector gExt[64]; static int gN = 0;
+    static GoalShape gShape[64];   // [GOAL SHAPES] each goal collider's real (rotated) shape
     // [2026-11-03 GOALCAP] was 256 and filled with the FIRST 256 BP_JakeBall_C instances in object order: once the
     // world held more balls (pools, every arena's balls) the soccer balls fell outside it and soccer could never
     // score (boot with 14 soccer goals before, 0 after). Now 512, and only balls near a goal at rebuild time.
     static constexpr int kGoalBallCap = 512;
     static SDK::UObject* bObj[kGoalBallCap]; static int bN = 0;
+    static double bRad[kGoalBallCap];                        // [GOAL SHAPES] each cached ball's collision radius
+    static std::unordered_map<void*, SDK::FVector> ballLast; // [GOAL SHAPES] where each ball was at the previous check
     static int32_t gSlot[64], bSlot[kGoalBallCap];   // [2026-09-11 CRASH FIX] slot of each cached entry, checked before use (see ObjAliveAt)
 
     static ULONGLONG lastRebuild = 0;
@@ -9146,6 +9324,7 @@ static void DetectGoals()
         InterlockedIncrement(&g_rebuilds);   // [PROF] how often caches actually rebuild
         lastRebuild = now;
         gN = 0; bN = 0;
+        if (ballLast.size() > 2048) ballLast.clear();   // [GOAL SHAPES] bound the previous-position memo
         // [2026-09-11 PERF] shared class index instead of a full GObjects walk (see ObjIndexTick).
         for (const ObjIdxEntry& e : ClassObjectEntries(goalCls))
         {
@@ -9165,6 +9344,22 @@ static void DetectGoals()
                 {
                     kslCDO->ProcessEvent(fnBounds, &bp);
                     BoundsMemoPut(bp.Component, bp.Origin, bp.BoxExtent);
+                }
+                {   // [GOAL SHAPES] measured once per rebuild (static geometry); log it when it changes
+                    std::string sd;
+                    if (!BuildGoalShape(col, &gShape[gN], &sd))
+                    {
+                        GoalShape& f = gShape[gN]; f = GoalShape{}; f.kind = GoalShape::Box; f.c = bp.Origin;
+                        f.ax[0] = { 1, 0, 0 }; f.ax[1] = { 0, 1, 0 }; f.ax[2] = { 0, 0, 1 };
+                        f.ext[0] = bp.BoxExtent.X; f.ext[1] = bp.BoxExtent.Y; f.ext[2] = bp.BoxExtent.Z; sd = "world AABB fallback";
+                    }
+                    static std::unordered_map<void*, std::string> s_lastShape;
+                    if (s_lastShape[o] != sd)
+                    {
+                        s_lastShape[o] = sd;
+                        HxLog("[HalcyonA2][GOALSHAPE] %s team=%d (%s): %s\n", o->Outer ? o->Outer->GetName().c_str() : o->GetName().c_str(),
+                            *reinterpret_cast<int*>(p + 0x590), static_cast<SDK::UObject*>(col)->Class ? static_cast<SDK::UObject*>(col)->Class->GetName().c_str() : "?", sd.c_str());
+                    }
                 }
                 gSlot[gN] = eSlot; gObj[gN] = o; gOrg[gN] = bp.Origin; gExt[gN] = bp.BoxExtent; ++gN;
             }
@@ -9187,7 +9382,7 @@ static void DetectGoals()
                 nearGoal = fabs(p.X - gOrg[g].X) < gExt[g].X + kNearGoal && fabs(p.Y - gOrg[g].Y) < gExt[g].Y + kNearGoal &&
                            fabs(p.Z - gOrg[g].Z) < gExt[g].Z + kNearGoal;
             if (!nearGoal) continue;
-            bSlot[bN] = e.idx; bObj[bN++] = e.obj;
+            bSlot[bN] = e.idx; bRad[bN] = BallRadius(a); bObj[bN++] = e.obj;
         }
         int gEnabled = 0;
         for (int g = 0; g < gN; ++g)
@@ -9211,16 +9406,19 @@ static void DetectGoals()
         if (!a || !a->RootComponent)
             continue;
         SDK::FVector bp = a->RootComponent->K2_GetComponentLocation();
+        // [GOAL SHAPES] sweep from where the ball was at the previous check, so a fast shot cannot skip through a thin
+        // goal between two checks; a reset / respawn jump (> 2500 uu in one check) only counts where it landed.
+        auto lastIt = ballLast.find(o);
+        SDK::FVector from = (lastIt != ballLast.end()) ? lastIt->second : bp;
+        { const SDK::FVector d = GsSub(bp, from); if (GsDot(d, d) > 2500.0 * 2500.0) from = bp; }
+        ballLast[o] = bp;
         int hit = -1;
         for (int g = 0; g < gN; ++g)
         {
             // goal must be ENABLED right now (checked live, not at cache time)
             if (!ObjAliveAt(gObj[g], gSlot[g])) continue;   // freed since the rebuild
             if (*reinterpret_cast<uint8_t*>(reinterpret_cast<uintptr_t>(gObj[g]) + 0x5A9) == 0) continue;
-            // inside the goal's world AABB (+ margin)?
-            if (fabs(bp.X - gOrg[g].X) > gExt[g].X + MARGIN) continue;
-            if (fabs(bp.Y - gOrg[g].Y) > gExt[g].Y + MARGIN) continue;
-            if (fabs(bp.Z - gOrg[g].Z) > gExt[g].Z + MARGIN) continue;
+            if (!GoalShapeHit(gShape[g], from, bp, bRad[b])) continue;   // ball surface touching the goal collider
             hit = g; break;
         }
         void* ballKey = o;
@@ -11512,6 +11710,64 @@ static void SafePlayerCountMeasure()
     __try { const int n = MeasureConnectedPlayers(); if (n >= 0) g_hbPlayers.store(n, std::memory_order_relaxed); }
     __except (EXCEPTION_EXECUTE_HANDLER) {}
 }
+// [2026-11-06 DISTRICT POPS] Players per district for the station browser's district_populations map (the info panel
+// prints each key, and the district sort buttons use driftball/parkour/club/scrap/spine/space -- client comparator
+// 0x5670F80). Each client tells the server its district through AAxPlayerState::Server_SetDistrict as it moves between
+// presence zones, so the server's AAxPlayerState.District (uint8 EDistrictZone @0x3E8) is current. Only player states
+// owned by a PlayerController with a live NetConnection are counted (connected players, not bots / leftovers).
+static const char* DistrictKey(uint8_t zone)
+{
+    switch (zone)
+    {
+    case 0: return "space";      case 1: return "driftball";  case 2: return "parkour";   case 3: return "club";
+    case 4: return "scrap";      case 5: return "spine";      case 6: return "driftblitz"; case 7: return "driftblitz";
+    case 8: return "driftball";  case 9: return "driftball";  case 10: return "weekly";   case 11: return "weekly";
+    case 12: return "ctb";
+    default: return nullptr;
+    }
+}
+// POD-only (SEH): the district of one connected player's state, -1 = not a connected player, -2 = fault.
+static int PlayerStateDistrict(uintptr_t ps)
+{
+    __try
+    {
+        const uintptr_t owner = *reinterpret_cast<uintptr_t*>(ps + 0x168);               // AActor::Owner = the PlayerController
+        if (!owner || !*reinterpret_cast<void**>(owner + 0x530)) return -1;              // APlayerController::NetConnection
+        return *reinterpret_cast<uint8_t*>(ps + 0x3E8);                                  // AAxPlayerState::District
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER) { return -2; }
+}
+static int CountDistricts(int counts[16])   // returns players counted, -1 = fault
+{
+    static SDK::UClass* psCls = nullptr;
+    if (!psCls) psCls = SDK::UObject::FindClassFast("AxPlayerState");
+    if (!psCls) return 0;
+    int total = 0;
+    for (SDK::UObject* o : ClassObjects(psCls))
+    {
+        if (!o || o->IsDefaultObject()) continue;
+        const int zone = PlayerStateDistrict(reinterpret_cast<uintptr_t>(o));
+        if (zone == -2) return -1;
+        if (zone < 0) continue;
+        if (zone < 16) ++counts[zone];
+        ++total;
+    }
+    return total;
+}
+// JSON object {"driftball":3,"club":2,...} (only districts with players), or "" if the read faulted.
+static std::string DistrictPopsJson()
+{
+    int counts[16] = {};
+    if (CountDistricts(counts) < 0) return std::string();
+    std::map<std::string, int> byKey;
+    for (int z = 0; z < 16; ++z)
+        if (counts[z] > 0)
+            if (const char* k = DistrictKey(static_cast<uint8_t>(z))) byKey[k] += counts[z];
+    std::string s = "{";
+    for (const auto& kv : byKey) s += (s.size() > 1 ? "," : "") + std::string("\"") + kv.first + "\":" + std::to_string(kv.second);
+    return s + "}";
+}
+
 static void PlayerCountReportTick()
 {
     if (g_deploymentId.empty()) return;   // not registered yet / manual launch without an id
@@ -11535,11 +11791,16 @@ static void PlayerCountReportTick()
     // Fire-and-forget so a remote POST never stalls the game thread. Capture by value.
     const std::string dep = g_deploymentId;
     const int         cnt = numConns;
-    std::thread([dep, cnt]() {
-        std::string body = "{\"deployment_id\":\"" + dep + "\",\"player_count\":" + std::to_string(cnt) + "}";
+    const std::string districts = DistrictPopsJson();               // [DISTRICT POPS] read on the game thread, sent below
+    std::thread([dep, cnt, districts]() {
+        std::string body = "{\"deployment_id\":\"" + dep + "\",\"player_count\":" + std::to_string(cnt);
+        if (!districts.empty()) body += ",\"district_populations\":" + districts;
+        body += "}";
         HttpPostLocal(kBackendHost, kBackendPort, L"/update_player_count", body);
         }).detach();
-    printf("[HalcyonA2] player-count report: deployment=%s count=%d\n", g_deploymentId.c_str(), numConns);
+    printf("[HalcyonA2] player-count report: deployment=%s count=%d districts=%s\n", g_deploymentId.c_str(), numConns, districts.c_str());
+    static std::string s_lastDistricts;
+    if (districts != s_lastDistricts) { s_lastDistricts = districts; HxLog("[HalcyonA2][DISTRICTS] %s (count=%d)\n", districts.c_str(), numConns); }
 }
 static void SafePlayerCountReportTick() { __try { PlayerCountReportTick(); } __except (EXCEPTION_EXECUTE_HANDLER) {} }
 
@@ -12045,10 +12306,20 @@ static void NvWalkRelease(NvWalk* w)
 }
 // Read (write=false) or write `path` in the world tree. 1 = ok, 0 = world tree not up yet, -1 = path not
 // found, -2 = the leaf is not a bool/number/string, <= -3 = fault. *before receives the value prior to a write.
+static int NvTreeAccess(void* root, const std::string& path, bool write, const std::string& value, int* typeOut, NvOrig* before);
 static int NvWorldAccess(const std::string& path, bool write, const std::string& value, int* typeOut, NvOrig* before)
 {
     *typeOut = -1;
     void* root = NvWorldRoot();
+    if (!root) return 0;
+    return NvTreeAccess(root, path, write, value, typeOut, before);
+}
+// [2026-11-06 OBJECT OVERRIDES] Same walk from any container: the world root above, or a gamemode's module config
+// (UModuleState+0xE8) for nested keys like TicketManagerSettings/MaxTeamSizes/0 -- the game reads that one exactly
+// this way (FindChild "TicketManagerSettings" -> FindChild "MaxTeamSizes" on the result, 0x4A10D60 / 0x4A40CA0).
+static int NvTreeAccess(void* root, const std::string& path, bool write, const std::string& value, int* typeOut, NvOrig* before)
+{
+    *typeOut = -1;
     if (!root) return 0;
     std::vector<uint64_t> segs;
     for (size_t p = 0; p <= path.size(); )
@@ -12083,6 +12354,111 @@ static int NvWorldAccess(const std::string& path, bool write, const std::string&
     NvWalkRelease(w);
     delete w;
     return rc;
+}
+
+// [2026-11-06 OBJECT OVERRIDES] A module override whose value is a JSON object (the dashboard's raw key for an
+// object netvar, e.g. TicketManagerSettings = {"MaxTeamSizes":{"0":10,"1":10}}) is split into one leaf override per
+// number/bool/string inside it, named by its path (TicketManagerSettings/MaxTeamSizes/0 = 10). Only the leaves named
+// are touched; anything else in the object keeps the gamemode's value. Arrays are not supported (none of the
+// gamemode objects use them). Returns false when the text is not a well-formed object of that shape.
+static void NvJsonWs(const std::string& s, size_t& i) { while (i < s.size() && (s[i] == ' ' || s[i] == '\t' || s[i] == '\r' || s[i] == '\n')) ++i; }
+static bool NvJsonStr(const std::string& s, size_t& i, std::string* out)
+{
+    if (i >= s.size() || s[i] != '"') return false;
+    ++i; out->clear();
+    while (i < s.size() && s[i] != '"')
+    {
+        if (s[i] == '\\' && i + 1 < s.size()) { ++i; out->push_back(s[i] == 'n' ? '\n' : s[i] == 't' ? '\t' : s[i]); ++i; continue; }
+        out->push_back(s[i++]);
+    }
+    if (i >= s.size()) return false;
+    ++i;
+    return true;
+}
+static bool NvJsonObject(const std::string& s, size_t& i, const std::string& prefix, std::vector<std::pair<std::string, std::string>>* out, int depth)
+{
+    if (depth > 8) return false;
+    NvJsonWs(s, i);
+    if (i >= s.size() || s[i] != '{') return false;
+    ++i; NvJsonWs(s, i);
+    if (i < s.size() && s[i] == '}') { ++i; return true; }
+    for (;;)
+    {
+        NvJsonWs(s, i);
+        std::string key;
+        if (!NvJsonStr(s, i, &key) || key.empty() || key.find('/') != std::string::npos) return false;
+        NvJsonWs(s, i);
+        if (i >= s.size() || s[i] != ':') return false;
+        ++i; NvJsonWs(s, i);
+        const std::string path = prefix + "/" + key;
+        if (i >= s.size()) return false;
+        if (s[i] == '{') { if (!NvJsonObject(s, i, path, out, depth + 1)) return false; }
+        else if (s[i] == '"') { std::string v; if (!NvJsonStr(s, i, &v)) return false; out->push_back({ path, v }); }
+        else
+        {
+            const size_t b = i;
+            while (i < s.size() && s[i] != ',' && s[i] != '}' && s[i] != ' ' && s[i] != '\r' && s[i] != '\n' && s[i] != '\t') ++i;
+            const std::string v = s.substr(b, i - b);
+            if (v.empty() || v == "null" || v[0] == '[') return false;
+            out->push_back({ path, v });
+        }
+        NvJsonWs(s, i);
+        if (i < s.size() && s[i] == ',') { ++i; continue; }
+        if (i < s.size() && s[i] == '}') { ++i; return true; }
+        return false;
+    }
+}
+static bool NvFlattenObject(const std::string& name, const std::string& value, std::vector<std::pair<std::string, std::string>>* out)
+{
+    size_t i = 0;
+    NvJsonWs(value, i);
+    if (i >= value.size() || value[i] != '{') return false;
+    std::vector<std::pair<std::string, std::string>> leaves;
+    if (!NvJsonObject(value, i, name, &leaves, 0)) return false;
+    NvJsonWs(value, i);
+    if (i != value.size() || leaves.empty()) return false;
+    *out = std::move(leaves);
+    return true;
+}
+
+// [2026-11-06 TEAM SIZES] TicketManagerSettings/MaxTeamSizes/<team> only reaches the arena's ATicketManager when the
+// gamemode begins (0x4A10D60 -> 0x4A41EE0 copies it into MaxTeamSizes @0x3E8, server only), so a running arena would
+// keep its old limit until its gamemode restarted. Mirror the wanted value into that array directly. Server-side
+// admission (TicketManager team-full check) reads this array. Returns how many entries changed.
+static int NvApplyTeamMaxSizes(const std::map<std::string, int>& want)   // "slot|team" -> max
+{
+    if (want.empty()) return 0;
+    static SDK::UClass* tmCls = nullptr;
+    if (!tmCls) tmCls = SDK::UObject::FindClassFast("TicketManager");
+    if (!tmCls) return 0;
+    int changed = 0;
+    for (SDK::UObject* o : ClassObjects(tmCls))
+    {
+        if (!o || o->IsDefaultObject()) continue;
+        uint8_t* t = reinterpret_cast<uint8_t*>(o);
+        const wchar_t* sw = *reinterpret_cast<wchar_t* const*>(t + 0x340);          // SlotID FString (see WhitelistProbeTick)
+        const int32_t sn = *reinterpret_cast<const int32_t*>(t + 0x348);
+        if (!sw || sn <= 1 || sn > 128) continue;
+        std::string slot;
+        for (int32_t k = 0; k < sn - 1 && sw[k]; ++k) slot.push_back(static_cast<char>(sw[k] < 128 ? sw[k] : '?'));
+        int32_t* data = *reinterpret_cast<int32_t**>(t + 0x3E8);                      // MaxTeamSizes TArray<int32>
+        const int32_t num = *reinterpret_cast<const int32_t*>(t + 0x3F0);
+        if (!data || num <= 0 || num > 16) continue;
+        for (int32_t team = 0; team < num; ++team)
+        {
+            auto it = want.find(slot + "|" + std::to_string(team));
+            if (it == want.end() || data[team] == it->second) continue;
+            HxLog("[HalcyonA2][NETVARS] %s TicketManager MaxTeamSizes[%d] %d -> %d (live)\n", slot.c_str(), team, data[team], it->second);
+            data[team] = it->second;
+            ++changed;
+        }
+    }
+    return changed;
+}
+static int SafeNvApplyTeamMaxSizes(const std::map<std::string, int>& want)
+{
+    __try { return NvApplyTeamMaxSizes(want); }
+    __except (EXCEPTION_EXECUTE_HANDLER) { return -1; }
 }
 
 static void NvApplyTick()
@@ -12161,12 +12537,19 @@ static void NvApplyTick()
         if (ov.kind == "world") { if (!ov.name.empty()) wantWorld.insert("world|" + ov.name); continue; }
         if (ov.kind != "module" || ov.name.empty() || ov.slot.empty()) continue;
         ++moduleOverrides;
+        // [2026-11-06 OBJECT OVERRIDES] an object value becomes one override per leaf (name = its path).
+        std::vector<std::pair<std::string, std::string>> leaves;
+        if (!NvFlattenObject(ov.name, ov.value, &leaves)) leaves.assign(1, { ov.name, ov.value });
         bool matched = false;
         for (const auto& st : states)
             if (ov.slot == "*" || ov.slot == st.id)
             {
-                NvOverride c = ov; c.slot = st.id; c.kind = (ov.slot == "*") ? "module*" : "module";
-                want[st.id + "|" + ov.name] = c;
+                for (const auto& lf : leaves)
+                {
+                    NvOverride c = ov; c.slot = st.id; c.kind = (ov.slot == "*") ? "module*" : "module";
+                    c.name = lf.first; c.value = lf.second;
+                    want[st.id + "|" + c.name] = c;
+                }
                 matched = true;
             }
         if (!matched && ov.slot != "*") ++slotNotLoaded;
@@ -12174,6 +12557,19 @@ static void NvApplyTick()
 
     std::unordered_map<std::string, std::string> hookValues;             // keys we could not write natively
     std::unordered_map<std::string, int> touchedSlots;
+    // [2026-11-06 TEAM SIZES] "slot|team" -> max for the live TicketManager mirror (wanted values, and the gamemode's
+    // own value again when an override is removed). TicketManagerSettings/MaxTeamSizes/<team>; the game also accepts
+    // the lower-case "maxTeamSizes" spelling one gamemode uses, so match the segment case-insensitively.
+    std::map<std::string, int> teamMax;
+    auto teamMaxKey = [](const std::string& slot, const std::string& var, std::string* key) -> bool {
+        static const char pre[] = "ticketmanagersettings/maxteamsizes/";
+        if (var.size() <= sizeof(pre) - 1) return false;
+        for (size_t k = 0; k < sizeof(pre) - 1; ++k) if (tolower(static_cast<unsigned char>(var[k])) != pre[k]) return false;
+        const std::string team = var.substr(sizeof(pre) - 1);
+        if (team.empty() || team.size() > 2 || team.find_first_not_of("0123456789") != std::string::npos) return false;
+        *key = slot + "|" + team;
+        return true;
+    };
     int wrote = 0, restored = 0, same = 0, notConfig = 0;
 
     // Restore anything we wrote that is no longer wanted.
@@ -12192,7 +12588,16 @@ static void NvApplyTick()
             continue;
         }
         for (const auto& st : states)
-            if (st.id == sid)
+            if (st.id == sid && var.find('/') != std::string::npos)
+            {
+                int t = -1;
+                const int rc = NvTreeAccess(reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(st.ms) + 0xE8), var, true, it->second.original, &t, nullptr);
+                HxLog("[HalcyonA2][NETVARS] restored %s.%s = %s (rc=%d)\n", sid.c_str(), var.c_str(), it->second.original.c_str(), rc);
+                std::string tk;
+                if (rc == 1 && teamMaxKey(sid, var, &tk)) teamMax[tk] = atoi(it->second.original.c_str());
+                ++touchedSlots[sid]; ++restored;
+            }
+            else if (st.id == sid)
             {
                 const std::wstring wv(it->second.original.begin(), it->second.original.end());
                 float f = static_cast<float>(atof(it->second.original.c_str()));
@@ -12213,6 +12618,39 @@ static void NvApplyTick()
         if (!st) continue;
         auto done = g_nvNative.find(kv.first);
         void* container = reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(st->ms) + 0xE8);
+        if (ov.name.find('/') != std::string::npos)
+        {
+            // [2026-11-06 OBJECT OVERRIDES] a leaf inside an object: walk the path from the module config.
+            std::string tk;
+            const bool isTeamMax = teamMaxKey(ov.slot, ov.name, &tk);
+            int type = -1; NvOrig cur{};
+            int rc = NvTreeAccess(container, ov.name, false, std::string(), &type, &cur);
+            if (rc != 1)
+            {
+                static std::unordered_set<std::string> s_pathWarned;
+                if (s_pathWarned.insert(kv.first + "|" + ov.value).second)
+                    HxLog("[HalcyonA2][NETVARS] %s.%s cannot be set: %s (rc=%d type=%d)\n", ov.slot.c_str(), ov.name.c_str(),
+                        rc == -1 ? "no such key in this gamemode's config" : rc == -2 ? "not a bool/number/string" : "fault while reading", rc, type);
+                if (ov.kind == "module") ++notConfig;
+                continue;
+            }
+            if (NvValueMatches(type, cur, ov.value))
+            {
+                if (done == g_nvNative.end()) g_nvNative[kv.first] = { type, ov.value, NvOrigToString(type, cur) };
+                if (isTeamMax) teamMax[tk] = atoi(ov.value.c_str());
+                ++same; continue;
+            }
+            const std::string original = (done == g_nvNative.end()) ? NvOrigToString(type, cur) : done->second.original;
+            int t2 = -1;
+            rc = NvTreeAccess(container, ov.name, true, ov.value, &t2, nullptr);
+            if (rc != 1) { HxLog("[HalcyonA2][NETVARS] write %s.%s failed rc=%d\n", ov.slot.c_str(), ov.name.c_str(), rc); continue; }
+            g_nvNative[kv.first] = { type, ov.value, original };
+            if (isTeamMax) teamMax[tk] = atoi(ov.value.c_str());
+            HxLog("[HalcyonA2][NETVARS] wrote %s.%s = %s (%s, was %s)\n", ov.slot.c_str(), ov.name.c_str(), ov.value.c_str(),
+                type == NvNative::TNumber ? "number" : type == NvNative::TBool ? "bool" : "string", original.c_str());
+            ++touchedSlots[ov.slot]; ++wrote;
+            continue;
+        }
         const uint64_t fname = NvNameBits(NvName(ov.name));
         if (done != g_nvNative.end() && done->second.value == ov.value)
         {
@@ -12286,6 +12724,12 @@ static void NvApplyTick()
             rb == 1 ? NvOrigToString(t3, after).c_str() : "?");
         ++worldWrote;
     }
+
+    // [2026-11-06 TEAM SIZES] push wanted max team sizes into the running arenas' TicketManagers (every pass: an
+    // arena whose gamemode restarted re-copied its defaults at begin-play, or read our config value -- either way
+    // this keeps them equal to the override).
+    const int teamMaxChanged = SafeNvApplyTeamMaxSizes(teamMax);
+    if (teamMaxChanged < 0) HxLog("[HalcyonA2][NETVARS] TicketManager MaxTeamSizes update faulted\n");
 
     // Re-run the consumers that cache config: the ticket manager (whitelist) and the gamemode script.
     // [2026-09-13 *** THE SCRAPRUN DOOR FIX] Notify every slot we hold an override FOR, not only the ones
@@ -12566,6 +13010,121 @@ static void TrapToggleTick()
     if (s_on.size() > 4096) s_on.clear();
 }
 static void SafeTrapToggleTick() { __try { TrapToggleTick(); } __except (EXCEPTION_EXECUTE_HANDLER) {} }
+
+// [2026-11-06 TRAPBREAK] Scrap Run traps that break never come back. BP_Scraprun_TrapDescriptor (decompiled):
+//   BreakTrap -> TrapBreak_Event -> Breaking = true (rep) -> UpdateBreak: on the dedicated server it starts an 8 s
+//   "Fade Amount" fade on its A2DynamicMaterialParameterAdjuster, and ONLY that adjuster's completion event
+//   (BndEvt__..._A2DynamicMaterialParameterAdjuster_ComponentBoundEvent_0) runs, server-side:
+//   if Breaking -> TrapFullyBroken() (broadcasts OnTrapFullyBroken, which the trap's Luau answers with ResetTrap after
+//   its lifetime) + SetPrimitiveVisiblityAndCollision(false).
+// The adjuster only completes from its own TickComponent (AdjustScalarParameterOnMaterialOverTime 0x561FB00 just
+// queues the fade and enables tick), and on our headless server it never completes -- so TrapFullyBroken never fires,
+// the Luau never resets the trap, and Breaking stays true for good. Same class as [BOOSTRESPAWN] / [TRAPTOGGLE].
+// Fix: when a descriptor has been Breaking for longer than the fade (+1.5 s) and its completion event has not run
+// since the break, run that completion event ourselves (ProcessEvent on the Blueprint event). The game's own chain
+// then does the rest. If the event does run natively (seen in the ProcessEvent hook), we leave it alone, so this can
+// never fire it twice for one break. Descriptors are found through the NATIVE class (ScraprunTrapDescriptor): the
+// Blueprint class lookup never matched on prod (why [TRAPPROBE] saw none). -NoTrapBreakFix disables.
+static SDK::UFunction* volatile g_trapAdjDoneFn = nullptr;     // the descriptor's adjuster-completion Blueprint event
+static SRWLOCK g_trapAdjLock = SRWLOCK_INIT;
+static std::unordered_map<void*, ULONGLONG> g_trapAdjDoneAt;    // descriptor -> last time that event ran (any source)
+static void TrapAdjusterDoneSeen(SDK::UObject* ctx)             // called from the ProcessEvent hook (pointer compare first)
+{
+    AcquireSRWLockExclusive(&g_trapAdjLock);
+    g_trapAdjDoneAt[ctx] = GetTickCount64();
+    if (g_trapAdjDoneAt.size() > 4096) g_trapAdjDoneAt.clear();
+    ReleaseSRWLockExclusive(&g_trapAdjLock);
+}
+static void TrapBreakTick()
+{
+    static const bool off = wcsstr(GetCommandLineW(), L"-NoTrapBreakFix") != nullptr;
+    if (off) return;
+    static ULONGLONG s_t = 0; const ULONGLONG now = GetTickCount64();
+    if (now - s_t < 250) return;
+    s_t = now;
+    static SDK::UClass* descCls = nullptr;
+    if (!descCls) descCls = SDK::UObject::FindClassFast("ScraprunTrapDescriptor");
+    if (!descCls) return;
+    struct St { ULONGLONG since; bool done; };
+    static std::unordered_map<void*, St> s_breaking;
+    static int s_logged = 0, s_seenLogged = 0;
+    static ULONGLONG s_hb = 0;
+    int nDesc = 0, nBreaking = 0;
+    for (SDK::UObject* o : ClassObjects(descCls))
+    {
+        if (!o || o->IsDefaultObject() || !o->Class) continue;
+        static SDK::UClass* bpCls = nullptr;                    // BP_Scraprun_TrapDescriptor_C (owns Breaking @0x458)
+        if (!bpCls && o->Class->GetName() == "BP_Scraprun_TrapDescriptor_C") bpCls = o->Class;
+        if (!bpCls || !o->IsA(bpCls)) continue;
+        ++nDesc;
+        if (!g_trapAdjDoneFn)
+            g_trapAdjDoneFn = o->Class->GetFunction("BP_Scraprun_TrapDescriptor_C",
+                "BndEvt__BP_Scraprun_TrapDescriptor_A2DynamicMaterialParameterAdjuster_ComponentBoundEvent_0_DynamicMaterialParameterAdjusterEvent__DelegateSignature");
+        // [TRAPBREAK net] "Much more likely with more people on": at high player counts the server's net output is saturated
+        // and a mostly-dormant, priority-1 trap descriptor can wait a long time for its Breaking=false (the reset) to be
+        // sent, so players keep seeing the trap gone even though the server reset it. Give descriptors a higher net
+        // priority once, and force a net update on every Breaking flip so the change goes out on the next net tick.
+        auto* actor = static_cast<SDK::AActor*>(o);
+        float& netPrio = *reinterpret_cast<float*>(reinterpret_cast<uintptr_t>(o) + 0x1A0);   // AActor::NetPriority
+        if (netPrio < 3.0f) netPrio = 3.0f;
+        const bool breaking = *reinterpret_cast<uint8_t*>(reinterpret_cast<uintptr_t>(o) + 0x458) != 0;   // Breaking
+        if (!breaking)
+        {
+            auto was = s_breaking.find(o);
+            if (was != s_breaking.end())
+            {
+                actor->FlushNetDormancy(); actor->ForceNetUpdate();
+                static int s_resetLogged = 0;
+                if (s_resetLogged < 400)
+                {
+                    ++s_resetLogged;
+                    HxLog("[HalcyonA2][TRAPBREAK] %s reset after %.1fs (%s; players=%d) -> forced net update\n", o->GetName().c_str(),
+                        double(now - was->second.since) / 1000.0, was->second.done ? "after our completion check" : "before it", g_hbPlayers.load());
+                }
+                s_breaking.erase(was);
+            }
+            continue;
+        }
+        ++nBreaking;
+        auto it = s_breaking.find(o);
+        if (it == s_breaking.end())
+        {
+            s_breaking.emplace(o, St{ now, false });
+            actor->ForceNetUpdate();                              // the break itself goes out promptly too
+            continue;
+        }
+        if (it->second.done || now - it->second.since < 9500) continue;   // 8 s fade + margin
+        it->second.done = true;
+        ULONGLONG doneAt = 0;
+        AcquireSRWLockShared(&g_trapAdjLock);
+        auto d = g_trapAdjDoneAt.find(o);
+        if (d != g_trapAdjDoneAt.end()) doneAt = d->second;
+        ReleaseSRWLockShared(&g_trapAdjLock);
+        if (doneAt >= it->second.since)
+        {
+            if (s_seenLogged < 20) { ++s_seenLogged; HxLog("[HalcyonA2][TRAPBREAK] %s: fade completed natively -- nothing to do\n", o->GetName().c_str()); }
+            continue;
+        }
+        SDK::UFunction* fn = g_trapAdjDoneFn;
+        if (!fn) { if (s_logged < 5) { ++s_logged; HxLog("[HalcyonA2][TRAPBREAK] completion event not found on %s\n", o->Class->GetName().c_str()); } continue; }
+        alignas(16) uint8_t parms[16] = {};
+        *reinterpret_cast<float*>(parms) = 1.0f;                // EndScalar (unused by the server path)
+        SafeProcessEvent(o, fn, parms);
+        if (s_logged < 400)
+        {
+            ++s_logged;
+            HxLog("[HalcyonA2][TRAPBREAK] %s broken %.1fs, fade never completed on the server -> ran its completion (TrapFullyBroken -> Luau reset)\n",
+                o->GetName().c_str(), double(now - it->second.since) / 1000.0);
+        }
+    }
+    if (s_breaking.size() > 4096) s_breaking.clear();
+    if (now - s_hb > 300000 || (s_hb == 0 && nDesc > 0))
+    {
+        s_hb = now;
+        HxLog("[HalcyonA2][TRAPBREAK] %d trap descriptor(s), %d breaking now, completion event %s\n", nDesc, nBreaking, g_trapAdjDoneFn ? "resolved" : "NOT resolved");
+    }
+}
+static void SafeTrapBreakTick() { __try { TrapBreakTick(); } __except (EXCEPTION_EXECUTE_HANDLER) {} }
 
 // [2026-11-06 GSDUMP] Which gamemode level sits in which module slot, its GameStateManager state (@0x4CC; -1 = the
 // script never switched state, 1 = WAITING_TO_START) and the slot's ball spawner ball (Disc @0x580). 90 s after boot,
@@ -18266,6 +18825,7 @@ static void ProcessEvent_Hook(SDK::UObject* Context, SDK::UFunction* Function, v
     if (g_bootSpineOnly) { SafeProcessEventOrig(Context, Function, Parms); return; }
 
     if (IsLocalRig()) TrapBreakTrace(Context, Function);   // [2026-11-03 TRAPPROBE] local rig only
+    if (Function == g_trapAdjDoneFn && Function && Context) TrapAdjusterDoneSeen(Context);   // [TRAPBREAK] native fade completion
 
     // [SPECEDIT] The Spec Editor tunnels its commands through ALevelEditorPawn::Server_AttemptLockObject,
     // which the build already replicates and which takes a free-form FString. A string that does not
@@ -18809,6 +19369,7 @@ static void ProcessEvent_Hook(SDK::UObject* Context, SDK::UFunction* Function, v
         PROF(SafeBoostProbeTick);       // [BOOSTPROBE] -VerboseDiag: boost pickup hide/show changes   // [WHITELIST] log each arena's effective whitelist on change (1 Hz, read-only)
         PROF(SafeBoostRespawnTick);     // [BOOSTRESPAWN] reset taken arena boosts after their cooldown
         PROF(SafeTrapToggleTick);       // [TRAPTOGGLE] reset Scrap Run trap toggles stuck enabled
+        PROF(SafeTrapBreakTick);        // [TRAPBREAK] finish broken Scrap Run traps whose server-side fade never completes
         PROF(SafeZDriftStartTick);      // [ZDRIFT START] client-driven Z Drift ball entering its start cylinder (~30 Hz)
         PROF(SafeGsDumpTick);           // [GSDUMP] gamemode level / state / spawner ball per slot (90 s, then 5 min)
         PROF(SafeSpecEditTick);      // [SPECEDIT] collision stand-ins for placed meshes -- no-op unless -SpecEdit
@@ -18967,7 +19528,7 @@ static void ProcessEvent_Hook(SDK::UObject* Context, SDK::UFunction* Function, v
             SafeMatchResultTick();
         }
         static ULONGLONG s_lastPlayerReport = 0;
-        if (g_trackerDone && GetTickCount64() - s_lastPlayerReport > 180000)
+        if (g_trackerDone && GetTickCount64() - s_lastPlayerReport > 15000)   // [DISTRICT POPS] was 180 s; carries district counts now
         {
             s_lastPlayerReport = GetTickCount64();
             PROF(SafePlayerCountReportTick);
