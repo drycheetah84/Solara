@@ -90,3 +90,11 @@ D-series quota needs MFA login, a request was throttled -- retry for D8as_v5 the
   Agent `win-gamebox-2` capacity 8, kept EMPTY as standby (spin-ups with no box land there once box 1 is full).
   Hub allowlist SOLARA_AGENT_ALLOWED_IPS=10.10.1.10,10.20.1.10. Same admin creds file. Measured on box 1:
   idle server ~0.4 core, +~2% core per player, game thread caps a server near 1 core (~25-30 players).
+
+**2026-11-06 inject timing trap:** the box agent injects HalcyonA2.dll ~60 s after a server process starts. The deploy
+script's module check (~20 s after a replacement) can show an empty module for a server that is still fine -- re-check
+after 90 s, never kill it. A killed-while-injecting replacement gets retired by the watchdog ("spin-up failed") and then
+"holding: never heartbeated"; `/watchdog/resume` alone will not relaunch it and `/spinup` rejects
+`-DashboardDeploymentId`. Recovery: `POST /api/stations/{station_id}/spinup {"box":..,"name":..}` (new deployment id,
+same station) then `POST :9095/watchdog/retire {"deployment_id": <dead>}`. Don't spin up while another launch is in
+flight on the same box.
