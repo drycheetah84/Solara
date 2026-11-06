@@ -7962,6 +7962,25 @@ static bool SafeCallReflectedOverlapBegin(SDK::UObject* trig, SDK::UObject* pawn
 // enabled; every BP_ZDriftGamemodeBall_C; test the ball's path since the last check against the trigger's bounds box
 // and on entry fire the trigger's own reflected OverlapBegin -> OnOverlapByDisc -> the script's OnBallHitsStartTrigger.
 // The script itself still checks the ball is its spawner's and the state is WAITING_TO_START. -NoZDriftStart disables.
+// GoalComponent::OverlapBegin(OverlappedComponent = its collider @0x5A0, OtherActor = ball, OtherComp = ball root, ...)
+static void CallGoalOverlapBegin(SDK::UObject* goal, SDK::UObject* collider, SDK::UObject* ball)
+{
+    static SDK::UFunction* fn = nullptr;
+    if (!fn)
+        if (SDK::UClass* cls = SDK::UObject::FindClassFast("GoalComponent"))
+            fn = cls->GetFunction("GoalComponent", "OverlapBegin");
+    if (!fn) return;
+    alignas(16) uint8_t parms[0x120] = {};
+    void* root = *reinterpret_cast<void**>(reinterpret_cast<uintptr_t>(ball) + 0x1C8);   // AActor::RootComponent [50451 offs]
+    memcpy(parms + 0x00, &collider, 8);
+    memcpy(parms + 0x08, &ball, 8);
+    memcpy(parms + 0x10, &root, 8);
+    goal->ProcessEvent(fn, parms);
+}
+static void SafeCallGoalOverlapBegin(SDK::UObject* goal, SDK::UObject* collider, SDK::UObject* ball)
+{
+    __try { CallGoalOverlapBegin(goal, collider, ball); } __except (EXCEPTION_EXECUTE_HANDLER) {}
+}
 static void ZDriftStartTick()
 {
     static const bool off = wcsstr(GetCommandLineW(), L"-NoZDriftStart") != nullptr;
@@ -7976,7 +7995,7 @@ static void ZDriftStartTick()
     if (!physCls) physCls = SDK::UObject::FindClassFast("PhysicalComponent");
     if (!primCls) primCls = SDK::UObject::FindClassFast("PrimitiveComponent");
     if (!ballCls || !physCls || !primCls) return;
-    struct Trig { SDK::UObject* comp; SDK::UPrimitiveComponent* collider; SDK::FVector o, e; };
+    struct Trig { SDK::UObject* comp; SDK::UPrimitiveComponent* collider; SDK::FVector o, e; bool goal = false; };
     static std::vector<Trig> s_trigs;
     static ULONGLONG s_rebuild = 0;
     if (now - s_rebuild > 3000)
@@ -7998,7 +8017,34 @@ static void ZDriftStartTick()
             Trig t{ c, col, {}, {} };
             float r = 0.f;
             SDK::UKismetSystemLibrary::GetComponentBounds(col, &t.o, &t.e, &r);
+            static std::unordered_map<SDK::UObject*, std::string> s_lastBounds;
+            char bb[160]; sprintf_s(bb, "origin=(%.0f,%.0f,%.0f) extent=(%.0f,%.0f,%.0f) r=%.0f collision=%d", t.o.X, t.o.Y, t.o.Z, t.e.X, t.e.Y, t.e.Z, r,
+                (int)col->GetCollisionEnabled());
+            if (s_lastBounds[c] != bb) { s_lastBounds[c] = bb; HxLog("[HalcyonA2][ZDRIFTSTART] cylinder %s %s\n", owner.c_str(), bb); }
             if (t.e.X <= 0 || t.e.Y <= 0 || t.e.Z <= 0) continue;
+            s_trigs.push_back(t);
+        }
+        // [2026-11-06 ZDRIFT GOALS] The goal colliders never overlapped the Z Drift ball either (GoalComponent::OverlapBegin
+        // never ran, ball followed into the goal on the LAN test). Watch each Z Drift goal's collider (@0x5A0, the one its
+        // native handler checks) the same way and fire GoalComponent::OverlapBegin; the native decides if it scores.
+        static SDK::UClass* goalCls = nullptr;
+        if (!goalCls) goalCls = SDK::UObject::FindClassFast("GoalComponent");
+        for (SDK::UObject* c : goalCls ? ClassObjects(goalCls) : std::vector<SDK::UObject*>{})
+        {
+            if (!c || c->IsDefaultObject() || !c->Outer) continue;
+            SDK::UObject* slot = *reinterpret_cast<SDK::UObject**>(reinterpret_cast<uintptr_t>(c) + 0x448);
+            if (!slot || !slot->Class || slot->Class->GetName().find("ZDrift") == std::string::npos) continue;
+            auto* col = *reinterpret_cast<SDK::UPrimitiveComponent**>(reinterpret_cast<uintptr_t>(c) + 0x5A0);   // UGoalComponent collider
+            if (!col || !col->IsA(primCls)) continue;
+            Trig t{ c, col, {}, {}, true };
+            float r = 0.f;
+            SDK::UKismetSystemLibrary::GetComponentBounds(col, &t.o, &t.e, &r);
+            static std::unordered_map<SDK::UObject*, std::string> s_lastGoal;
+            char bb[160]; sprintf_s(bb, "origin=(%.0f,%.0f,%.0f) extent=(%.0f,%.0f,%.0f) collision=%d", t.o.X, t.o.Y, t.o.Z, t.e.X, t.e.Y, t.e.Z,
+                (int)col->GetCollisionEnabled());
+            if (s_lastGoal[c] != bb) { s_lastGoal[c] = bb; HxLog("[HalcyonA2][ZDRIFTSTART] goal %s (%s) %s\n", c->GetName().c_str(), c->Outer->GetName().c_str(), bb); }
+            // goals are flat planes (one extent 0, the goal line): keep them; the ball radius + path sampling catch the crossing
+            if (t.e.X + t.e.Y + t.e.Z <= 0) continue;
             s_trigs.push_back(t);
         }
     }
@@ -8007,17 +8053,80 @@ static void ZDriftStartTick()
     static std::unordered_map<SDK::UObject*, BallSt> s_balls;
     if (s_balls.size() > 512) s_balls.clear();
     static int s_fired = 0;
-    for (SDK::UObject* b : ClassObjects(ballCls))
+    // The index never returned instances of the Blueprint class (same reason the ScrapRun trap probe saw no
+    // descriptors on prod); the native DiscEntity list works (the overlap pump lists every Z Drift ball), so filter it.
+    static SDK::UClass* discCls = nullptr;
+    if (!discCls) discCls = SDK::UObject::FindClassFast("DiscEntity");
+    if (!discCls) return;
+    static ULONGLONG s_hb = 0; static int s_seenDiscs = 0, s_seenZ = 0;
+    if (now - s_hb > 10000)
     {
-        if (!b || b->IsDefaultObject()) continue;
+        s_hb = now;
+        HxLog("[HalcyonA2][ZDRIFTSTART] heartbeat: %zu cylinder(s), %d disc(s) scanned, %d Z Drift ball(s) in the last pass\n",
+            s_trigs.size(), s_seenDiscs, s_seenZ);
+    }
+    s_seenDiscs = 0; s_seenZ = 0;
+    for (SDK::UObject* b : ClassObjects(discCls))
+    {
+        ++s_seenDiscs;
+        if (!b || b->IsDefaultObject() || !b->Class || b->Class->GetName().find("ZDriftGamemodeBall") == std::string::npos) continue;   // by name: IsA(FindClassFast) never matched
+        ++s_seenZ;
         auto* root = static_cast<SDK::AActor*>(b)->RootComponent;
         if (!root) continue;
-        const SDK::FVector p = root->K2_GetComponentLocation();
+        // The server's ball actor never moves while a player holds / throws it: Server_SendPhysicsPropData only fills
+        // the A2PhysicsSync replicated position (ball+0x688 -> +0xF0), which the other clients follow. Use that.
+        SDK::FVector p = root->K2_GetComponentLocation();
+        if (void* psync = *reinterpret_cast<void**>(reinterpret_cast<uintptr_t>(b) + 0x688))   // [50451 offs]
+        {
+            const SDK::FVector sp = *reinterpret_cast<const SDK::FVector*>(reinterpret_cast<uintptr_t>(psync) + 0xF0);
+            if (sp.X != 0.0 || sp.Y != 0.0 || sp.Z != 0.0)
+            {
+                // [2026-11-06 ZDRIFT FOLLOW] Move the server's copy to where the players see it, so the engine's own overlap
+                // logic works for every Z Drift trigger: start cylinder, midfield triggers AND the goals (goals never
+                // scored: the server ball sat at its spawn). Z Drift balls only -- moving sim-owned arena balls froze them.
+                const double fx = sp.X - p.X, fy = sp.Y - p.Y, fz = sp.Z - p.Z;
+                if (fx * fx + fy * fy + fz * fz > 4.0)
+                {
+                    SDK::FHitResult hit{};
+                    static_cast<SDK::AActor*>(b)->K2_SetActorLocation(sp, false, &hit, true);
+                    static int s_follow = 0;
+                    if (++s_follow <= 20 || s_follow % 500 == 0)
+                        HxLog("[HalcyonA2][ZDRIFTSTART] server copy of %s moved to the synced position (%.0f,%.0f,%.0f) (#%d)\n",
+                            b->GetName().c_str(), sp.X, sp.Y, sp.Z, s_follow);
+                }
+                p = sp;
+            }
+        }
         BallSt& st = s_balls[b];
         const SDK::FVector a = st.known ? st.last : p;
         st.last = p; st.known = true;
         const double dx = p.X - a.X, dy = p.Y - a.Y, dz = p.Z - a.Z;
         const double len = sqrt(dx * dx + dy * dy + dz * dz);
+        double br = 0.0;   // the ball's radius: a touch is the ball's surface reaching the trigger
+        {
+            SDK::FVector bo{}, be{}; float bsr = 0.f;
+            SDK::UKismetSystemLibrary::GetComponentBounds(root, &bo, &be, &bsr);
+            br = (std::max)({ be.X, be.Y, be.Z });
+            if (!(br > 0.0 && br < 500.0)) br = 0.0;
+        }
+        {   // [diag] every 2 s per moving ball: nearest start cylinder and how far outside its box it is
+            static std::unordered_map<SDK::UObject*, ULONGLONG> s_diagAt;
+            ULONGLONG& da = s_diagAt[b];
+            if (len > 1.0 && now - da > 2000)
+            {
+                da = now;
+                double best = 1e18; const Trig* bt = nullptr;
+                for (const Trig& t : s_trigs)
+                {
+                    const double ox = (std::max)(0.0, fabs(p.X - t.o.X) - t.e.X - br), oy = (std::max)(0.0, fabs(p.Y - t.o.Y) - t.e.Y - br),
+                        oz = (std::max)(0.0, fabs(p.Z - t.o.Z) - t.e.Z - br);
+                    const double d = sqrt(ox * ox + oy * oy + oz * oz);
+                    if (d < best) { best = d; bt = &t; }
+                }
+                if (bt) HxLog("[HalcyonA2][ZDRIFTSTART] ball %s r=%.0f at (%.0f,%.0f,%.0f): %.0f uu outside nearest cylinder %s\n", b->GetName().c_str(), br,
+                    p.X, p.Y, p.Z, best, bt->comp->Outer ? bt->comp->Outer->GetName().c_str() : "?");
+            }
+        }
         const int steps = len > 25.0 ? static_cast<int>(len / 25.0) + 1 : 1;
         for (Trig& t : s_trigs)
         {
@@ -8026,7 +8135,7 @@ static void ZDriftStartTick()
             {
                 const double f = double(k) / double(steps > 64 ? 64 : steps);
                 const double x = a.X + dx * f, y = a.Y + dy * f, z = a.Z + dz * f;
-                in = fabs(x - t.o.X) <= t.e.X && fabs(y - t.o.Y) <= t.e.Y && fabs(z - t.o.Z) <= t.e.Z;
+                in = fabs(x - t.o.X) <= t.e.X + br && fabs(y - t.o.Y) <= t.e.Y + br && fabs(z - t.o.Z) <= t.e.Z + br;   // ball surface, not centre
             }
             const bool was = st.inside.count(t.comp) != 0;
             if (in && !was)
@@ -8040,14 +8149,23 @@ static void ZDriftStartTick()
                     HxLog("[HalcyonA2][ZDRIFTSTART] %s entered %s (%s) collision=%d -> %s\n", b->GetName().c_str(), t.comp->GetName().c_str(),
                         t.comp->Outer ? t.comp->Outer->GetName().c_str() : "?", (int)ce, enabled ? "OverlapBegin fired" : "cylinder disabled, ignored");
                 }
-                if (enabled) SafeCallReflectedOverlapBegin(t.comp, b);
+                if (enabled) { if (t.goal) SafeCallGoalOverlapBegin(t.comp, t.collider, b); else SafeCallReflectedOverlapBegin(t.comp, b); }
             }
             else if (!in && was)
                 st.inside.erase(t.comp);
         }
     }
 }
-static void SafeZDriftStartTick() { __try { ZDriftStartTick(); } __except (EXCEPTION_EXECUTE_HANDLER) {} }
+static volatile LONG g_zdFaults = 0;
+static void SafeZDriftStartTick()
+{
+    __try { ZDriftStartTick(); }
+    __except (EXCEPTION_EXECUTE_HANDLER)
+    {
+        if (InterlockedIncrement(&g_zdFaults) <= 5)
+            HxLog("[HalcyonA2][ZDRIFTSTART] fault 0x%08X in the detector tick\n", GetExceptionCode());
+    }
+}
 
 static void DetectRunnerAtFinish()
 {
