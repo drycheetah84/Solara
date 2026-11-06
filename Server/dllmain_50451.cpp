@@ -14074,6 +14074,10 @@ static void MatchResultSlot(SDK::UObject* o, ULONGLONG now)
         MrSlot& st = g_mrSlots[o];
         g_mrStep = "running";
         const bool running = ms->GetIsGameRunning();
+        // [2026-11-06] Idle slots never use the score (see `if (!st.running) return;` below), and at boot some module
+        // states are not ready: GetScore faulted inside ProcessEvent 12x on the local server (swallowed by the PE
+        // wrapper). Only read scores while a game runs or on the tick it ends.
+        if (!running && !st.running) return;
         g_mrStep = "score";
         int sc[2] = { 0, 0 };
         const bool fromComponent = MrReadScore(o, sc);
