@@ -42,6 +42,7 @@ arena balls, per-client PC (RIFT) identities, the Station_Prime level-tree desyn
 | [a2-50451-christmas-port](a2-50451-christmas-port.md) | How the 47031 DLL work was ported to 50451; building the 50451 IDB |
 | [a2-rollback-netmode-fix](a2-rollback-netmode-fix.md) | Arena balls (rollback sim): the working fix set (netmode, authority flag, frame rebase, ball push) |
 | [a2-50451-quest-kiosk](a2-50451-quest-kiosk.md) | Quest progression, the local test rig, `a2inject -pid` trap |
+| [a2-sandbox-content](a2-sandbox-content.md) | Every S3 sandbox object the servers fetch (ScrapRun traps, cloud gamemodes); cert failure + /sandboxprojects cache |
 | [a2-50451-mothership-schemas](a2-50451-mothership-schemas.md) | Client Mothership response contracts (inventory, storefront, IAP, tech trees) |
 | [a2-mothership-notifications-ws](a2-mothership-notifications-ws.md) | The Mothership websocket = moderation push (Warning/Mute/Unmute); `Client_ShowNotification` for custom boards |
 | [a2-voip-vivox](a2-voip-vivox.md) | Voice chat setup per build |
