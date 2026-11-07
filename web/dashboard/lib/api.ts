@@ -231,6 +231,13 @@ function check(res: Response) {
   if (!res.ok) throw new Error(`API error ${res.status}`);
 }
 
+export type SandboxObject = {
+  path: string; kind: string; id: string; name: string; type: string; version: string; bytes: number;
+  cached_at: string; hits: number; failures: number; last_at: string; last_client: string; last_error: string;
+  failed_fetch: boolean;
+};
+export type SandboxObjects = { upstream: string; cache_dir: string; total_bytes: number; objects: SandboxObject[] };
+
 async function get<T>(path: string): Promise<T> {
   const res = await fetch(`/api/${path}`, { cache: "no-store" });
   check(res);
@@ -488,6 +495,8 @@ export const api = {
   deleteTitleData: (key: string) => del<{ deleted: string }>(`titledata/${encodeURIComponent(key)}`),
   // Anonymous-mode name generator (master key only). Not via put()/post(): a 400 carries the reason.
   anonymousNames: () => get<AnonNameState>("anonymous-names"),
+  // Sandbox content fetched from Axiom's S3 bucket through the station backend (master key only).
+  sandboxObjects: () => get<SandboxObjects>("sandbox/objects"),
   saveAnonymousNames: (s: AnonNameSettings) => sendJson<AnonNameState>("PUT", "anonymous-names", s),
   previewAnonymousNames: (s: AnonNameSettings) => sendJson<{ preview: AnonNamePreview[] }>("POST", "anonymous-names/preview", s),
   resetAnonymousNames: () => del<AnonNameState>("anonymous-names"),

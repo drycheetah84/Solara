@@ -144,6 +144,8 @@ func newAresDashboardServer() *AresDashboardServer {
 	h.Handle("PUT", "/api/anonymous-names", "Solara/PutAnonymousNamesAdmin", s.PutAnonymousNamesAdmin)
 	h.Handle("DELETE", "/api/anonymous-names", "Solara/DeleteAnonymousNamesAdmin", s.DeleteAnonymousNamesAdmin)
 	h.Handle("POST", "/api/anonymous-names/preview", "Solara/PreviewAnonymousNamesAdmin", s.PreviewAnonymousNamesAdmin)
+	// Sandbox tab: the Axiom S3 sandbox content the game servers have fetched through /sandboxprojects (sandbox_proxy.go).
+	h.Handle("GET", "/api/sandbox/objects", "Solara/GetSandboxObjects", s.GetSandboxObjects)
 	// Users tab: paged search over every user, and per-user global permissions (see dashboard_users_admin.go).
 	h.Handle("GET", "/api/users/search", "Solara/SearchUsers", s.SearchUsers)
 	h.Handle("GET", "/api/stations/{station_id}/matches", "Solara/GetStationMatches", s.GetStationMatches)
