@@ -13057,9 +13057,12 @@ static void TrapBreakTick()
         if (!bpCls && o->Class->GetName() == "BP_Scraprun_TrapDescriptor_C") bpCls = o->Class;
         if (!bpCls || !o->IsA(bpCls)) continue;
         ++nDesc;
-        if (!g_trapAdjDoneFn)
-            g_trapAdjDoneFn = o->Class->GetFunction("BP_Scraprun_TrapDescriptor_C",
-                "BndEvt__BP_Scraprun_TrapDescriptor_A2DynamicMaterialParameterAdjuster_ComponentBoundEvent_0_DynamicMaterialParameterAdjusterEvent__DelegateSignature");
+        if (!g_trapAdjDoneFn)   // by name over the class chain (Class->GetFunction("BP_..._C", ...) never matched)
+            for (SDK::UStruct* s = o->Class; s && !g_trapAdjDoneFn; s = s->SuperStruct)
+                for (SDK::UField* f = s->Children; f; f = f->Next)
+                    if (f->HasTypeFlag(SDK::EClassCastFlags::Function) && f->GetName() ==
+                        "BndEvt__BP_Scraprun_TrapDescriptor_A2DynamicMaterialParameterAdjuster_ComponentBoundEvent_0_DynamicMaterialParameterAdjusterEvent__DelegateSignature")
+                    { g_trapAdjDoneFn = static_cast<SDK::UFunction*>(f); break; }
         // [TRAPBREAK net] "Much more likely with more people on": at high player counts the server's net output is saturated
         // and a mostly-dormant, priority-1 trap descriptor can wait a long time for its Breaking=false (the reset) to be
         // sent, so players keep seeing the trap gone even though the server reset it. Give descriptors a higher net
@@ -13125,6 +13128,162 @@ static void TrapBreakTick()
     }
 }
 static void SafeTrapBreakTick() { __try { TrapBreakTick(); } __except (EXCEPTION_EXECUTE_HANDLER) {} }
+
+// [2026-11-06 SCRAPEND] "I died and it didn't end." ScrapRun's gamemode.luau ends a round only from
+//     RunnerTeamChanger.teamSizeDecreased.Listen(PlayerLeftTeam)  -- teamSize == 0 while RUNNING -> score + GAME_EXIT
+// i.e. from the runner UTeamChangeComponent's TeamSizeDecreased (@0x490), raised when ITS TeamSize (@0x4DC) goes down.
+// LAN test 2026-11-06: round 1 (straight runner join) ended on the death; round 2 (runner -> scrapper changer ->
+// runner again) cleared the team on death (Server_ClearPawnTeam -> Client_TeamClearSuccess) and nothing ended --
+// the runner changer's own count had not followed the re-join, so no decrease to 0 was ever raised.
+// The arena's TicketManager is the authority on who is on which team (TeamSizes @0x3D8). So: while a ScrapRun round
+// is RUNNING / OVERTIME_RUNNING (5 / 13) and the TicketManager has had NO runners (TeamSizes[0] == 0) for 2 s, raise the
+// runner changer's TeamSizeDecreased(0, 0) to its listeners -- the script's own PlayerLeftTeam then scores and exits
+// exactly as on a normal last death. Once per round (re-armed when the state leaves RUNNING). -NoScrapEndFix disables.
+static int BroadcastTeamSizeDecreased(SDK::UObject* comp, int32_t teamSize, int32_t teamIndex)
+{
+    const auto* list = reinterpret_cast<RawDelegateList*>(reinterpret_cast<uintptr_t>(comp) + 0x490);   // TeamSizeDecreased
+    int n = list->Num;
+    if (n <= 0 || !list->Data) return 0;
+    if (n > 16) n = 16;
+    struct Entry { int32_t objIndex; SDK::FName fn; };
+    Entry copy[16];
+    for (int i = 0; i < n; ++i) { copy[i].objIndex = list->Data[i].Object.ObjectIndex; copy[i].fn = list->Data[i].FunctionName; }
+    int called = 0;
+    for (int i = 0; i < n; ++i)
+    {
+        SDK::UObject* obj = SDK::UObject::GObjects->GetByIndex(copy[i].objIndex);
+        SDK::UFunction* fn = FindFuncByFName(obj, copy[i].fn);
+        if (!fn) continue;
+        uint8_t parms[64] = {};
+        memcpy(parms, &teamSize, 4); memcpy(parms + 4, &teamIndex, 4);   // (int32 TeamSize, int32 TeamIndex)
+        obj->ProcessEvent(fn, parms);
+        ++called;
+    }
+    return called;
+}
+static int SafeBroadcastTeamSizeDecreased(SDK::UObject* comp, int32_t teamSize, int32_t teamIndex)
+{
+    __try { return BroadcastTeamSizeDecreased(comp, teamSize, teamIndex); }
+    __except (EXCEPTION_EXECUTE_HANDLER) { return -1; }
+}
+static std::string FStrAt(const uint8_t* p)   // FString at p -> narrow
+{
+    const wchar_t* w = *reinterpret_cast<wchar_t* const*>(p);
+    const int32_t n = *reinterpret_cast<const int32_t*>(p + 8);
+    std::string s;
+    for (int32_t i = 0; w && i < n - 1 && i < 128; ++i) s += static_cast<char>(w[i] < 128 ? w[i] : '?');
+    return s;
+}
+static void ScrapEndTick()
+{
+    static const bool off = wcsstr(GetCommandLineW(), L"-NoScrapEndFix") != nullptr;
+    if (off) return;
+    static ULONGLONG s_t = 0; const ULONGLONG now = GetTickCount64();
+    if (now - s_t < 250) return;
+    s_t = now;
+    static SDK::UClass* gsCls = nullptr, * tmCls = nullptr, * tcCls = nullptr;
+    if (!gsCls) gsCls = SDK::UObject::FindClassFast("GameStateManagerComponent");
+    if (!tmCls) tmCls = SDK::UObject::FindClassFast("TicketManager");
+    if (!tcCls) tcCls = SDK::UObject::FindClassFast("TeamChangeComponent");
+    if (!gsCls || !tmCls || !tcCls) return;
+    struct Round { ULONGLONG emptySince; bool fired; };
+    static std::unordered_map<void*, Round> s_round;   // GSM -> this round's state
+    static std::unordered_map<void*, bool> s_roundLogged;   // one diagnostic line per running round
+    for (SDK::UObject* tm : ClassObjects(tmCls))
+    {
+        if (!tm || tm->IsDefaultObject()) continue;
+        const uint8_t* t = reinterpret_cast<const uint8_t*>(tm);
+        const std::string sid = FStrAt(t + 0x340);                                         // SlotID
+        if (sid.rfind("scraprun", 0) != 0 || sid.find("trap") != std::string::npos || sid == "scraprunstart") continue;
+        void* slot = *reinterpret_cast<void* const*>(t + 0x350);                            // ModuleSlot
+        if (!slot) continue;
+        SDK::UObject* gsm = nullptr;
+        for (SDK::UObject* g : ClassObjects(gsCls))
+            if (g && !g->IsDefaultObject() && *reinterpret_cast<void**>(reinterpret_cast<uintptr_t>(g) + 0x448) == slot) { gsm = g; break; }
+        if (!gsm) continue;
+        const int state = *reinterpret_cast<int32_t*>(reinterpret_cast<uintptr_t>(gsm) + 0x4CC);
+        Round& r = s_round[gsm];
+        if (state != 5 && state != 13) { r = Round{ 0, false }; s_roundLogged.erase(gsm); continue; }   // not RUNNING: re-arm
+        if (r.fired) continue;
+        const int32_t* sizes = *reinterpret_cast<int32_t* const*>(t + 0x3D8);                // TeamSizes (diagnostic only)
+        const int32_t nSizes = *reinterpret_cast<const int32_t*>(t + 0x3E0);
+        if (!sizes || nSizes < 1) continue;
+        // Runners = players whose OWN team record says "team 0 of this arena" (UA2PlayerTeamComponent CurrentTicketManager
+        // @0x190 == tm, CurrentPawnTeamIndex @0x200 == 0, Pawn @0x180 set). NOT TeamSizes: LAN test 2026-11-06 showed
+        // TeamSizes [0,1] for a player who went runner -> scrapper -> runner (the switch back is never counted), which
+        // ended that round the moment it started.
+        static SDK::UClass* ptCls = nullptr;
+        if (!ptCls) ptCls = SDK::UObject::FindClassFast("A2PlayerTeamComponent");
+        if (!ptCls) continue;
+        int runners = 0;
+        for (SDK::UObject* pc : ClassObjects(ptCls))
+        {
+            if (!pc || pc->IsDefaultObject()) continue;
+            const uintptr_t pp = reinterpret_cast<uintptr_t>(pc);
+            if (!*reinterpret_cast<void**>(pp + 0x180)) continue;                                // Pawn
+            if (*reinterpret_cast<void**>(pp + 0x190) != tm) continue;                           // CurrentTicketManager
+            if (*reinterpret_cast<int8_t*>(pp + 0x200) == 0) ++runners;                          // CurrentPawnTeamIndex
+        }
+        if (!s_roundLogged[gsm])
+        {
+            s_roundLogged[gsm] = true;
+            HxLog("[HalcyonA2][SCRAPEND] %s round running: %d runner(s) by player team records, ticket manager sizes [%d,%d] tm=%p slot=%p\n",
+                sid.c_str(), runners, sizes[0], nSizes > 1 ? sizes[1] : -1, (void*)tm, slot);
+            // [diag] every candidate per-player team field, to find the one that really tracks runners
+            for (SDK::UObject* pc : ClassObjects(ptCls))
+            {
+                if (!pc || pc->IsDefaultObject()) continue;
+                const uintptr_t pp = reinterpret_cast<uintptr_t>(pc);
+                SDK::UObject* owner = pc->Outer;
+                HxLog("[HalcyonA2][SCRAPEND]   team comp %s (outer %s): pawn=%p tm=%p slot=%p cur=%d prev=%d resv=%d slotId='%s' recentChanger=%p\n",
+                    pc->GetName().c_str(), owner ? owner->GetName().c_str() : "?", *reinterpret_cast<void**>(pp + 0x180),
+                    *reinterpret_cast<void**>(pp + 0x190), *reinterpret_cast<void**>(pp + 0x188), (int)*reinterpret_cast<int8_t*>(pp + 0x200),
+                    *reinterpret_cast<int32_t*>(pp + 0x128), (int)*reinterpret_cast<int8_t*>(pp + 0x12C),
+                    FStrAt(reinterpret_cast<const uint8_t*>(pp + 0x208)).c_str(), *reinterpret_cast<void**>(pp + 0x100));
+            }
+            static SDK::UClass* psCls2 = nullptr;
+            if (!psCls2) psCls2 = SDK::UObject::FindClassFast("AxPlayerState");
+            if (psCls2)
+                for (SDK::UObject* ps : ClassObjects(psCls2))
+                    if (ps && !ps->IsDefaultObject())
+                        HxLog("[HalcyonA2][SCRAPEND]   player state %s: TeamIndex=%d TeamSlotIndex=%d\n", ps->GetName().c_str(),
+                            *reinterpret_cast<int32_t*>(reinterpret_cast<uintptr_t>(ps) + 0x3D0), *reinterpret_cast<int32_t*>(reinterpret_cast<uintptr_t>(ps) + 0x3D4));
+        }
+        // [2026-11-06] DIAGNOSTIC ONLY until the runner count is proven: two LAN rounds ended instantly (first from
+        // TeamSizes, then from these fields reading 0 for a live runner). Never end a round from here unless
+        // -ScrapEndFix is on the command line.
+        static const bool armed = wcsstr(GetCommandLineW(), L"-ScrapEndFix") != nullptr;
+        if (!armed) continue;
+        if (runners > 0) { r.emptySince = 0; continue; }
+        if (!r.emptySince) { r.emptySince = now; continue; }
+        if (now - r.emptySince < 2000) continue;
+        // No runners for 2 s in a running round: find the runner changer (team 0) of this arena and raise its decrease.
+        SDK::UObject* runner = nullptr; int bestListeners = -1;
+        for (SDK::UObject* c : ClassObjects(tcCls))
+        {
+            if (!c || c->IsDefaultObject()) continue;
+            const uintptr_t cp = reinterpret_cast<uintptr_t>(c);
+            if (*reinterpret_cast<void**>(cp + 0x508) != tm || *reinterpret_cast<int32_t*>(cp + 0x524) != 0) continue;
+            const int lis = reinterpret_cast<RawDelegateList*>(cp + 0x490)->Num;
+            if (lis > bestListeners) { bestListeners = lis; runner = c; }
+        }
+        r.fired = true;
+        if (!runner)
+        {
+            HxLog("[HalcyonA2][SCRAPEND] %s: running with 0 runners for 2 s but no runner changer found -- cannot end it\n", sid.c_str());
+            continue;
+        }
+        const uintptr_t rp = reinterpret_cast<uintptr_t>(runner);
+        const int changerSize = *reinterpret_cast<int32_t*>(rp + 0x4DC);
+        *reinterpret_cast<int32_t*>(rp + 0x4DC) = 0;                                          // keep the changer's own count in line
+        const int called = SafeBroadcastTeamSizeDecreased(runner, 0, 0);
+        HxLog("[HalcyonA2][SCRAPEND] %s: state %d with no player on team 0 for 2 s (ticket manager sizes [%d,%d], runner changer %s said %d) "
+            "-> raised TeamSizeDecreased(0,0) to %d listener(s)\n", sid.c_str(), state, sizes[0], nSizes > 1 ? sizes[1] : -1,
+            runner->GetName().c_str(), changerSize, called);
+    }
+    if (s_round.size() > 256) s_round.clear();
+}
+static void SafeScrapEndTick() { __try { ScrapEndTick(); } __except (EXCEPTION_EXECUTE_HANDLER) {} }
 
 // [2026-11-06 GSDUMP] Which gamemode level sits in which module slot, its GameStateManager state (@0x4CC; -1 = the
 // script never switched state, 1 = WAITING_TO_START) and the slot's ball spawner ball (Disc @0x580). 90 s after boot,
@@ -19370,6 +19529,7 @@ static void ProcessEvent_Hook(SDK::UObject* Context, SDK::UFunction* Function, v
         PROF(SafeBoostRespawnTick);     // [BOOSTRESPAWN] reset taken arena boosts after their cooldown
         PROF(SafeTrapToggleTick);       // [TRAPTOGGLE] reset Scrap Run trap toggles stuck enabled
         PROF(SafeTrapBreakTick);        // [TRAPBREAK] finish broken Scrap Run traps whose server-side fade never completes
+        PROF(SafeScrapEndTick);         // [SCRAPEND] end a running Scrap Run round whose runners are all gone
         PROF(SafeZDriftStartTick);      // [ZDRIFT START] client-driven Z Drift ball entering its start cylinder (~30 Hz)
         PROF(SafeGsDumpTick);           // [GSDUMP] gamemode level / state / spawner ball per slot (90 s, then 5 min)
         PROF(SafeSpecEditTick);      // [SPECEDIT] collision stand-ins for placed meshes -- no-op unless -SpecEdit
