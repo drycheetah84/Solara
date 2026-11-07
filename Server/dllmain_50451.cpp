@@ -15901,18 +15901,24 @@ static const char* CurlRewrite(const char* url, char* buf, size_t cap)
     for (char& c : h) c = static_cast<char>(tolower(static_cast<unsigned char>(c)));
     int port = 0;
     const std::wstring* cfgHost = nullptr;
+    const char* prefix = "";
     if (h.find("aa-mothership") != std::string::npos) { port = g_motherPort; cfgHost = &g_motherHost; }
     else if (h.find("api.oriondrift.net") != std::string::npos) { port = g_backendPort; cfgHost = &g_backendHost; }
+    // [2026-11-06 SANDBOX] Axiom's sandbox content bucket (ScrapRun trap bundles: configs/v1/<guid>/config.json, ...).
+    // Our libcurl cannot verify Amazon's certificate (error 60, "unable to get local issuer certificate"), so every
+    // fetch failed -> no trap bundle -> ScrapRun spawned no traps / traps vanished after a round. The station backend
+    // serves the same paths under /sandboxprojects (Solara fetches and caches them from S3).
+    else if (h.find("a2-sandboxprojects") != std::string::npos) { port = g_backendPort; cfgHost = &g_backendHost; prefix = "/sandboxprojects"; }
     if (!port) return nullptr;
     if (port == 443 && cfgHost && !cfgHost->empty())
     {
         // [2026-11-05] A server outside the backend's private network (e.g. a local test server registered on prod):
         // -MothershipHost / -BackendHost name an HTTPS host (Cloudflare tunnel) instead of a 127.0.0.1 port proxy.
         std::string hn(cfgHost->begin(), cfgHost->end());
-        snprintf(buf, cap, "https://%s%s", hn.c_str(), path ? path : "/");
+        snprintf(buf, cap, "https://%s%s%s", hn.c_str(), prefix, path ? path : "/");
         return buf;
     }
-    snprintf(buf, cap, "http://127.0.0.1:%d%s", port, path ? path : "/");
+    snprintf(buf, cap, "http://127.0.0.1:%d%s%s", port, prefix, path ? path : "/");
     return buf;
 }
 template <int I>

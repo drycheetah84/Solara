@@ -141,6 +141,11 @@ func (s *A2StationDbServer) registerEndpoints() {
 	s.HTTP.Handle("POST", "/v1/fleets/{fleet_id}/challenges/{challenge_id}/list", "Solara/ListChallengeRecords", a2Guard("Solara/ListChallengeRecords", s.ListChallengeRecords))
 	// Anonymous-mode name tag (Server_SetAnonymousMode asks the station dashboard; the original had no route).
 	s.HTTP.Handle("GET", "/v1/anonymous_name", "Solara/GetAnonymousName", a2Guard("Solara/GetAnonymousName", s.GetAnonymousName))
+	// Sandbox content read-through cache (sandbox_proxy.go): the game server's libcurl cannot verify Amazon's
+	// certificate, so the DLL sends a2-sandboxprojects S3 fetches (ScrapRun trap bundles, ...) here. Public content.
+	s.HTTP.Handle("GET", "/sandboxprojects/{a}/{b}/{c}", "Solara/GetSandboxObject3", s.GetSandboxObject3)
+	s.HTTP.Handle("GET", "/sandboxprojects/{a}/{b}/{c}/{d}", "Solara/GetSandboxObject4", s.GetSandboxObject4)
+	s.HTTP.Handle("GET", "/sandboxprojects/{a}/{b}/{c}/{d}/{e}", "Solara/GetSandboxObject5", s.GetSandboxObject5)
 	// Arena match results (match_results.go): a game server reports each finished game.
 	s.HTTP.Handle("POST", "/v1/deployments/{deployment_id}/match_result", "Solara/PostMatchResult", a2Guard("Solara/PostMatchResult", s.PostMatchResult))
 }
