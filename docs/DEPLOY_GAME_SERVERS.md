@@ -15,11 +15,13 @@ Ask the owner for access (see [Access](#access)); never commit keys, passwords o
 
 ## Layout
 
+Rebuilt 2026-11-08 on a new Azure subscription (same names and private IPs, new public IPs; the old 20.51.185.231 hub is gone).
+
 | Machine | Address | Role |
 |---|---|---|
-| Hub `halcyon-hub` (Ubuntu) | public 20.51.185.231, private 10.10.1.4 | Solara backend, dashboard, `halcyon-dist` file server on `10.10.1.4:8000` (= `/opt/halcyon-dist`) |
-| Game box 1 `halcyon-game1` (Windows) | private 10.10.1.10 | agent `win-gamebox-1` |
-| Game box 2 `halcyon-game2` (Windows) | private 10.20.1.10 | agent `win-gamebox-2` |
+| Hub `halcyon-hub` (Ubuntu) | public 20.55.26.98, private 10.10.1.4 | Solara backend, dashboard, `halcyon-dist` file server on `10.10.1.4:8000` (= `/opt/halcyon-dist`) |
+| Game box 1 `halcyon-game1` (Windows) | public 20.55.48.184, private 10.10.1.10 | agent `win-gamebox-1` |
+| Game box 2 `halcyon-game2` (Windows) | public 20.83.58.255, private 10.20.1.10 | agent `win-gamebox-2` |
 
 The game boxes are only reachable from the hub: `ssh ubuntu@<hub>`, then `ssh halcyon@<box private ip>`.
 On each box: `C:\Halcyon\HalcyonA2.dll` (the DLL the agent injects), `C:\Halcyon\server.config.psd1` (its own copy
@@ -51,11 +53,11 @@ Output: `build/50451/x64/Release/HalcyonA2.dll`. Note its MD5 (first 8 hex): `ce
 
 1. **Upload** the DLL, the config and the script to the hub's dist folder:
    ```
-   scp build/50451/x64/Release/HalcyonA2.dll deploy/azure/server.config.psd1 deploy/azure/deploy_dll.ps1 ubuntu@20.51.185.231:/opt/halcyon-dist/
+   scp build/50451/x64/Release/HalcyonA2.dll deploy/azure/server.config.psd1 deploy/azure/deploy_dll.ps1 ubuntu@20.55.26.98:/opt/halcyon-dist/
    ```
 2. **Dry run** on each box (downloads and checks the DLL, lists which servers it would restart, changes nothing):
    ```
-   ssh ubuntu@20.51.185.231
+   ssh ubuntu@20.55.26.98
    ssh halcyon@10.20.1.10 "powershell -NoProfile -Command iwr http://10.10.1.4:8000/deploy_dll.ps1 -OutFile C:\Halcyon\deploy_dll.ps1 -UseBasicParsing"
    ssh halcyon@10.20.1.10 "powershell -NoProfile -ExecutionPolicy Bypass -File C:\Halcyon\deploy_dll.ps1 -Md5 <8 hex> -DryRun"
    ```
