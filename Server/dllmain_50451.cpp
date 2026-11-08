@@ -620,6 +620,12 @@ static UpdGameState_t UpdGameState_Orig = nullptr;
 // re-run the Luau SwitchState onEnter — if RUNNING-entry side effects (DisableForcefields/EnableGoals) turn
 // out to be needed, upgrade to broadcasting the GameTimer onCountdownEnd delegate instead.
 static std::unordered_map<void*, unsigned long long> g_gameBeginAt;   // GSM -> GetTickCount64() at GAME_BEGIN entry
+// [2026-11-08 GOALGATE] Every GSM's current state, and how many times it has changed, so goal scoring can be limited to
+// the states the gamemode actually scores in (see GoalGateCheck). Written on every UpdateGameState, ours included.
+static std::unordered_map<void*, int>      g_gsmState;       // GSM -> state last set
+static std::unordered_map<void*, unsigned> g_gsmEpoch;       // GSM -> number of state changes so far
+static std::unordered_map<void*, unsigned> g_gsmGoalEpoch;   // GSM -> the epoch in which a goal was last accepted
+static void GoalGateNoteState(void* gsm, unsigned char state) { g_gsmState[gsm] = state; ++g_gsmEpoch[gsm]; }
 static bool g_endTriggerFired = false;   // deathrun finish->overtime latch; re-armed at each GAME_BEGIN (see DetectRunnerAtFinish)
 // [2026-09-09 *** SCRAPRUN EARLY-EXIT -- what actually goes wrong, and the fix]
 // The gamemode's own source (deathrun2_a2level/Scripts/gamemode.luau) ends the round here:
@@ -772,6 +778,7 @@ static __int64 __fastcall UpdGameState_Hook(void* self, unsigned char newState)
     }
     else
         g_gameBeginAt.erase(self);        // left GAME_BEGIN (advanced naturally or reset) -> disarm
+    GoalGateNoteState(self, newState);
     return UpdGameState_Orig(self, newState);
 }
 // Ticker: any GSM that has sat at GAME_BEGIN(3) past the ~10s countdown is force-advanced to RUNNING(5).
@@ -784,6 +791,7 @@ static void WatchdogGameBegin()
         if (now - it->second >= 11000)    // 10s countdown + 1s slack
         {
             printf("[HalcyonA2][GSMSTATE] mgr=%p stuck at GAME_BEGIN ~11s -> forcing RUNNING(5)\n", it->first);
+            GoalGateNoteState(it->first, 5);
             if (UpdGameState_Orig) UpdGameState_Orig(it->first, 5);
             it = g_gameBeginAt.erase(it);
         }
@@ -8996,6 +9004,8 @@ static void SafeFillScorerName(int id, void* out) { __try { FillScorerNameFStrin
 
 using GoalScoreFn = void(__fastcall*)(void* goal, SDK::FGoalInfo* info);
 static bool g_goalUseOverlap = true;   // prefer driving the game's own OverlapBegin (FX + score)
+static bool GoalGateBlocks(void* goal);   // [GOALGATE] defined after specedit.h: no point in play / point already scored
+static void GoalGateTake(void* goal);
 static void ScoreGoal(void* goal, int scoringTeam, int scorerId, void* ball)
 {
     const uintptr_t g = reinterpret_cast<uintptr_t>(goal);
@@ -9036,6 +9046,8 @@ static void ScoreGoal(void* goal, int scoringTeam, int scorerId, void* ball)
 
     // FALLBACK — raw scorer (no FX). Only reached if OverlapBegin's guards rejected our overlap, so
     // scoring never regresses.
+    if (GoalGateBlocks(goal)) return;              // [GOALGATE] the native path may have taken this point meanwhile
+    GoalGateTake(goal);
     *reinterpret_cast<uint8_t*>(g + 0x5A8) = 1;   // mark scored (Simulate sets this before scoring)
 
     double timestamp = 0.0;                        // FGoalInfo.Timestamp (cosmetic goal-time stat)
@@ -9228,6 +9240,9 @@ static void DetectGoals()
         if (ballInGoal.count(ballKey)) continue;                // already scored on this entry
         ballInGoal.insert(ballKey);
 
+        // [GOALGATE] warm-up / between-points goal, or the native overlap already scored this point: not a goal.
+        // (Edge-triggered above, so a ball resting in the net is not re-checked until it leaves.)
+        if (GoalGateBlocks(gObj[hit])) continue;
         const int goalTeam = *reinterpret_cast<int*>(reinterpret_cast<uintptr_t>(gObj[hit]) + 0x590);
         const int scoringTeam = (goalTeam == 0) ? 1 : 0;        // ball in team T's net -> opponent scores
         const int scorer = *reinterpret_cast<int*>(reinterpret_cast<uintptr_t>(o) + 0x3D4);  // RollbackRecentPlayerHit [50451 offs]
@@ -14159,6 +14174,114 @@ static __int64 __fastcall StreamThunk_Hook(__int64 a1)
 // changing it: it does nothing unless -SpecEdit is passed AND the caller is in spec_editors.txt.
 #include "specedit.h"
 
+// [2026-11-08 GOALGATE] Driftball (TKB_*) goals counted in states the gamemode never scores in, and twice for one goal.
+//   * The gamemode's OnTeamScored (TKB_Prime gamemode.luau) adds goalPoints to its Luau team0points/team1points FIRST and
+//     only then looks at the state. The mercy rule compares THOSE counters; the scoreboard (ScoreComponent) only moves
+//     on GameScore:incrementScore, which runs in RUNNING / OVERTIME_RUNNING. The counters are reset in SetupForPlay
+//     (BEGIN_PLAY), i.e. BEFORE the warm-up in WAITING_TO_START. Stock A2 keeps goals disabled outside play, so that never
+//     mattered; EnableGoals() here force-enables every goal forever, so every warm-up goal, every goal during
+//     TEAM_SCORED / NEXT_POINT_COUNTDOWN, and every repeat of one goal landed in those counters. The match then started
+//     with hidden points on the Luau side: the mercy rule fired after 1 visible goal one game, after 4 the next.
+//   * One goal could also score twice: DetectGoals (geometric, 10 Hz) and the native overlap from the ball pump (~45 Hz,
+//     since the fast-disc overlaps of 2026-11-05) both reach GoalComponent::OverlapBegin, and ScoreGoal clears the goal's
+//     in-goal flag (+0x480) first, so the native one-shot guard cannot stop the second.
+// So for a TKB_* arena whose GameStateManager state is known: a ball goal is accepted only in RUNNING(5) /
+// OVERTIME_RUNNING(13), at most once per entry into that state (each real goal moves the state to TEAM_SCORED_ENTER and
+// back through NEXT_POINT_COUNTDOWN), and freely in practice (15-19: practice exits through GAME_EXIT -> BEGIN_PLAY, which
+// resets the counters). Anything else -- unknown state, another gamemode, a non-ball overlap -- is left exactly as before.
+static void SafeProcessEventOrig(SDK::UObject* Context, SDK::UFunction* Function, void* Parms);   // defined below
+enum { kGoalAllow = 0, kGoalBlockState = 1, kGoalBlockDup = 2 };
+static SDK::UObject* GoalGateGsm(void* goal, std::string* slotIdOut)
+{
+    auto* slot = *reinterpret_cast<SDK::UObject**>(reinterpret_cast<uintptr_t>(goal) + 0x448);   // ULuauBehavior::ModuleSlot
+    if (!slot || !SeAlive(slot)) return nullptr;
+    static SDK::UClass* slotCls = nullptr;
+    if (!slotCls) slotCls = SDK::UObject::FindClassFast("ModuleSlot");
+    if (!slotCls || !slot->IsA(slotCls)) return nullptr;
+    const wchar_t* id = *reinterpret_cast<const wchar_t* const*>(reinterpret_cast<uintptr_t>(slot) + 0x3F0);   // SlotID
+    if (!id || id[0] != L'T' || id[1] != L'K' || id[2] != L'B' || id[3] != L'_') return nullptr;   // driftball arenas only
+    for (const auto& kv : g_gsmState)
+    {
+        auto* gsm = static_cast<SDK::UObject*>(kv.first);
+        if (!SeAlive(gsm)) continue;
+        if (*reinterpret_cast<SDK::UObject**>(reinterpret_cast<uintptr_t>(gsm) + 0x448) != slot) continue;
+        if (slotIdOut) { slotIdOut->clear(); for (int k = 0; id[k] && k < 64; ++k) *slotIdOut += static_cast<char>(id[k] < 0x80 ? id[k] : '?'); }
+        return gsm;
+    }
+    return nullptr;
+}
+// take = this goal is being scored now: burn the current RUNNING phase so a second path cannot score it again.
+static int GoalGateCheck(void* goal, bool take)
+{
+    std::string slotId;
+    SDK::UObject* gsm = GoalGateGsm(goal, &slotId);
+    if (!gsm) return kGoalAllow;
+    const int st = g_gsmState[gsm];
+    if (st >= 15 && st <= 19) return kGoalAllow;                // practice
+    int verdict = kGoalAllow;
+    const unsigned ep = g_gsmEpoch[gsm];
+    if (st != 5 && st != 13) verdict = kGoalBlockState;
+    else
+    {
+        auto it = g_gsmGoalEpoch.find(gsm);
+        if (it != g_gsmGoalEpoch.end() && it->second == ep) verdict = kGoalBlockDup;
+        else if (take) g_gsmGoalEpoch[gsm] = ep;
+    }
+    if (verdict != kGoalAllow)
+    {
+        // once per goal per state change: the ball can sit in a net for many ticks
+        static std::unordered_map<void*, unsigned> s_logged;
+        auto& last = s_logged[goal];
+        if (last != ep + 1)
+        {
+            last = ep + 1;
+            HxLog("[HalcyonA2][GOALGATE] %s goal team=%d ignored: %s (state %d)\n", slotId.c_str(),
+                  *reinterpret_cast<int*>(reinterpret_cast<uintptr_t>(goal) + 0x590),
+                  verdict == kGoalBlockDup ? "this point was already scored" : "no point in play", st);
+        }
+    }
+    return verdict;
+}
+static bool GoalGateBlocks(void* goal) { __try { return GoalGateCheck(goal, false) != kGoalAllow; } __except (EXCEPTION_EXECUTE_HANDLER) { return false; } }
+static void GoalGateTake(void* goal) { __try { GoalGateCheck(goal, true); } __except (EXCEPTION_EXECUTE_HANDLER) {} }
+
+// ProcessEvent side: every GoalComponent::OverlapBegin dispatch (the native overlap from the ball pump AND ScoreGoal's
+// own call) comes through here. Returns true when it handled the call (swallowed it, or ran it and noted the goal).
+static int32_t g_idxGoalOverlap = 0;
+static bool GoalGateOverlap(SDK::UObject* ctx, SDK::UFunction* fn, void* parms)
+{
+    if (!g_idxGoalOverlap)
+    {
+        static ULONGLONG s_try = 0;
+        const ULONGLONG now = GetTickCount64();
+        if (now - s_try < 5000) return false;
+        s_try = now;
+        if (auto* gc = SDK::UObject::FindClassFast("GoalComponent"))
+            if (auto* f = gc->GetFunction("GoalComponent", "OverlapBegin")) g_idxGoalOverlap = f->Name.ComparisonIndex;
+        if (!g_idxGoalOverlap) return false;
+    }
+    if (fn->Name.ComparisonIndex != g_idxGoalOverlap) return false;
+    static SDK::UClass* goalCls = nullptr;
+    if (!goalCls) goalCls = SDK::UObject::FindClassFast("GoalComponent");
+    static SDK::UClass* ballCls = nullptr;
+    if (!ballCls) ballCls = SDK::UObject::FindClassFast("BP_JakeBall_C");
+    if (!goalCls || !ballCls || !ctx->IsA(goalCls)) return false;
+    auto* other = *reinterpret_cast<SDK::UObject**>(reinterpret_cast<uintptr_t>(parms) + 0x8);   // OtherActor
+    if (!other || !SeAlive(other) || !other->IsA(ballCls)) return false;   // not a ball: the native rejects it anyway
+    if (GoalGateBlocks(ctx)) return true;                                   // swallow: no point in play / already scored
+    // Burn the phase only when the native actually took the goal (in-goal flag +0x480 0 -> 257), so a rejected overlap
+    // (stale flag, wrong disc) cannot use up the point and lose the real goal.
+    const uintptr_t g = reinterpret_cast<uintptr_t>(ctx);
+    const uint16_t before = *reinterpret_cast<uint16_t*>(g + 0x480);
+    SafeProcessEventOrig(ctx, fn, parms);
+    if (before != 257 && *reinterpret_cast<uint16_t*>(g + 0x480) == 257) GoalGateTake(ctx);
+    return true;
+}
+static bool SafeGoalGateOverlap(SDK::UObject* ctx, SDK::UFunction* fn, void* parms)
+{
+    __try { return GoalGateOverlap(ctx, fn, parms); } __except (EXCEPTION_EXECUTE_HANDLER) { return false; }
+}
+
 // [MATCHRESULT 2026-11-05] Report every game that finishes in a module slot (Tackleball arenas, Driftplex...) to the
 // backend: POST /v1/deployments/{id}/match_result {slot_id, started_ms_ago, duration_ms, teams:[{team,score,rounds}],
 // players:[{name,team}]}. The dashboard serves them at GET /api/stations/{station}/matches (match_results.go), which is
@@ -14179,6 +14302,12 @@ struct MrSlot
     ULONGLONG   startedAt = 0;
     std::string slotId;
     int         best[2] = { 0, 0 }, rounds[2] = { 0, 0 };
+    // [2026-11-08] The score component still holds the PREVIOUS game's final score when the next game starts running:
+    // the gamemode only calls GameScore:resetScore() at GAME_START_COUNTDOWN, a few seconds after Gamemode:startGame().
+    // "Highest score seen" then kept that leftover (7-3), and a short game -- e.g. a mercy after 1 goal -- was reported
+    // as 7-3 again (prod seq 319/321 on TKB_Driftplex01). Scores only count once the component has been seen to reset.
+    int         start[2] = { 0, 0 }, last[2] = { 0, 0 };
+    bool        resetSeen = false;
     std::map<std::string, int> players;   // name -> last team seen
 };
 static std::unordered_map<SDK::UObject*, MrSlot> g_mrSlots;
@@ -14308,13 +14437,22 @@ static void MatchResultSlot(SDK::UObject* o, ULONGLONG now)
             {
                 st.running = true; st.startedAt = now; st.players.clear();
                 st.best[0] = st.best[1] = 0; st.rounds[0] = st.rounds[1] = 0;
+                st.start[0] = sc[0]; st.start[1] = sc[1];
+                st.resetSeen = sc[0] + sc[1] == 0;
                 const wchar_t* id = *reinterpret_cast<const wchar_t* const*>(reinterpret_cast<uintptr_t>(o) + 0x3F0);
                 st.slotId.clear();
                 for (int k = 0; id && id[k] && k < 128; ++k) st.slotId += static_cast<char>(id[k] < 0x80 ? id[k] : '?');
                 HxLog("[HalcyonA2][MATCHRESULT] game started in %s (score from %s: %d-%d)\n", st.slotId.c_str(),
                       fromComponent ? "ScoreComponent" : "ModuleState", sc[0], sc[1]);
             }
-            if (sc[0] + sc[1] >= st.best[0] + st.best[1]) { st.best[0] = sc[0]; st.best[1] = sc[1]; }
+            if (!st.resetSeen && sc[0] + sc[1] < st.start[0] + st.start[1])
+            {
+                st.resetSeen = true;
+                HxLog("[HalcyonA2][MATCHRESULT] %s score reset %d-%d -> %d-%d: leftover from the last game dropped\n",
+                      st.slotId.c_str(), st.start[0], st.start[1], sc[0], sc[1]);
+            }
+            st.last[0] = sc[0]; st.last[1] = sc[1];
+            if (st.resetSeen && sc[0] + sc[1] >= st.best[0] + st.best[1]) { st.best[0] = sc[0]; st.best[1] = sc[1]; }
             if (rd[0] + rd[1] >= st.rounds[0] + st.rounds[1]) { st.rounds[0] = rd[0]; st.rounds[1] = rd[1]; }
             g_mrStep = "players";
             MrCollectPlayers(slot, st);
@@ -14325,7 +14463,16 @@ static void MatchResultSlot(SDK::UObject* o, ULONGLONG now)
         st.running = false;                                   // running -> stopped: the game is over
         // The final read, unless the arena already reset it: then the highest score seen while it ran.
         int fin[2] = { sc[0], sc[1] }, frd[2] = { rd[0], rd[1] };
-        if (fin[0] + fin[1] < st.best[0] + st.best[1]) { fin[0] = st.best[0]; fin[1] = st.best[1]; }
+        if (!fromComponent) { fin[0] = st.last[0]; fin[1] = st.last[1]; }   // no read on the ending tick: last one seen
+        if (!st.resetSeen)
+        {
+            // Never reset while it ran: only what was added on top of the leftover is this game's. A pure leftover
+            // comes out 0-0, a draw, which the backend reports as winner -1 (the ranked bot asks for a manual result).
+            fin[0] = (std::max)(0, fin[0] - st.start[0]); fin[1] = (std::max)(0, fin[1] - st.start[1]);
+            HxLog("[HalcyonA2][MATCHRESULT] %s score never reset (started at %d-%d): reporting the change, %d-%d\n",
+                  st.slotId.c_str(), st.start[0], st.start[1], fin[0], fin[1]);
+        }
+        else if (fin[0] + fin[1] < st.best[0] + st.best[1]) { fin[0] = st.best[0]; fin[1] = st.best[1]; }
         if (frd[0] + frd[1] < st.rounds[0] + st.rounds[1]) { frd[0] = st.rounds[0]; frd[1] = st.rounds[1]; }
         const ULONGLONG dur = now - st.startedAt;
         HxLog("[HalcyonA2][MATCHRESULT] game ended in %s after %llus: %d-%d (rounds %d-%d), %zu player(s)%s\n", st.slotId.c_str(),
@@ -18266,6 +18413,9 @@ static void ProcessEvent_Hook(SDK::UObject* Context, SDK::UFunction* Function, v
     if (g_bootSpineOnly) { SafeProcessEventOrig(Context, Function, Parms); return; }
 
     if (IsLocalRig()) TrapBreakTrace(Context, Function);   // [2026-11-03 TRAPPROBE] local rig only
+
+    // [2026-11-08 GOALGATE] Driftball goals only count while a point is in play, once per point (see GoalGateCheck).
+    if (Context && Function && Parms && SafeGoalGateOverlap(Context, Function, Parms)) return;
 
     // [SPECEDIT] The Spec Editor tunnels its commands through ALevelEditorPawn::Server_AttemptLockObject,
     // which the build already replicates and which takes a free-form FString. A string that does not
