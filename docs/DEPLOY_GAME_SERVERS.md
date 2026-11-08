@@ -1,7 +1,7 @@
 # Deploying HalcyonA2.dll to the Windows game boxes
 
 How to ship a new server DLL (and the server config) to the Azure game boxes. **No credentials are in this repo.**
-Ask the owner for access (see [Access](#access)); never commit keys, passwords or the dashboard admin key.
+Access (hub SSH key, game box login) is in [`deploy/ACCESS.md`](../deploy/ACCESS.md). The owner still has to allowlist your IP.
 
 ## Rules first
 
