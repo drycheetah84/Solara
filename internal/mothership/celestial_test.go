@@ -1,71 +1,97 @@
 package mothership
 
 import (
+	"net/http/httptest"
 	"strings"
 	"testing"
 	"time"
+
+	"solara/internal/hosting"
 )
 
-func TestCelestialToken(t *testing.T) {
-	celestialInit()
-	now := time.Unix(1_800_000_000, 0)
-	good := celestialClaims{Claim: "trusted", IP: "1.2.3.4", Obb: "ab", Iat: now.Unix(), Exp: now.Add(2 * time.Hour).Unix(), Jti: "x"}
-	tok := issueCelestialToken(good)
+func celReqIP(ip string) *hosting.Request {
+	r := httptest.NewRequest("POST", "/v2/player/client/auth/complete/QUEST", nil)
+	if ip != "" {
+		r.Header.Set("X-Real-Ip", ip)
+	}
+	return hosting.NewRequest(r)
+}
 
-	if c, r := parseCelestialToken(tok, "1.2.3.4", now); r != "" || c.Obb != "ab" {
-		t.Fatalf("good token: %q", r)
+func TestCelestialTrustMap(t *testing.T) {
+	now := time.Unix(1_800_000_000, 0)
+	celMarkTrusted("9.9.9.9", now)
+	if !celIsTrusted("9.9.9.9", now) {
+		t.Fatal("marked IP should be trusted")
 	}
-	if _, r := parseCelestialToken(tok, "1.2.3.4", now.Add(2*time.Hour+time.Second)); !strings.Contains(r, "expired") {
-		t.Fatalf("after 2h: %q", r)
+	if celIsTrusted("8.8.8.8", now) {
+		t.Fatal("an unmarked IP must not be trusted")
 	}
-	if _, r := parseCelestialToken(tok, "5.6.7.8", now); !strings.Contains(r, "issued to") {
-		t.Fatalf("other ip: %q", r)
-	}
-	if _, r := parseCelestialToken(tok[:len(tok)-2]+"AA", "1.2.3.4", now); !strings.Contains(r, "signature") {
-		t.Fatalf("tampered sig: %q", r)
-	}
-	bad := good
-	bad.Claim = "untrusted"
-	if _, r := parseCelestialToken(issueCelestialToken(bad), "1.2.3.4", now); !strings.Contains(r, "not trusted") {
-		t.Fatalf("claim: %q", r)
-	}
-	if _, r := parseCelestialToken("a.b", "1.2.3.4", now); !strings.Contains(r, "malformed") {
-		t.Fatalf("malformed: %q", r)
+	if celIsTrusted("9.9.9.9", now.Add(celestialTTL+time.Second)) {
+		t.Fatal("trust should lapse after the TTL")
 	}
 }
 
-func TestCelestialLoginGate(t *testing.T) {
+func TestCelestialGateIP(t *testing.T) {
+	celestialInit()
+	old := celMode
+	defer func() { celMode = old }()
+
+	celMode = "enforce"
+	if _, ok := celestialGate(celReqIP("5.5.5.5"), "complete", "u"); ok {
+		t.Fatal("an untrusted IP should be refused in enforce")
+	}
+	celMarkTrusted("5.5.5.5", time.Now())
+	if _, ok := celestialGate(celReqIP("5.5.5.5"), "complete", "u"); !ok {
+		t.Fatal("a trusted IP should pass")
+	}
+	celMode = "log"
+	if _, ok := celestialGate(celReqIP("6.6.6.6"), "complete", "u"); !ok {
+		t.Fatal("log mode should always pass")
+	}
+}
+
+// End to end: the lib's /v1/celestial/token call makes its IP trusted; a later login from that IP
+// passes with nothing attached. A different IP is refused. Game servers are exempt.
+func TestCelestialLoginGateE2E(t *testing.T) {
 	s := newTestServer(t)
 	celestialInit()
 	old := celMode
 	celMode = "enforce"
 	defer func() { celMode = old }()
+	celTrustMu.Lock()
+	celTrust = map[string]int64{}
+	celTrustMu.Unlock()
 
-	// no token: the client login is refused before attestation
-	do(t, s, "POST", "/v2/player/client/auth/begin/QUEST", `{"UserId":"c1"}`)
-	rec := do(t, s, "POST", "/v2/player/client/auth/complete/QUEST", `{"UserId":"c1","AttestationToken":"x","MetaNonce":"n"}`)
-	if rec.Code != 401 || !strings.Contains(rec.Body.String(), "missing celestialToken") {
+	// login from an IP that never fetched a token -> refused
+	do(t, s, "POST", "/v2/player/client/auth/begin/QUEST", `{"UserId":"c1"}`, "X-Real-Ip", "7.7.7.7")
+	rec := do(t, s, "POST", "/v2/player/client/auth/complete/QUEST", `{"UserId":"c1","AttestationToken":"x","MetaNonce":"n"}`, "X-Real-Ip", "7.7.7.7")
+	if rec.Code != 401 || !strings.Contains(rec.Body.String(), "no trusted Celestial token") {
 		t.Fatal(rec.Code, rec.Body.String())
 	}
 
-	// the lib's request: token comes back, and it opens the gate from the same IP
-	m := decode(t, do(t, s, "POST", "/v1/celestial/token", `{}`, "X-Celestial-IP", "192.0.2.1"))
-	tok, _ := m["celestialToken"].(string)
-	if tok == "" || m["expiresIn"] != float64(7200) {
+	// the lib fetches a token from that IP
+	m := decode(t, do(t, s, "POST", "/v1/celestial/token", `{}`, "X-Real-Ip", "7.7.7.7"))
+	if m["celestialToken"] == nil || m["expiresIn"] != float64(7200) {
 		t.Fatal(m)
 	}
-	c, reason := parseCelestialToken(tok, "192.0.2.1", time.Now())
-	if reason != "" || c.Claim != "trusted" || c.Exp-c.Iat != 7200 {
-		t.Fatal(reason, c)
-	}
-	rec = do(t, s, "POST", "/v2/player/client/auth/complete/QUEST", `{"UserId":"c1","AttestationToken":"x","MetaNonce":"n"}`, "x-celestial-token", tok)
+
+	// now any login from that IP is allowed, nothing attached
+	do(t, s, "POST", "/v2/player/client/auth/begin/QUEST", `{"UserId":"c1"}`, "X-Real-Ip", "7.7.7.7")
+	rec = do(t, s, "POST", "/v2/player/client/auth/complete/QUEST", `{"UserId":"c1","AttestationToken":"x","MetaNonce":"n"}`, "X-Real-Ip", "7.7.7.7")
 	if strings.Contains(rec.Body.String(), "Celestial") {
-		t.Fatal("valid token refused:", rec.Body.String())
+		t.Fatal("trusted-IP login refused:", rec.Body.String())
 	}
 
-	// trusted game servers are exempt
-	do(t, s, "POST", "/v2/player/client/auth/begin/QUEST", `{"UserId":"q1234567890"}`)
-	rec = do(t, s, "POST", "/v2/player/client/auth/complete/QUEST", `{"UserId":"q1234567890","AttestationToken":"x","MetaNonce":"n"}`, "x-server-api-key", testServerKey)
+	// a different IP is still untrusted
+	do(t, s, "POST", "/v2/player/client/auth/begin/QUEST", `{"UserId":"c2"}`, "X-Real-Ip", "8.8.8.8")
+	rec = do(t, s, "POST", "/v2/player/client/auth/complete/QUEST", `{"UserId":"c2","AttestationToken":"x","MetaNonce":"n"}`, "X-Real-Ip", "8.8.8.8")
+	if rec.Code != 401 {
+		t.Fatal("untrusted IP should be refused:", rec.Code, rec.Body.String())
+	}
+
+	// trusted game servers are exempt regardless of IP
+	do(t, s, "POST", "/v2/player/client/auth/begin/QUEST", `{"UserId":"q1234567890"}`, "X-Real-Ip", "3.3.3.3")
+	rec = do(t, s, "POST", "/v2/player/client/auth/complete/QUEST", `{"UserId":"q1234567890","AttestationToken":"x","MetaNonce":"n"}`, "x-server-api-key", testServerKey, "X-Real-Ip", "3.3.3.3")
 	if rec.Code != 201 {
 		t.Fatal("trusted server refused:", rec.Code, rec.Body.String())
 	}

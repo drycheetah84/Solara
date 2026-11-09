@@ -3,12 +3,13 @@
 // Flow:
 //  1. libmidnight.so calls POST /v1/celestial/token (header X-Celestial-IP = the IP the client
 //     believes it has; optional JSON body {"obb":"<sha256 of the OBB>"}).
-//  2. Mothership answers {"celestialToken":"<jwt>","expiresIn":7200}. The JWT is HS256-signed with
-//     the server-only secret CELESTIAL_KEY and carries
-//     {"Claim":"trusted","ip":<IP the server saw>,"obb":...,"iat":...,"exp":iat+2h,"jti":...}.
-//  3. The Quest login routes (/v2/player/client/auth/begin|complete/QUEST) require that token, either
-//     as header x-celestial-token or query ?celestialToken=. It must verify, be unexpired, carry
-//     Claim=trusted, and its ip must match the IP of the login request.
+//  2. Mothership validates the OBB, then marks that caller's IP "trusted" for 2 hours and answers
+//     {"celestialToken":"<jwt>","expiresIn":7200} (the JWT is a signed record of the grant; the lib
+//     does not need to attach it to anything).
+//  3. The Quest login (/v2/player/client/auth/complete/QUEST) is allowed when the login's IP was
+//     issued a trusted token within the last 2 hours. Nothing is attached to the login itself — the
+//     server knows the IP. So the lib only has to call /v1/celestial/token on startup; there is no
+//     race between the token fetch and any single login request.
 //
 // Policy (env, read once):
 //
@@ -47,7 +48,43 @@ var (
 	celMode     string
 	celKey      []byte
 	celObbAllow map[string]bool
+
+	// celTrust maps an IP to the unix time its Celestial grant expires. A login from an IP present
+	// (and unexpired) here is trusted. This is why the login needs nothing attached: the grant is
+	// remembered per IP for the token's lifetime.
+	celTrustMu sync.Mutex
+	celTrust   = map[string]int64{}
 )
+
+// celMarkTrusted records that ip holds a valid Celestial grant for the token's lifetime, and prunes
+// expired entries so the map stays bounded by the number of recent, distinct client IPs.
+func celMarkTrusted(ip string, now time.Time) {
+	exp := now.Add(celestialTTL).Unix()
+	celTrustMu.Lock()
+	defer celTrustMu.Unlock()
+	nowU := now.Unix()
+	for k, e := range celTrust {
+		if e <= nowU {
+			delete(celTrust, k)
+		}
+	}
+	celTrust[ip] = exp
+}
+
+// celIsTrusted reports whether ip has an unexpired Celestial grant.
+func celIsTrusted(ip string, now time.Time) bool {
+	celTrustMu.Lock()
+	defer celTrustMu.Unlock()
+	exp, ok := celTrust[ip]
+	if !ok {
+		return false
+	}
+	if now.Unix() >= exp {
+		delete(celTrust, ip)
+		return false
+	}
+	return true
+}
 
 func celestialInit() {
 	celOnce.Do(func() {
@@ -94,33 +131,8 @@ func issueCelestialToken(c celestialClaims) string {
 	return signing + "." + celSign(signing)
 }
 
-// parseCelestialToken verifies signature, Claim, expiry and IP binding. Returns "" when valid.
-func parseCelestialToken(tok, ip string, now time.Time) (celestialClaims, string) {
-	var c celestialClaims
-	p := strings.Split(tok, ".")
-	if len(p) != 3 {
-		return c, "malformed celestialToken"
-	}
-	if !hmac.Equal([]byte(celSign(p[0]+"."+p[1])), []byte(p[2])) {
-		return c, "celestialToken signature invalid"
-	}
-	raw, err := base64.RawURLEncoding.DecodeString(p[1])
-	if err != nil || json.Unmarshal(raw, &c) != nil {
-		return c, "malformed celestialToken"
-	}
-	if c.Claim != celestialClaim {
-		return c, "celestialToken is not trusted"
-	}
-	if now.Unix() >= c.Exp {
-		return c, "celestialToken expired"
-	}
-	if c.IP != ip {
-		return c, fmt.Sprintf("celestialToken issued to %s, used from %s", c.IP, ip)
-	}
-	return c, ""
-}
-
-// CelestialToken: POST /v1/celestial/token. Issues the 2-hour trusted JWT to the calling client.
+// CelestialToken: POST /v1/celestial/token. Validates the OBB, marks the caller's IP trusted for
+// 2 hours, and returns a signed record of the grant (the lib does not have to use it).
 func (s *MothershipServer) CelestialToken(c *hosting.Context) hosting.Result {
 	celestialInit()
 	req := c.Request
@@ -132,6 +144,7 @@ func (s *MothershipServer) CelestialToken(c *hosting.Context) hosting.Result {
 		return errorResult("Celestial: game files not recognised. Install the current Halcyon build.", 403)
 	}
 	now := time.Now()
+	celMarkTrusted(ip, now)
 	jti := make([]byte, 16)
 	_, _ = rand.Read(jti)
 	tok := issueCelestialToken(celestialClaims{
@@ -143,29 +156,21 @@ func (s *MothershipServer) CelestialToken(c *hosting.Context) hosting.Result {
 }
 
 // celestialGate runs on the Quest login routes; (result, false) means refuse the login.
+// The login is trusted when its IP was issued a Celestial token within the last 2 hours.
 // Our own game servers (trusted server key) are exempt. "log" mode only logs.
 func celestialGate(req *hosting.Request, stage, userId string) (hosting.Result, bool) {
 	celestialInit()
 	if celMode == "off" || isTrustedServer(req) {
 		return nil, true
 	}
-	tok, _ := req.Header("x-celestial-token")
-	if tok == "" {
-		tok, _ = req.Query("celestialToken")
-	}
 	ip := req.Remote()
-	reason := "missing celestialToken (client without Celestial)"
-	var cl celestialClaims
-	if tok != "" {
-		cl, reason = parseCelestialToken(tok, ip, time.Now())
+	trusted := celIsTrusted(ip, time.Now())
+	verdict, reason := "OK", ""
+	if !trusted {
+		verdict, reason = "FAIL", "no trusted Celestial token for this IP (client without Celestial)"
 	}
-	verdict := "OK"
-	if reason != "" {
-		verdict = "FAIL"
-	}
-	authLog(fmt.Sprintf("[CELESTIAL] %s %s userId=%s mode=%s reason='%s' ip=%s obb=%s jti=%s",
-		stage, verdict, userId, celMode, reason, ip, cl.Obb, cl.Jti))
-	if reason == "" || celMode != "enforce" {
+	authLog(fmt.Sprintf("[CELESTIAL] %s %s userId=%s mode=%s reason='%s' ip=%s", stage, verdict, userId, celMode, reason, ip))
+	if trusted || celMode != "enforce" {
 		return nil, true
 	}
 	return errorResult("Celestial: "+reason+". Install the current Halcyon build.", 401), false
