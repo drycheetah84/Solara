@@ -24,6 +24,7 @@ func TestScopedTokenRouteCoverage(t *testing.T) {
 		"POST /api/anonymous-names/preview": true,
 		"GET /api/sandbox/objects": true,
 		"GET /api/users/{user_id}/global_permissions": true, "PUT /api/users/{user_id}/global_permissions": true,
+		"POST /api/audit": true, "GET /api/audit": true,
 	}
 	inTable := map[string]bool{}
 	for _, r := range dashScopedRoutes {

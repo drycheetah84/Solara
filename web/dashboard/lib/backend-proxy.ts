@@ -34,6 +34,21 @@ export async function proxyBackend(req: NextRequest, path: string[], service: "d
   try {
     const upstream = await fetch(target, { method, headers, body, cache: "no-store", redirect: "manual" });
     const responseBody = [204, 205, 304].includes(upstream.status) ? null : Buffer.from(await upstream.arrayBuffer());
+    // Audit log: record every successful mutating action by a signed-in admin (not bot API keys,
+    // not the audit route itself). The actor comes from the verified session, never the browser.
+    const mutating = method === "POST" || method === "PUT" || method === "PATCH" || method === "DELETE";
+    if (mutating && upstream.status >= 200 && upstream.status < 300 && session && path[0] !== "audit") {
+      await recordAudit(config, host, {
+        actor_id: session.profile.id,
+        actor_name: session.profile.name,
+        scoped: session.kind === "scoped",
+        method,
+        service,
+        path: "/" + path.join("/") + (req.nextUrl.search ?? ""),
+        status: upstream.status,
+        detail: auditDetail(contentType, body),
+      });
+    }
     return new NextResponse(responseBody, {
       status: upstream.status,
       headers: {
@@ -43,5 +58,38 @@ export async function proxyBackend(req: NextRequest, path: string[], service: "d
     });
   } catch {
     return NextResponse.json({ error: "backend unreachable" }, { status: 502 });
+  }
+}
+
+// A short, safe snapshot of the request body for context (ban reason, perms set). JSON only,
+// small bodies only, truncated; never a file upload or a large payload.
+function auditDetail(contentType: string | null, body?: Buffer): string {
+  if (!body || body.length === 0 || body.length > 2000) return "";
+  if (!contentType || !contentType.includes("json")) return "";
+  const s = body.toString("utf8");
+  return s.length > 500 ? s.slice(0, 500) + "…" : s;
+}
+
+type AuditFields = {
+  actor_id: string; actor_name: string; scoped: boolean;
+  method: string; service: string; path: string; status: number; detail: string;
+};
+
+// Fire the audit entry to the dashboard backend (:8080) with the admin key. Best-effort: a failure
+// here must never break the action the admin just performed, so it is swallowed with a short timeout.
+async function recordAudit(config: NonNullable<ReturnType<typeof authConfig>>, host: string, fields: AuditFields) {
+  const port = process.env.DASHBOARD_API_PORT ?? "8080";
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 3000);
+    await fetch(`http://${host}:${port}/api/audit`, {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-dashboard-key": config.adminKey },
+      body: JSON.stringify(fields),
+      cache: "no-store",
+      signal: ctrl.signal,
+    }).finally(() => clearTimeout(t));
+  } catch {
+    /* audit is best-effort; never block the admin action on it */
   }
 }

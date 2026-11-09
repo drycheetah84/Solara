@@ -151,6 +151,8 @@ func newAresDashboardServer() *AresDashboardServer {
 	h.Handle("GET", "/api/stations/{station_id}/matches", "Solara/GetStationMatches", s.GetStationMatches)
 	h.Handle("GET", "/api/users/{user_id}/global_permissions", "Solara/GetUserGlobalPermissions", s.GetUserGlobalPermissions)
 	h.Handle("PUT", "/api/users/{user_id}/global_permissions", "Solara/PutUserGlobalPermissions", s.PutUserGlobalPermissions)
+	h.Handle("POST", "/api/audit", "Solara/PostAudit", s.PostAudit) // dashboard audit log (dashboard_audit.go)
+	h.Handle("GET", "/api/audit", "Solara/GetAudit", s.GetAudit)
 	return s
 }
 

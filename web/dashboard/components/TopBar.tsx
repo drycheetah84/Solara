@@ -20,6 +20,7 @@ const adminNav = [
   { href: "/anonymous-names", label: "Anonymous names" },
   { href: "/sandbox",         label: "Sandbox"         },
   { href: "/tokens",          label: "API keys"        },
+  { href: "/audit",           label: "Audit log"       },
 ];
 
 export type Me = {

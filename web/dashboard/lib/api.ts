@@ -370,6 +370,9 @@ export const api = {
   // refuses a fleet that currently has players on it.
   deleteStation: (stationId: string, force = false) =>
     del<ActionResult>(`stations/${stationId}${force ? "?force=true" : ""}`),
+  // Stops the game server, drops its EOS sessions, removes the row and its events. Admin key only (station API).
+  deleteDeployment: (deploymentId: string) =>
+    gameDel<ActionResult>(`deployments/${encodeURIComponent(deploymentId)}`),
   launchDeployment: (stationId: string, body: { deployment_name?: string; ip?: string; region?: string; version?: string }) =>
     gamePost<LaunchResult>(`stations/${stationId}/deployments`, body),
 
@@ -454,6 +457,16 @@ export const api = {
     sendJson<GlobalPerms>("PUT", `users/${encodeURIComponent(userId)}/global_permissions`, { permissions }),
   grantAdmin:  (userId: string) => post<ActionResult>(`users/${userId}/grant_admin`),
   revokeAdmin: (userId: string) => del<ActionResult>(`users/${userId}/grant_admin`),
+
+  /** Solara: the dashboard audit log (every mutating admin action; master key only). */
+  auditLog: (opts: { limit?: number; actor?: string; q?: string } = {}) => {
+    const p = new URLSearchParams();
+    if (opts.limit) p.set("limit", String(opts.limit));
+    if (opts.actor) p.set("actor", opts.actor);
+    if (opts.q) p.set("q", opts.q);
+    const qs = p.toString();
+    return get<AuditPage>(`audit${qs ? `?${qs}` : ""}`);
+  },
 
   // Netvars: the live dump the game server reports, and the station config it pulls as netvars
   netvarDumps: () => get<NetvarDumpInfo[]>("netvars/dumps"),
@@ -567,6 +580,22 @@ export type ScopedToken = {
   revoked_at: string | null;
   last_used: string | null;
 };
+
+/** Solara: one recorded admin action in the dashboard audit log. */
+export type AuditEntry = {
+  ts_ms: number;
+  ts: string;
+  actor_id: string;
+  actor_name: string;
+  scoped: boolean;
+  method: string;
+  service: string;
+  path: string;
+  status: number;
+  detail: string;
+  ip: string;
+};
+export type AuditPage = { entries: AuditEntry[]; total: number };
 
 export type TitleDataRow = { key: string; value: string; updated_at: string };
 export type TitleDataKnown = { key: string; reader: string; purpose: string; format: "text" | "url" | "json"; template: string };
