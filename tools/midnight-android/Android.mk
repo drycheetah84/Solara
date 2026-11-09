@@ -2,7 +2,7 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := midnight
-LOCAL_SRC_FILES := main.cpp src/hooks.cpp src/FString.cpp
+LOCAL_SRC_FILES := main.cpp src/hooks.cpp src/FString.cpp src/celestial.cpp
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/includes $(LOCAL_PATH)/includes/dobby
 LOCAL_STATIC_LIBRARIES := dobby
 LOCAL_CPPFLAGS := -std=c++20 -fvisibility=hidden -fPIC

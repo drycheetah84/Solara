@@ -16,6 +16,13 @@ constexpr const char* ORION_BACKEND      = "https://station.halcy0n.net";       
 // (Raw VPS fallback, if the tunnel is down: http://209.126.2.136:50 / :90 / :78 respectively.)
 constexpr const char* BACKEND_URL = ORION_BACKEND; // legacy single-target (unused by the per-domain path)
 
+// [Celestial] Solara's Quest anticheat (client half: src/celestial.cpp; server half:
+// internal/mothership/celestial.go). The lib hashes the OBB, POSTs the hash to CELESTIAL_TOKEN_URL,
+// and the curl hook appends the returned trusted token to the Quest login request.
+constexpr const char* CELESTIAL_TOKEN_URL = "https://mothership-prod.halcy0n.net/v1/celestial/token";
+// The app's own OBB directory (readable by the app). Package com.AnotherSaxaphone.GayTwo.
+constexpr const char* CELESTIAL_OBB_DIR   = "/storage/emulated/0/Android/obb/com.AnotherSaxaphone.GayTwo";
+
 constexpr bool BYPASS_SSL = false; // only works with curl versions (aka if it doesnt use processrequest i cba bypassing ssl for this)
 constexpr bool ENABLE_LOGS = true; // to debug stuff js keep it disabled for release
 

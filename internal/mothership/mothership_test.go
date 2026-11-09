@@ -36,6 +36,7 @@ func init() {
 	_ = os.Setenv("HALCYON_SERVER_API_KEY", "  "+testServerKey+"  ")
 	_ = os.Unsetenv("MOTHERSHIP_INSECURE")
 	_ = os.Unsetenv("MOTHERSHIP_ALLOW_NONSTORE")
+	_ = os.Setenv("SOLARA_CELESTIAL_MODE", "off") // the Quest auth tests predate Celestial; celestial_test.go turns it on
 	dir, err := os.MkdirTemp("", "mothership-base")
 	if err != nil {
 		panic(err)

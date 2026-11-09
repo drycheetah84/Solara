@@ -262,6 +262,10 @@ func (s *MothershipServer) CompleteQuestAuth(c *hosting.Context) hosting.Result 
 		authLog(fmt.Sprintf("[QUEST-ATT] DENY userId=%s reason='no pending authentication (complete without a matching begin)'", userId))
 		return errorResult("No pending authentication", 404)
 	}
+	// Solara: Celestial anticheat, before any graph.oculus.com call (celestial.go)
+	if res, ok := celestialGate(request, "complete", userId); !ok {
+		return res
+	}
 
 	// Trusted-server calls (our DLL) carry the real SERVER_API_KEY and are exempt.
 	trustedServer := isTrustedServer(request)

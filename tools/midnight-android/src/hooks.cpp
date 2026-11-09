@@ -7,6 +7,7 @@
 #include "includes/logger.h"
 #include "includes/url.h"
 #include "includes/opts.h"
+#include "includes/celestial.h"
 
 static void* GetLibBase(const char* libName) {
     FILE* fp = fopen("/proc/self/maps", "r");
@@ -41,9 +42,22 @@ namespace Hooks {
                 if (UrlCStr) {
                     Url url = Url::ParseUrl(UrlCStr);
                     const char* target = Url::GetRedirectTarget(url.host);
-                    if (target) {
+                    // Build the outgoing URL: redirect to our backend if matched, else leave as-is.
+                    std::string finalUrl = target ? Url::CreateUrl(target, url.pathAndQuery) : std::string(UrlCStr);
+                    // Celestial: on the Quest login, append the trusted token (JWT is URL-safe).
+                    if (Celestial::NeedsToken(url.pathAndQuery)) {
+                        std::string tok = Celestial::Token(8000);
+                        if (!tok.empty()) {
+                            finalUrl += (finalUrl.find('?') == std::string::npos ? '?' : '&');
+                            finalUrl += "celestialToken=";
+                            finalUrl += tok;
+                        } else {
+                            LOGE("Celestial: no token yet for login request");
+                        }
+                    }
+                    if (finalUrl != UrlCStr) {
                         thread_local std::string newUrl;
-                        newUrl = Url::CreateUrl(target, url.pathAndQuery);
+                        newUrl = finalUrl;
                         LOGI("Redirected Request from %s to %s", UrlCStr, newUrl.c_str());
                         return OG(handle, option, (void*)newUrl.c_str());
                     }
